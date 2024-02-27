@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -12,13 +12,14 @@
         android:id="@+id/btn_signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@drawable/custom_button"
+        android:layout_gravity="end"
+        android:layout_marginEnd="15dp"
         android:layout_marginTop="10dp"
-        android:text="Đăng Kí"
+        android:background="@drawable/custom_button"
+        android:text="@string/ng_k"
+        android:textColor="@color/black"
         android:textSize="20sp"
-        app:backgroundTint="@null"
-        android:textColor="@color/black" />
+        app:backgroundTint="@null" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -28,63 +29,118 @@
         android:layout_marginTop="100dp"
         app:srcCompat="@drawable/download" />
 
+
     <EditText
         android:id="@+id/edt_email"
         android:layout_width="303dp"
-        android:layout_height="46dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint=" Email"
-        app:backgroundTint="@null"
-        android:inputType="text" />
-
+        android:gravity="center_vertical|start"
+        android:hint="@string/email"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="#ACABAB"
+        android:textSize="20sp"
+        app:backgroundTint="@null" />
 
     <EditText
         android:id="@+id/edt_password"
+
         android:layout_width="303dp"
-        android:layout_height="46dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint=" Password"
-        app:backgroundTint="@null"
-        android:inputType="text" />
-
-    <Button
-        android:id="@+id/btn_forgotPassword"
-        android:layout_width="228dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/custom_button"
-        android:text="Quên mật khẩu"
-        android:textColor="@color/black"
-        app:backgroundTint="@null"
-        android:textSize="20dp" />
-
-    <Button
-        android:id="@+id/btn_signIn"
-        android:layout_width="336dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/custom_button_signin"
-        android:text="Đăng Nhập"
-        android:textColor="#5E5E5E"
-        android:textSize="20dp"
+        android:gravity="center_vertical|start"
+        android:hint="@string/password"
+        android:inputType="text"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="#ACABAB"
+        android:textSize="20sp"
         app:backgroundTint="@null" />
 
-    <Button
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="336dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/custom_button_signin"
-        android:text="Đăng nhập với Gmail "
-        android:textColor="#5E5E5E"
-        android:textSize="20dp"
-        android:layout_marginTop="5dp"
-        app:backgroundTint="@null"  />
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/btn_forgotPassword"
+            android:layout_width="228dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/custom_button"
+            android:text="@string/qu_n_m_t_kh_u"
+            android:gravity="center"
+            android:textColor="@color/black"
+            app:backgroundTint="@null"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/btn_signIn"
+            android:layout_width="336dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/custom_button_signin"
+            android:gravity="center_vertical|center"
+            android:text="@string/ng_nh_p"
+            android:textColor="#5E5E5E"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_forgotPassword"
+            tools:ignore="VisualLintButtonSize" />
+
+        <RelativeLayout
+            android:layout_width="336dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/mail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_signIn">
+
+            <Button
+                android:id="@+id/btn_loginByGmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical|center"
+                android:text="@string/ng_nh_p_v_i_gmail"
+                android:textColor="#5E5E5E"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                tools:ignore="VisualLintButtonSize" />
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/ic_google" />
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </LinearLayout>

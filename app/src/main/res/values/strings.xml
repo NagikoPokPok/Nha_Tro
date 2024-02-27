@@ -2,4 +2,10 @@
 <resources>
 <!-- login strings -->
     <string name="app_name" />
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="ng_nh_p">Đăng Nhập</string>
+    <string name="ng_nh_p_v_i_gmail">Đăng nhập với Gmail</string>
+    <string name="qu_n_m_t_kh_u">Quên mật khẩu</string>
+    <string name="ng_k">Đăng Kí</string>
 </resources>
