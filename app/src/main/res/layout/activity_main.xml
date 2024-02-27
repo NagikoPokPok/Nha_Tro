@@ -73,18 +73,18 @@
         <Button
             android:id="@+id/btn_forgotPassword"
             android:layout_width="228dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:background="@drawable/custom_button"
-            android:text="@string/qu_n_m_t_kh_u"
             android:gravity="center"
+            android:text="@string/qu_n_m_t_kh_u"
             android:textColor="@color/black"
-            app:backgroundTint="@null"
             android:textSize="20sp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:backgroundTint="@null"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_signIn"
@@ -103,7 +103,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_forgotPassword"
-            tools:ignore="VisualLintButtonSize" />
+             />
 
         <RelativeLayout
             android:layout_width="336dp"
@@ -121,12 +121,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:paddingBottom="15dp"
+                android:background="?attr/selectableItemBackground"
                 android:gravity="center_vertical|center"
+                android:paddingEnd="20dp"
                 android:text="@string/ng_nh_p_v_i_gmail"
-                android:textColor="#5E5E5E"
+                android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:backgroundTint="@null"
                 tools:ignore="VisualLintButtonSize" />
 
             <ImageView
@@ -136,7 +138,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/ic_google" />
         </RelativeLayout>
