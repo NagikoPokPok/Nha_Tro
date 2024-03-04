@@ -140,12 +140,12 @@ public class SignInActivity extends AppCompatActivity {
                 if (googleSignInAccount != null) {
                     firebaseAuth(googleSignInAccount.getIdToken());
                 } else {
-                    Toast.makeText(this, "Google Sign-In failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
                 }
             } catch (ApiException e) {
-                Toast.makeText(this, "Google Sign-In failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đăng nhập thất bại " + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Có lỗi khi đăng nhập", Toast.LENGTH_SHORT).show();
             }
         }
     }
