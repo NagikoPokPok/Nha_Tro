@@ -88,7 +88,7 @@ public class SignInActivity extends AppCompatActivity {
                 .addOnCompleteListener(task-> {
                     if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                        //preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -96,7 +96,7 @@ public class SignInActivity extends AppCompatActivity {
                         startActivity(intent);
                     }else {
                         //loading(false);
-                        showToast("Unable to sign in");
+                        showToast("Sai tài khoản hoặc mật khẩu");
                     }
                 });
     }
@@ -140,12 +140,12 @@ public class SignInActivity extends AppCompatActivity {
                 if (googleSignInAccount != null) {
                     firebaseAuth(googleSignInAccount.getIdToken());
                 } else {
-                    Toast.makeText(this, "Google Sign-In failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
                 }
             } catch (ApiException e) {
-                Toast.makeText(this, "Google Sign-In failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đăng nhập thất bại " + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, "An unexpected error occurred", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Có lỗi khi đăng nhập", Toast.LENGTH_SHORT).show();
             }
         }
     }

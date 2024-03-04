@@ -1,133 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:overScrollMode="never"
-    android:padding="20dp"
-    android:background="@drawable/back"
-    android:scrollbars="none"
+    android:backgroundTint="#733A36"
     tools:context=".Activity.SignInActivity">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="@drawable/foreground_desgin"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-275dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SIGN UP"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#38C8D5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <TextView
+        android:id="@+id/txt_Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:text="Quản Lý Phòng Trọ"
+        android:fontFamily="@font/lobster"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="33sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.307" />
+    <TextView
+        android:id="@+id/txt_tiepTuc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Đăng Nhập để tiếp tục"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/txt_Title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/inputEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#CCCCCC"
+        android:drawablePadding="13dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:imeOptions="actionNext"
+        android:textColor="@color/white"
+        android:layout_marginTop="60dp"
+        android:textColorHint="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/txt_tiepTuc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/inputPassword"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        android:backgroundTint="#CCCCCC"
+        android:drawablePadding="13dp"
+        android:hint="Password"
+        android:imeOptions="actionDone"
+        android:textColor="@color/white"
+        android:inputType="textPassword"
+        android:layout_marginTop="5dp"
+        android:textColorHint="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent=".8"/>
+
+    <TextView
+        android:id="@+id/txt_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.721"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <LinearLayout
+        android:id="@+id/ButtonSignInByGmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintWidth_percent=".8"
+        tools:layout_editor_absoluteY="659dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonSignIn"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:text="@string/qu_n_l_nh_tr"
-            android:textColor="@color/black"
-            android:textSize="40sp"
-            android:textStyle="bold"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/download"
-            android:layout_marginTop="20dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/ng_nh_p_ti_p_t_c"
-            android:textColor="#344042"
-            android:textSize="25sp"
-            android:textStyle="bold"/>
-        <EditText
-            android:id="@+id/inputEmail"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bakcground_input"
-            android:hint="@string/email"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-        <EditText
-            android:id="@+id/inputPassword"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/bakcground_input"
-            android:hint="@string/m_t_kh_u"
-            android:imeOptions="actionDone"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/qu_n_m_t_kh_u"
-            android:textColor="#0C0C0C"
+            android:layout_gravity="center_vertical"
+            android:backgroundTint="#CCCCCC"
+            android:drawablePadding="13dp"
+            android:text="Sign In By Gmail"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textSize="20sp" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@drawable/custom_button_signin"
-            android:layout_marginTop="5dp">
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_google"
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSignIn"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/ng_nh_p"
-                android:textColor="@color/black"
-                android:gravity="center_vertical|center"
-                android:textSize="20sp"
-                android:background="?attr/selectableItemBackground"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                app:cornerRadius="8dp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@drawable/mail"
-            android:layout_marginTop="5dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ButtonSignInByGmail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/ng_nh_p_v_i_gmail"
-                android:textColor="@color/black"
-                android:gravity="center_vertical|center"
-                android:textSize="20sp"
-                android:background="?attr/selectableItemBackground"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                app:cornerRadius="8dp" />
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="32dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/ic_google" />
-
-        </RelativeLayout>
-
+            />
     </LinearLayout>
 
-</ScrollView>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonSignIn"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="SIGN IN"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:backgroundTint="#F44336"
+        app:flow_verticalBias="0.7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_register" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

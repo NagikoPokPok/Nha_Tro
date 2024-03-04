@@ -7,7 +7,22 @@
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".Activity.MainActivity">
-
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="This is main activity"
+        android:gravity="center"
+        android:layout_marginTop="100dp"/>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageSignOut"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/black"
+        android:padding="30dp"
+        android:tint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </LinearLayout>
