@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:text="Quản Lý Nhà Trọ"
+            android:text="@string/qu_n_l_nh_tr"
             android:textColor="@color/black"
             android:textSize="40sp"
             android:textStyle="bold"/>
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Đăng Nhập để tiếp tục"
+            android:text="@string/ng_nh_p_ti_p_t_c"
             android:textColor="#344042"
             android:textSize="25sp"
             android:textStyle="bold"/>

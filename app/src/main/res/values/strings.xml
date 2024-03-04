@@ -9,4 +9,7 @@
     <string name="qu_n_m_t_kh_u">Quên mật khẩu</string>
     <string name="ng_k">Đăng Kí</string>
     <string name="m_t_kh_u">Mật khẩu</string>
+    <string name="qu_n_l_nh_tr">Quản Lý Nhà Trọ</string>
+    <string name="ng_nh_p_ti_p_t_c">Đăng Nhập để tiếp tục</string>
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
 </resources>
