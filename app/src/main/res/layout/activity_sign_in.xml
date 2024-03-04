@@ -20,9 +20,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SIGN UP"
+        android:text="@string/ng_k"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#38C8D5"
@@ -32,7 +32,7 @@
         android:id="@+id/txt_Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quản Lý Phòng Trọ"
+        android:text="@string/qu_n_l_ph_ng_tr"
         android:fontFamily="@font/lobster"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Đăng Nhập để tiếp tục"
+        android:text="@string/ng_nh_p_ti_p_t_c"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -61,17 +61,18 @@
         android:id="@+id/inputEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         android:backgroundTint="#CCCCCC"
         android:drawablePadding="13dp"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
+        android:hint="@string/email"
         android:imeOptions="actionNext"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
         android:textColor="@color/white"
-        android:layout_marginTop="60dp"
         android:textColorHint="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/txt_tiepTuc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_tiepTuc"
         app:layout_constraintWidth_percent=".8" />
 
     <EditText
@@ -79,67 +80,74 @@
         android:layout_width="0dp"
 
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:backgroundTint="#CCCCCC"
         android:drawablePadding="13dp"
-        android:hint="Password"
+        android:hint="@string/m_t_kh_u"
         android:imeOptions="actionDone"
-        android:textColor="@color/white"
         android:inputType="textPassword"
-        android:layout_marginTop="5dp"
+        android:minHeight="48dp"
+        android:textColor="@color/white"
         android:textColorHint="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent=".8"/>
+        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
+        app:layout_constraintWidth_percent=".8" />
 
     <TextView
         android:id="@+id/txt_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Forgot Password?"
+        android:text="@string/qu_n_m_t_kh_u"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="19sp"
-        android:textStyle="bold"
+        android:textStyle="bold|italic"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.721"
         tools:layout_editor_absoluteX="0dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ButtonSignInByGmail"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintWidth_percent=".8"
-        tools:layout_editor_absoluteY="659dp"
         android:layout_marginTop="5dp"
+        android:background="@drawable/mail"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonSignIn"
-        >
+        app:layout_constraintWidth_percent=".8"
+        tools:layout_editor_absoluteY="659dp">
 
         <TextView
+            android:id="@+id/signInText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:backgroundTint="#CCCCCC"
-            android:drawablePadding="13dp"
-            android:text="Sign In By Gmail"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white" />
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:gravity="center_vertical"
+            android:text="@string/ng_nh_p_b_ng_gmail"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="50dp"
+            android:id="@+id/googleIcon"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_google"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="2dp"
+        android:layout_toEndOf="@+id/signInText"
+        android:src="@drawable/ic_google" />
+    </RelativeLayout>
 
-            />
-    </LinearLayout>
+
+
 
 
 
@@ -148,11 +156,12 @@
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
+
         android:layout_marginTop="20dp"
-        android:text="SIGN IN"
-        android:textSize="18sp"
+        android:text="@string/ng_nh_p"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="#F44336"
+        app:backgroundTint="#FF001E"
         app:flow_verticalBias="0.7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"

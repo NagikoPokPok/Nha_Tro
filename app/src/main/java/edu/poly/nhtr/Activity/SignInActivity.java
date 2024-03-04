@@ -122,10 +122,23 @@ public class SignInActivity extends AppCompatActivity {
 
     // Phần đăng nhập bằng tài khoản Google
     public void googleSignIn() {
-        Intent intent = googleSignInClient.getSignInIntent();
-        startActivityForResult(intent, RC_SIGN_IN);
+        // Thoát khỏi tài khoản Google trước đó để người dùng có thể chọn tài khoản Google khác
+        GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut().addOnCompleteListener(this, task -> {
+            // Tạo mới GoogleSignInOptions với yêu cầu email
+            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
 
+            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+
+            // Start the sign-in intent
+            Intent intent = googleSignInClient.getSignInIntent();
+            startActivityForResult(intent, RC_SIGN_IN);
+        });
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
