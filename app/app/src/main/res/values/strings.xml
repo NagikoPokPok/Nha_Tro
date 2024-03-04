@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NhaTro</string>
+    <string name="ng_nh_p_b_ng_gmail">Đăng nhập bằng Gmail</string>
+    <string name="ng_nh_p">Đăng nhập</string>
+    <string name="email">Email</string>
+    <string name="m_t_kh_u">Mật khẩu</string>
+    <string name="qu_n_m_t_kh_u">Quên mật khẩu?</string>
+</resources>
