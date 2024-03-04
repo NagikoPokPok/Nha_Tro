@@ -3,6 +3,7 @@ package edu.poly.nhtr.utilities;
 public class Constants {
     public static final String KEY_COLLECTION_USERS = "users";
     public static final String KEY_NAME = "name";
+    public static final String KEY_PHONE_NUMBER = "phone_number";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_PREFERENCE_NAME = "chatAppPreference";
