@@ -119,6 +119,22 @@ public class SignUpActivity extends AppCompatActivity {
     }
     private void signUp() {
         loading(true);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        // Tạo tài khoản mới
+        auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+
+                        } else {
+                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_NAME, binding.edtName.getText().toString());
@@ -137,23 +153,6 @@ public class SignUpActivity extends AppCompatActivity {
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
 
-                        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-                        // Tạo tài khoản mới
-                        auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            FirebaseUser user = task.getResult().getUser();
-                                            // Bây giờ bạn có thể sử dụng đối tượng 'user'
-
-                                        } else {
-                                            // Xử lý lỗi tạo
-                                        }
-                                    }
-                                });
-//
                         sendOTP();
 
                     }
