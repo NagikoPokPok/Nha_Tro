@@ -6,7 +6,6 @@
     <string name="password">Password</string>
     <string name="ng_nh_p">Đăng Nhập</string>
     <string name="ng_nh_p_v_i_gmail">Đăng nhập với Gmail</string>
-    <string name="qu_n_m_t_kh_u">Quên mật khẩu ?</string>
     <string name="ng_k">Đăng Kí</string>
     <string name="m_t_kh_u">Mật khẩu</string>
     <string name="qu_n_l_nh_tr">Quản Lý Nhà Trọ</string>
@@ -21,7 +20,9 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
+        <string name="qu_n_m_t_kh_u">
+            <u> Quên mật khẩu ? </u>
+        </string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
