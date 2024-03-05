@@ -119,8 +119,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
     private void signUp() {
         loading(true);
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
@@ -135,10 +133,12 @@ public class SignUpActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         loading(false);
+
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+                        FirebaseAuth auth = FirebaseAuth.getInstance();
 
                         // Tạo tài khoản mới
                         auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
@@ -147,6 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
 
+                                            sendOTP();
 
                                         } else {
                                             Toast.makeText(SignUpActivity.this, "Authentication failed.",
@@ -154,9 +155,6 @@ public class SignUpActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-
-                        sendOTP();
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -265,8 +263,8 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.edtEmail.getText().toString()).matches()) {
             showToast("Enter valid email address");
             return false;
-        } else if (binding.edtPassword.getText().toString().trim().isEmpty()) {
-            showToast("Enter password");
+        } else if (binding.edtPassword.getText().toString().trim().isEmpty() || binding.edtPassword.getText().toString().trim().length()<6) {
+            showToast("Enter password has least 6 characters");
             return false;
         } else if (binding.edtConfirmPassword.getText().toString().trim().isEmpty()) {
             showToast("Confirm your password");
