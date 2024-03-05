@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         Button buttonLogout = findViewById(R.id.buttonLogout);
         buttonLogout.setOnClickListener(v -> logout());
 
-        changeProfile = findViewById(R.id.btn_changeProfile);
-        changeProfile.setOnClickListener(new View.OnClickListener() {
+
+        binding.btnChangeProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
