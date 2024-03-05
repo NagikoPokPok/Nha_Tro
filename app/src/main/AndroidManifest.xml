@@ -28,6 +28,9 @@
         <activity
             android:name=".Activity.MainActivity"
             android:exported="true" />
+        <activity
+            android:name=".Activity.ForgotPasswordActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

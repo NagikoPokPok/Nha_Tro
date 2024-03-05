@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!-- login strings -->
-    <string name="app_name" />
+
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="ng_nh_p">Đăng Nhập</string>
@@ -14,4 +14,5 @@
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
     <string name="qu_n_l_ph_ng_tr">Quản Lý Phòng Trọ</string>
     <string name="ng_nh_p_b_ng_gmail">Đăng nhập bằng Gmail</string>
+    <string name="app_name">QLTro</string>
 </resources>

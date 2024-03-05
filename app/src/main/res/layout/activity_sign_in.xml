@@ -15,7 +15,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/background"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-275dp" />
+        tools:layout_editor_absoluteY="72dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,12 +28,13 @@
         android:textColor="#38C8D5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
     <TextView
         android:id="@+id/txt_Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/qu_n_l_ph_ng_tr"
         android:fontFamily="@font/lobster"
+        android:text="@string/qu_n_l_ph_ng_tr"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="33sp"
@@ -43,7 +44,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.307" />
+        app:layout_constraintVertical_bias="0.235" />
+
     <TextView
         android:id="@+id/txt_tiepTuc"
         android:layout_width="wrap_content"
@@ -98,15 +100,15 @@
         android:id="@+id/txt_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
         android:text="@string/qu_n_m_t_kh_u"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="19sp"
         android:textStyle="bold|italic"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.721"
+        app:layout_constraintTop_toBottomOf="@+id/inputPassword"
+        app:layout_constraintVertical_bias="0.062"
         tools:layout_editor_absoluteX="0dp" />
 
     <RelativeLayout
