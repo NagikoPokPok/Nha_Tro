@@ -71,7 +71,7 @@
         android:imeOptions="actionNext"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
-        android:textColor="@color/white"
+        android:textColor="#FFFFFF"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,9 +81,8 @@
     <EditText
         android:id="@+id/inputPassword"
         android:layout_width="0dp"
-
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:backgroundTint="#CCCCCC"
         android:drawablePadding="13dp"
         android:hint="@string/m_t_kh_u"

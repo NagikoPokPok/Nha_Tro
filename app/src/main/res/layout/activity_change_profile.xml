@@ -4,19 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#733A36"
-    tools:context=".Activity.SignUpActivity">
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:foreground="@drawable/foreground_desgin"
-        android:scaleType="centerCrop"
-        android:src="@drawable/background"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="38dp" />
-
+    android:orientation="vertical"
+    android:background="#000000"
+    app:layoutDescription="@xml/activity_change_profile_scene"
+    tools:context=".Activity.ChangeProfileActivity">
     <TextView
         android:id="@+id/txt_Title"
         android:layout_width="match_parent"
@@ -24,7 +15,7 @@
         android:fontFamily="@font/lobster"
         android:text="Quản Lý Phòng Trọ"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="#03A9F4"
         android:textSize="33sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,35 +25,48 @@
         app:layout_constraintVertical_bias="0.088" />
 
     <TextView
-        android:id="@+id/txt_register"
+        android:id="@+id/txt_change_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Tạo tài khoản mới"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="#03A9F4"
         android:textSize="19sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Title" />
 
-
-    <EditText
-        android:id="@+id/edt_phone_number"
-        android:layout_width="0dp"
+    <FrameLayout
+        android:id="@+id/layoutImage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="188dp"
-        android:backgroundTint="#CCCCCC"
-        android:drawableLeft="@drawable/ic_phone"
-        android:drawablePadding="13dp"
-        android:hint="Số điện thoại (0xxxxxxxxx)"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
+        android:layout_marginTop="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_register"
-        app:layout_constraintWidth_percent=".8" />
+        app:layout_constraintTop_toBottomOf="@id/txt_change_profile">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/img_profile"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/background_image"
+            android:scaleType="centerCrop"
+            app:riv_oval="true" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/txt_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Thêm ảnh"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp" />
+    </FrameLayout>
 
     <EditText
         android:id="@+id/edt_name"
@@ -77,30 +81,28 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_register"
+        app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
         app:layout_constraintWidth_percent=".8" />
-
     <EditText
-        android:id="@+id/edt_email"
+        android:id="@+id/edt_phone_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="244dp"
+        android:layout_marginTop="188dp"
         android:backgroundTint="#CCCCCC"
-        android:drawableLeft="@drawable/ic_email"
+        android:drawableLeft="@drawable/ic_phone"
         android:drawablePadding="13dp"
-        android:hint="Email"
+        android:hint="Số điện thoại (0xxxxxxxxx)"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_register"
+        app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
         app:layout_constraintWidth_percent=".8" />
-
     <EditText
         android:id="@+id/edt_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="244dp"
         android:backgroundTint="#CCCCCC"
         android:drawableLeft="@drawable/ic_pass"
         android:drawablePadding="13dp"
@@ -110,14 +112,14 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_register"
+        app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
         app:layout_constraintWidth_percent=".8" />
 
     <EditText
         android:id="@+id/edt_confirm_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="356dp"
+        android:layout_marginTop="300dp"
         android:backgroundTint="#CCCCCC"
         android:drawableLeft="@drawable/ic_pass"
         android:drawablePadding="13dp"
@@ -127,11 +129,11 @@
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_register"
+        app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
         app:layout_constraintWidth_percent=".8" />
 
     <FrameLayout
-        android:id="@+id/frm_sign_up"
+        android:id="@+id/frm_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -140,12 +142,12 @@
         tools:layout_editor_absoluteX="0dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sign_up"
+            android:id="@+id/btn_change"
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
 
-            android:text="ĐĂNG KÍ"
+            android:text="LƯU THAY ĐỔI"
             android:textSize="18sp"
             android:textStyle="bold"
 
@@ -161,50 +163,27 @@
 
     </FrameLayout>
 
-
-    <FrameLayout
-        android:id="@+id/layoutImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_register">
-
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/img_profile"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/background_image"
-            android:scaleType="centerCrop"
-            app:riv_oval="true" />
-
-        <TextView
-            android:id="@+id/txt_add_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Thêm ảnh"
-            android:textColor="@color/secondary_text"
-            android:textSize="12sp" />
-
-    </FrameLayout>
-
-
     <TextView
-        android:id="@+id/txt_sign_in"
+        android:id="@+id/txt_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đăng nhập"
+        android:text="Quay Lại Màn Hình Chính"
         android:textAlignment="center"
         android:textColor="#D15B5B"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_sign_up"
-        app:layout_constraintVertical_bias="0.227" />
+        app:layout_constraintTop_toBottomOf="@id/frm_change"
+        app:layout_constraintVertical_bias="0.147" />
 
-
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quay lại"
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="4dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

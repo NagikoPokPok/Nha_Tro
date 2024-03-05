@@ -18,9 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
@@ -58,7 +63,13 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.txtSignIn.setOnClickListener(v -> onBackPressed());
+        binding.txtSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(intent);
+            }
+        });
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +119,22 @@ public class SignUpActivity extends AppCompatActivity {
     }
     private void signUp() {
         loading(true);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        // Tạo tài khoản mới
+        auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+
+                        } else {
+                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_NAME, binding.edtName.getText().toString());
@@ -125,11 +152,7 @@ public class SignUpActivity extends AppCompatActivity {
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
-//                        Intent intent = new Intent(getApplicationContext(), VerifyOTPActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        intent.putExtra("email", binding.edtEmail.getText().toString());
-//                        intent.putExtra("phoneNumber", binding.edtPhoneNumber.getText().toString());
-//                        startActivity(intent);
+
                         sendOTP();
 
                     }
@@ -178,6 +201,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), VerifyOTPActivity.class);
                         intent.putExtra("phoneNumber",binding.edtPhoneNumber.getText().toString());
                         intent.putExtra("verificationId",verificationId);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
                 }

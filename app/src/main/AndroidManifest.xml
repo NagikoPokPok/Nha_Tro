@@ -15,7 +15,7 @@
         android:theme="@style/Theme.NhàTrọ"
         tools:targetApi="31">
         <activity
-            android:name=".Activity.SignInActivity"
+            android:name=".Activity.SignUpActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -33,11 +33,15 @@
             android:exported="true"/>
 
         <activity
-            android:name=".Activity.SignUpActivity"
+            android:name=".Activity.SignInActivity"
             android:exported="true"/>
 
         <activity
             android:name=".Activity.VerifyOTPActivity"
+            android:exported="true"/>
+
+        <activity
+            android:name=".Activity.ChangeProfileActivity"
             android:exported="true"/>
 
         <meta-data
