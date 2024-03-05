@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "868558191145",
+    "firebase_url": "https://nha-tro-57e88-default-rtdb.firebaseio.com",
     "project_id": "nha-tro-57e88",
     "storage_bucket": "nha-tro-57e88.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.example.quanlyphongtro_register",
             "certificate_hash": "b3e46556885716b31f1ec9fa8b18ba2a595073e6"
+          }
+        },
+        {
+          "client_id": "868558191145-e2vrq7lukbso56rd3957d1ad7pbutbas.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.quanlyphongtro_register",
+            "certificate_hash": "3dfdb31d21cb44826c877b01cb76702cf4a50b54"
           }
         },
         {
@@ -58,6 +67,30 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "868558191145-4neg7p7h14fm6lk99vk4ptbk5mpgaedk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.poly.nhtr",
+            "certificate_hash": "b3e46556885716b31f1ec9fa8b18ba2a595073e6"
+          }
+        },
+        {
+          "client_id": "868558191145-tjvdq738locdbtnmkr15j7llsji236ve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.poly.nhtr",
+            "certificate_hash": "79fb0c8ecf7d5e2270ab6c4079f2ba8d7f8ed945"
+          }
+        },
+        {
+          "client_id": "868558191145-uhggpvoktesrbi251p9cmd89ptd0jh78.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.poly.nhtr",
+            "certificate_hash": "d3a15b43c4834030882484a8217d27ac2343b012"
+          }
+        },
         {
           "client_id": "868558191145-67995kefspnkg6041drmprieli1b8hj0.apps.googleusercontent.com",
           "client_type": 3
