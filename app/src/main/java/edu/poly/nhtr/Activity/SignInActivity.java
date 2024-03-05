@@ -56,7 +56,6 @@ public class SignInActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-        binding.ButtonSignInByGmail.setOnClickListener(v -> googleSignIn());
 
         if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -71,12 +70,16 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+
     private void setListeners() {
+        // Đăng nhập
         binding.buttonSignIn.setOnClickListener(v->{
             if(isValidSignInDetails()){
                 signIn();
             }
         });
+
+        // Quên mật khẩu
         binding.txtForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +89,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        // Đăng ký
         binding.txtSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +98,9 @@ public class SignInActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Đăng nhập bằng Gmail
+        binding.ButtonSignInByGmail.setOnClickListener(v -> googleSignIn());
     }
 
     private void signIn(){
