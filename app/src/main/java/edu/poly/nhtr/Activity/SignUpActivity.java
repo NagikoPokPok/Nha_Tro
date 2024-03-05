@@ -201,7 +201,6 @@ public class SignUpActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), VerifyOTPActivity.class);
                         intent.putExtra("phoneNumber",binding.edtPhoneNumber.getText().toString());
                         intent.putExtra("verificationId",verificationId);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
                 }
