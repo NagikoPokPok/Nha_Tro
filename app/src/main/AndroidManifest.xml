@@ -24,25 +24,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activity.MainActivity"
             android:exported="true" />
         <activity
             android:name=".Activity.ForgotPasswordActivity"
-            android:exported="true"/>
-
+            android:exported="true" />
+        <activity
+            android:name=".Activity.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ChangePassword"
+            android:exported="false"
+            android:label="@string/title_activity_change_password"
+            android:theme="@style/Theme.NhàTrọ" />
         <activity
             android:name=".Activity.SignInActivity"
-            android:exported="true"/>
-
+            android:exported="true" />
         <activity
             android:name=".Activity.VerifyOTPActivity"
-            android:exported="true"/>
-
+            android:exported="true" />
         <activity
             android:name=".Activity.ChangeProfileActivity"
-            android:exported="true"/>
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"

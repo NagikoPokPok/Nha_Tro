@@ -121,20 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
         loading(true);
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        // Tạo tài khoản mới
-        auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
 
-
-                        } else {
-                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_NAME, binding.edtName.getText().toString());
@@ -152,6 +139,21 @@ public class SignUpActivity extends AppCompatActivity {
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+
+                        // Tạo tài khoản mới
+                        auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+
+
+                                        } else {
+                                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
 
                         sendOTP();
 
