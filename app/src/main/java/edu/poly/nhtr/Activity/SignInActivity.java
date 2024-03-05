@@ -77,7 +77,7 @@ public class SignInActivity extends AppCompatActivity {
                 signIn();
             }
         });
-        binding.txtRegister.setOnClickListener(new View.OnClickListener() {
+        binding.txtForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myintent = new Intent(SignInActivity.this, ForgotPasswordActivity.class);
@@ -106,7 +106,7 @@ public class SignInActivity extends AppCompatActivity {
                 .addOnCompleteListener(task-> {
                     if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                        //preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
