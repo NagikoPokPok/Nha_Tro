@@ -58,7 +58,13 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.txtSignIn.setOnClickListener(v -> onBackPressed());
+        binding.txtSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(intent);
+            }
+        });
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,11 +131,7 @@ public class SignUpActivity extends AppCompatActivity {
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
-//                        Intent intent = new Intent(getApplicationContext(), VerifyOTPActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        intent.putExtra("email", binding.edtEmail.getText().toString());
-//                        intent.putExtra("phoneNumber", binding.edtPhoneNumber.getText().toString());
-//                        startActivity(intent);
+//
                         sendOTP();
 
                     }
@@ -178,6 +180,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), VerifyOTPActivity.class);
                         intent.putExtra("phoneNumber",binding.edtPhoneNumber.getText().toString());
                         intent.putExtra("verificationId",verificationId);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }
                 }
