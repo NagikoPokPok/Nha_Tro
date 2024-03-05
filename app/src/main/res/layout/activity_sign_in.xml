@@ -14,11 +14,11 @@
         android:foreground="@drawable/foreground_desgin"
         android:scaleType="centerCrop"
         android:src="@drawable/background"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="-16dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="72dp" />
 
     <TextView
-        android:id="@+id/txt_SignUp"
+        android:id="@+id/txt_Sign_Up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ng_k"
@@ -83,7 +83,7 @@
         android:layout_width="0dp"
 
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="5dp"
         android:backgroundTint="#CCCCCC"
         android:drawablePadding="13dp"
         android:hint="@string/m_t_kh_u"
@@ -98,7 +98,7 @@
         app:layout_constraintWidth_percent=".8" />
 
     <TextView
-        android:id="@+id/txt_forgotPassword"
+        android:id="@+id/txt_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
@@ -169,7 +169,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_forgotPassword" />
+        app:layout_constraintTop_toBottomOf="@id/txt_register" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
