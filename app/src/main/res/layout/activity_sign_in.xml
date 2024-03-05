@@ -18,6 +18,7 @@
         tools:layout_editor_absoluteY="72dp" />
 
     <TextView
+        android:id="@+id/txt_Sign_Up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ng_k"

@@ -32,6 +32,14 @@
             android:name=".Activity.ForgotPasswordActivity"
             android:exported="true"/>
 
+        <activity
+            android:name=".Activity.SignUpActivity"
+            android:exported="true"/>
+
+        <activity
+            android:name=".Activity.VerifyOTPActivity"
+            android:exported="true"/>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

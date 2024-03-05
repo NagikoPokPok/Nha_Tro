@@ -85,6 +85,15 @@ public class SignInActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        binding.txtSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myintent = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(myintent);
+                finish();
+            }
+        });
     }
 
     private void signIn(){
