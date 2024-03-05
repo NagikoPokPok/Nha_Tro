@@ -10,10 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
     // Other code...
 
+    private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Other initialization code...
 
-        Button buttonLogout = findViewById(R.id.buttonLogout);
-        buttonLogout.setOnClickListener(v -> logout());
+        //Button buttonLogout = findViewById(R.id.buttonLogout);
+        binding.buttonLogout.setOnClickListener(v -> logout());
     }
 
     // Other methods...
