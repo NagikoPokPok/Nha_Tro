@@ -3,6 +3,7 @@ package edu.poly.nhtr.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -74,6 +75,14 @@ public class SignInActivity extends AppCompatActivity {
         binding.buttonSignIn.setOnClickListener(v->{
             if(isValidSignInDetails()){
                 signIn();
+            }
+        });
+        binding.txtRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myintent = new Intent(SignInActivity.this, ForgotPasswordActivity.class);
+                startActivity(myintent);
+                finish();
             }
         });
     }
