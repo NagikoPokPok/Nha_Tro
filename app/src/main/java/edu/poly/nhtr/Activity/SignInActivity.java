@@ -55,7 +55,7 @@ public class SignInActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-        binding.ButtonSignInByGmail.setOnClickListener(v -> googleSignIn());
+
 
         if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -76,6 +76,7 @@ public class SignInActivity extends AppCompatActivity {
                 signIn();
             }
         });
+        binding.ButtonSignInByGmail.setOnClickListener(v -> googleSignIn());
     }
 
     private void signIn(){
