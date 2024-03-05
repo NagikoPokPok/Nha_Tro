@@ -3,7 +3,6 @@ package edu.poly.nhtr.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -77,14 +76,6 @@ public class SignInActivity extends AppCompatActivity {
                 signIn();
             }
         });
-        binding.txtRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(SignInActivity.this, ForgotPasswordActivity.class);
-                startActivity(myIntent);
-                finish();
-            }
-        });
     }
 
     private void signIn(){
@@ -108,16 +99,6 @@ public class SignInActivity extends AppCompatActivity {
                         showToast("Sai tài khoản hoặc mật khẩu");
                     }
                 });
-    }
-    private void forgotPassword(){
-        binding.txtRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(SignInActivity.this, ForgotPasswordActivity.class);
-                startActivity(myIntent);
-                finish();
-            }
-        });
     }
 
     private void showToast(String message){
