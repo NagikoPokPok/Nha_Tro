@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000"
+    android:background="#8E8787"
     app:layoutDescription="@xml/activity_change_profile_scene"
     tools:context=".Activity.ChangeProfileActivity">
     <TextView
@@ -98,48 +98,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
         app:layout_constraintWidth_percent=".8" />
-    <EditText
-        android:id="@+id/edt_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="244dp"
-        android:backgroundTint="#CCCCCC"
-        android:drawableLeft="@drawable/ic_pass"
-        android:drawablePadding="13dp"
-        android:hint="Mật khẩu"
-        android:inputType="textPassword"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
-        app:layout_constraintWidth_percent=".8" />
-
-    <EditText
-        android:id="@+id/edt_confirm_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
-        android:backgroundTint="#CCCCCC"
-        android:drawableLeft="@drawable/ic_pass"
-        android:drawablePadding="13dp"
-        android:hint="Xác nhận mật khẩu"
-        android:inputType="textPassword"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_change_profile"
-        app:layout_constraintWidth_percent=".8" />
 
     <FrameLayout
         android:id="@+id/frm_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:animateLayoutChanges="true"
-        app:layout_constraintTop_toBottomOf="@+id/edt_confirm_password"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="515dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_change"
@@ -176,8 +142,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_change"
+        app:layout_constraintTop_toBottomOf="@+id/frm_change"
         app:layout_constraintVertical_bias="0.147" />
+
+    <TextView
+        android:id="@+id/txt_changePass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đổi mật khẩu"
+        android:textAlignment="center"
+        android:textColor="#D15B5B"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/frm_change"
+        app:layout_constraintVertical_bias="0.483" />
 
     <Button
         android:id="@+id/btn_back"
@@ -186,4 +168,11 @@
         android:text="Quay lại"
         tools:layout_editor_absoluteX="24dp"
         tools:layout_editor_absoluteY="4dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="157dp"
+        tools:layout_editor_absoluteY="435dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

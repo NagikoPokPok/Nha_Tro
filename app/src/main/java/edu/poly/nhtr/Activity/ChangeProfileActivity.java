@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,6 +37,7 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class ChangeProfileActivity extends AppCompatActivity {
     private ActivityChangeProfileBinding binding;
+    TextView txt_dmk;
     private PreferenceManager preferenceManager;
     private String encodedImage;
     Button btn_back;
@@ -48,8 +50,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         btn_back = findViewById(R.id.btn_back);
         name = findViewById(R.id.edt_name);
         phoneNum = findViewById(R.id.edt_phone_number);
-        pass = findViewById(R.id.edt_password);
-        passConf = findViewById(R.id.edt_confirm_password);
+        txt_dmk = findViewById(R.id.txt_changePass);
         imageProfile = findViewById(R.id.img_profile);
 
         binding = ActivityChangeProfileBinding.inflate(getLayoutInflater());
@@ -88,6 +89,14 @@ public class ChangeProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        txt_dmk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
                 startActivity(intent);
                 finish();
             }
