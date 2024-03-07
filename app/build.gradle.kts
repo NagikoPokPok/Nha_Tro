@@ -61,4 +61,7 @@ dependencies {
     //Rounded ImageView
     implementation("com.makeramen:roundedimageview:2.3.0")
 
+    //Material Design
+    implementation("com.google.android.material:material:1.11.0")
+
 }
