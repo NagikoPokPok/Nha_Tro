@@ -59,4 +59,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="logout">Logout</string>
+    <string name="this_is_main_activity">This is main activity</string>
+    <string name="thay_i_h_s">Thay đổi hồ sơ</string>
 </resources>

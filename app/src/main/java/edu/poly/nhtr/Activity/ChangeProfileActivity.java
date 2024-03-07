@@ -1,10 +1,8 @@
 package edu.poly.nhtr.Activity;
 
-import static android.content.ContentValues.TAG;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,18 +11,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -71,35 +63,23 @@ public class ChangeProfileActivity extends AppCompatActivity {
         imageProfile.setImageBitmap(bitmap);
     }
     private void setListener(){
-        binding.btnChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.btnChange.setOnClickListener(v -> {
 
-            }
         });
-        binding.txtHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.txtHome.setOnClickListener(v -> {
+            Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        btn_back.setOnClickListener(v -> {
+            Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
-        txt_dmk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        txt_dmk.setOnClickListener(v -> {
+            Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
     private String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64

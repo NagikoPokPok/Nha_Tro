@@ -7,7 +7,7 @@ public class PreferenceManager {
     private final SharedPreferences sharedPreferences;
     public  PreferenceManager(Context context)
     {
-        sharedPreferences = context.getSharedPreferences(Constants.KEY_PREFERENCE_NAME, context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(Constants.KEY_PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
     public void putBoolean (String key, Boolean value)
     {
@@ -34,5 +34,11 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
+    }
+
+    public void removePreference(String keyUserId) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(keyUserId);
+            editor.apply();
     }
 }

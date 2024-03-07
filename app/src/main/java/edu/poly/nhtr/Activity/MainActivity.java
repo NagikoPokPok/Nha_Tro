@@ -66,28 +66,14 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
         if (googleSignInAccount == null) {
-//            // Đăng xuất khỏi Firebase Authentication
-//            FirebaseAuth.getInstance().signOut();
-//
-//            // Xóa dữ liệu từ Firestore
-//            FirebaseFirestore database = FirebaseFirestore.getInstance();
-//            DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
-//                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
-//
-//            // Cập nhật thông tin cần xóa (ví dụ: FCM token)
-//            HashMap<String, Object> updates = new HashMap<>();
-//            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
-//
-//            // Thực hiện cập nhật và xóa thông tin khỏi Firestore
-//            documentReference.update(updates)
-//                    .addOnCompleteListener(task -> {
-//                        if (task.isSuccessful()) {
-//                            preferenceManager.clear(); // Xóa thông tin trạng thái đăng nhập
-//                            navigateToSignIn(); // Chuyển hướng đến trang đăng nhập
-//                        } else {
-//                            showToast("Không thể đăng xuất từ Firestore");
-//                        }
-//                    });
+            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+            preferenceManager.removePreference(Constants.KEY_USER_ID);
+            preferenceManager.removePreference(Constants.KEY_NAME);
+
+            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish(); //
         } else {
             // TH đăng nhập bằng tài khoản Google
             FirebaseAuth.getInstance().signOut();

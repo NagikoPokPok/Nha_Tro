@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This is main activity"
+        android:text="@string/this_is_main_activity"
         android:gravity="center"
         android:layout_marginTop="100dp"/>
     <androidx.appcompat.widget.AppCompatImageView
@@ -34,15 +34,15 @@
             android:id="@+id/buttonLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout"
+            android:text="@string/logout"
             android:layout_marginTop="16dp"
-            android:onClick="logoutButtonClick"/>
+            />
 
         <Button
             android:id="@+id/btn_changeProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thay đổi hồ sơ" />
+            android:text="@string/thay_i_h_s" />
 
     </LinearLayout>
 
