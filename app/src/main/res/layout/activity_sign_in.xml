@@ -38,7 +38,7 @@
         android:text="@string/qu_n_l_ph_ng_tr"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="33sp"
+        android:textSize="38sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
