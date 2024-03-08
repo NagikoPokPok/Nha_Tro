@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -36,22 +38,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Other initialization code...
-
-        //Button buttonLogout = findViewById(R.id.buttonLogout);
-        binding.buttonLogout.setOnClickListener(v -> logout());
-        Button buttonLogout = findViewById(R.id.buttonLogout);
-        buttonLogout.setOnClickListener(v -> logout());
+        binding.btnLogout.setOnClickListener(v -> logout());
 
 
-        binding.btnChangeProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
-                startActivity(intent);
-                //finish();
-            }
-        });
+//        binding.btnChangeProfile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
+//                startActivity(intent);
+//                //finish();
+//            }
+//        });
+//
     }
 
     // Other methods...
@@ -63,17 +61,21 @@ public class MainActivity extends AppCompatActivity {
     // Đăng xuất khỏi tài khoản
     public void logout() {
         showToast("Signing out ...");
+        // Kiểm tra người dùng có đăng nhập bằng tài khoản google hay không
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+            if (googleSignInAccount == null) {
+                preferenceManager = new PreferenceManager(getApplicationContext());
+                // Người dùng không đăng nhập bằng tài khoản Google thì sẽ xử lý đăng xuất khỏi tài khoản được đăng ký trên app
+                FirebaseAuth.getInstance().signOut();
 
-        if (googleSignInAccount == null) {
-            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-            preferenceManager.removePreference(Constants.KEY_USER_ID);
-            preferenceManager.removePreference(Constants.KEY_NAME);
+                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+                preferenceManager.removePreference(Constants.KEY_USER_ID);
+                preferenceManager.removePreference(Constants.KEY_NAME);
 
-            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish(); //
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
         } else {
             // TH đăng nhập bằng tài khoản Google
             FirebaseAuth.getInstance().signOut();
