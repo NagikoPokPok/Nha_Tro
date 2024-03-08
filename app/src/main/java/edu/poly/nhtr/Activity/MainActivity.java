@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -70,42 +72,44 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    // Đăng xuất khỏi tài khoản
     public void logout() {
         showToast("Signing out ...");
+
+        // Kiểm tra người dùng có đăng nhập bằng tài khoản google hay không
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
         if (googleSignInAccount == null) {
-//            // Đăng xuất khỏi Firebase Authentication
-//            FirebaseAuth.getInstance().signOut();
-//
-//            // Xóa dữ liệu từ Firestore
-//            FirebaseFirestore database = FirebaseFirestore.getInstance();
-//            DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
-//                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
-//
-//            // Cập nhật thông tin cần xóa (ví dụ: FCM token)
-//            HashMap<String, Object> updates = new HashMap<>();
-//            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
-//
-//            // Thực hiện cập nhật và xóa thông tin khỏi Firestore
-//            documentReference.update(updates)
-//                    .addOnCompleteListener(task -> {
-//                        if (task.isSuccessful()) {
-//                            preferenceManager.clear(); // Xóa thông tin trạng thái đăng nhập
-//                            navigateToSignIn(); // Chuyển hướng đến trang đăng nhập
-//                        } else {
-//                            showToast("Không thể đăng xuất từ Firestore");
-//                        }
-//                    });
-        } else {
-            // TH đăng nhập bằng tài khoản Google
+            preferenceManager = new PreferenceManager(getApplicationContext());
+            // Người dùng không đăng nhập bằng tài khoản Google thì sẽ xử lý đăng xuất khỏi tài khoản được đăng ký trên app
             FirebaseAuth.getInstance().signOut();
+
+            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+            preferenceManager.removePreference(Constants.KEY_USER_ID);
+            preferenceManager.removePreference(Constants.KEY_NAME);
+
             Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+        } else {
+            // Người dùng đăng nhập bằng tài khoản Google thì xử lý đăng xuất khỏi tài khoản Google
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+            googleSignInClient.signOut().addOnCompleteListener(this, task -> {
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            });
         }
     }
+
+
 
 
 }
