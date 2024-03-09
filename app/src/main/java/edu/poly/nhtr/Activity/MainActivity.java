@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        binding.btnLogout.setOnClickListener(v -> logout());
+        //binding.btnLogout.setOnClickListener(v -> logout());
 
 
 //        binding.btnChangeProfile.setOnClickListener(new View.OnClickListener() {
