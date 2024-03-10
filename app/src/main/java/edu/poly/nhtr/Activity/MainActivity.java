@@ -22,20 +22,19 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
     // Other code...
-    Button btn_changeProfile;
+    Button changeProfile;
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btn_changeProfile = findViewById(R.id.btn_change)
 
         // Other initialization code...
 
         //Button buttonLogout = findViewById(R.id.buttonLogout);
-        binding.buttonLogout.setOnClickListener(v -> logout());
-        Button buttonLogout = findViewById(R.id.buttonLogout);
-        buttonLogout.setOnClickListener(v -> logout());
+//        binding.buttonLogout.setOnClickListener(v -> logout());
+//        Button buttonLogout = findViewById(R.id.buttonLogout);
+//        buttonLogout.setOnClickListener(v -> logout());
 
         changeProfile = findViewById(R.id.btn_changeProfile);
         changeProfile.setOnClickListener(new View.OnClickListener() {
