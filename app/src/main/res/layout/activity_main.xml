@@ -556,7 +556,7 @@
                     <TextView
                         android:layout_width="70dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
+                        android:layout_marginTop="40dp"
                         android:gravity="center"
                         android:text="Trang chủ"
                         android:textColor="@color/black"
@@ -590,7 +590,7 @@
                     <TextView
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="35dp"
+                        android:layout_marginTop="40dp"
                         android:gravity="center"
                         android:text="Thông báo"
                         android:textColor="@color/black"
@@ -625,9 +625,9 @@
                         <TextView
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="35dp"
+                            android:layout_marginTop="40dp"
                             android:gravity="center"
-                            android:text="Cài đăt"
+                            android:text="Cài đặt"
                             android:textColor="@color/black"
                             android:textSize="15sp" />
                     </FrameLayout>
