@@ -22,12 +22,13 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
     // Other code...
-
+    Button btn_changeProfile;
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        btn_changeProfile = findViewById(R.id.btn_change)
 
         // Other initialization code...
 

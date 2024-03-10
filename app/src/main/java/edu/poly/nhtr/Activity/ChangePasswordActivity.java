@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,7 +23,8 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class ChangePasswordActivity extends AppCompatActivity {
     EditText edt_pass,edt_newPass, edt_newPassConf;
-    Button btn_changePass, btn_back;
+    Button btn_changePass;
+    ImageView back;
     private PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         edt_newPass = findViewById(R.id.edt_Password);
         edt_newPass = findViewById(R.id.edt_NewPassword);
         edt_newPassConf = findViewById(R.id.edt_NewPassConfirm);
-        btn_back = findViewById(R.id.btn_BackInChangePassword);
+        back = findViewById(R.id.img_back1);
         btn_changePass = findViewById(R.id.btn_Change_Password);
         preferenceManager = new PreferenceManager(getApplicationContext());
 
@@ -65,10 +67,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 }
             }
         });
-        btn_back.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChangePasswordActivity.this, ChangeProfileActivity.class);
+                onBackPressed();
             }
         });
     }
