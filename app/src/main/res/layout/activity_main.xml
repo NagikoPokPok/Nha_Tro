@@ -569,13 +569,13 @@
                     android:layout_width="80dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="95dp"
+                    android:layout_marginLeft="100dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <FrameLayout
                         android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_height="66dp"
                         android:layout_marginBottom="30dp">
 
                         <com.makeramen.roundedimageview.RoundedImageView
@@ -604,7 +604,7 @@
                     android:layout_width="70dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="80dp"
+                    android:layout_marginLeft="70dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -620,7 +620,7 @@
                             android:layout_marginBottom="17dp"
                             android:layout_gravity="center"
                             android:scaleType="center"
-                            android:src="@drawable/setting_icon2" />
+                            android:src="@drawable/setting_icon3" />
 
                         <TextView
                             android:layout_width="70dp"
