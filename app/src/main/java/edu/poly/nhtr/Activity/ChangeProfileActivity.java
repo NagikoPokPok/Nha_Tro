@@ -144,6 +144,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
     }
     private void updateProfile() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        warning.setText("Thành công");
     }
 }
