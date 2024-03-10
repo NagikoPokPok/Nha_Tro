@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BCC9D5"
+    android:background="#A2B6CA"
     android:orientation="vertical"
+    android:scrollbars="vertical"
+    android:overScrollMode="always"
+    android:fillViewport="true"
     tools:context=".Activity.MainActivity">
 
 
@@ -18,13 +21,13 @@
             android:id="@+id/imageView5"
             android:layout_width="wrap_content"
             android:layout_height="170dp"
-            app:shapeAppearanceOverlay="@style/SpecificCornerCut"
             android:scaleType="fitXY"
-            android:src="@drawable/backgroundtop"
+            android:src="@drawable/background3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/SpecificCornerCut" />
 
         <FrameLayout
             android:id="@+id/layoutImage"
@@ -56,10 +59,10 @@
         <TextView
             android:id="@+id/txt_hello"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Xin Chào"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="55dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="60dp"
+            android:text="Xin Chào"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -67,14 +70,13 @@
             app:layout_constraintTop_toTopOf="parent" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="FULL NAME"
             android:layout_marginLeft="10dp"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/layoutImage"
-
             app:layout_constraintTop_toBottomOf="@id/txt_hello" />
 
 
@@ -105,7 +107,7 @@
 
                 />
             <LinearLayout
-                android:id="@id/linear1"
+                android:id="@+id/linear1"
                 android:layout_width="match_parent"
                 android:layout_height="130dp"
                 android:layout_marginStart="5dp"

@@ -36,7 +36,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
         back = findViewById(R.id.img_back1);
         btn_changePass = findViewById(R.id.btn_Change_Password);
         preferenceManager = new PreferenceManager(getApplicationContext());
-
         setListener();
     }
     private void setListener(){
