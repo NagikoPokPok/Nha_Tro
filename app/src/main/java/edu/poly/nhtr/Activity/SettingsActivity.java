@@ -28,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        logout();
+        binding.btnLogout.setOnClickListener(v -> logout());
     }
 
     public void showToast(String message) {

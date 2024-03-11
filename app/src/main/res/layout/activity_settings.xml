@@ -301,12 +301,13 @@
             <!-- Đăng xuất-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_logout">
 
             <ImageView
                 android:layout_width="50dp"
-                android:id="@+id/logout"
                 android:layout_height="50dp"
+                android:id="@+id/logout"
                 android:src="@drawable/icon_logout"
                 android:padding="12dp"/>
 
