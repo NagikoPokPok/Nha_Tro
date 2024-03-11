@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -18,11 +22,13 @@ import java.util.HashMap;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainBinding;
+import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
     // Other code...
     Button changeProfile;
+    PreferenceManager preferenceManager;
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,30 +59,45 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
     public void logout() {
+            showToast("Signing out ...");
 
+            // Kiểm tra người dùng có đăng nhập bằng tài khoản google hay không
+            GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
+            if (googleSignInAccount == null) {
+                preferenceManager = new PreferenceManager(getApplicationContext());
+                // Người dùng không đăng nhập bằng tài khoản Google thì sẽ xử lý đăng xuất khỏi tài khoản được đăng ký trên app
+                FirebaseAuth.getInstance().signOut();
+
+                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+                preferenceManager.removePreference(Constants.KEY_USER_ID);
+                preferenceManager.removePreference(Constants.KEY_NAME);
+
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+//                // Người dùng đăng nhập bằng tài khoản Google thì xử lý đăng xuất khỏi tài khoản Google
+//                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                        .requestIdToken(getString(R.string.default_web_client_id))
+//                        .requestEmail()
+//                        .build();
+//                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+//                googleSignInClient.signOut().addOnCompleteListener(this, task -> {
+//                    FirebaseAuth.getInstance().signOut();
 //
-//        showToast("Singing out ...");
-//        FirebaseFirestore database = FirebaseFirestore.getInstance();
-//        DocumentReference documentReference =
-//                database.collection(Constants.KEY_COLLECTION_USERS).document(
-//                        preferenceManager.getString(Constants.KEY_USER_ID)
-//                );
-//        HashMap<String, Object> updates = new HashMap<>();
-//        updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
-//        documentReference.update(updates)
-//                .addOnSuccessListener(unused -> {
-//                    preferenceManager.clear();
-//                    startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+//                    Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
 //                    finish();
-//                })
-//                .addOnFailureListener(e-> showToast("Unable to sign out"));
 
-
-        // Đăng xuất tài khoản Google
-        FirebaseAuth.getInstance().signOut();
-        // Mở trang đăng nhập
-        Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-        startActivity(intent);
-        finish();
+                // Đăng xuất tài khoản Google
+                FirebaseAuth.getInstance().signOut();
+                // Mở trang đăng nhập
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
+                }
     }
 }

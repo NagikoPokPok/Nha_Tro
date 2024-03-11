@@ -48,6 +48,9 @@
         <activity
             android:name=".Activity.ChangeProfileActivity"
             android:exported="true" />
+        <activity
+            android:name=".Activity.SettingsActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
