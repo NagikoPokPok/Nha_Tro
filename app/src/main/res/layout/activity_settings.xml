@@ -15,6 +15,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:id="@+id/btn_back"
             android:src="@drawable/back_btn"
             app:tint="#0E2ADA"
             android:padding="14dp" />
@@ -212,6 +213,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/img_toSupport"
                     android:src="@drawable/icon_right"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>
@@ -246,6 +248,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/toHelp"
                     android:src="@drawable/icon_right"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>
@@ -280,6 +283,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/to_About_Us"
                     android:src="@drawable/icon_right"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>
