@@ -32,7 +32,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="EDIT PROFILE"
+                        android:text="CHANGE PASSWORD"
                         android:textColor="@color/white"
                         android:textSize="22sp"
                         android:textStyle="bold" />
@@ -56,31 +56,7 @@
                         android:layout_margin="12dp"
                         android:orientation="vertical">
 
-                        <FrameLayout
-                            android:id="@+id/layoutImage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_gravity="center"
-                            >
-                            <com.makeramen.roundedimageview.RoundedImageView
-                                android:id="@+id/img_profile"
-                                android:layout_width="80dp"
-                                android:layout_height="80dp"
-                                android:background="@drawable/backgrund_image_2"
-                                android:scaleType="centerCrop"
-                                app:riv_oval="true" />
 
-                            <TextView
-                                android:id="@+id/txt_add_image"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="Thêm ảnh"
-                                android:textColor="@color/black"
-                                android:textSize="12sp" />
-
-                        </FrameLayout>
 
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -89,39 +65,39 @@
                             style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
 
                             android:layout_marginTop="10dp"
-                            >
+                            app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Tên của bạn"
-                                android:inputType="text"
+                                android:hint="Mật khẩu cũ"
+                                android:inputType="textPassword"
                                 />
                         </com.google.android.material.textfield.TextInputLayout>
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-                            >
+                            app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Số điện thoại"
-                                android:inputType="number" />
+                                android:hint="Mật khẩu mới"
+                                android:inputType="textPassword" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-                            >
+                            app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Địa chỉ"
-                                android:inputType="textMultiLine" />
+                                android:hint="Nhập lại mật khẩu mới"
+                                android:inputType="textPassword" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
@@ -135,7 +111,7 @@
                     android:id="@+id/btn_Save"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Lưu thay đổi"
+                    android:text="Đổi mật khẩu"
                     app:backgroundTint="#2196F3"
                     android:layout_marginHorizontal="16dp"/>
 
@@ -145,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:fontFamily="@font/gelasio"
-                    android:text="Đổi mật khẩu"
+                    android:text="Thay đổi profile"
                     android:textColor="#2196F3"
                     android:textStyle="bold"
                     android:layout_gravity="center"/>
