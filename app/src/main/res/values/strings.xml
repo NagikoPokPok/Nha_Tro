@@ -62,4 +62,13 @@
     <string name="logout">Logout</string>
     <string name="this_is_main_activity">This is main activity</string>
     <string name="thay_i_h_s">Thay đổi hồ sơ</string>
+    <string name="c_i_t">Cài đặt</string>
+    <string name="t_n">Tên</string>
+    <string name="ch_ban_m">Chế độ ban đêm</string>
+    <string name="b_t_th_ng_b_o">Bật thông báo</string>
+    <string name="g_i_mail_h_tr">Gửi mail hỗ trợ</string>
+    <string name="h_tr">Hỗ trợ</string>
+    <string name="thay_i_th_ng_tin">Thay đổi thông tin</string>
+    <string name="v_ch_ng_t_i">Về chúng tôi</string>
+    <string name="ng_xu_t">Đăng xuất</string>
 </resources>

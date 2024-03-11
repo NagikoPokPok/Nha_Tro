@@ -23,4 +23,13 @@
 	<color name="icon_background">#20FFFFFF</color>
 	<color name="error">#B00020</color>
 	<color name="received_message_background">#090D16</color>
+
+	// Màu bên trang setting
+	<color name="main">#C8EDFD</color>
+	<color name="textSetting">#0E2ADA</color>
+	<color name="button">#2196F3</color>
+
+	<color name="night_mode">#6124B1</color>
+	<color name="notification">#13B2C3</color>
+	<color name="security">#D95F69</color>
 </resources>
