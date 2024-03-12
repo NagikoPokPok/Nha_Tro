@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
@@ -27,10 +28,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
@@ -41,19 +46,22 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private ActivityChangeProfileBinding binding;
     private PreferenceManager preferenceManager;
     private String encodedImage;
-    Button btn_back, btn_change;
-    TextView warning, txt_move_changePassword;
-    EditText name, phoneNum;
-    ImageView imageProfile;
+    Button btn_change;
+    TextView warning, txt_move_changePassword, txt_add_image;
+    EditText name, phoneNum, diachi;
+    ImageView imageProfile,imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_profile);
-        //btn_back = findViewById(R.id.btn_back);
+        imgBack = findViewById(R.id.img_back);
         name = findViewById(R.id.edt_name1);
         phoneNum = findViewById(R.id.edt_phoneNumber1);
+        diachi = findViewById(R.id.edt_address1);
         imageProfile = findViewById(R.id.img_profile);
         btn_change = findViewById(R.id.btn_save);
+        txt_add_image = findViewById(R.id.txt_add_image);
+
         //warning = findViewById(R.id.txt_warning1);
         txt_move_changePassword = findViewById(R.id.txt_move_change_password);
 
@@ -64,16 +72,24 @@ public class ChangeProfileActivity extends AppCompatActivity {
         setListener();
     }
     private void loadUserDetail(){
-        byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        getUser();
+       try {
+           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
+           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+           imageProfile.setImageBitmap(bitmap);
+           txt_add_image.setVisibility(View.INVISIBLE);
+       }catch (Exception e){
+
+       }
 
         name.setText(preferenceManager.getString(Constants.KEY_NAME));
         phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
-        imageProfile.setImageBitmap(bitmap);
+        diachi.setText(preferenceManager.getString(Constants.KEY_ADDRESS));
+
     }
     private void setListener(){
 
-        btn_back.setOnClickListener(new View.OnClickListener() {
+        imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
@@ -85,7 +101,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isValidChangeDetails()){
-                    updateProfile();
+                    updateProfile2();
                 }
             }
         });
@@ -94,6 +110,14 @@ public class ChangeProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
                 startActivity(intent);
+            }
+        });
+        imageProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                pickImage.launch(intent);
             }
         });
     }
@@ -150,8 +174,30 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-    private void updateProfile() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        //warning.setText("Thành công");
+    private void updateProfile2() {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        HashMap<String, Object> user = new HashMap<>();
+        user.put(Constants.KEY_NAME, name.getText().toString());
+        user.put(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
+        user.put(Constants.KEY_ADDRESS, diachi.getText().toString());
+        user.put(Constants.KEY_IMAGE, encodedImage);
+        //database.collection(Constants.KEY_COLLECTION_USERS)
+
+       preferenceManager.putString(Constants.KEY_NAME,name.getText().toString());
+       preferenceManager.putString(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
+       preferenceManager.putString(Constants.KEY_ADDRESS, diachi.getText().toString());
+
+
+    }
+    private void getUser(){
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_USERS)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        
+                    }
+                });
     }
 }

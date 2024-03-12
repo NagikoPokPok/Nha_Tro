@@ -30,7 +30,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
-        edt_newPass = findViewById(R.id.edt_Password);
+        edt_pass = findViewById(R.id.edt_Password);
         edt_newPass = findViewById(R.id.edt_NewPassword);
         edt_newPassConf = findViewById(R.id.edt_NewPassConfirm);
         back = findViewById(R.id.img_back);
@@ -43,7 +43,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!edt_pass.getText().toString().equals(preferenceManager.getString(Constants.KEY_PASSWORD))){
-                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu không chính xác" +preferenceManager.getString(Constants.KEY_PASSWORD), Toast.LENGTH_SHORT).show();
                 }else if(edt_newPass.getText().toString().isEmpty())
                     Toast.makeText(ChangePasswordActivity.this, "Hãy nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
                 else if(edt_newPass.getText().toString().equals(edt_pass.getText().toString()))

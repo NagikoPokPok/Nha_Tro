@@ -40,7 +40,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                Intent intent = new Intent(ForgotPasswordActivity.this,SignInActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
         setPassword.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +54,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 String emailAddress = email.getText().toString();
 
                 String[] strings = emailAddress.split("@");
-                if(strings.length!=2 || !strings[1].equals("@gmail.com")) {
+                if(strings.length!=2 || !strings[1].equals("gmail.com")) {
                     progressDialog.dismiss();
                     warning.setText("x Email không hợp lệ");
                     Toast.makeText(ForgotPasswordActivity.this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
