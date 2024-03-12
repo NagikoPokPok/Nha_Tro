@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openSettings() {
-        binding.btnSettings.setOnClickListener(new View.OnClickListener() {
+        binding.btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
