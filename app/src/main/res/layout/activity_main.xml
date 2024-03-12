@@ -510,14 +510,14 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/frame4"
-            android:layout_marginTop="15dp"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
             android:backgroundTint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frame2"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/frame2">
 
 
             <LinearLayout
@@ -546,8 +546,8 @@
                         <com.makeramen.roundedimageview.RoundedImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_marginBottom="17dp"
                             android:layout_gravity="center"
+                            android:layout_marginBottom="17dp"
                             android:scaleType="center"
                             android:src="@drawable/home_icon2" />
                     </FrameLayout>
@@ -617,8 +617,8 @@
                             android:id="@+id/btn_settings"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_marginBottom="17dp"
                             android:layout_gravity="center"
+                            android:layout_marginBottom="17dp"
                             android:scaleType="center"
                             android:src="@drawable/setting_icon3" />
 
@@ -633,8 +633,6 @@
                     </FrameLayout>
 
                 </FrameLayout>
-
-
             </LinearLayout>
 
 
