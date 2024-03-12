@@ -26,7 +26,14 @@
                     android:layout_height="325dp"
                     android:background="@drawable/home_3"
                     android:orientation="vertical"
-                    android:paddingTop="75dp">
+                    android:paddingTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/img_back"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="10dp"
+                        app:srcCompat="@drawable/img_back2" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -68,6 +75,7 @@
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_Password"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Mật khẩu cũ"
@@ -81,6 +89,7 @@
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_NewPassword"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Mật khẩu mới"
@@ -94,6 +103,7 @@
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_NewPassConfirm"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Nhập lại mật khẩu mới"
@@ -108,29 +118,13 @@
 
 
                 <Button
-                    android:id="@+id/btn_save"
+                    android:id="@+id/btn_Change_Password"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Đổi mật khẩu"
                     app:backgroundTint="#2196F3"
                     android:layout_marginHorizontal="16dp"/>
 
-                <TextView
-                    android:id="@+id/txt_move_change_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/gelasio"
-                    android:text="Thay đổi profile"
-                    android:textColor="#2196F3"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"/>
-                <View
-                    android:layout_width="120dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:background="#2196F3" />
 
 
             </LinearLayout>
