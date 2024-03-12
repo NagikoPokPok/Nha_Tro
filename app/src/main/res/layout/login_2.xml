@@ -52,10 +52,10 @@
 
 
     <EditText
-        android:id="@+id/edt_email_2"
+        android:id="@+id/inputEmail"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="28dp"
         android:background="@drawable/custome_edittext"
         android:drawableLeft="@drawable/ic_account"
         android:drawablePadding="13dp"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_login" />
 
     <EditText
-        android:id="@+id/edt_password_2"
+        android:id="@+id/inputPassword"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -89,11 +89,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_email_2" />
+        app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
 
 
     <TextView
-        android:id="@+id/txt_move_change_password"
+        android:id="@+id/txt_forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -101,18 +101,18 @@
         android:fontFamily="@font/gelasio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_password_2"
+        app:layout_constraintTop_toBottomOf="@+id/inputPassword"
         android:textColor="#2196F3"
         android:textStyle="bold"/>
 
     <LinearLayout
-        android:id="@+id/ll_gmail"
+        android:id="@+id/ButtonSignInByGmail"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_move_change_password">
+        app:layout_constraintTop_toBottomOf="@+id/txt_forgot_password">
 
         <View
             android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_login"
+        android:id="@+id/buttonSignIn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -160,13 +160,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_gmail" />
+        app:layout_constraintTop_toBottomOf="@+id/ButtonSignInByGmail" />
 
 
     <LinearLayout
+        android:id="@+id/txt_Sign_Up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSignIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal">
