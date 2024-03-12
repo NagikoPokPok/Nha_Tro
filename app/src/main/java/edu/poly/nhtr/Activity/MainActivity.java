@@ -22,19 +22,27 @@ import java.util.HashMap;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainBinding;
+import edu.poly.nhtr.databinding.ActivitySettingsBinding;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
     // Other code...
-    Button changeProfile;
     PreferenceManager preferenceManager;
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding.btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         // Other initialization code...
 
         //Button buttonLogout = findViewById(R.id.buttonLogout);
@@ -51,15 +59,10 @@ public class MainActivity extends AppCompatActivity {
 //                //finish();
 //            }
 //        });
-        binding.Setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
     }
+
+
 
     // Other methods...
 
