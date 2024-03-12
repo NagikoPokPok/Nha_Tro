@@ -108,7 +108,7 @@
 
 
                 <Button
-                    android:id="@+id/btn_Save"
+                    android:id="@+id/btn_save"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Đổi mật khẩu"
@@ -116,7 +116,7 @@
                     android:layout_marginHorizontal="16dp"/>
 
                 <TextView
-                    android:id="@+id/txt_forgot_password_2"
+                    android:id="@+id/txt_move_change_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"

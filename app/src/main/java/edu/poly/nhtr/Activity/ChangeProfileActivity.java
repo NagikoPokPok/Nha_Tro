@@ -42,19 +42,20 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private String encodedImage;
     Button btn_back, btn_change;
-    TextView warning;
+    TextView warning, txt_move_changePassword;
     EditText name, phoneNum;
     ImageView imageProfile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_profile);
-        btn_back = findViewById(R.id.btn_back);
-        name = findViewById(R.id.edt_name);
-        phoneNum = findViewById(R.id.edt_phone_number);
+        //btn_back = findViewById(R.id.btn_back);
+        name = findViewById(R.id.edt_name1);
+        phoneNum = findViewById(R.id.edt_phoneNumber1);
         imageProfile = findViewById(R.id.img_profile);
-        btn_change = findViewById(R.id.btn_change);
-        warning = findViewById(R.id.txt_warning1);
+        btn_change = findViewById(R.id.btn_save);
+        //warning = findViewById(R.id.txt_warning1);
+        txt_move_changePassword = findViewById(R.id.txt_move_change_password);
 
         binding = ActivityChangeProfileBinding.inflate(getLayoutInflater());
         binding.getRoot();
@@ -86,6 +87,13 @@ public class ChangeProfileActivity extends AppCompatActivity {
                 if(isValidChangeDetails()){
                     updateProfile();
                 }
+            }
+        });
+        txt_move_changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -124,15 +132,15 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
 
         if (!ten.matches("^[\\p{L}\\s]+$")) {
-            warning.setText("Tên chỉ được xuất hiện các kí tự là chữ và số");
+            //warning.setText("Tên chỉ được xuất hiện các kí tự là chữ và số");
             showToast("Please enter only alphabetical characters");
             return false;
         } else if (phoneNum.getText().toString().trim().isEmpty()) {
-            warning.setText("Số điện thoại không được để trống");
+            //warning.setText("Số điện thoại không được để trống");
             showToast("Số điện thoai khôn được để trống");
             return false;
         } else if (!phoneNumber.matches("^0[0-9]{9}$")) {
-            warning.setText("Số điện thoại chỉ gồm những kí tự là số từ 0-9");
+            //warning.setText("Số điện thoại chỉ gồm những kí tự là số từ 0-9");
             showToast("Enter a valid 10-digit phone number starting with 0");
             return false;
         } else {
@@ -144,6 +152,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
     }
     private void updateProfile() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        warning.setText("Thành công");
+        //warning.setText("Thành công");
     }
 }
