@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -25,10 +26,19 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setListeners();
+        binding.ChangeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     private void setListeners() {
         binding.btnLogout.setOnClickListener(v -> logout());
+
     }
 
     public void showToast(String message) {

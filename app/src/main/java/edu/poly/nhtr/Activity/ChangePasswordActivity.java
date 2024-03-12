@@ -33,7 +33,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         edt_newPass = findViewById(R.id.edt_Password);
         edt_newPass = findViewById(R.id.edt_NewPassword);
         edt_newPassConf = findViewById(R.id.edt_NewPassConfirm);
-        back = findViewById(R.id.img_back1);
+        back = findViewById(R.id.img_back);
         btn_changePass = findViewById(R.id.btn_Change_Password);
         preferenceManager = new PreferenceManager(getApplicationContext());
         setListener();
