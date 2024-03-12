@@ -39,10 +39,18 @@ public class SettingsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        binding.btnBack.setOnClickListener(v -> back());
     }
 
     public void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void back() {
+        Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
     public void logout() {
         showToast("Signing out ...");
@@ -64,20 +72,6 @@ public class SettingsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-//                // Người dùng đăng nhập bằng tài khoản Google thì xử lý đăng xuất khỏi tài khoản Google
-//                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                        .requestIdToken(getString(R.string.default_web_client_id))
-//                        .requestEmail()
-//                        .build();
-//                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-//                googleSignInClient.signOut().addOnCompleteListener(this, task -> {
-//                    FirebaseAuth.getInstance().signOut();
-//
-//                    Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                    finish();
-
             // Đăng xuất tài khoản Google
             FirebaseAuth.getInstance().signOut();
             // Mở trang đăng nhập
