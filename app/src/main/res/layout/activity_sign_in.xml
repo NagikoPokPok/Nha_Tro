@@ -62,8 +62,9 @@
         android:fontFamily="@font/gelasio"
         android:padding="10dp"
         android:paddingEnd="15dp"
-        android:text="Email"
-        android:textColor="#3F51B5"
+        android:hint="Email"
+        android:textColorHint="#3F51B5"
+        android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -82,14 +83,30 @@
         android:fontFamily="@font/gelasio"
         android:padding="10dp"
         android:paddingEnd="15dp"
-        android:text="Password"
-        android:textColor="#3F51B5"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColorHint="#3F51B5"
+        android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+
+        android:layout_marginTop="10dp"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.855"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
+        >
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <TextView
