@@ -131,8 +131,8 @@
 
                         <com.makeramen.roundedimageview.RoundedImageView
                             android:id="@+id/img_qlPhong"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/quanlyphong" />
@@ -168,8 +168,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/quan_ly_khach_thue" />
@@ -205,8 +205,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/quanlyhopdong" />
@@ -256,8 +256,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/quanly_dichvu" />
@@ -292,8 +292,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/quanly_hoadon" />
@@ -329,8 +329,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/tra_phong" />
@@ -409,8 +409,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/laphoadon_nhanh" />
@@ -445,8 +445,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/tao_hoadon" />
@@ -482,8 +482,8 @@
                         android:background="@drawable/backgroundfeature">
 
                         <com.makeramen.roundedimageview.RoundedImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:scaleType="centerCrop"
                             android:src="@drawable/tao_hopdong" />
