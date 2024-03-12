@@ -30,12 +30,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
@@ -72,7 +75,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         setListener();
     }
     private void loadUserDetail(){
-        getUser();
+
        try {
            byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -189,15 +192,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
 
     }
-    private void getUser(){
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.KEY_COLLECTION_USERS)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        
-                    }
-                });
-    }
+
+
 }

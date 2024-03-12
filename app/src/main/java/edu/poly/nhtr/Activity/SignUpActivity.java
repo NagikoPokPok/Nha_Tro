@@ -138,6 +138,8 @@ public class SignUpActivity extends AppCompatActivity {
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+                        preferenceManager.putString(Constants.KEY_PASSWORD, binding.edtPassword.getText().toString());
+                        preferenceManager.putString(Constants.KEY_PHONE_NUMBER, binding.edtPhoneNumber.getText().toString());
                         FirebaseAuth auth = FirebaseAuth.getInstance();
 
                         // Tạo tài khoản mới
