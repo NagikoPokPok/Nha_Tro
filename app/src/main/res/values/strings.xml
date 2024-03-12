@@ -71,4 +71,7 @@
     <string name="thay_i_th_ng_tin">Thay đổi thông tin</string>
     <string name="v_ch_ng_t_i">Về chúng tôi</string>
     <string name="ng_xu_t">Đăng xuất</string>
+    <string name="th_m_m_i_nh_tr">Thêm mới nhà trọ</string>
+
+    <!--    Thêm mới trọ-->
 </resources>

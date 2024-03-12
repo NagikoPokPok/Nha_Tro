@@ -43,7 +43,7 @@
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/night_mode</item>
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
-        <item name="android:colorForeground">#99000000</item>
+        <item name="android:colorForeground">#99535353</item>
     </style>
 
 
@@ -53,6 +53,5 @@
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
         <item name="android:colorForeground">#99000000</item>
     </style>
-
 
 </resources>

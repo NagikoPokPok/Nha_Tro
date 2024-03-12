@@ -4,37 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/gray"
     android:orientation="vertical"
     tools:context=".Activity.MotelManagement_Adding">
 
 
     <RelativeLayout
+        android:id="@+id/khung_them_tro"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="80dp"
+        android:background="@drawable/round_back_white_frame">
 
         <ImageView
+            android:id="@+id/btn_back"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:padding="14dp"
-            android:src="@drawable/back_btn"
-            app:tint="#0E2ADA" />
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/back_btn"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/c_i_t"
-            android:textColor="@color/textSetting"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:text="@string/th_m_m_i_nh_tr"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="#090909"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="25dp"
+            android:layout_toEndOf="@id/btn_back"/>
     </RelativeLayout>
+
 
     <ScrollView
         android:layout_width="380dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/gray"
         android:layout_marginStart="20dp">
+        <RelativeLayout
+            android:layout_marginTop="30dp"
+            android:id="@+id/thong_tin_1"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/round_back_white_frame">
 
+        </RelativeLayout>
     </ScrollView>
 </LinearLayout>
