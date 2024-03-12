@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignUpBinding;
 import edu.poly.nhtr.databinding.ActivitySplashBinding;
@@ -38,8 +41,18 @@ public class SplashActivity extends AppCompatActivity {
         binding.btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
-                startActivity(intent);
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user == null)
+                {
+                    // Chua log in
+                    Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    // Da log in
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
                 finish();
             }
         });
