@@ -15,7 +15,7 @@
         tools:layout_editor_absoluteY="0dp" />
 
     <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/img_profile"
+
         android:layout_width="648dp"
         android:layout_height="716dp"
         android:layout_marginStart="52dp"
@@ -101,7 +101,24 @@
         app:layout_constraintHorizontal_bias="0.855"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_email"
-        app:layout_constraintWidth_percent=".8" />
+        app:layout_constraintWidth_percent=".8"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+
+        android:layout_marginTop="10dp"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.855"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_email"
+        >
+
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <EditText
         android:id="@+id/edt_confirm_password"
@@ -123,22 +140,58 @@
         app:layout_constraintTop_toBottomOf="@+id/edt_password"
         app:layout_constraintWidth_percent=".8" />
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_sign_up"
-        android:layout_width="200dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:text="SIGN UP"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="#2196F3"
+        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+
+        android:layout_marginTop="10dp"
+        app:passwordToggleEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_password"
+        app:layout_constraintWidth_percent=".8"
+        >
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+    <FrameLayout
+        android:id="@+id/frm_sign_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:animateLayoutChanges="true"
         app:flow_verticalBias="0.7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.753"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_confirm_password" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_confirm_password">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sign_up"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:text="SIGN UP"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="#2196F3"
+             />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ll_gmail"
@@ -149,7 +202,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sign_up">
+        app:layout_constraintTop_toBottomOf="@+id/frm_sign_up">
 
         <View
             android:layout_width="wrap_content"
@@ -202,13 +255,13 @@
             android:textColor="#171616" />
 
         <TextView
-            android:id="@+id/txt_login"
+            android:id="@+id/txt_sign_in"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="23dp"
             android:text="LOGIN"
+            android:textColor="#3F51B5"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="#3F51B5"
 
             />
     </LinearLayout>
@@ -217,17 +270,17 @@
         android:id="@+id/layoutImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="66dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/img_profile_2"
+            android:id="@+id/img_profile"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginTop="72dp"
+
             android:background="@drawable/backgrund_image_2"
             android:scaleType="centerCrop"
             app:riv_oval="true" />
@@ -237,7 +290,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
             android:text="Thêm ảnh"
             android:textColor="@color/white"
             android:textSize="22sp" />
