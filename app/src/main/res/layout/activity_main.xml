@@ -81,7 +81,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/frame1"
             android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
+            android:layout_width="370dp"
             android:layout_height="300dp"
             android:backgroundTint="#FFFFFF"
             app:cardCornerRadius="20dp"
@@ -357,7 +357,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/frame2"
             android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
+            android:layout_width="370dp"
             android:layout_height="160dp"
             android:backgroundTint="#FFFFFF"
             app:cardCornerRadius="20dp"
