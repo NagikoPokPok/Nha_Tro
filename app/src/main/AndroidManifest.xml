@@ -18,10 +18,10 @@
             android:name=".Activity.BillManagement"
             android:exported="false" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".Activity.SignInActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.SignInActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -52,9 +52,7 @@
             android:name=".Activity.SettingsActivity"
             android:exported="true" />
 
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>
