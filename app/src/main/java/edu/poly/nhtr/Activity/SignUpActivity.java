@@ -110,6 +110,7 @@ public class SignUpActivity extends AppCompatActivity {
                         } else {
                             // Nếu email chưa có thì mới có thể SignUp()
                             signUp();
+
                         }
                     } else {
                         // Xử lý lỗi truy vấn
@@ -117,7 +118,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void signUp() {
+    public void signUp() {
         loading(true);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -150,6 +151,8 @@ public class SignUpActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
 
                                             sendOTP();
+
+
 
                                         } else {
                                             Toast.makeText(SignUpActivity.this, "Authentication failed.",
@@ -243,10 +246,7 @@ public class SignUpActivity extends AppCompatActivity {
         String name = binding.edtName.getText().toString().trim();
         String phoneNumber = binding.edtPhoneNumber.getText().toString().trim();
         String email = binding.edtEmail.getText().toString().trim();
-        if (encodedImage == null) {
-            showToast("Select profile image");
-            return false;
-        } else if (name.isEmpty()) {
+       if (name.isEmpty()) {
             showToast("Enter name");
             return false;
         } else if (!name.matches("^[\\p{L}\\s]+$")) {
