@@ -73,7 +73,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void setListeners() {
         // Đăng nhập
-        binding.buttonSignIn.setOnClickListener(v->{
+        binding.googleIcon.setOnClickListener(v->{
             if(isValidSignInDetails()){
                 signIn();
             }
@@ -100,7 +100,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         // Đăng nhập bằng Gmail
-        binding.ButtonSignInByGmail.setOnClickListener(v -> googleSignIn());
+        binding.googleIcon.setOnClickListener(v -> googleSignIn());
     }
 
     private void signIn(){
@@ -116,7 +116,7 @@ public class SignInActivity extends AppCompatActivity {
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                     }else {

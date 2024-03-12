@@ -34,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setListeners();
         // Other initialization code...
 
         //Button buttonLogout = findViewById(R.id.buttonLogout);
@@ -71,51 +73,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setListeners() {
+        openSettings();
+    }
+
+    private void openSettings() {
+        binding.btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
     // Other methods...
 
     public void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-    public void logout() {
-            showToast("Signing out ...");
 
-            // Kiểm tra người dùng có đăng nhập bằng tài khoản google hay không
-            GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
-
-            if (googleSignInAccount == null) {
-                preferenceManager = new PreferenceManager(getApplicationContext());
-                // Người dùng không đăng nhập bằng tài khoản Google thì sẽ xử lý đăng xuất khỏi tài khoản được đăng ký trên app
-                FirebaseAuth.getInstance().signOut();
-
-                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-                preferenceManager.removePreference(Constants.KEY_USER_ID);
-                preferenceManager.removePreference(Constants.KEY_NAME);
-
-                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            } else {
-//                // Người dùng đăng nhập bằng tài khoản Google thì xử lý đăng xuất khỏi tài khoản Google
-//                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                        .requestIdToken(getString(R.string.default_web_client_id))
-//                        .requestEmail()
-//                        .build();
-//                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-//                googleSignInClient.signOut().addOnCompleteListener(this, task -> {
-//                    FirebaseAuth.getInstance().signOut();
-//
-//                    Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                    finish();
-
-                // Đăng xuất tài khoản Google
-                FirebaseAuth.getInstance().signOut();
-                // Mở trang đăng nhập
-                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-                startActivity(intent);
-                finish();
-                }
-    }
 }
