@@ -63,6 +63,7 @@
         android:padding="10dp"
         android:paddingEnd="15dp"
         android:hint="Email"
+        android:imeOptions="actionNext"
         android:textColorHint="#3F51B5"
         android:textColor="@color/black"
         android:textSize="15sp"
@@ -84,7 +85,7 @@
         android:padding="10dp"
         android:paddingEnd="15dp"
         android:hint="Password"
-
+        android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:textColorHint="#3F51B5"
         android:textColor="@color/black"

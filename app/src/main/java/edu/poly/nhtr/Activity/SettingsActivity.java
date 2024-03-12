@@ -31,14 +31,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setListeners() {
         binding.btnLogout.setOnClickListener(v -> logout());
-//        binding.ChangeProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
+        binding.ChangeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     public void showToast(String message) {
