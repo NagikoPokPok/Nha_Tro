@@ -54,14 +54,14 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
         //changeProfile = findViewById(R.id.btn_changeProfile);
-        changeProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
-                startActivity(intent);
-                //finish();
-            }
-        });
+//        changeProfile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
+//                startActivity(intent);
+//                //finish();
+//            }
+//        });
 
         binding.Setting.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -19,7 +19,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.SignInActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Activity.SplashActivity"
             android:exported="true"

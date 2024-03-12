@@ -30,7 +30,6 @@ public class SplashActivity extends AppCompatActivity {
 
         topAnim = AnimationUtils.loadAnimation(this,R.anim.top_animation);
         bottomAnim = AnimationUtils.loadAnimation(this,R.anim.bottom_animation);
-
         binding.txtNameApp.setAnimation(topAnim);
         binding.txtExplore.setAnimation(topAnim);
         binding.txtFind.setAnimation(topAnim);
