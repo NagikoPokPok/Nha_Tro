@@ -9,7 +9,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -364,7 +366,7 @@
                 android:id="@+id/frame2"
                 android:layout_width="370dp"
                 android:layout_height="160dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="25dp"
                 android:backgroundTint="#FFFFFF"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -514,92 +516,61 @@
             </androidx.cardview.widget.CardView>
 
 
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
-    <androidx.cardview.widget.CardView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frame4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        android:backgroundTint="#FFFFFF"
-       app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-
-        <LinearLayout
-            android:id="@+id/linear4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
 
             <FrameLayout
                 android:id="@+id/Home"
-                android:layout_width="70dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <FrameLayout
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginBottom="30dp">
-
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent">
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_gravity="center"
                         android:layout_marginBottom="17dp"
-                        android:scaleType="center"
+                        android:layout_marginLeft="15dp"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/home_icon2" />
-                </FrameLayout>
 
                 <TextView
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="40dp"
                     android:gravity="center"
                     android:text="Trang chủ"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    />
 
             </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/Notification"
                 android:layout_width="80dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="100dp"
+                android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <FrameLayout
-                    android:layout_width="70dp"
-                    android:layout_height="66dp"
-                    android:layout_marginBottom="30dp">
+                app:layout_constraintEnd_toEndOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginBottom="17dp"
-                        android:scaleType="center"
-                        android:src="@drawable/notification_icon" />
-                </FrameLayout>
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bell_icon" />
 
                 <TextView
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="40dp"
                     android:gravity="center"
                     android:text="Thông báo"
@@ -611,42 +582,30 @@
 
             <FrameLayout
                 android:id="@+id/Setting"
-                android:layout_width="70dp"
-                android:layout_height="60dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="70dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <FrameLayout
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="30dp">
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/btn_setting"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginBottom="17dp"
-                        android:scaleType="center"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/setting_icon3" />
 
                     <TextView
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="40dp"
                         android:gravity="center"
                         android:text="Cài đặt"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
-                </FrameLayout>
-
             </FrameLayout>
-        </LinearLayout>
 
 
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
