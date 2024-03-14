@@ -13,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.utilities.Constants;
@@ -59,6 +63,22 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                        preferenceManager.putString(Constants.KEY_PASSWORD,edt_newPass.getText().toString());
+                                        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(user.getUid());
+                                        documentReference.update(Constants.KEY_PASSWORD,edt_newPass.getText().toString())
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(ChangePasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(ChangePasswordActivity.this, "Không cập nhật dc", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
                                     }else
                                         Toast.makeText(ChangePasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
                                 }
