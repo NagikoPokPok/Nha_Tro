@@ -5,62 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#8E8787"
+    android:background="@drawable/home7"
     app:layoutDescription="@xml/activity_change_profile_scene"
     tools:context=".Activity.ChangeProfileActivity">
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/img_back2"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EDIT PROFILE"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="100dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#AACCDC">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="325dp"
-                    android:background="@drawable/home_3"
-                    android:orientation="vertical"
-                    android:paddingTop="10dp">
-
-
-                    <ImageView
-                        android:id="@+id/img_back"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="10dp"
-                        app:srcCompat="@drawable/img_back2" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="EDIT PROFILE"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-
-                </LinearLayout>
-
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="15dp"
                     app:cardElevation="4dp"
-                    android:layout_marginTop="-60dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="60dp"
                     android:layout_marginHorizontal="24dp"
                     >
                     <LinearLayout
@@ -100,9 +79,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-
-                            android:layout_marginTop="10dp"
-                            >
+                            android:layout_marginTop="10dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/edt_name1"
@@ -111,6 +88,7 @@
                                 android:hint="Tên của bạn"
                                 android:inputType="text" />
                         </com.google.android.material.textfield.TextInputLayout>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -143,39 +121,41 @@
 
                 </androidx.cardview.widget.CardView>
 
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:text="Lưu thay đổi"
+            android:textColor="@color/_bg__th_m_m_i_tr__1_color"
+            app:backgroundTint="#028CFA" />
 
-
-
-                <Button
-                    android:id="@+id/btn_save"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Lưu thay đổi"
-                    app:backgroundTint="#2196F3"
-                    android:layout_marginHorizontal="16dp"/>
-
-                <TextView
+        <TextView
                     android:id="@+id/txt_move_change_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:fontFamily="@font/gelasio"
                     android:text="Đổi mật khẩu"
-                    android:textColor="#2196F3"
+                    android:textColor="#0A66F1"
                     android:textStyle="bold"
                     android:layout_gravity="center"/>
                 <View
                     android:layout_width="120dp"
                     android:layout_height="1dp"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:background="#2196F3" />
+
+
+
+
+
 
 
             </LinearLayout>
 
-        </ScrollView>
 
 
-    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
