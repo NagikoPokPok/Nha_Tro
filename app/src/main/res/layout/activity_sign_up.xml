@@ -162,7 +162,8 @@
                 android:text="SIGN UP"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:backgroundTint="#2196F3" />
+                android:textColor="@color/white"
+                android:background="@drawable/custom_button" />
 
             <ProgressBar
                 android:id="@+id/progressBar"

@@ -5,21 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.SplashActivity">
+    tools:context=".Activity.SplashActivity"
+    android:background="@drawable/home_2">
 
 
 
 
-      <ImageView
-          android:id="@+id/imageView3"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:scaleType="centerCrop"
-          android:src="@drawable/home_2"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-         />
+<!--      <ImageView-->
+<!--          android:id="@+id/imageView3"-->
+<!--          android:layout_width="match_parent"-->
+<!--          android:layout_height="wrap_content"-->
+<!--          android:scaleType="centerCrop"-->
+<!--          android:src="@drawable/home_2"-->
+<!--          app:layout_constraintEnd_toEndOf="parent"-->
+<!--          app:layout_constraintStart_toStartOf="parent"-->
+<!--          app:layout_constraintTop_toTopOf="parent"-->
+<!--         />-->
 
 
     <TextView
@@ -27,7 +28,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="44dp"
+
         android:fontFamily="@font/paytone_one"
         android:gravity="center"
         android:text="Welcome to HOMEMATE"
@@ -37,13 +38,13 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginTop="20dp" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/txt_explore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
+       android:gravity="center"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/paytone_one"
         android:text="Explore and find your home"
@@ -52,7 +53,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_NameApp"/>
 
@@ -60,9 +60,8 @@
         android:id="@+id/txt_find"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp"
+        android:gravity="center"
         android:fontFamily="@font/antic_slab"
         android:text="You can find the best home for your family "
         android:textAlignment="center"
@@ -70,10 +69,8 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_explore"/>
-
 
 
     <Button
@@ -81,17 +78,18 @@
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="440dp"
+        android:layout_marginBottom="40dp"
         android:backgroundTint="@color/white"
-
         android:text="Get Started Now"
         android:textColor="#3F51B5"
         android:textSize="15sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_explore" />
+        app:layout_constraintTop_toBottomOf="@id/txt_find"
+        app:layout_constraintVertical_bias="0.847" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

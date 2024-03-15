@@ -3,8 +3,12 @@
     android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="30dp"/>
-    <size android:width="50dp"
+    <stroke android:color="@color/button_color"
+        android:width="2dp"/>
+    <size android:width="250dp"
         android:height="50dp"/>
-    <solid android:color="@color/white"/>
-    <gradient android:angle="@integer/material_motion_duration_long_1"/>
+    <solid android:color="@color/button_color"/>
+    <gradient android:startColor="@color/button_color"
+        android:endColor="@color/button_color"/>
+    
 </shape>
