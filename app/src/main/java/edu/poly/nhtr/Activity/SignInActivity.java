@@ -89,9 +89,7 @@ public class SignInActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(SignInActivity.this, "Failed to fetch user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(SignInActivity.this, "Failed to fetch user data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
             Toast.makeText(SignInActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
         }

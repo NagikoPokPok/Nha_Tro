@@ -74,37 +74,34 @@ public class VerifyOTPActivity extends AppCompatActivity {
         //Start resend count down timer
         startCountDownTimer();
 
-        resend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (resendEnable) {
-                    startCountDownTimer();
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            "+84" + getIntent().getStringExtra("phoneNumber"),
-                            60, TimeUnit.SECONDS,
-                            VerifyOTPActivity.this,
-                            new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                @Override
-                                public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
+        resend.setOnClickListener(v -> {
+            if (resendEnable) {
+                startCountDownTimer();
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                        "+84" + getIntent().getStringExtra("phoneNumber"),
+                        60, TimeUnit.SECONDS,
+                        VerifyOTPActivity.this,
+                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                            @Override
+                            public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
 
-                                }
-
-                                @Override
-                                public void onVerificationFailed(@NonNull FirebaseException e) {
-
-                                    Toast.makeText(VerifyOTPActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                                }
-
-                                @Override
-                                public void onCodeSent(@NonNull String newVerificationId,
-                                                       @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                                    verificationId = newVerificationId;
-                                    Toast.makeText(VerifyOTPActivity.this, "OTP Sent", Toast.LENGTH_SHORT).show();
-                                }
                             }
-                    );
-                }
+
+                            @Override
+                            public void onVerificationFailed(@NonNull FirebaseException e) {
+
+                                Toast.makeText(VerifyOTPActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onCodeSent(@NonNull String newVerificationId,
+                                                   @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                                verificationId = newVerificationId;
+                                Toast.makeText(VerifyOTPActivity.this, "OTP Sent", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
             }
         });
 
@@ -140,20 +137,17 @@ public class VerifyOTPActivity extends AppCompatActivity {
                             code
                     );
                     FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    progressBar.setVisibility(View.GONE);
-                                    btnVerify.setVisibility(View.VISIBLE);
-                                    if (task.isSuccessful()) {
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
+                            .addOnCompleteListener(task -> {
+                                progressBar.setVisibility(View.GONE);
+                                btnVerify.setVisibility(View.VISIBLE);
+                                if (task.isSuccessful()) {
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
 
-                                    } else {
-                                        Toast.makeText(VerifyOTPActivity.this, "The verification code entered was invalid", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(VerifyOTPActivity.this, "The verification code entered was invalid", Toast.LENGTH_SHORT).show();
 
-                                    }
                                 }
                             });
                 }

@@ -26,10 +26,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.appcheck.FirebaseAppCheck;
-import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
+
+
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -225,7 +226,7 @@ public class SignUpActivity extends AppCompatActivity {
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             if (user != null) {
                                                 // Update UI or perform other actions
-                                                sendOTP(); // Or any other action needed after sign-up success
+                                                //sendOTP(); // Or any other action needed after sign-up success
                                             }
                                         } else {
                                             // Sign up failure
@@ -245,49 +246,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void sendOTP()
-    {
-        FirebaseApp.initializeApp(SignUpActivity.this);
-        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-        firebaseAppCheck.installAppCheckProviderFactory(
-                PlayIntegrityAppCheckProviderFactory.getInstance());
-
-        binding.progressBar.setVisibility(View.VISIBLE);
-        binding.btnSignUp.setVisibility(View.INVISIBLE);
-
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+84" + binding.edtPhoneNumber.getText().toString(),
-                60, TimeUnit.SECONDS,
-                SignUpActivity.this,
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks()
-                {
-                    @Override
-                    public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-                        binding.progressBar.setVisibility(View.GONE);
-                        binding.btnSignUp.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onVerificationFailed(@NonNull FirebaseException e) {
-                        binding.progressBar.setVisibility(View.GONE);
-                        binding.btnSignUp.setVisibility(View.VISIBLE);
-                        Toast.makeText(SignUpActivity.this, e.getMessage(),Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onCodeSent(@NonNull String verificationId,
-                                           @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                        binding.progressBar.setVisibility(View.GONE);
-                        binding.btnSignUp.setVisibility(View.VISIBLE);
-                        Intent intent = new Intent(getApplicationContext(), VerifyOTPActivity.class);
-                        intent.putExtra("phoneNumber",binding.edtPhoneNumber.getText().toString());
-                        intent.putExtra("verificationId",verificationId);
-                        startActivity(intent);
-                    }
-                }
-        );
-    }
 
     private String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
     {
