@@ -189,6 +189,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:background="@drawable/custom_button"
+            app:backgroundTint="@null"
             android:text="VERIFY"
             android:textColor="@color/white"
             android:textStyle="bold"

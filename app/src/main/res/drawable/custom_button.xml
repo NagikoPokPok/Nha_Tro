@@ -8,7 +8,6 @@
     <size android:width="250dp"
         android:height="50dp"/>
     <solid android:color="@color/button_color"/>
-    <gradient android:startColor="@color/button_color"
-        android:endColor="@color/button_color"/>
-    
+
+
 </shape>

@@ -39,6 +39,9 @@
         <item name="cornerFamilyBottomLeft">rounded</item>
     </style>
 
+
+
+
 <!--    Theme cho chế độ ngày/đêm-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/night_mode</item>
