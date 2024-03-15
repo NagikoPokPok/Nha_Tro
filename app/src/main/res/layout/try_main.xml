@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txvCircularShape"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="#eee"
+            android:gravity="center"
+            android:text="Circular ImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCircular"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintEnd_toStartOf="@+id/imvCircularWithStroke"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txvCircularShape"
+            app:shapeAppearanceOverlay="@style/Circular"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCircularWithStroke"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:padding="5dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imvCircular"
+            app:layout_constraintTop_toBottomOf="@id/txvCircularShape"
+            app:shapeAppearanceOverlay="@style/Circular"
+            app:strokeColor="#00BCD4"
+            app:strokeWidth="5dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textCornerRadiusShare"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="#eee"
+            android:gravity="center"
+            android:text="Corner Radius ImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imvCircularWithStroke" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCornerStroke"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintEnd_toStartOf="@+id/imvCornerRadiusWithStroke"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textCornerRadiusShare"
+            app:shapeAppearanceOverlay="@style/RoundedSquare" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCornerRadiusWithStroke"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:padding="5dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imvCornerStroke"
+            app:layout_constraintTop_toBottomOf="@id/textCornerRadiusShare"
+
+            app:shapeAppearanceOverlay="@style/RoundedSquare"
+            app:strokeColor="#00BCD4"
+            app:strokeWidth="5dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txvCornerCut"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="#eee"
+            android:gravity="center"
+            android:text="Corner Cut ImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imvCornerRadiusWithStroke" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCornerCutOne"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintEnd_toStartOf="@+id/imvCornerRadiusWithStroke"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txvCornerCut"
+            app:shapeAppearanceOverlay="@style/CornerCut" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCornerCutTwo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:padding="7dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/imvCornerStroke"
+            app:layout_constraintTop_toBottomOf="@id/txvCornerCut"
+            app:shapeAppearanceOverlay="@style/DiamondCut" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txvCornerShape"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="#eee"
+            android:gravity="center"
+            android:text="Specified Corner Radius ImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imvCornerCutTwo" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCornerShapeOne"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imvCornerRadiusWithStroke"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txvCornerShape"
+            app:shapeAppearanceOverlay="@style/SpecificCornerCut" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imvCornerShapeTwo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:padding="7dp"
+            android:src="@drawable/home_4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imvCornerStroke"
+            app:layout_constraintTop_toBottomOf="@id/txvCornerShape"
+            app:layout_constraintVertical_bias="0.0"
+            app:shapeAppearanceOverlay="@style/SpecificCornerRounded" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

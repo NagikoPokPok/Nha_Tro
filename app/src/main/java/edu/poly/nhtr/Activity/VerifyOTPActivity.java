@@ -34,6 +34,8 @@ import edu.poly.nhtr.R;
 
 public class VerifyOTPActivity extends AppCompatActivity {
 
+
+
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
     private TextView resend;
     private String verificationId;
@@ -106,6 +108,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
             }
         });
 
+
+
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         final Button btnVerify = findViewById(R.id.btnVerify);
 
@@ -145,6 +149,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
+
                                     } else {
                                         Toast.makeText(VerifyOTPActivity.this, "The verification code entered was invalid", Toast.LENGTH_SHORT).show();
 
