@@ -57,6 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView passwordIcon, confirmPassword;
     private boolean passwordShowing = false;
     PreferenceManager preferenceManager;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,29 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         setListeners();
+        mAuth = FirebaseAuth.getInstance();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            reload();
+        }
+    }
+
+    private void reload() {
+        // User is already signed in, redirect or update UI as needed
+        Toast.makeText(this, "User is already signed in", Toast.LENGTH_SHORT).show();
+        // For example, you can redirect the user to the main activity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        // Finish the current activity to prevent the user from coming back to the sign-up screen
+        finish();
+    }
+
 
     private void setListeners() {
 
@@ -184,30 +207,29 @@ public class SignUpActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        loading(false);
-
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
                         preferenceManager.putString(Constants.KEY_PASSWORD, binding.edtPassword.getText().toString());
                         preferenceManager.putString(Constants.KEY_PHONE_NUMBER, binding.edtPhoneNumber.getText().toString());
-                        FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                        // Tạo tài khoản mới
-                        auth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
+                        // Firebase authentication
+                        mAuth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
+                                        loading(false);
                                         if (task.isSuccessful()) {
-
-                                            sendOTP();
-
-
-
+                                            // Sign up success, proceed with additional actions if needed
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            if (user != null) {
+                                                // Update UI or perform other actions
+                                                sendOTP(); // Or any other action needed after sign-up success
+                                            }
                                         } else {
-                                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
+                                            // Sign up failure
+                                            showToast("Authentication failed: " + task.getException().getMessage());
                                         }
                                     }
                                 });
@@ -218,10 +240,10 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         loading(false);
                         showToast(e.getMessage());
-
                     }
                 });
     }
+
 
     private void sendOTP()
     {

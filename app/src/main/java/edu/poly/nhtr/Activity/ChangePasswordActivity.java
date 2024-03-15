@@ -1,35 +1,39 @@
 package edu.poly.nhtr.Activity;
 
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+
+import java.util.Objects;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class ChangePasswordActivity extends AppCompatActivity {
-    EditText edt_pass,edt_newPass, edt_newPassConf;
+    EditText edt_pass, edt_newPass, edt_newPassConf;
     Button btn_changePass;
     ImageView back;
     private PreferenceManager preferenceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,55 +46,78 @@ public class ChangePasswordActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         setListener();
     }
-    private void setListener(){
-        btn_changePass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!edt_pass.getText().toString().equals(preferenceManager.getString(Constants.KEY_PASSWORD))){
-                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu không chính xác" +preferenceManager.getString(Constants.KEY_PASSWORD), Toast.LENGTH_SHORT).show();
-                }else if(edt_newPass.getText().toString().isEmpty())
-                    Toast.makeText(ChangePasswordActivity.this, "Hãy nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
-                else if(edt_newPass.getText().toString().equals(edt_pass.getText().toString()))
-                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu mới trùng với mật khẩu cũ", Toast.LENGTH_SHORT).show();
-                else if(!edt_newPass.getText().toString().equals(edt_newPassConf.getText().toString()))
-                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu nhập lại không khớp", Toast.LENGTH_SHORT).show();
-                else{
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    user.updatePassword(edt_pass.getText().toString())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                                        preferenceManager.putString(Constants.KEY_PASSWORD,edt_newPass.getText().toString());
-                                        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(user.getUid());
-                                        documentReference.update(Constants.KEY_PASSWORD,edt_newPass.getText().toString())
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        Toast.makeText(ChangePasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(ChangePasswordActivity.this, "Không cập nhật dc", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
+    private void setListener() {
+        // Change password button click listener
+        btn_changePass.setOnClickListener(view -> {
+            String oldPassword = edt_pass.getText().toString();
+            String newPassword = edt_newPass.getText().toString();
+            String confirmPassword = edt_newPassConf.getText().toString();
 
-                                    }else
-                                        Toast.makeText(ChangePasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
+            // Validate input fields
+            if (!oldPassword.equals(preferenceManager.getString(Constants.KEY_PASSWORD))) {
+                showToast("Mật khẩu không chính xác");
+            } else if (newPassword.isEmpty()) {
+                showToast("Hãy nhập mật khẩu mới");
+            } else if (newPassword.equals(oldPassword)) {
+                showToast("Mật khẩu mới trùng với mật khẩu cũ");
+            } else if (!newPassword.equals(confirmPassword)) {
+                showToast("Mật khẩu nhập lại không khớp");
+            } else {
+                // Reauthenticate user
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    AuthCredential credential = EmailAuthProvider.getCredential(Objects.requireNonNull(user.getEmail()), oldPassword);
+                    user.reauthenticate(credential)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    // Log reauthentication success
+                                    Log.d("ChangePasswordActivity", "Reauthentication successful");
+
+                                    // Update password in Firebase Authentication
+                                    user.updatePassword(newPassword)
+                                            .addOnCompleteListener(task1 -> {
+                                                if (task1.isSuccessful()) {
+                                                    showToast("Đổi mật khẩu thành công");
+                                                    // Update password in local storage
+                                                    preferenceManager.putString(Constants.KEY_PASSWORD, newPassword);
+
+                                                    // Update password in Firestore
+                                                    updatePasswordInFirestore(user.getUid(), newPassword);
+
+                                                    finish();
+                                                } else {
+                                                    showToast("Đổi mật khẩu thất bại");
+                                                }
+                                            });
+                                } else {
+                                    showToast("Xác thực người dùng thất bại");
+                                    // Log reauthentication failure
+                                    Log.e("ChangePasswordActivity", "Reauthentication failed", task.getException());
                                 }
                             });
+                } else {
+                    // Log user is null
+                    Log.e("ChangePasswordActivity", "User is null");
+                    showToast("Người dùng không tồn tại");
                 }
             }
         });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
+        // Back button click listener
+        back.setOnClickListener(v -> onBackPressed());
     }
+
+
+        private void showToast(String message) {
+            Toast.makeText(ChangePasswordActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+
+    private void updatePasswordInFirestore(String userId, String newPassword) {
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(userId);
+        documentReference.update(Constants.KEY_PASSWORD, newPassword)
+                .addOnSuccessListener(unused -> showToast("Cập nhật mật khẩu thành công"))
+                .addOnFailureListener(e -> showToast("Không cập nhật được mật khẩu"));
+    }
+
 }

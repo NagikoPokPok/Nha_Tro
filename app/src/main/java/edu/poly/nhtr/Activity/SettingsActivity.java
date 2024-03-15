@@ -55,29 +55,20 @@ public class SettingsActivity extends AppCompatActivity {
     public void logout() {
         showToast("Signing out ...");
 
-        // Kiểm tra người dùng có đăng nhập bằng tài khoản google hay không
-        GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        // Sign out from Firebase Authentication
+        FirebaseAuth.getInstance().signOut();
 
-        if (googleSignInAccount == null) {
-            preferenceManager = new PreferenceManager(getApplicationContext());
-            // Người dùng không đăng nhập bằng tài khoản Google thì sẽ xử lý đăng xuất khỏi tài khoản được đăng ký trên app
-            FirebaseAuth.getInstance().signOut();
+        // Clear user preferences
+        PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
+        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+        preferenceManager.removePreference(Constants.KEY_USER_ID);
+        preferenceManager.removePreference(Constants.KEY_NAME);
 
-            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-            preferenceManager.removePreference(Constants.KEY_USER_ID);
-            preferenceManager.removePreference(Constants.KEY_NAME);
-
-            Intent intent = new Intent(SettingsActivity.this, SignInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        } else {
-            // Đăng xuất tài khoản Google
-            FirebaseAuth.getInstance().signOut();
-            // Mở trang đăng nhập
-            Intent intent = new Intent(SettingsActivity.this, SignInActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        // Redirect to SignInActivity
+        Intent intent = new Intent(SettingsActivity.this, SignInActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
+
 }
