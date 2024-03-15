@@ -1,11 +1,14 @@
 package edu.poly.nhtr.Activity;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,8 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -117,45 +122,51 @@ public class SignInActivity extends AppCompatActivity {
         binding.googleIcon.setOnClickListener(v -> googleSignIn());
     }
 
-    private void signIn() {
-        String email = binding.inputEmail.getText().toString();
-        String password = binding.inputPassword.getText().toString();
+    private void signIn(){
+        //loading(true);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_USERS)
+                .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
+                .whereEqualTo(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString())
+                .get()
+                .addOnCompleteListener(task-> {
+                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                        preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
+                        preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
+                        preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
+                        preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
+                        preferenceManager.putString(Constants.KEY_PHONE_NUMBER, documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
+                        try {
+                            preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
+                        } catch (Exception ex){}
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseFirestore database = FirebaseFirestore.getInstance();
-                        database.collection(Constants.KEY_COLLECTION_USERS)
-                                .whereEqualTo(Constants.KEY_EMAIL, email)
-                                .get()
-                                .addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful() && task1.getResult() != null && !task1.getResult().getDocuments().isEmpty()) {
-                                        DocumentSnapshot documentSnapshot = task1.getResult().getDocuments().get(0);
-                                        String storedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
-                                        if (storedPassword != null && storedPassword.equals(password)) {
-                                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                                            preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
-                                            preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
-                                            preferenceManager.putString(Constants.KEY_PASSWORD, storedPassword);
-                                            preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
-                                            preferenceManager.putString(Constants.KEY_PHONE_NUMBER, documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
-                                            try {
-                                                preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
-                                            } catch (Exception ignored) {}
+                        mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
+                                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Log.d(TAG, "signInWithEmail:success");
+                                            FirebaseUser user = mAuth.getCurrentUser();
 
-                                            startActivity(new Intent(getApplicationContext(), MainActivity.class)
-                                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                                            finish();
                                         } else {
-                                            showToast("Invalid email or password");
+                                            // If sign in fails, display a message to the user.
+                                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+
                                         }
-                                    } else {
-                                        showToast("Invalid email or password");
                                     }
                                 });
-                    } else {
-                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        showToast("Authentication failed");
+
+                    }else {
+                        //loading(false);
+                        showToast("Sai tài khoản hoặc mật khẩu");
                     }
                 });
     }
