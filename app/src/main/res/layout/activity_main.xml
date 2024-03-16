@@ -7,16 +7,21 @@
     android:background="#BCC9D5"
     tools:context=".Activity.MainActivity">
 
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadingEdgeLength="50dp"
+        android:scrollbars="vertical"
+        android:verticalScrollbarPosition="right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        android:layout_marginBottom="70dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView5"
@@ -25,7 +30,6 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/backgroundtop"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/SpecificCornerCut" />
@@ -55,7 +59,6 @@
                     android:text="Ảnh"
                     android:textColor="@color/secondary_text"
                     android:textSize="18sp" />
-
             </FrameLayout>
 
             <TextView
@@ -80,7 +83,6 @@
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/layoutImage"
-
                 app:layout_constraintTop_toBottomOf="@id/txt_hello" />
 
 
@@ -88,7 +90,7 @@
                 android:id="@+id/frame1"
                 android:layout_width="370dp"
                 android:layout_height="300dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:backgroundTint="#FFFFFF"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -126,7 +128,7 @@
                         android:id="@+id/QuanLyPhong"
                         android:layout_width="115dp"
                         android:layout_height="120dp"
-                        android:layout_marginTop="0dp"
+                        android:background="@drawable/pressed_button"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
@@ -164,7 +166,7 @@
                         android:layout_width="115dp"
                         android:layout_height="120dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="0dp"
+                        android:background="@drawable/pressed_button"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
@@ -366,7 +368,7 @@
                 android:id="@+id/frame2"
                 android:layout_width="370dp"
                 android:layout_height="160dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="#FFFFFF"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -524,8 +526,9 @@
         android:id="@+id/frame4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
 
 
             <FrameLayout
@@ -534,10 +537,10 @@
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent">
                     <com.makeramen.roundedimageview.RoundedImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_marginBottom="17dp"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginLeft="20dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/home_icon2" />
 
@@ -561,15 +564,15 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="15dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginBottom="17dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/bell_icon" />
 
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="40dp"
                     android:gravity="center"
@@ -584,13 +587,14 @@
                 android:id="@+id/Setting"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/pressed_button">
 
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:id="@+id/btn_setting"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="15dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginBottom="17dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/setting_icon3" />
