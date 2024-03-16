@@ -7,9 +7,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,7 +24,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +42,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignUpBinding;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -48,6 +54,8 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     String encodedImage;
+    ImageView passwordIcon, confirmPassword;
+    private boolean passwordShowing = false;
     PreferenceManager preferenceManager;
 
     @Override
@@ -57,12 +65,55 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         preferenceManager = new PreferenceManager(getApplicationContext());
+        passwordIcon = binding.iconPassword;
+        confirmPassword = binding.iconConfirmPassword;
 
 
         setListeners();
     }
 
     private void setListeners() {
+
+        passwordIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // checking if password is showing or not
+                if(passwordShowing)
+                {
+                    passwordShowing = false;
+                    binding.edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    passwordIcon.setImageResource(edu.poly.nhtr.R.drawable.password_show_2);
+                }
+                else {
+                    passwordShowing = true;
+                    binding.edtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    passwordIcon.setImageResource(R.drawable.password_hide);
+                }
+
+                binding.edtPassword.setSelection(binding.edtPassword.length());
+            }
+        });
+
+        confirmPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // checking if password is showing or not
+                if(passwordShowing)
+                {
+                    passwordShowing = false;
+                    binding.edtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    confirmPassword.setImageResource(edu.poly.nhtr.R.drawable.password_show_2);
+                }
+                else {
+                    passwordShowing = true;
+                    binding.edtConfirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    confirmPassword.setImageResource(R.drawable.password_hide);
+                }
+
+                binding.edtConfirmPassword.setSelection(binding.edtConfirmPassword.length());
+
+            }
+        });
         binding.txtSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,6 +225,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void sendOTP()
     {
+        FirebaseApp.initializeApp(SignUpActivity.this);
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                PlayIntegrityAppCheckProviderFactory.getInstance());
 
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.btnSignUp.setVisibility(View.INVISIBLE);
