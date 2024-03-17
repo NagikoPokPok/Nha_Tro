@@ -69,7 +69,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="Thêm ảnh"
-                                android:textColor="@color/black"
+                                android:textColor="@color/white"
                                 android:textSize="12sp" />
 
                         </FrameLayout>
@@ -128,7 +128,8 @@
             android:layout_marginTop="20dp"
             android:text="Lưu thay đổi"
             android:textColor="@color/_bg__th_m_m_i_tr__1_color"
-            app:backgroundTint="#028CFA" />
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@null"/>
 
         <TextView
                     android:id="@+id/txt_move_change_password"
