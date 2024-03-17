@@ -31,13 +31,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setListeners() {
         binding.btnLogout.setOnClickListener(v -> logout());
-        binding.ChangeProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        binding.ChangeProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         binding.btnBack.setOnClickListener(v -> back());
@@ -55,16 +52,16 @@ public class SettingsActivity extends AppCompatActivity {
     public void logout() {
         showToast("Signing out ...");
 
-        // Sign out from Firebase Authentication
+        // Đăng xuất khỏi Firebase
         FirebaseAuth.getInstance().signOut();
 
-        // Clear user preferences
+        // Xóa cài đặt về người dùng
         PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
         preferenceManager.removePreference(Constants.KEY_USER_ID);
         preferenceManager.removePreference(Constants.KEY_NAME);
 
-        // Redirect to SignInActivity
+        // Trở lại Settings Activity
         Intent intent = new Intent(SettingsActivity.this, SignInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

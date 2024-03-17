@@ -37,31 +37,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setListeners();
-        // Other initialization code...
-
-        //Button buttonLogout = findViewById(R.id.buttonLogout);
-//        binding.buttonLogout.setOnClickListener(v -> logout());
-//        Button buttonLogout = findViewById(R.id.buttonLogout);
-//        buttonLogout.setOnClickListener(v -> logout());
-
-
-//        changeProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
-//                startActivity(intent);
-//                //finish();
-//            }
-//        });
-        //changeProfile = findViewById(R.id.btn_changeProfile);
-//        changeProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, ChangeProfileActivity.class);
-//                startActivity(intent);
-//                //finish();
-//            }
-//        });
 
     }
 
