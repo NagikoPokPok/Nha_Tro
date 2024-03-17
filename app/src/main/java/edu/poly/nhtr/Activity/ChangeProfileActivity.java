@@ -1,7 +1,5 @@
 package edu.poly.nhtr.Activity;
 
-import static android.content.ContentValues.TAG;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -14,8 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,24 +19,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import edu.poly.nhtr.R;
+
 import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -77,12 +66,18 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private void loadUserDetail(){
 
        try {
+
            byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-           imageProfile.setImageBitmap(bitmap);
+           encodedImage = encodedImage(bitmap);
+
+           byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
+           Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
+           imageProfile.setImageBitmap(encodedBitmap);
+
            txt_add_image.setVisibility(View.INVISIBLE);
        }catch (Exception e){
-
+           Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
        }
 
         name.setText(preferenceManager.getString(Constants.KEY_NAME));
@@ -95,7 +90,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChangeProfileActivity.this, MainActivity.class);
+                Intent intent = new Intent(ChangeProfileActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -104,7 +99,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isValidChangeDetails()){
-                    updateProfile2();
+                    updateProfile();
                 }
             }
         });
@@ -121,6 +116,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 pickImage.launch(intent);
+                //preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
             }
         });
     }
@@ -144,8 +140,8 @@ public class ChangeProfileActivity extends AppCompatActivity {
                         try {
                             InputStream inputStream = getContentResolver().openInputStream(imageUri);
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            binding.imgProfile.setImageBitmap(bitmap);
-                            binding.txtAddImage.setVisibility(View.GONE);
+                            imageProfile.setImageBitmap(bitmap);
+                            txt_add_image.setVisibility(View.GONE);
                             encodedImage = encodedImage(bitmap);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -177,21 +173,43 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-    private void updateProfile2() {
+    private void updateProfile() {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
+        user.put(Constants.KEY_EMAIL,preferenceManager.getString(Constants.KEY_EMAIL));
+        user.put(Constants.KEY_PASSWORD, preferenceManager.getString(Constants.KEY_PASSWORD));
         user.put(Constants.KEY_NAME, name.getText().toString());
         user.put(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
         user.put(Constants.KEY_ADDRESS, diachi.getText().toString());
         user.put(Constants.KEY_IMAGE, encodedImage);
-        //database.collection(Constants.KEY_COLLECTION_USERS)
+        database.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID))
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(ChangeProfileActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
+                        RefreshPrefernceManager();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ChangeProfileActivity.this, "Cập nhật tông tin thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-       preferenceManager.putString(Constants.KEY_NAME,name.getText().toString());
-       preferenceManager.putString(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
-       preferenceManager.putString(Constants.KEY_ADDRESS, diachi.getText().toString());
+
 
 
     }
+    private  void RefreshPrefernceManager(){
+        preferenceManager.putString(Constants.KEY_NAME, name.getText().toString());
+        preferenceManager.putString(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
+        preferenceManager.putString(Constants.KEY_ADDRESS, diachi.getText().toString());
+        preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
+    }
+
+
 
 
 }

@@ -15,7 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.utilities.Constants;
@@ -85,6 +88,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 }
 
                             });
+                    FirebaseFirestore database = FirebaseFirestore.getInstance();
+                    HashMap<String, Object> user = new HashMap<>();
+
                 }
             }
 
