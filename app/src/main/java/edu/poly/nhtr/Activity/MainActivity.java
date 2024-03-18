@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
     {
+        // d
         int previewWidth = 150;
         int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
         Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
