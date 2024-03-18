@@ -64,4 +64,9 @@ dependencies {
     //Material Design
     implementation("com.google.android.material:material:1.11.0")
 
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+
+    //Send email otp
+    implementation ("com.github.1902shubh:SendMail:1.0.0")
+
 }

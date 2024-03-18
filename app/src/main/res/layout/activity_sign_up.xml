@@ -57,23 +57,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent=".8" />
 
-        <EditText
-            android:id="@+id/edt_phone_number"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#9FA4BD"
-            android:drawableLeft="@drawable/ic_phone_blue"
-            android:drawablePadding="13dp"
-            android:hint="Số điện thoại (0xxxxxxxxx)"
-            android:paddingBottom="20dp"
-            android:textColor="@color/black"
-            android:textColorHint="#1E275C"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.82"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edt_name"
-            app:layout_constraintWidth_percent=".8" />
+
 
 
         <EditText
