@@ -57,6 +57,7 @@
                 app:riv_oval="true" />
 
             <ImageView
+Se                android:id="@+id/img_ava"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"

@@ -3,13 +3,21 @@ package edu.poly.nhtr.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.InputStream;
+import java.util.Objects;
 
 import edu.poly.nhtr.databinding.ActivitySettingsBinding;
 import edu.poly.nhtr.utilities.Constants;
@@ -38,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         binding.btnBack.setOnClickListener(v -> back());
+
+        getInfoFromGoogle();
     }
 
     public void showToast(String message) {
@@ -48,6 +58,47 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    // Lấy ảnh đại diện và tên từ Google
+    private void getInfoFromGoogle() {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if (account != null) {
+            String userName = account.getDisplayName();
+            binding.edtName.setText(userName);
+
+            String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
+            new DownloadImageTask(binding.imgProfile).execute(photoUrl);
+
+            binding.imgAva.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private ImageView imageView;
+
+        public DownloadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String imageUrl = urls[0];
+            Bitmap bitmap = null;
+            try {
+                InputStream in = new java.net.URL(imageUrl).openStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", Objects.requireNonNull(e.getMessage()));
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                imageView.setImageBitmap(result);
+            }
+        }
     }
     public void logout() {
         showToast("Signing out ...");
