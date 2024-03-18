@@ -26,11 +26,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
-
-
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -58,7 +57,6 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView passwordIcon, confirmPassword;
     private boolean passwordShowing = false;
     PreferenceManager preferenceManager;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,29 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         setListeners();
-        mAuth = FirebaseAuth.getInstance();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            reload();
-        }
-    }
-
-    private void reload() {
-        // User is already signed in, redirect or update UI as needed
-        Toast.makeText(this, "User is already signed in", Toast.LENGTH_SHORT).show();
-        // For example, you can redirect the user to the main activity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        // Finish the current activity to prevent the user from coming back to the sign-up screen
-        finish();
-    }
-
 
     private void setListeners() {
 
@@ -169,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void checkExisted(String email) {
 
-       loading(true);
+        loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_EMAIL, email)
@@ -180,12 +156,19 @@ public class SignUpActivity extends AppCompatActivity {
                         if (documentCount > 0) {
                             // Email đã tồn tại
                             Toast.makeText(this, "Email đã được sử dụng", Toast.LENGTH_SHORT).show();
+                            binding.edtEmail.setText("");
+                            binding.edtName.setText("");
                             loading(false);
+                            return;
 
                         } else {
                             // Nếu email chưa có thì mới có thể SignUp()
-                            signUp();
-
+                            Intent intent = new Intent(SignUpActivity.this, VerifyOTPActivity.class);
+                            intent.putExtra("email",binding.edtEmail.getText().toString());
+                            intent.putExtra("password",binding.edtPassword.getText().toString());
+                            intent.putExtra("name",binding.edtName.getText().toString());
+                            intent.putExtra("image",encodedImage);
+                            startActivity(intent);
                         }
                     } else {
                         // Xử lý lỗi truy vấn
@@ -193,58 +176,6 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
     }
-    public void signUp() {
-        loading(true);
-
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        HashMap<String, Object> user = new HashMap<>();
-        user.put(Constants.KEY_NAME, binding.edtName.getText().toString());
-        user.put(Constants.KEY_PHONE_NUMBER, binding.edtPhoneNumber.getText().toString());
-        user.put(Constants.KEY_EMAIL, binding.edtEmail.getText().toString());
-        user.put(Constants.KEY_PASSWORD, binding.edtPassword.getText().toString());
-        user.put(Constants.KEY_IMAGE, encodedImage);
-        database.collection(Constants.KEY_COLLECTION_USERS)
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                        preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
-                        preferenceManager.putString(Constants.KEY_NAME, binding.edtName.getText().toString());
-                        preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
-                        preferenceManager.putString(Constants.KEY_PASSWORD, binding.edtPassword.getText().toString());
-                        preferenceManager.putString(Constants.KEY_PHONE_NUMBER, binding.edtPhoneNumber.getText().toString());
-
-                        // Firebase authentication
-                        mAuth.createUserWithEmailAndPassword(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString())
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        loading(false);
-                                        if (task.isSuccessful()) {
-                                            // Sign up success, proceed with additional actions if needed
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            if (user != null) {
-                                                // Update UI or perform other actions
-                                                //sendOTP(); // Or any other action needed after sign-up success
-                                            }
-                                        } else {
-                                            // Sign up failure
-                                            showToast("Authentication failed: " + task.getException().getMessage());
-                                        }
-                                    }
-                                });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        loading(false);
-                        showToast(e.getMessage());
-                    }
-                });
-    }
-
 
 
     private String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
@@ -279,28 +210,26 @@ public class SignUpActivity extends AppCompatActivity {
 
     private Boolean isValidSignUpDetails() {
         String name = binding.edtName.getText().toString().trim();
-        String phoneNumber = binding.edtPhoneNumber.getText().toString().trim();
+        //String phoneNumber = binding.edtPhoneNumber.getText().toString().trim();
         String email = binding.edtEmail.getText().toString().trim();
-       if (name.isEmpty()) {
+        if (encodedImage == null) {
+            showToast("Select profile image");
+            return false;
+        } else if (name.isEmpty()) {
             showToast("Enter name");
             return false;
         } else if (!name.matches("^[\\p{L}\\s]+$")) {
             showToast("Please enter only alphabetical characters");
             return false;
-        } else if (binding.edtPhoneNumber.getText().toString().trim().isEmpty()) {
-            showToast("Enter phone number");
-            return false;
-        } else if (!phoneNumber.matches("^0[0-9]{9}$")) {
-            showToast("Enter a valid 10-digit phone number starting with 0");
-            return false;
+
         } else if (binding.edtEmail.getText().toString().trim().isEmpty()) {
             showToast("Enter email");
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.edtEmail.getText().toString()).matches()) {
             showToast("Enter valid email address");
             return false;
-        } else if (binding.edtPassword.getText().toString().trim().isEmpty() || binding.edtPassword.getText().toString().trim().length()<6) {
-            showToast("Enter password has least 6 characters");
+        } else if (binding.edtPassword.getText().toString().trim().isEmpty()) {
+            showToast("Enter password");
             return false;
         } else if (binding.edtConfirmPassword.getText().toString().trim().isEmpty()) {
             showToast("Confirm your password");
