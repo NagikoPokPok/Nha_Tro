@@ -53,8 +53,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setListeners() {
         openSettings();
-        // getInfoFromGoogle();
-        loadUserDetail();
+        GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (googleSignInAccount != null) {
+            getInfoFromGoogle();
+        } else {
+            loadUserDetail();
+        }
     }
 
     private void openSettings() {
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             String userName = account.getDisplayName();
             binding.name.setText(userName);
 
-            String photoUrl = account.getPhotoUrl().toString();
+            String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
             new DownloadImageTask(binding.imgProfile).execute(photoUrl);
 
             binding.txtAddImage.setVisibility(View.INVISIBLE);
