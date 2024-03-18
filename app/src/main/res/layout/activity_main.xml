@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/img_profile"
+                    android:id="@+id/image_Profile"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:background="@drawable/background_image"
@@ -71,19 +71,19 @@
                 app:layout_constraintStart_toEndOf="@+id/layoutImage"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <TextView
                 android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:text="FULL NAME"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/layoutImage"
-
                 app:layout_constraintTop_toBottomOf="@id/txt_hello" />
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/frame1"
@@ -102,7 +102,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="10dp"
-
                     android:allowUndo="false"
                     android:text="Tính năng chính"
                     android:textAllCaps="false"
@@ -129,7 +128,8 @@
                         android:layout_height="120dp"
                         android:layout_marginTop="0dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintTop_toTopOf="parent"
+                        >
 
                         <FrameLayout
                             android:layout_width="70dp"
