@@ -33,6 +33,18 @@
             android:contentDescription="@string/lui_ve" />
 
         <!-- Tiêu đề -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/th_m_m_i_nh_tr"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="#090909"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toTopOf="@id/btn_back"
+            app:layout_constraintStart_toEndOf="@id/btn_back"
+            app:layout_constraintBottom_toBottomOf="@id/btn_back"/>
     </FrameLayout>
 
     <!-- Guideline -->
@@ -348,15 +360,18 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_them"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:background="@drawable/button_add"
                 android:backgroundTint="@null"
-                android:text="+"
+                app:icon="@drawable/ic_add"
                 android:textColor="#000000"
-                android:textSize="16sp"
-                app:backgroundTint="@null" />
+                android:textSize="20sp"
+                app:backgroundTint="@null"
+                app:iconGravity="textStart"
+                app:iconPadding="-1dp"
+                app:iconTint="@null"/>
+
 
             <TextView
                 android:id="@+id/edt_nhapDiaChi"
