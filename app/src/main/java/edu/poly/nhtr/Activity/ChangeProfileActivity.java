@@ -38,7 +38,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
     private ActivityChangeProfileBinding binding;
     private PreferenceManager preferenceManager;
     private String encodedImage;
-    Button btn_change;
+    Button btn_save;
     TextView warning, txt_move_changePassword, txt_add_image;
     EditText name, phoneNum, diachi;
     ImageView imageProfile,imgBack;
@@ -51,7 +51,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         phoneNum = findViewById(R.id.edt_phoneNumber1);
         diachi = findViewById(R.id.edt_address1);
         imageProfile = findViewById(R.id.img_profile);
-        btn_change = findViewById(R.id.btn_save);
+        btn_save = findViewById(R.id.btn_save);
         txt_add_image = findViewById(R.id.txt_add_image);
 
         //warning = findViewById(R.id.txt_warning1);
@@ -106,7 +106,8 @@ public class ChangeProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
-        btn_change.setOnClickListener(new View.OnClickListener() {
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(isValidChangeDetails()){
@@ -220,7 +221,15 @@ public class ChangeProfileActivity extends AppCompatActivity {
         preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
     }
 
-
-
-
+    private void loading(Boolean isLoading)
+    {
+        if(isLoading)
+        {
+            btn_save.setVisibility(View.INVISIBLE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+        }else {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+            btn_save.setVisibility(View.VISIBLE);
+        }
+    }
 }

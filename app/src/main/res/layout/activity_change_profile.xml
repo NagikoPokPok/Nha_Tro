@@ -120,19 +120,30 @@
 
         </androidx.cardview.widget.CardView>
 
-        <Button
-            android:id="@+id/btn_save"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:background="@drawable/custom_button"
-            android:text="Lưu thay đổi"
-            android:textColor="@color/_bg__th_m_m_i_tr__1_color"
-            android:textSize="16sp"
-            app:backgroundTint="@null"
-            app:icon="@drawable/img_reset"
-            app:iconGravity="textStart" />
+            android:layout_gravity="center">
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_button"
+                android:text="Lưu thay đổi"
+                android:textColor="@color/_bg__th_m_m_i_tr__1_color"
+                android:textSize="16sp"
+                app:backgroundTint="@null"
+                app:icon="@drawable/img_reset"
+                app:iconGravity="textStart" />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+        </FrameLayout>
+
 
         <TextView
             android:id="@+id/txt_move_change_password"

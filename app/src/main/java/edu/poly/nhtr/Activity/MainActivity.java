@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -28,7 +30,7 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
-    boolean isBlueBackground = false;
+    private boolean isBlueBackground = false;
     // Other code...
     Button changeProfile;
     private String encodedImage;
@@ -46,36 +48,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
-//    {
-//        int previewWidth = 150;
-//        int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
-//        Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
-//        byte[] bytes = byteArrayOutputStream.toByteArray();
-//        return Base64.encodeToString(bytes, Base64.DEFAULT);
-//    }
-
     private Bitmap getConversionImage(String encodedImage){
         byte[] bytes = Base64.decode(encodedImage,Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         int width = 150;
         int height = 150;
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-        //return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
         return resizedBitmap;
     }
 
     private void loadUserDetails(){
         binding.name.setText(preferenceManager.getString(Constants.KEY_NAME));
         try {
-
-//            byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//            encodedImage = encodedImage(bitmap);
-//            byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
-//            Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
             binding.imageProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
             binding.txtAddImage.setVisibility(View.INVISIBLE);
         }catch (Exception e){
@@ -88,25 +72,183 @@ public class MainActivity extends AppCompatActivity {
         // Khai báo một biến để theo dõi trạng thái của background
 
 
-// Thiết lập sự kiện onClickListener cho view
-        binding.frmQlphong.setOnClickListener(new View.OnClickListener() {
+        // Thiết lập sự kiện onClickListener cho view
+        binding.frmQlphong.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                // Kiểm tra trạng thái hiện tại của background và thay đổi nó
-                if (!isBlueBackground) {
-                    binding.frmQlphong.setBackgroundResource(R.drawable.background_feature_blue);
-                } else {
-                    binding.frmQlphong.setBackgroundResource(R.drawable.backgroundfeature);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmQlphong.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmQlphong.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
                 }
-                // Cập nhật trạng thái của background
-                isBlueBackground = !isBlueBackground;
+                return true;
+            }
+        });
+        binding.frmQlDichVu.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmQlDichVu.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmQlDichVu.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmQlHoaDon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmQlHoaDon.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmQlHoaDon.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmQlKhachThue.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmQlKhachThue.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmQlKhachThue.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmQlHopDong.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmQlHopDong.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmQlHopDong.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmTraPhong.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmTraPhong.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmTraPhong.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmTaoHoaDon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmTaoHoaDon.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmTaoHoaDon.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmTaoHoaDonNhanh.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmTaoHoaDonNhanh.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmTaoHoaDonNhanh.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
+            }
+        });
+        binding.frmTaoHopDong.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Nhấn giữ: Thay đổi background
+                        binding.frmTaoHopDong.setBackgroundResource(R.drawable.background_feature_blue);
+                        isBlueBackground = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        // Nhả nút: Trở lại background ban đầu
+                        binding.frmTaoHopDong.setBackgroundResource(R.drawable.backgroundfeature);
+                        isBlueBackground = false;
+                        break;
+                }
+                return true;
             }
         });
 
 
         binding.btnSetting.setOnClickListener(v->
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class)));
-        binding.QuanLyHoaDon.setOnClickListener(v->
+        binding.frmQlHoaDon.setOnClickListener(v->
                 startActivity(new Intent(getApplicationContext(), BillManagement.class)));
     }
 

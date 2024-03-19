@@ -173,6 +173,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_qlKhachThue"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
@@ -210,6 +211,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_qlHopDong"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
@@ -261,6 +263,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_qlDichVu"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
@@ -297,6 +300,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_qlHoaDon"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
@@ -334,6 +338,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_traPhong"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
@@ -414,7 +419,8 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
-                            android:layout_width="70dp"
+                            android:id="@+id/frm_TaoHoaDonNhanh"
+                            android:layout_width="65dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
                             android:layout_marginBottom="20dp"
@@ -450,6 +456,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_taoHoaDon"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
@@ -487,6 +494,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <FrameLayout
+                            android:id="@+id/frm_taoHopDong"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
