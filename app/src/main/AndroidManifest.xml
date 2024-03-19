@@ -15,6 +15,12 @@
         android:theme="@style/Theme.NhàTrọ"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.SetNewPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ConfirmAccountForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.BillManagement"
             android:exported="false" />
         <activity
@@ -26,6 +32,7 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -50,6 +57,6 @@
         <activity
             android:name=".Activity.SettingsActivity"
             android:exported="true" />
-</application>
+    </application>
 
 </manifest>

@@ -53,7 +53,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!edt_pass.getText().toString().equals(preferenceManager.getString(Constants.KEY_PASSWORD))){
-                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu không chính xác" +preferenceManager.getString(Constants.KEY_PASSWORD), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangePasswordActivity.this, "Mật khẩu không chính xác" , Toast.LENGTH_SHORT).show();
                 }else if(edt_newPass.getText().toString().isEmpty())
                     Toast.makeText(ChangePasswordActivity.this, "Hãy nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
                 else if(edt_newPass.getText().toString().equals(edt_pass.getText().toString()))
@@ -76,7 +76,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
-                                                        Toast.makeText(ChangePasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
+                                                        //Toast.makeText(ChangePasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
                                                         preferenceManager.putString(Constants.KEY_PASSWORD, edt_newPass.getText().toString());
                                                         ClearAll();
                                                     }
@@ -84,7 +84,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                 .addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-
                                                         user.updatePassword(preferenceManager.getString(Constants.KEY_PASSWORD))
                                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                     @Override
@@ -93,10 +92,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                                         }
                                                                     }
                                                                 });
-
                                                     }
                                                 });
-
                                     }else {
                                         Toast.makeText(ChangePasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
                                         Log.e("FirestoreError", "Error: " + task.getException().getMessage());
