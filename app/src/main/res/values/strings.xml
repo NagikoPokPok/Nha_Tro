@@ -72,6 +72,24 @@
     <string name="v_ch_ng_t_i">Về chúng tôi</string>
     <string name="ng_xu_t">Đăng xuất</string>
     <string name="th_m_m_i_nh_tr">Thêm mới nhà trọ</string>
+    <string name="lo_i_h_nh_cho_thu">Loại hình cho thuê</string>
+    <string name="lui_ve">Lui ve</string>
+    <string name="v_d_th_a">Ví dụ:Thổ địa</string>
+    <string name="t_n_nh_tr">Tên nhà trọ</string>
+    <string name="sao">*</string>
+    <string name="t_ng_t_o_ph_ng">Tự động tạo phòng?</string>
+    <string name="t_o_ph_ng_t_ng_theo_t_ng_s_ph_ng_b_n_nh_p_b_n_d_i_s_gi_p_vi_c_t_o_ph_ng_nhanh_h_n">Tạo phòng tự động theo tổng số phòng bạn nhập bên dưới sẽ giúp việc tạo phòng nhanh hơn</string>
+    <string name="s_ph_ng">Số phòng</string>
+    <string name="nh_p_s_ph_ng">Nhập số phòng</string>
+    <string name="s_ph_ng_tr_n_1_t_ng_t_ng_s_ph_ng_s_t_ng">Số phòng trên 1 tầng = Tổng số phòng / Số tầng</string>
+    <string name="ch_n_s_t_ng_bao_g_m_t_ng_tr_t">Chọn số tầng (bao gồm tầng trệt)</string>
+    <string name="ch_n_s_t_ng">Chọn số tầng</string>
+    <string name="a_ch_amp_v_tr"><![CDATA[Địa chỉ & vị trí]]></string>
+    <string name="th_ng_tin_v_a_ch_v_v_tr_c_a_nh_tr_gi_p_kh_ch_thu_t_m_ki_m_nh_tr_d_d_ng_ch_nh_x_c_h_n">Thông tin về địa chỉ và vị trí của nhà trọ, giúp khách thuê tìm kiếm nhà trọ dễ dàng, chính xác hơn</string>
+    <string name="nh_p_a_ch_v_ch_n_v_tr_tr_n_b_n">Nhập địa chỉ và chọn vị trí trên bản đồ</string>
 
     <!--    Thêm mới trọ-->
+    <string-array name="motels">
+        <item>Nhà trọ</item>
+    </string-array>
 </resources>

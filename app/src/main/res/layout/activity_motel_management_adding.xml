@@ -1,52 +1,377 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/gray"
-    android:orientation="vertical"
     tools:context=".Activity.MotelManagement_Adding">
 
-
-    <RelativeLayout
+    <!-- Khung thêm trọ -->
+    <FrameLayout
         android:id="@+id/khung_them_tro"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="80dp"
-        android:background="@drawable/round_back_white_frame">
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Nút back -->
         <ImageView
             android:id="@+id/btn_back"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/back_btn"/>
+            android:src="@drawable/back_btn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/lui_ve" />
 
+        <!-- Tiêu đề -->
+    </FrameLayout>
+
+    <!-- Guideline -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="1.0" />
+
+    <!-- Layout chứa loại hình trọ -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_add1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/khung_them_tro"
+        app:layout_constraintVertical_bias="0.02">
+
+        <!-- Loại hình trọ -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/loai_hinh_tro_layout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/lo_i_h_nh_cho_thu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            
+            app:startIconDrawable="@drawable/icon_motel">
+
+            <AutoCompleteTextView
+                android:id="@+id/loai_hinh_tro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="16dp"
+                android:text="@string/lo_i_h_nh_cho_thu" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Tên nhà trọ TextView -->
         <TextView
+            android:id="@+id/ten_nha_tro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/th_m_m_i_nh_tr"
+            android:layout_marginTop="20dp"
+            android:text="@string/t_n_nh_tr"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:textColor="#090909"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="25dp"
-            android:layout_toEndOf="@id/btn_back"/>
-    </RelativeLayout>
+            app:layout_constraintStart_toStartOf="@id/loai_hinh_tro_layout"
+            app:layout_constraintTop_toBottomOf="@+id/loai_hinh_tro_layout" />
+
+        <!-- Dấu "*" -->
+        <TextView
+            android:id="@+id/star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/sao"
+            android:textColor="@color/error"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/ten_nha_tro"
+            app:layout_constraintStart_toEndOf="@id/ten_nha_tro" />
 
 
-    <ScrollView
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp">
-        <RelativeLayout
-            android:layout_marginTop="30dp"
-            android:id="@+id/thong_tin_1"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tenNhaTro_layout"
+            style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@drawable/round_back_white_frame">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ten_nha_tro"
+            app:layout_constraintTop_toBottomOf="@+id/ten_nha_tro"
 
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_tenNhaTro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/v_d_th_a"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/edt_TuDongThemPhong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/t_ng_t_o_ph_ng"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/loai_hinh_tro_layout"
+            app:layout_constraintTop_toBottomOf="@+id/tenNhaTro_layout" />
+
+        <RelativeLayout
+            android:id="@+id/tuDong_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edt_TuDongThemPhong">
+
+            <TextView
+                android:id="@+id/edt_GiaiThich"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="5dp"
+                android:layout_toStartOf="@id/switch_compat"
+                android:text="@string/t_o_ph_ng_t_ng_theo_t_ng_s_ph_ng_b_n_nh_p_b_n_d_i_s_gi_p_vi_c_t_o_ph_ng_nhanh_h_n"
+                android:textSize="15sp"
+                android:textStyle="normal">
+            </TextView>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_compat"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:switchMinWidth="90dp"
+                android:theme="@style/notificationSwitch"
+                android:thumb="@drawable/compat_thumb"
+                app:track="@drawable/compat_track" />
         </RelativeLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <!-- Layout số tầng -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/soTang_layout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/ch_n_s_t_ng_bao_g_m_t_ng_tr_t"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tuDong_layout">
+
+            <AutoCompleteTextView
+                android:id="@+id/edt_soTang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="16dp"
+                android:text="@string/ch_n_s_t_ng" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- Số phòng -->
+        <TextView
+            android:id="@+id/soPhong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/s_ph_ng"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/loai_hinh_tro_layout"
+            app:layout_constraintTop_toBottomOf="@+id/soTang_layout" />
+
+        <!-- Dấu "*" -->
+        <TextView
+            android:id="@+id/star1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/sao"
+            android:textColor="@color/error"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/soPhong"
+            app:layout_constraintStart_toEndOf="@id/soPhong" />
+
+        <!--        Layout nhập số phòng-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/soPhong_layout"
+            style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/soPhong"
+            app:layout_constraintTop_toBottomOf="@+id/soPhong"
+
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_soPhong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/nh_p_s_ph_ng"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!--        Giải thích cơ chế số phòng-->
+
+        <TextView
+            android:id="@+id/edt_GiaiThich2"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/s_ph_ng_tr_n_1_t_ng_t_ng_s_ph_ng_s_t_ng"
+            android:textColor="#FAD800"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ten_nha_tro"
+            app:layout_constraintTop_toBottomOf="@+id/soPhong_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_add2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_add1"
+        app:layout_constraintVertical_bias="0.02">
+
+        <!-- Tên nhà trọ TextView -->
+
+        <!-- Dấu "*" -->
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/diachi_vitri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/a_ch_amp_v_tr"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.04"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/star3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/sao"
+            android:textColor="@color/error"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/diachi_vitri"
+            app:layout_constraintStart_toEndOf="@id/diachi_vitri" />
+
+        <TextView
+            android:id="@+id/edt_GiaiThich3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/th_ng_tin_v_a_ch_v_v_tr_c_a_nh_tr_gi_p_kh_ch_thu_t_m_ki_m_nh_tr_d_d_ng_ch_nh_x_c_h_n"
+            android:textSize="15sp"
+            android:paddingStart="16dp"
+            android:layout_marginTop="10dp"
+            android:paddingEnd="16dp"
+            android:textColor="#A8A8A8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/diachi_vitri"
+            android:textStyle="normal" />
+
+        <RelativeLayout
+            android:id="@+id/nhapDiaChi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edt_GiaiThich3">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_them"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+
+                android:background="@drawable/button_add"
+                android:backgroundTint="@null"
+                android:text="+"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                app:backgroundTint="@null" />
+
+            <TextView
+                android:id="@+id/edt_nhapDiaChi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/btn_them"
+                android:text="@string/nh_p_a_ch_v_ch_n_v_tr_tr_n_b_n"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
