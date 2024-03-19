@@ -132,11 +132,12 @@
                         >
 
                         <FrameLayout
+                            android:id="@+id/frm_qlphong"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_gravity="center"
                             android:layout_marginBottom="20dp"
-                            android:background="@drawable/backgroundfeature">
+                            android:background="@drawable/pressed_button">
 
                             <com.makeramen.roundedimageview.RoundedImageView
                                 android:id="@+id/img_qlPhong"
@@ -144,7 +145,8 @@
                                 android:layout_height="40dp"
                                 android:layout_gravity="center"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/quanlyphong" />
+                                android:src="@drawable/quanlyphong"
+                                />
                         </FrameLayout>
 
                         <TextView
