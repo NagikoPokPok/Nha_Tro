@@ -104,20 +104,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        openSettings();
+        binding.btnSetting.setOnClickListener(v->
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class)));
+        binding.QuanLyHoaDon.setOnClickListener(v->
+                startActivity(new Intent(getApplicationContext(), BillManagement.class)));
     }
 
-    private void openSettings() {
-        binding.btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-    }
     // Other methods...
 
     public void showToast(String message) {

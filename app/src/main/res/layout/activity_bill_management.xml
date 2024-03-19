@@ -16,8 +16,8 @@
         android:background="@drawable/backgroundtop">
         <ImageView
             android:id="@+id/btn_back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:src="@drawable/img_back2"
             app:layout_constraintTop_toTopOf="parent"

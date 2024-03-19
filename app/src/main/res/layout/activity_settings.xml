@@ -178,6 +178,7 @@
 
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/linear_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/round_back_white"
@@ -294,29 +295,28 @@
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/frm_sign_up"
+            android:id="@+id/frm_log_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:animateLayoutChanges="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:animateLayoutChanges="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnlogout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_marginTop="0dp"
                 android:text="Đăng xuất"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
+                app:iconGravity="end"
+                android:background="@drawable/pressed_button"
+                app:backgroundTint="@null"
+                app:icon = "@drawable/icon_logout"
                 android:textStyle="bold"
-                app:backgroundTint="#E15528"
-                app:icon = "@drawable/icon_logout" />
+                android:textSize="18sp"/>
 
             <ProgressBar
                 android:id="@+id/progressBar"
