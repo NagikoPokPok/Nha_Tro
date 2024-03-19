@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             encodedImage = encodedImage(bitmap);
-
             byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
             Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
             binding.imageProfile.setImageBitmap(encodedBitmap);
