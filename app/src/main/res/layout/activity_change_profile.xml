@@ -30,137 +30,130 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="60dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="12dp"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/layoutImage"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="4dp"
-                    android:layout_marginTop="60dp"
-                    android:layout_marginHorizontal="24dp"
-                    >
-                    <LinearLayout
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp">
+
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/img_profile"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/backgrund_image_2"
+                        android:scaleType="centerCrop"
+                        app:riv_oval="true" />
+
+                    <TextView
+                        android:id="@+id/txt_add_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Thêm ảnh"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </FrameLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_name1"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="12dp"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:hint="Tên của bạn"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <FrameLayout
-                            android:id="@+id/layoutImage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_gravity="center"
-                            >
-                            <com.makeramen.roundedimageview.RoundedImageView
-                                android:id="@+id/img_profile"
-                                android:layout_width="80dp"
-                                android:layout_height="80dp"
-                                android:background="@drawable/backgrund_image_2"
-                                android:scaleType="centerCrop"
-                                app:riv_oval="true" />
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/txt_add_image"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="Thêm ảnh"
-                                android:textColor="@color/white"
-                                android:textSize="12sp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_phoneNumber1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Số điện thoại"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        </FrameLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_address1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Địa chỉ"
+                        android:inputType="textMultiLine" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-                            android:layout_marginTop="10dp">
+            </LinearLayout>
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/edt_name1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Tên của bạn"
-                                android:inputType="text" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-                            >
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/edt_phoneNumber1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Số điện thoại"
-                                android:inputType="number" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-                            >
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/edt_address1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Địa chỉ"
-                                android:inputType="textMultiLine" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/custom_button"
             android:text="Lưu thay đổi"
             android:textColor="@color/_bg__th_m_m_i_tr__1_color"
-            android:background="@drawable/custom_button"
             android:textSize="16sp"
-            app:icon = "@drawable/img_reset"
-            app:iconGravity="textStart"
-            app:backgroundTint="@null"/>
+            app:backgroundTint="@null"
+            app:icon="@drawable/img_reset"
+            app:iconGravity="textStart" />
 
         <TextView
-                    android:id="@+id/txt_move_change_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/gelasio"
-                    android:text="Đổi mật khẩu"
-                    android:textColor="#F44336"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"/>
-                <View
-                    android:layout_width="120dp"
-                    android:layout_height="1dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:background="@color/white" />
+            android:id="@+id/txt_move_change_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/gelasio"
+            android:text="ĐỔI MẬT KHẨU"
+            android:textColor="#3F51B5"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="120dp"
+            android:layout_height="1dp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:background="#3F51B5" />
 
 
-
-
-
-
-
-            </LinearLayout>
-
-
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
