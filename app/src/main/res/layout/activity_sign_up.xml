@@ -97,7 +97,7 @@
             <RelativeLayout
                 android:id="@+id/layout_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.855"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,14 +108,14 @@
                     android:id="@+id/edt_password"
                     android:layout_gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="12dp"
                     android:backgroundTint="#B1B8DF"
                     android:drawableLeft="@drawable/ic_pass_blue"
                     android:drawablePadding="13dp"
                     android:hint="Mật khẩu"
                     android:inputType="textPassword"
-                    android:layout_marginStart="10dp"
+
 
                     android:paddingBottom="20dp"
                     android:textColor="@color/black"
@@ -157,7 +157,6 @@
                     android:drawablePadding="13dp"
                     android:hint="Xác nhận mật khẩu"
                     android:inputType="textPassword"
-                    android:layout_marginStart="10dp"
                     android:paddingBottom="20dp"
                     android:textColor="@color/black"
                     android:textColorHint="#1E275C"

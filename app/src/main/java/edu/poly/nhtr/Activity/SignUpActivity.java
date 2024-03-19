@@ -171,6 +171,7 @@ public class SignUpActivity extends AppCompatActivity {
                     } else {
                         // Xử lý lỗi truy vấn
                         Toast.makeText(this, "Lỗi truy vấn, vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        loading(false);
                     }
                 });
     }
