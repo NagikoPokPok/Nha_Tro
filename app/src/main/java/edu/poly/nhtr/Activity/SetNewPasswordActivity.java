@@ -118,7 +118,7 @@ public class SetNewPasswordActivity extends AppCompatActivity {
     }
     private void SignInAuth(){
         Log.e("Account",email + " " + password);
-        mAuth.signInWithEmailAndPassword("cuong2432004@gmail.com", "123456")
+        mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
