@@ -203,8 +203,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
         Random randomOtp = new Random();
         random = randomOtp.nextInt(900000) + 100000; // Generate a random 6-digit OTP
 
-        SendMail mail = new SendMail("nhatrohomemate@gmail.com", "bpvd hqxd xbho gdyl", email, "Login Signup app's OTP",
-                "Your OTP is -> " + random);
+        SendMail mail = new SendMail("nhatrohomemate@gmail.com", "bpvd hqxd xbho gdyl", email, "HOMEMATE's OTP VERIFICATION",
+                "Mã xác thực của bạn là:  \n" + random);
         mail.execute();
         //"nhatrohomemate@gmail.com", "orjz scow qdli loqh"
         //"iuxq ggco nwld zvyx
