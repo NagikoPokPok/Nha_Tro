@@ -39,6 +39,13 @@
         <item name="cornerFamilyBottomLeft">rounded</item>
     </style>
 
+    <style name="RoundedTextInputLayout" parent="">
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
+        <item name="cornerSizeBottomLeft">16dp</item>
+    </style>
+
 
 
 
@@ -56,5 +63,8 @@
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
         <item name="android:colorForeground">#99000000</item>
     </style>
+
+
+
 
 </resources>
