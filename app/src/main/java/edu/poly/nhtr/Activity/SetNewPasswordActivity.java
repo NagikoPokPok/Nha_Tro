@@ -83,53 +83,54 @@ public class SetNewPasswordActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                       password = documentSnapshot.getString(Constants.KEY_PASSWORD);
+                       preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
+                       preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
+                       password = preferenceManager.getString(Constants.KEY_PASSWORD);
 
-                       if(mAuth.getCurrentUser()==null) SignInAuth();
-                       FirebaseUser user = mAuth.getCurrentUser();
-                       user.updatePassword(newPass.getText().toString())
-                               .addOnCompleteListener(task1 -> {
-                                   if (task1.isSuccessful()) {
-                                       Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                                       //preferenceManager.putString(Constants.KEY_PASSWORD,edt_newPass.getText().toString());
-                                       DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID));
-                                       documentReference.update(Constants.KEY_PASSWORD,newPass.getText().toString())
-                                               .addOnSuccessListener(unused -> {
-                                                   Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
-                                                   //preferenceManager.putString(Constants.KEY_PASSWORD, newPass.getText().toString());
-                                                   ClearAll();
-                                               })
-                                               .addOnFailureListener(e -> user.updatePassword(preferenceManager.getString(Constants.KEY_PASSWORD))
-                                                       .addOnCompleteListener(task11 -> {
-                                                           if (task11.isSuccessful()) {
-                                                           }
-                                                       }));
-                                   }else {
-                                       Toast.makeText(SetNewPasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
-                                       Log.e("FirestoreError", "Error: " + Objects.requireNonNull(task1.getException()).getMessage());
-                                   }
-                               });
-                   }else Toast.makeText(this, "email không đúng " + email, Toast.LENGTH_SHORT).show();
+                       SignInAuth();
+                       FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                       if (user != null) {
+                           user.updatePassword(newPass.getText().toString())
+                                   .addOnCompleteListener(task1 -> {
+                                       if (task1.isSuccessful()) {
+                                           Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                           //preferenceManager.putString(Constants.KEY_PASSWORD,edt_newPass.getText().toString());
+                                           DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID));
+                                           documentReference.update(Constants.KEY_PASSWORD,newPass.getText().toString())
+                                                   .addOnSuccessListener(unused -> {
+                                                       Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
+                                                       //preferenceManager.putString(Constants.KEY_PASSWORD, newPass.getText().toString());
+                                                       ClearAll();
+                                                   })
+                                                   .addOnFailureListener(e -> user.updatePassword(preferenceManager.getString(Constants.KEY_PASSWORD))
+                                                           .addOnCompleteListener(task11 -> {
+                                                               if (task11.isSuccessful()) {
+                                                               }
+                                                           }));
+                                       }else {
+                                           Toast.makeText(SetNewPasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
+                                           Log.e("FirestoreError", "Error: " + Objects.requireNonNull(task1.getException()).getMessage());
+                                       }
+                                   });
+                       }else Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
+                   }else Toast.makeText(this, " " + email, Toast.LENGTH_SHORT).show();
                 });
     }
     private void SignInAuth(){
         Log.e("Account",email + " " + password);
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
+        mAuth.signInWithEmailAndPassword("cuong2432004@gmail.com", "123456")
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.e(TAG, "signInWithEmail:success");
 
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(SetNewPasswordActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.e(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(SetNewPasswordActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
 
-                        }
                     }
                 });
     }
