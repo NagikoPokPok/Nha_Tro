@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +28,27 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ActivitySettingsBinding binding;
     PreferenceManager preferenceManager;
+
+
+    private Bitmap getConversionImage(String encodedImage){
+        byte[] bytes = Base64.decode(encodedImage,Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        int width = 150;
+        int height = 150;
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+        return resizedBitmap;
+    }
+
+    private void loadUserDetails(){
+        binding.edtName.setText(preferenceManager.getString(Constants.KEY_NAME));
+        try {
+            binding.imgProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
+            binding.phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
+            binding.imgAva.setVisibility(View.INVISIBLE);
+        }catch (Exception e){
+            Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +56,17 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setListeners();
+        loadUserDetails();
 
     }
 
     private void setListeners() {
         binding.btnlogout.setOnClickListener(v -> {
-            logout();
+            try {
+                logout();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
         binding.ChangeProfile.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
@@ -102,11 +129,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
-    public void logout() {
-
-        loading(true);
+    public void logout() throws InterruptedException {
         showToast("Signing out ...");
-
         // Đăng xuất khỏi Firebase
         FirebaseAuth.getInstance().signOut();
 
@@ -121,7 +145,6 @@ public class SettingsActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
-        loading(false);
     }
 
     private void loading(Boolean isLoading)

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,24 +22,31 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.databinding.ActivityForgotPasswordBinding;
+import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.utilities.Constants;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     Button setPassword;
 
 
+    ProgressBar progressBar;
     ImageView back;
     TextView email,warning;
     ProgressDialog progressDialog;
+    ActivityForgotPasswordBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityForgotPasswordBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setContentView(R.layout.activity_forgot_password);
         setPassword = findViewById(R.id.btn_DatLaiMK);
         email = findViewById(R.id.edt_emailForgotPassword);
         back = findViewById(R.id.img_back);
         warning = findViewById(R.id.txt_warning);
         progressDialog = new ProgressDialog(this);
+        progressBar = findViewById(R.id.progressBar);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,9 +56,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
         setPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loading(true);
                 progressDialog.show();
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -61,6 +72,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     warning.setText("x Email không hợp lệ");
                     Toast.makeText(ForgotPasswordActivity.this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
+                    loading(false);
                 }else{
                     FirebaseFirestore databse = FirebaseFirestore.getInstance();
                     databse.collection(Constants.KEY_COLLECTION_USERS)
@@ -75,13 +87,16 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                                     progressDialog.dismiss();
                                                     if (task.isSuccessful()) {
                                                         Toast.makeText(ForgotPasswordActivity.this, "Email đã được gửi đi", Toast.LENGTH_SHORT).show();
+                                                        loading(false);
 
                                                     } else
                                                         Toast.makeText(ForgotPasswordActivity.this, "Không thể gửi Email", Toast.LENGTH_SHORT).show();
+                                                    loading(false);
                                                 }
                                             });
                                 }
                                 else{
+                                    loading(false);
                                     progressDialog.dismiss();
                                     warning.setText("x Tài khoản chưa được đăng kí");
                                     Toast.makeText(ForgotPasswordActivity.this, "Email không tồn tại", Toast.LENGTH_SHORT).show();
@@ -95,5 +110,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void loading(Boolean isLoading)
+    {
+        if(isLoading)
+        {
+            setPassword.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+        }else {
+            progressBar.setVisibility(View.INVISIBLE);
+            setPassword.setVisibility(View.VISIBLE);
+        }
     }
 }

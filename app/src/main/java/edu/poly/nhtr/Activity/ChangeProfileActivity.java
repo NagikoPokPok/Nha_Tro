@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
     TextView warning, txt_move_changePassword, txt_add_image;
     EditText name, phoneNum, diachi;
     ImageView imageProfile,imgBack;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         imageProfile = findViewById(R.id.img_profile);
         btn_save = findViewById(R.id.btn_save);
         txt_add_image = findViewById(R.id.txt_add_image);
+        progressBar = findViewById(R.id.progressBar);
 
         //warning = findViewById(R.id.txt_warning1);
         txt_move_changePassword = findViewById(R.id.txt_move_change_password);
@@ -186,6 +189,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
     private void updateProfile() {
+        loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_EMAIL,preferenceManager.getString(Constants.KEY_EMAIL));
@@ -199,6 +203,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        loading(false);
                         Toast.makeText(ChangeProfileActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
                         RefreshPrefernceManager();
                     }
@@ -206,6 +211,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        loading(false);
                         Toast.makeText(ChangeProfileActivity.this, "Cập nhật tông tin thất bại", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -226,9 +232,9 @@ public class ChangeProfileActivity extends AppCompatActivity {
         if(isLoading)
         {
             btn_save.setVisibility(View.INVISIBLE);
-            binding.progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
         }else {
-            binding.progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
             btn_save.setVisibility(View.VISIBLE);
         }
     }

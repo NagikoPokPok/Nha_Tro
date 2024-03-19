@@ -71,7 +71,7 @@
                             android:layout_height="match_parent"
                             style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
 
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="0dp"
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -113,8 +113,6 @@
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
-
-
 
 
                 <Button
