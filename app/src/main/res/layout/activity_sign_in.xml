@@ -90,10 +90,12 @@
             android:layout_gravity="center"
             android:layout_marginTop="28dp"
             android:background="@drawable/custome_edittext"
+            android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/ic_account"
             android:drawablePadding="13dp"
             android:fontFamily="@font/gelasio"
             android:hint="Email"
+            android:maxLines="1"
             android:imeOptions="actionNext"
             android:padding="10dp"
             android:paddingEnd="15dp"
@@ -194,8 +196,12 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="LOGIN"
+
+
+
             app:iconGravity="textStart"
             android:background="@drawable/custom_button"
+
             app:backgroundTint="@null"
             app:icon = "@drawable/icon_getin"
             android:textSize="16sp"
