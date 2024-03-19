@@ -26,8 +26,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.appcheck.FirebaseAppCheck;
-import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
