@@ -80,7 +80,7 @@
             android:id="@+id/phoneNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0386956815"
+            android:text="0905100300"
             android:textColor="@color/textSetting"
             android:textSize="12sp"
             android:layout_gravity="center"/>
@@ -199,8 +199,7 @@
                     android:layout_width="40dp"
                     android:id="@+id/send_email"
                     android:layout_height="40dp"
-                    android:src="@drawable/icon_message"
-                    android:background="@drawable/round_back_send_message"
+                    android:background="@drawable/mail02"
                     android:padding="12dp"/>
 
                 <TextView
@@ -234,8 +233,7 @@
                     android:layout_width="40dp"
                     android:id="@+id/help"
                     android:layout_height="40dp"
-                    android:src="@drawable/icon_information"
-                    android:background="@drawable/round_back_help"
+                    android:background="@drawable/question_icon01"
                     android:padding="12dp"/>
 
                 <TextView
@@ -269,8 +267,7 @@
                     android:layout_width="40dp"
                     android:id="@+id/about_us"
                     android:layout_height="40dp"
-                    android:src="@drawable/icon_about_us"
-                    android:background="@drawable/round_back_information"
+                    android:background="@drawable/information01"
                     android:padding="12dp"/>
 
                 <TextView
@@ -300,7 +297,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:animateLayoutChanges="true">

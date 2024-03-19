@@ -22,8 +22,7 @@ public class BillManagement extends AppCompatActivity {
     }
 
     public void setListners(){
-        binding.btnBack.setOnClickListener(v->
-                startActivity(new Intent(getApplicationContext(), MainActivity.class)));
+        binding.btnBack.setOnClickListener(v->onBackPressed());
     }
 
 }

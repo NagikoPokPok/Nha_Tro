@@ -67,11 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setListeners() {
-
-        // Khai báo một biến để theo dõi trạng thái của background
-
-
+    private void changeBackgroundFeature(){
         // Thiết lập sự kiện onClickListener cho view
         binding.frmQlphong.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -129,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             }
+
         });
         binding.frmQlKhachThue.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -195,13 +192,18 @@ public class MainActivity extends AppCompatActivity {
                         // Nhấn giữ: Thay đổi background
                         binding.frmTaoHoaDon.setBackgroundResource(R.drawable.background_feature_blue);
                         isBlueBackground = true;
+
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
                         // Nhả nút: Trở lại background ban đầu
                         binding.frmTaoHoaDon.setBackgroundResource(R.drawable.backgroundfeature);
                         isBlueBackground = false;
+                        if (v.getId() == R.id.frm_qlHoaDon) {
+                            startActivity(new Intent(getApplicationContext(), BillManagement.class));
+                        }
                         break;
+
                 }
                 return true;
             }
@@ -244,11 +246,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+    private void setListeners() {
 
-
+        changeBackgroundFeature();
+        // Khai báo một biến để theo dõi trạng thái của background
         binding.btnSetting.setOnClickListener(v->
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class)));
-        binding.frmQlHoaDon.setOnClickListener(v->
+        binding.frmQlHoaDon.setOnClickListener(v ->
                 startActivity(new Intent(getApplicationContext(), BillManagement.class)));
     }
 

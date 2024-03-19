@@ -55,8 +55,9 @@ public class SettingsActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setListeners();
         loadUserDetails();
+        setListeners();
+
 
     }
 
