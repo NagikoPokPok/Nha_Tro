@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -99,6 +100,17 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(SignInActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
         }
     }
+    private void loading(Boolean isLoading)
+    {
+        if(isLoading)
+        {
+            binding.buttonSignIn.setVisibility(View.INVISIBLE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+        }else {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+            binding.buttonSignIn.setVisibility(View.VISIBLE);
+        }
+    }
 
     private void setListeners() {
         binding.buttonSignIn.setOnClickListener(v->{
@@ -123,7 +135,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void signIn(){
-        //loading(true);
+        loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
@@ -136,6 +148,7 @@ public class SignInActivity extends AppCompatActivity {
                         preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
                         preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
+                        preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE));
                         preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
                         preferenceManager.putString(Constants.KEY_PHONE_NUMBER, documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
                         try {
@@ -165,7 +178,7 @@ public class SignInActivity extends AppCompatActivity {
                                 });
 
                     }else {
-                        //loading(false);
+                        loading(false);
                         showToast("Sai tài khoản hoặc mật khẩu");
                     }
                 });

@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.btnLogout.setOnClickListener(v -> logout());
+        binding.btnlogout.setOnClickListener(v -> {loading(true);logout();});
         binding.ChangeProfile.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, ChangeProfileActivity.class);
             startActivity(intent);
@@ -101,10 +101,12 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
     public void logout() {
+        loading(true);
         showToast("Signing out ...");
 
         // Đăng xuất khỏi Firebase
         FirebaseAuth.getInstance().signOut();
+        loading(false);
 
         // Xóa cài đặt về người dùng
         PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
@@ -117,6 +119,18 @@ public class SettingsActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void loading(Boolean isLoading)
+    {
+        if(isLoading)
+        {
+            binding.btnlogout.setVisibility(View.INVISIBLE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+        }else {
+            binding.progressBar.setVisibility(View.INVISIBLE);
+            binding.btnlogout.setVisibility(View.VISIBLE);
+        }
     }
 
 }

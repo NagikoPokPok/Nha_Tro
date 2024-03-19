@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 //            byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
 //            Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
             binding.imageProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
-
             binding.txtAddImage.setVisibility(View.INVISIBLE);
         }catch (Exception e){
             Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();

@@ -63,18 +63,29 @@ public class ChangeProfileActivity extends AppCompatActivity {
         loadUserDetail();
         setListener();
     }
+
+    private Bitmap getConversionImage(String encodedImage){
+        byte[] bytes = Base64.decode(encodedImage,Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        int width = 150;
+        int height = 150;
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+        //return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        return resizedBitmap;
+    }
     private void loadUserDetail(){
 
        try {
 
-           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
-           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-           encodedImage = encodedImage(bitmap);
+//           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
+//           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//           encodedImage = encodedImage(bitmap);
+//
+//           byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
+//           Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
+//           imageProfile.setImageBitmap(encodedBitmap);
 
-           byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
-           Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
-           imageProfile.setImageBitmap(encodedBitmap);
-
+           imageProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
            txt_add_image.setVisibility(View.INVISIBLE);
        }catch (Exception e){
            Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
