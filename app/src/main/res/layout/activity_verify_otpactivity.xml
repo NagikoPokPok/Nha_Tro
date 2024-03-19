@@ -185,10 +185,13 @@
 
         <Button
             android:id="@+id/btnVerify"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
             android:background="@drawable/custom_button"
+            android:layout_gravity="center"
+            app:icon = "@drawable/ic_verify"
+            app:iconGravity="textStart"
             app:backgroundTint="@null"
             android:text="VERIFY"
             android:textColor="@color/white"

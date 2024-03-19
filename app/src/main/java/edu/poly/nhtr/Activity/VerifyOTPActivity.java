@@ -44,8 +44,6 @@ import papaya.in.sendmail.SendMail;
 public class VerifyOTPActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
 
-
-
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
     private TextView resend;
     private String verificationId;
@@ -53,6 +51,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
     private String email="", name="", password="", encodedImage="";
     private int random = 0;
     private boolean resendEnable = false;
+    private ProgressBar progressBar;
+    private Button btnVerify ;
 
     private int resendTime = 60;
 
@@ -89,8 +89,8 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
 
 
-        final ProgressBar progressBar = findViewById(R.id.progressBar);
-        final Button btnVerify = findViewById(R.id.btnVerify);
+        progressBar = findViewById(R.id.progressBar);
+        btnVerify = findViewById(R.id.btnVerify);
 
 
         random();
@@ -105,8 +105,10 @@ public class VerifyOTPActivity extends AppCompatActivity {
         btnVerify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loading(true);
                 if (checkEmpty()) {
                     Toast.makeText(VerifyOTPActivity.this, "Please enter valid code", Toast.LENGTH_SHORT).show();
+                    loading(false);
 
                 } else {
                     String code = inputCode1.getText().toString() +
@@ -118,6 +120,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
                     if (!code.equals(String.valueOf(random))) {
                         Toast.makeText(VerifyOTPActivity.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
+                        loading(false);
                     } else {
 
                         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -164,6 +167,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                     public void onFailure(@NonNull Exception e) {
                                         Toast.makeText(VerifyOTPActivity.this, "Add failed.",
                                                 Toast.LENGTH_SHORT).show();
+                                        loading(false);
 
                                     }
                                 });
@@ -415,5 +419,17 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
             }
         }.start();
+    }
+
+    private void loading(Boolean isLoading)
+    {
+        if(isLoading)
+        {
+            btnVerify.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+        }else {
+            progressBar.setVisibility(View.INVISIBLE);
+            btnVerify.setVisibility(View.VISIBLE);
+        }
     }
 }
