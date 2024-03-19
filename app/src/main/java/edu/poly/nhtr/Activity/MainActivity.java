@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
@@ -13,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.IconCompat;
 
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +28,7 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
+    boolean isBlueBackground = false;
     // Other code...
     Button changeProfile;
     private String encodedImage;
@@ -79,6 +84,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+
+        // Khai báo một biến để theo dõi trạng thái của background
+
+
+// Thiết lập sự kiện onClickListener cho view
+        binding.frmQlphong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Kiểm tra trạng thái hiện tại của background và thay đổi nó
+                if (!isBlueBackground) {
+                    binding.frmQlphong.setBackgroundResource(R.drawable.background_feature_blue);
+                } else {
+                    binding.frmQlphong.setBackgroundResource(R.drawable.backgroundfeature);
+                }
+                // Cập nhật trạng thái của background
+                isBlueBackground = !isBlueBackground;
+            }
+        });
+
+
 
         openSettings();
     }

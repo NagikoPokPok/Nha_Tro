@@ -137,7 +137,7 @@
                             android:layout_height="70dp"
                             android:layout_gravity="center"
                             android:layout_marginBottom="20dp"
-                            android:background="@drawable/pressed_button">
+                            android:background="@drawable/backgroundfeature">
 
                             <com.makeramen.roundedimageview.RoundedImageView
                                 android:id="@+id/img_qlPhong"
@@ -146,6 +146,7 @@
                                 android:layout_gravity="center"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/quanlyphong"
+                                app:icon = "@drawable/quanlyphong"
                                 />
                         </FrameLayout>
 
