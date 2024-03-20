@@ -193,7 +193,6 @@ public class ChangeProfileActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
-        Toast.makeText(this, preferenceManager.getString(Constants.KEY_EMAIL), Toast.LENGTH_SHORT).show();
         user.put(Constants.KEY_PASSWORD, preferenceManager.getString(Constants.KEY_PASSWORD));
         user.put(Constants.KEY_NAME, name.getText().toString());
         user.put(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
