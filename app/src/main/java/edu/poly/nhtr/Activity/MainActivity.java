@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setListeners();
         loadUserDetails();
-
+        Toast.makeText(this, preferenceManager.getString(Constants.KEY_EMAIL), Toast.LENGTH_SHORT).show();
     }
 
     private Bitmap getConversionImage(String encodedImage){
