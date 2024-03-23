@@ -48,7 +48,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
     private TextView resend;
     private String verificationId;
     private int selectedETPosition = 0;
-    private String email="", name="", password="", encodedImage="";
+    private String email, name="", password="", encodedImage="";
     private int random = 0;
     private boolean resendEnable = false;
     private ProgressBar progressBar;
@@ -196,6 +196,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
         password = getIntent().getStringExtra("password");
+
         encodedImage = getIntent().getStringExtra("image");
     }
 

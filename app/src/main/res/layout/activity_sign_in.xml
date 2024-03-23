@@ -137,15 +137,46 @@
             android:id="@+id/txt_forgot_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/gelasio"
-            android:layout_gravity="center"
             android:text="Forgot Password?"
             android:textColor="#2196F3"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
+
+        <FrameLayout
+            android:id="@+id/frm_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:animateLayoutChanges="true"
+
+            >
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_button"
+                android:text="LOGIN"
+                android:textSize="16sp"
+                app:backgroundTint="@null"
+                app:icon="@drawable/icon_getin"
+                app:iconGravity="textStart" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+
 
         <LinearLayout
             android:id="@+id/ButtonSignInByGmail"
@@ -154,7 +185,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_forgot_password">
+            app:layout_constraintTop_toBottomOf="@+id/frm_sign_up">
 
             <View
                 android:layout_width="wrap_content"
@@ -189,35 +220,7 @@
         </LinearLayout>
 
 
-        <FrameLayout
-            android:id="@+id/frm_sign_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:animateLayoutChanges="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSignIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="LOGIN"
-                app:iconGravity="textStart"
-                android:background="@drawable/custom_button"
-                app:backgroundTint="@null"
-                app:icon = "@drawable/icon_getin"
-                android:textSize="16sp"/>
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:visibility="invisible" />
-        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/txt_Sign_Up"
