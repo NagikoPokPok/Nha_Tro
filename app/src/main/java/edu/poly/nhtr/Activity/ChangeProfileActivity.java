@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import edu.poly.nhtr.R;
 
 import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
+import edu.poly.nhtr.fragment.SettingFragment;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
@@ -104,9 +106,14 @@ public class ChangeProfileActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChangeProfileActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                finish();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                // Thay thế fragment hiện tại bằng fragment mới
+                transaction.replace(R.id.layout_setting, new SettingFragment());
+
+                // Chấp nhận giao dịch và thực hiện thay đổi
+                transaction.commit();
+
             }
         });
 

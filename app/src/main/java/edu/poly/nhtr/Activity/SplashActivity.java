@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,26 +61,30 @@ public class SplashActivity extends AppCompatActivity {
 //
 //    }
 
+
+
+    private static final int SPLASH_DURATION = 2000; // Splash screen duration in milliseconds
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
 
-        // Kiểm tra người dùng đã đăng nhập hay chưa
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Nếu đã đăng nhập, chuyển hướng sang MainActivity và kết thúc SplashActivity
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        } else {
-            // Nếu chưa đăng nhập, hiển thị màn hình Splash
-            setContentView(R.layout.activity_splash);
-            Button start = findViewById(R.id.btn_Start);
-            start.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(SplashActivity.this, SignInActivity.class));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    // Đã đăng nhập
+                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    // Chưa đăng nhập
+                    Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
+                    startActivity(intent);
                 }
-            });
-        }
+                finish(); // Finish SplashActivity after starting the next activity
+            }
+        }, SPLASH_DURATION);
     }
 }

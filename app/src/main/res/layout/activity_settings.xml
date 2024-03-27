@@ -6,7 +6,13 @@
     android:layout_height="match_parent"
     android:background="#BCC9D5"
     android:orientation="vertical"
-    tools:context=".Activity.SettingsActivity">
+    tools:context=".Activity.SettingsActivity"
+    >
+
+    <FrameLayout
+        android:id="@+id/layout_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -324,4 +330,6 @@
         </FrameLayout>
     </LinearLayout>
     </ScrollView>
+
+    </FrameLayout>
 </LinearLayout>
