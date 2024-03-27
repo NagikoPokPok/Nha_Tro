@@ -39,7 +39,7 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  PreferenceManager preferenceManager;
+    PreferenceManager preferenceManager;
     ActivityMainBinding binding;
 
 
