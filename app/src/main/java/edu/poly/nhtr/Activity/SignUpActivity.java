@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import edu.poly.nhtr.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignUpBinding;
 import edu.poly.nhtr.utilities.Constants;
@@ -164,7 +165,9 @@ public class SignUpActivity extends AppCompatActivity {
                             // Nếu email chưa có thì mới có thể SignUp()
                             Intent intent = new Intent(SignUpActivity.this, VerifyOTPActivity.class);
                             intent.putExtra("email",binding.edtEmail.getText().toString());
-                            intent.putExtra("password",binding.edtPassword.getText().toString());
+                            // Mã hóa mật khẩu trước khi đưa lên Firebase
+                            String hashedPassword = PasswordHasher.hashPassword(binding.edtPassword.getText().toString());
+                            intent.putExtra("password",hashedPassword);
                             intent.putExtra("name",binding.edtName.getText().toString());
                             intent.putExtra("image",encodedImage);
                             startActivity(intent);

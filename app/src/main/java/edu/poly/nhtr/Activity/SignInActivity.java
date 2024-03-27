@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
+import edu.poly.nhtr.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.utilities.Constants;
@@ -139,11 +140,17 @@ public class SignInActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
-                .whereEqualTo(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString())
                 .get()
                 .addOnCompleteListener(task-> {
                     if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+
+                        String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
+
+                        // Harness the power of hashing to secure your passwords
+                        String enteredPassword = binding.inputPassword.getText().toString();
+                        String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
+                        if (storedHashedPassword.equals(hashedPassword)) {
                         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                         preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
                         preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
@@ -176,7 +183,11 @@ public class SignInActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-
+                        } else {
+                            // The gates remain shut, authentication denied
+                            loading(false);
+                            showToast("Sai tài khoản hoặc mật khẩu");
+                        }
                     }else {
                         loading(false);
                         showToast("Sai tài khoản hoặc mật khẩu");
