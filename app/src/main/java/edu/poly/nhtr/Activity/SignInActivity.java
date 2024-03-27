@@ -1,7 +1,5 @@
 package edu.poly.nhtr.Activity;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 
-import edu.poly.nhtr.PasswordHasher;
+import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.utilities.Constants;

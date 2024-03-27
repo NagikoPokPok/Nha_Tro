@@ -1,4 +1,4 @@
-package edu.poly.nhtr;
+package edu.poly.nhtr.Class;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
