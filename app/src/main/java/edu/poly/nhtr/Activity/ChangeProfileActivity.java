@@ -106,14 +106,9 @@ public class ChangeProfileActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-                // Thay thế fragment hiện tại bằng fragment mới
-                transaction.replace(R.id.layout_setting, new SettingFragment());
-
-                // Chấp nhận giao dịch và thực hiện thay đổi
-                transaction.commit();
-
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

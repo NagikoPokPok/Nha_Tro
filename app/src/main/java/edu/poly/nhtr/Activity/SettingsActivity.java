@@ -1,5 +1,6 @@
 package edu.poly.nhtr.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,17 +10,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.InputStream;
 import java.util.Objects;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySettingsBinding;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -55,6 +59,32 @@ public class SettingsActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_setting);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.menu_home) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                } else if (item.getItemId() == R.id.menu_notification) {
+                    startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+
+                } else if (item.getItemId() == R.id.menu_setting) {
+                    return true;
+
+                }
+                return false;
+            }
+        });
+
         loadUserDetails();
         setListeners();
 
