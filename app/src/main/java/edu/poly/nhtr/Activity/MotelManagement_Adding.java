@@ -18,21 +18,21 @@ public class MotelManagement_Adding extends AppCompatActivity {
         binding = ActivityMotelManagementAddingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setListeners();
+        //setListeners();
     }
 
-    private void setListeners() {
-        setDropDownMenu();
-    }
-
-    private void setDropDownMenu() {
-        // Lấy mảng chuỗi từ strings.xml
-        String[] loaiHinhTro = getResources().getStringArray(R.array.motels);
-
-        // Thiết lập ArrayAdapter
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.dropdown_layout, loaiHinhTro);
-        binding.loaiHinhTro.setAdapter(arrayAdapter);
-
-
-    }
+//    private void setListeners() {
+//        setDropDownMenu();
+//    }
+//
+//    private void setDropDownMenu() {
+//        // Lấy mảng chuỗi từ strings.xml
+//        String[] loaiHinhTro = getResources().getStringArray(R.array.motels);
+//
+//        // Thiết lập ArrayAdapter
+//        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, R.layout.dropdown_layout, loaiHinhTro);
+//        binding.loaiHinhTro.setAdapter(arrayAdapter);
+//
+//
+//    }
 }
