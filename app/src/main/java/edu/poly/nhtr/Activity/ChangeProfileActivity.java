@@ -80,7 +80,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
     }
     private void loadUserDetail(){
 
-       try {
+        try {
 
 //           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
 //           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -90,11 +90,11 @@ public class ChangeProfileActivity extends AppCompatActivity {
 //           Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
 //           imageProfile.setImageBitmap(encodedBitmap);
 
-           imageProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
-           txt_add_image.setVisibility(View.INVISIBLE);
-       }catch (Exception e){
-           Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
-       }
+            imageProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
+            txt_add_image.setVisibility(View.INVISIBLE);
+        }catch (Exception e){
+            Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+        }
 
         name.setText(preferenceManager.getString(Constants.KEY_NAME));
         phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
