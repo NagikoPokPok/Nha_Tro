@@ -33,6 +33,9 @@
 	<color name="notification">#13B2C3</color>
 	<color name="security">#D95F69</color>
 
+<!--	Màu cho khung to-->
+	<color name="big_fragment">#3F97DD</color>
+
 <!--	Thêm mới trọ-->
 
 	<color name="_bg__th_m_m_i_tr__1_color">#EEEEEE</color>

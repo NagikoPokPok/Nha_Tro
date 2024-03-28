@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BCC9D5"
+    android:background="#C4E2FD"
     android:orientation="vertical"
     tools:context=".Activity.SettingsActivity"
     >
@@ -248,7 +248,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="@string/h_tr"
+                    android:text="Hướng dẫn"
                     android:textColor="@color/textSetting"
                     android:textStyle="bold"
                     android:textSize="18sp"
@@ -337,7 +337,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/button_color"
+        android:background="@color/big_fragment"
         app:menu="@menu/menu_bottom_navigation"
         app:itemTextColor="@color/custom_color"
         app:itemIconTint="@color/custom_color" />

@@ -167,7 +167,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/button_color"
+        android:background="#3F97DD"
         app:menu="@menu/menu_bottom_navigation"
         app:itemTextColor="@color/custom_color"
         app:itemIconTint="@color/custom_color" />
