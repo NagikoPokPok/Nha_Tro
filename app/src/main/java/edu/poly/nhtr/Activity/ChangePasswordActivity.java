@@ -54,8 +54,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
             String reNewPassword = PasswordHasher.hashPassword(edt_newPassConf.getText().toString());
             if (!oldInputPassword.equals(oldPassword)) {
                 Toast.makeText(ChangePasswordActivity.this, "Mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
-            } else if (newPassword.isEmpty()) {
+            } else if (edt_newPass.getText().toString().isEmpty()) {
                 Toast.makeText(ChangePasswordActivity.this, "Hãy nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
+            } else if (edt_newPass.getText().toString().length()<6) {
+                Toast.makeText(this, "Mật khẩu mới phải đảm bảo lớn hơn hoặc bằng 6 kí tự", Toast.LENGTH_SHORT).show();
             } else if (newPassword.equals(oldPassword)) {
                 Toast.makeText(ChangePasswordActivity.this, "Mật khẩu mới trùng với mật khẩu cũ", Toast.LENGTH_SHORT).show();
             } else if (!newPassword.equals(reNewPassword)) {
@@ -87,6 +89,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(ChangePasswordActivity.this, "Lỗi ", Toast.LENGTH_SHORT).show();
                                 Log.e("FirestoreError", "Lỗi: " + task.getException().getMessage());
+                                SignInAgain();
                             }
                         });
             }

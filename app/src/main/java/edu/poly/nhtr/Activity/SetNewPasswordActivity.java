@@ -67,6 +67,8 @@ public class SetNewPasswordActivity extends AppCompatActivity {
         updatePassword.setOnClickListener(v -> {
             if(newPass.getText().toString().isEmpty())
                 Toast.makeText(this, "Hãy Nhập mật khẩu mới", Toast.LENGTH_SHORT).show();
+            else if (newPass.length()<6)
+                Toast.makeText(this, "Mật khẩu mới phải đảm bảo lớn hơn hoặc bằng 6 kí tự", Toast.LENGTH_SHORT).show();
             else if(newPassConf.getText().toString().isEmpty())
                 Toast.makeText(this, "Hãy nhập lại mật khẩu mới", Toast.LENGTH_SHORT).show();
             else if (!newPass.getText().toString().equals(newPassConf.getText().toString())) {
@@ -106,7 +108,7 @@ public class SetNewPasswordActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.e(TAG, "signInWithEmail:success");
-                        Update();
+                        UpdateAuth();
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.e(TAG, "signInWithEmail:failure", task.getException());
@@ -116,7 +118,7 @@ public class SetNewPasswordActivity extends AppCompatActivity {
                 });
     }
 
-    private void Update(){
+    private void UpdateAuth(){
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String newHashedPass = PasswordHasher.hashPassword(newPass.getText().toString());

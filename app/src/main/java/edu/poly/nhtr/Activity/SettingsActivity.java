@@ -52,7 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadUserDetails() {
         binding.edtName.setText(preferenceManager.getString(Constants.KEY_NAME));
-        binding.phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
+        if(preferenceManager.getString(Constants.KEY_PHONE_NUMBER)!=null)
+            binding.phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
         String encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
         if (encodedImage != null && !encodedImage.isEmpty()) {
             try {
