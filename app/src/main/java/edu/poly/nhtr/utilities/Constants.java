@@ -12,17 +12,12 @@ public class Constants {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_USER = "user";
-    public static final String KEY_COLLECTION_CONVERSATIONS = "conversations";
-    public static final String KEY_SENDER_NAME = "senderName";
-    public static final String KEY_RECEIVER_NAME = "receiverName";
-    public static final String KEY_SENDER_IMAGE = "senderImage";
-    public static final String KEY_RECEIVER_IMAGE = "receiverImage";
-    public static final String KEY_LAST_MESSAGE = "lastMessage";
-
     public static final String KEY_COLLECTION_HOMES = "homes";
     public static final String KEY_NAME_HOME= "nameHome";
     public static final String KEY_NUMBER_OF_ROOMS= "numberOfRooms";
     public static final String KEY_NUMBER_OF_ROOMS_AVAILABLE = "numberOfRoomsAvailable";
     public static final String KEY_HOME_ID = "homeId";
+
+    public static final String KEY_TIMESTAMP = "timestamp";
 
 }

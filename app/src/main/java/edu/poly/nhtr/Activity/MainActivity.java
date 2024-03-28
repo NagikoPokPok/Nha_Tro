@@ -56,6 +56,8 @@ import com.google.firebase.auth.UserInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.io.InputStream;
@@ -73,7 +75,7 @@ import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class MainActivity extends BaseActivity implements HomeListener {
+public class MainActivity extends AppCompatActivity implements HomeListener {
 
     PreferenceManager preferenceManager;
     ActivityMainBinding binding;
@@ -235,6 +237,7 @@ public class MainActivity extends BaseActivity implements HomeListener {
                 HashMap<String, Object> home = new HashMap<>();
                 home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
                 home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+                home.put(Constants.KEY_TIMESTAMP, new Date());
                 database.collection(Constants.KEY_COLLECTION_HOMES)
                         .add(home)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -243,8 +246,10 @@ public class MainActivity extends BaseActivity implements HomeListener {
                                 preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
                                 preferenceManager.putString(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
                                 preferenceManager.putString(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+
                                 Toast.makeText(MainActivity.this, "Add success.",
                                         Toast.LENGTH_SHORT).show();
+                                getHomes();
                                 dialog.dismiss();
                             }
                         })
@@ -280,6 +285,7 @@ public class MainActivity extends BaseActivity implements HomeListener {
                                 Home home = new Home();
                                 home.nameHome = document.getString(Constants.KEY_NAME_HOME);
                                 home.addressHome = document.getString(Constants.KEY_ADDRESS);
+                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
                                 homes.add(home);
                             }
@@ -289,6 +295,11 @@ public class MainActivity extends BaseActivity implements HomeListener {
                             if (!homes.isEmpty()) {
                                 HomeAdapter homesAdapter = new HomeAdapter(homes, MainActivity.this);
                                 binding.usersRecyclerView.setAdapter(homesAdapter);
+                                Collections.sort(homes,(obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
+                                homesAdapter.notifyDataSetChanged();
+                                binding.usersRecyclerView.smoothScrollToPosition(0);
+
+
                                 // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
                                 // khi setAdapter mình phải set lại là VISIBLE
                                 binding.usersRecyclerView.setVisibility(View.VISIBLE);
