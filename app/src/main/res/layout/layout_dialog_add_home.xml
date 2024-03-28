@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Thông tin Nhà trọ"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:background="@drawable/bg_yellow_corner_16_top" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên nhà trọ"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            />
+
+        <EditText
+            android:id="@+id/edt_name_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@drawable/bg_white_corner_16_border_gray"
+            android:layout_marginTop="10dp"
+            android:hint="Ví dụ: Nhà trọ MyHome"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/edt_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@drawable/bg_white_corner_16_border_gray"
+            android:layout_marginTop="10dp"
+            android:hint="Ví dụ: 254 Nguyễn Văn Linh"/>
+
+
+
+
+
+        <Button
+            android:id="@+id/btn_add_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Lưu thông tin"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="#E15528"
+            android:layout_marginTop="16dp"
+            app:icon = "@drawable/ic_add"/>
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

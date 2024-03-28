@@ -1,19 +1,26 @@
 package edu.poly.nhtr.Activity;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,30 +32,48 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.ktx.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
+import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainBinding;
 
 import edu.poly.nhtr.databinding.ActivitySettingsBinding;
 import edu.poly.nhtr.fragment.ViewPagerAdapter;
+import edu.poly.nhtr.listeners.HomeListener;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements HomeListener {
 
     PreferenceManager preferenceManager;
     ActivityMainBinding binding;
@@ -57,9 +82,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Cài đặt binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //Set preference
         preferenceManager = new PreferenceManager(getApplicationContext());
+
+        // Set up RecyclerView layout manager
+        binding.usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        // Load user's information
+        loadUserDetails();
+
+        // Load home information
+        getHomes();
+
+
+        // Xử lý bottom navigation
         setListeners();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
@@ -71,18 +112,31 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (item.getItemId() == R.id.menu_notification) {
                     startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-                    overridePendingTransition(0, 0);
+                    overridePendingTransition(0,0);
                     return true;
 
                 } else if (item.getItemId() == R.id.menu_setting) {
                     startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                    overridePendingTransition(0, 0);
+                    overridePendingTransition(0,0);
                     return true;
 
                 }
                 return false;
             }
         });
+
+        // Xử lý Dialog Thêm nhà trọ
+        binding.imgAddHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAddHomeDialog(Gravity.CENTER);
+            }
+        });
+
+
+
+
+
     }
 
     private void setListeners() {
@@ -143,11 +197,122 @@ public class MainActivity extends AppCompatActivity {
 
             String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
             new MainActivity.DownloadImageTask(binding.imageProfile).execute(photoUrl);
-
-            binding.txtAddImage.setVisibility(View.INVISIBLE);
         }
     }
 
+    private void openAddHomeDialog(int gravity) {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_add_home);
+
+        Window window = dialog.getWindow();
+        if(window == null)
+        {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if(Gravity.CENTER == gravity)
+        {
+            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
+        }
+        dialog.show();
+
+        EditText edtNameHome = dialog.findViewById(R.id.edt_name_home);
+        EditText edtAddress = dialog.findViewById(R.id.edt_address);
+        Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
+
+        btnAddHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore database = FirebaseFirestore.getInstance();
+                HashMap<String, Object> home = new HashMap<>();
+                home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
+                home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+                database.collection(Constants.KEY_COLLECTION_HOMES)
+                        .add(home)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
+                                preferenceManager.putString(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
+                                preferenceManager.putString(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+                                Toast.makeText(MainActivity.this, "Add success.",
+                                        Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Add failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                loading(false);
+
+                            }
+                        });
+            }
+        });
+    }
+
+
+
+    private void getHomes(){
+        loading(true);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        loading(false);
+
+                        if(task.isSuccessful() && task.getResult() != null) {
+                            List<Home> homes = new ArrayList<>();
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                // Duyệt qua document và lấy danh sách các nhà trọ
+                                Home home = new Home();
+                                home.nameHome = document.getString(Constants.KEY_NAME_HOME);
+                                home.addressHome = document.getString(Constants.KEY_ADDRESS);
+                                home.idHome = document.getId();
+                                homes.add(home);
+                            }
+
+                            Log.d("MainActivity", "Number of homes: " + homes.size());
+
+                            if (!homes.isEmpty()) {
+                                HomeAdapter homesAdapter = new HomeAdapter(homes, MainActivity.this);
+                                binding.usersRecyclerView.setAdapter(homesAdapter);
+                                // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
+                                // khi setAdapter mình phải set lại là VISIBLE
+                                binding.usersRecyclerView.setVisibility(View.VISIBLE);
+                                Log.d("MainActivity", "Adapter set successfully");
+                            } else {
+                                showErrorMessage("No users available");
+                            }
+
+                        }else {
+                            showErrorMessage("Error fetching users");
+                        }
+                    }
+                });
+    }
+
+    private void showErrorMessage(String message) {
+        binding.txtErrorMessage.setText(message);
+        binding.txtErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+
+    private void loading(Boolean isLoading) {
+        binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+    }
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         private ImageView imageView;
 
@@ -176,4 +341,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onUserClicked(Home home) {
+
+    }
 }
