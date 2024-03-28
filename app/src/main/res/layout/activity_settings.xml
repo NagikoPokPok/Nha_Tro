@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-        
+
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -87,7 +87,7 @@
             android:id="@+id/phoneNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0905100300"
+            android:text="0xxx-xxx-xxx"
             android:textColor="@color/textSetting"
             android:textSize="12sp"
             android:layout_gravity="center"/>
@@ -140,6 +140,7 @@
                     android:layout_toEndOf="@id/nightModeIcon"/>
 
                 <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/nightMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"

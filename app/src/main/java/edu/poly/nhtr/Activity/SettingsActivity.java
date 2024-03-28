@@ -2,8 +2,11 @@ package edu.poly.nhtr.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -12,6 +15,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -48,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadUserDetails() {
         binding.edtName.setText(preferenceManager.getString(Constants.KEY_NAME));
+        binding.phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
         String encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
         if (encodedImage != null && !encodedImage.isEmpty()) {
             try {
@@ -71,7 +76,6 @@ public class SettingsActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_setting);
@@ -135,7 +139,17 @@ public class SettingsActivity extends AppCompatActivity {
             // Không có người dùng nào đang đăng nhập, tải thông tin từ SharedPreferences
             loadUserDetails();
         }
-
+//        binding.nightMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked){
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                }
+//                else {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                }
+//            }
+//        });
     }
 
     public void showToast(String message) {

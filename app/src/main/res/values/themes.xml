@@ -64,4 +64,18 @@
         <item name="android:colorForeground">#99000000</item>
     </style>
 
+    <!-- Light mode -->
+    <!-- Screen background -->
+<!--    <style name="SCREEN">-->
+<!--        <item name="android:background">#BCC9D5</item>-->
+<!--    </style>-->
+<!--    &lt;!&ndash; Text background &ndash;&gt;-->
+<!--    <style name="TEXT">-->
+<!--        <item name="android:textColor">@color/textSetting</item>-->
+<!--    </style>-->
+<!--    &lt;!&ndash; Button background &ndash;&gt;-->
+<!--    <style name="BUTTON">-->
+<!--        <item name="android:background">@drawable/pressed_button</item>-->
+<!--        <item name="android:textColor">#FFF</item>-->
+<!--    </style>-->
 </resources>
