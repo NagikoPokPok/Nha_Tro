@@ -19,8 +19,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
@@ -34,8 +37,8 @@ public class SettingsActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
 
 
-    private Bitmap getConversionImage(String encodedImage){
-        byte[] bytes = Base64.decode(encodedImage,Base64.DEFAULT);
+    private Bitmap getConversionImage(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         int width = 150;
         int height = 150;
@@ -43,23 +46,31 @@ public class SettingsActivity extends AppCompatActivity {
         return resizedBitmap;
     }
 
-    private void loadUserDetails(){
+    private void loadUserDetails() {
         binding.edtName.setText(preferenceManager.getString(Constants.KEY_NAME));
-        try {
-            binding.imgProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
-            binding.phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
-            binding.imgAva.setVisibility(View.INVISIBLE);
-        }catch (Exception e){
-            Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+        String encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
+        if (encodedImage != null && !encodedImage.isEmpty()) {
+            try {
+                Bitmap profileImage = getConversionImage(encodedImage);
+                binding.imgProfile.setImageBitmap(profileImage);
+                binding.imgAva.setVisibility(View.INVISIBLE); // Ẩn ảnh mặc định nếu có ảnh người dùng
+            } catch (Exception e) {
+                // Xử lý ngoại lệ khi không thể tải ảnh
+                binding.imgAva.setVisibility(View.VISIBLE); // Hiển thị ảnh mặc định nếu xảy ra ngoại lệ
+                Toast.makeText(this, "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Nếu không có ảnh, hiển thị ảnh mặc định và ẩn ảnh người dùng
+            binding.imgAva.setVisibility(View.VISIBLE);
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -70,11 +81,11 @@ public class SettingsActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.menu_home) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
                 } else if (item.getItemId() == R.id.menu_notification) {
                     startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-                    overridePendingTransition(0,0);
+                    overridePendingTransition(0, 0);
                     return true;
 
                 } else if (item.getItemId() == R.id.menu_setting) {
@@ -84,8 +95,6 @@ public class SettingsActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        loadUserDetails();
         setListeners();
 
 
@@ -107,7 +116,26 @@ public class SettingsActivity extends AppCompatActivity {
 
         binding.btnBack.setOnClickListener(v -> back());
 
-        getInfoFromGoogle();
+        // Kiểm tra tài khoản đăng nhập là tài khoản Email hay Google
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            List<? extends UserInfo> providerData = currentUser.getProviderData();
+            // Lặp qua danh sách các tài khoản cấp thông tin xác thực
+            for (UserInfo userInfo : providerData) {
+                String providerId = userInfo.getProviderId();
+                if (providerId != null && providerId.equals("google.com")) {
+                    // TH đăng nhập bằng tài khoản Google
+                    getInfoFromGoogle();
+                    return; // Thoát khỏi vòng lặp khi thấy đúng tài khoản Google
+                }
+            }
+            // Nếu là tài khoản Email thì tải thông tin người dùng từ SharedPreferences
+            loadUserDetails();
+        } else {
+            // Không có người dùng nào đang đăng nhập, tải thông tin từ SharedPreferences
+            loadUserDetails();
+        }
+
     }
 
     public void showToast(String message) {
@@ -160,6 +188,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
     }
+
     public void logout() throws InterruptedException {
         showToast("Signing out ...");
         // Đăng xuất khỏi Firebase
@@ -178,13 +207,11 @@ public class SettingsActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loading(Boolean isLoading)
-    {
-        if(isLoading)
-        {
+    private void loading(Boolean isLoading) {
+        if (isLoading) {
             binding.btnlogout.setVisibility(View.INVISIBLE);
             binding.progressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.btnlogout.setVisibility(View.VISIBLE);
         }
