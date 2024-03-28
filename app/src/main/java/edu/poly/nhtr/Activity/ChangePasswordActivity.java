@@ -8,17 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -73,12 +67,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 user.updatePassword(newPassword)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
                                 DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID));
                                 documentReference.update(Constants.KEY_PASSWORD, newPassword)
                                         .addOnSuccessListener(unused -> {
                                             preferenceManager.putString(Constants.KEY_PASSWORD, newPassword);
                                             ClearAll();
+                                            ChangeActivity("Đổi mật khẩu thành công");
                                         })
                                         .addOnFailureListener(e -> {
                                             user.updatePassword(preferenceManager.getString(Constants.KEY_PASSWORD))
@@ -86,7 +81,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                         if (task1.isSuccessful()) {
                                                         }
                                                     });
+                                            ChangeActivity("Đổi mật khẩu thất bại");
                                         });
+
                             } else {
                                 Toast.makeText(ChangePasswordActivity.this, "Lỗi ", Toast.LENGTH_SHORT).show();
                                 Log.e("FirestoreError", "Lỗi: " + task.getException().getMessage());
@@ -102,6 +99,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         edt_pass.setText("");
         edt_newPass.setText("");
         edt_newPassConf.setText("");
+    }
+    private void ChangeActivity(String message){
+        Intent intent = new Intent(ChangePasswordActivity.this, ChangeProfileActivity.class);
+        intent.putExtra("message", message);
+        Log.e("Message", message);
+        startActivity(intent);
+        finish();
     }
 
     private void SignInAgain() {

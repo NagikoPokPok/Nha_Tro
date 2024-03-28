@@ -70,6 +70,13 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
+
+        //Show message from SetNewPasswordActivity
+        Intent intent = getIntent();
+        if(intent.hasExtra("message")){
+            String mes = intent.getStringExtra("message");
+            showToast(mes);
+        }
     }
 
     @Override

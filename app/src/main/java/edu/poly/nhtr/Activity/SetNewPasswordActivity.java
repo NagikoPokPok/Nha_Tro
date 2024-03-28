@@ -142,9 +142,11 @@ public class SetNewPasswordActivity extends AppCompatActivity {
                     .addOnSuccessListener(unused -> {
 //                        Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
                         ClearAll();
+                        ChangeActivity("Cập nhật mật khẩu thành công");
                     })
                     .addOnFailureListener(e -> {
                         // Handle failure
+                        ChangeActivity("Cập nhật mật kẩu thất bại");
                     });
         } else {
             Toast.makeText(this, "Document reference is null", Toast.LENGTH_SHORT).show();
@@ -154,5 +156,11 @@ public class SetNewPasswordActivity extends AppCompatActivity {
     private void ClearAll(){
         newPass.setText("");
         newPassConf.setText("");
+    }
+    private void ChangeActivity(String message){
+        Intent intent = new Intent(SetNewPasswordActivity.this, SignInActivity.class);
+        intent.putExtra("message", message);
+        startActivity(intent);
+        finish();
     }
 }

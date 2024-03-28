@@ -67,6 +67,13 @@ public class ChangeProfileActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         loadUserDetail();
         setListener();
+
+        //Message Toast from Change Password
+        Intent intent = getIntent();
+        if(intent.hasExtra("message")){
+            String mes = intent.getStringExtra("message");
+            showToast(mes);
+        }
     }
 
     private Bitmap getConversionImage(String encodedImage){
