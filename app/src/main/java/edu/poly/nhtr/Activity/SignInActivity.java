@@ -90,13 +90,13 @@ public class SignInActivity extends AppCompatActivity {
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         String userName = documentSnapshot.getString(Constants.KEY_NAME);
-                        Toast.makeText(SignInActivity.this, "Welcome back, " + userName + "!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignInActivity.this, "Chào mừng trở lại, " + userName + "!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     })
-                    .addOnFailureListener(e -> Toast.makeText(SignInActivity.this, "Failed to fetch user data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(SignInActivity.this, "Thất bại khi lấy thông tin người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-            Toast.makeText(SignInActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignInActivity.this, "Tài khoản chưa được đăng nhập", Toast.LENGTH_SHORT).show();
         }
     }
     private void loading(Boolean isLoading)
@@ -175,7 +175,7 @@ public class SignInActivity extends AppCompatActivity {
                                         } else {
                                             // If sign in fails, display a message to the user.
                                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                            Toast.makeText(SignInActivity.this, "Authentication failed.",
+                                            Toast.makeText(SignInActivity.this, "Xác thực người dùng thất bại.",
                                                     Toast.LENGTH_SHORT).show();
 
                                         }
@@ -199,13 +199,13 @@ public class SignInActivity extends AppCompatActivity {
 
     private Boolean isValidSignInDetails(){
         if(binding.inputEmail.getText().toString().trim().isEmpty()) {
-            showToast("Enter email");
+            showToast("Vui lòng nhập email");
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()) {
-            showToast("Enter valid email");
+            showToast("Email không hợp lệ");
             return false;
         } else if (binding.inputPassword.getText().toString().trim().isEmpty()) {
-            showToast("Enter password");
+            showToast("Vui lòng nhập mật khẩu");
             return false;
         } else  {
             return true;
@@ -238,12 +238,12 @@ public class SignInActivity extends AppCompatActivity {
                 if (googleSignInAccount != null) {
                     firebaseAuth(googleSignInAccount.getIdToken());
                 } else {
-                    Toast.makeText(this, "Sign in failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
                 }
             } catch (ApiException e) {
-                Toast.makeText(this, "Sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đăng nhập thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, "An error occurred during sign in", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Có sự cố xảy ra khi đăng nhập", Toast.LENGTH_SHORT).show();
             }
         }
     }

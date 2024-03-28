@@ -88,8 +88,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                     });
                                         });
                             } else {
-                                Toast.makeText(ChangePasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
-                                Log.e("FirestoreError", "Error: " + task.getException().getMessage());
+                                Toast.makeText(ChangePasswordActivity.this, "Lỗi ", Toast.LENGTH_SHORT).show();
+                                Log.e("FirestoreError", "Lỗi: " + task.getException().getMessage());
                             }
                         });
             }
@@ -109,7 +109,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (!task.isSuccessful()) {
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(ChangePasswordActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChangePasswordActivity.this, "Xác thực người dùng thất bại.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

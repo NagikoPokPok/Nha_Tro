@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
+import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -36,7 +37,7 @@ public class SetNewPasswordActivity extends AppCompatActivity {
     EditText newPass, newPassConf;
     Button updatePassword;
     PreferenceManager preferenceManager;
-    String email, password, id;
+    String email, password, id, hashPassword;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,73 +82,75 @@ public class SetNewPasswordActivity extends AppCompatActivity {
                 .whereEqualTo(Constants.KEY_EMAIL, email)
                 .get()
                 .addOnCompleteListener(task -> {
-                   if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
-                       DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                       preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
-                       preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
-                       preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.getId());
+                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
+                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+                        preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
+                        preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD)); // Assuming this is the stored hashed password
 
-                       password = preferenceManager.getString(Constants.KEY_PASSWORD);
-                       id = preferenceManager.getString(Constants.KEY_USER_ID);
-                       SignInAuth();
+                        // Xóa mật khẩu chưa mã hóa từ PreferenceManager, chỉ sử dụng mật khẩu mã hóa
+                        preferenceManager.removePreference(Constants.KEY_PASSWORD);
 
-
-                   }else Toast.makeText(this, " " + email, Toast.LENGTH_SHORT).show();
+                        id = documentSnapshot.getId();
+                        password = documentSnapshot.getString(Constants.KEY_PASSWORD); // Lấy mật khẩu mã hóa từ Firestore
+                        SignInAuth();
+                    } else {
+                        Toast.makeText(this, "Người dùng với email:  " + email + " không tìm thấy", Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
+
     private void SignInAuth(){
-        Log.e("Account",email + " " + password);
-        mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
+        Log.e("Account", email + " " + password);
+        mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), password) // Use the hashed password retrieved from Firestore
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.e(TAG, "signInWithEmail:success");
                         Update();
-
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.e(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(SetNewPasswordActivity.this, "Authentication failed.",
+                        Toast.makeText(SetNewPasswordActivity.this, "Xác thực người dùng thất bại.",
                                 Toast.LENGTH_SHORT).show();
-
                     }
                 });
     }
+
     private void Update(){
         FirebaseUser user = mAuth.getCurrentUser();
-        if(mAuth.getCurrentUser()!=null) {
-            user.updatePassword(newPass.getText().toString())
+        if (user != null) {
+            String newHashedPass = PasswordHasher.hashPassword(newPass.getText().toString());
+            user.updatePassword(newHashedPass)
                     .addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                            //preferenceManager.putString(Constants.KEY_PASSWORD,edt_newPass.getText().toString());
-                            UpdateFireStore(user);
+                            UpdateFirestore(newHashedPass); // Pass the new hashed password
                         } else {
                             Toast.makeText(SetNewPasswordActivity.this, "ERROR ", Toast.LENGTH_SHORT).show();
-                            Log.e("FirestoreError", "Error: " + Objects.requireNonNull(task1.getException()).getMessage());
+                            Log.e("FirestoreError", "Lỗi: " + Objects.requireNonNull(task1.getException()).getMessage());
                         }
                     });
-        }else Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
-    }
-    private void UpdateFireStore(FirebaseUser user){
-        Log.e("document", " " +preferenceManager.getString(Constants.KEY_USER_ID));
-        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID));
-        if(documentReference==null) {
-            Toast.makeText(this, " " + preferenceManager.getString(Constants.KEY_USER_ID), Toast.LENGTH_SHORT).show();
-        }else{
-            documentReference.update(Constants.KEY_PASSWORD, newPass.getText().toString())
-                    .addOnSuccessListener(unused -> {
-                        Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
-                        //preferenceManager.putString(Constants.KEY_PASSWORD, newPass.getText().toString());
-                        ClearAll();
-                    })
-                    .addOnFailureListener(e -> user.updatePassword(preferenceManager.getString(Constants.KEY_PASSWORD))
-                            .addOnCompleteListener(task11 -> {
-                                if (task11.isSuccessful()) {
-                                }
-                            }));
+        } else {
+            Toast.makeText(this, "null", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void UpdateFirestore(String newHashedPassword) {
+        DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS).document(id);
+        if(documentReference != null) {
+            documentReference.update(Constants.KEY_PASSWORD, newHashedPassword) // Update with the new hashed password
+                    .addOnSuccessListener(unused -> {
+//                        Toast.makeText(SetNewPasswordActivity.this, "Cập nhật mk thành công", Toast.LENGTH_SHORT).show();
+                        ClearAll();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Handle failure
+                    });
+        } else {
+            Toast.makeText(this, "Document reference is null", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void ClearAll(){
         newPass.setText("");
         newPassConf.setText("");
