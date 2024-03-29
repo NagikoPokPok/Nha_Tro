@@ -54,4 +54,8 @@
 
 	<color name="button_color">#2196F3</color>
 	<color name="yellow">#FFEB3B</color>
+	
+<!--	Dark mode-->
+	<color name="grey">#aaa</color>
+	<color name="darkGrey">#121212</color>
 </resources>

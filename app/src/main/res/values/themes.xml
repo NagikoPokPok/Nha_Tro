@@ -49,7 +49,45 @@
 
 
 
-<!--    Theme cho chế độ ngày/đêm-->
+
+
+    <!-- Light mode -->
+    <!-- Screen background -->
+    <style name="SCREEN">
+        <item name="android:background">#C4E2FD</item>
+    </style>
+
+    <!-- Dành cho chữ xanh -->
+    <style name="TEXT">
+        <item name="android:textColor">@color/textSetting</item>
+    </style>
+    <!-- Button background -->
+    <style name="BUTTON">
+        <item name="android:background">@drawable/pressed_button</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+
+    <style name="BUTTON_NO_BORDER">
+        <item name="android:tint">@color/textSetting</item>
+    </style>
+
+    <style name="BACKGROUND_BUTTON">
+        <item name="android:background">@drawable/round_back_white</item>
+    </style>
+
+    <style name="BOTTOM_BAR">
+        <item name="android:background">@color/big_fragment</item>
+        <item name="itemTextColor">@color/custom_color</item>
+        <item name="itemIconTint">@color/custom_color</item>
+    </style>
+
+<!--    Dành cho chữ đen-->
+    <style name="TEXT_2">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!--    Theme cho chế độ ngày/đêm-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/night_mode</item>
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
@@ -57,25 +95,10 @@
     </style>
 
 
-<!--    Theme cho thông báo-->
+    <!--    Theme cho thông báo-->
     <style name="notificationSwitch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">@color/notification</item>
+        <item name="colorControlActivated">@color/night_mode</item>
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
         <item name="android:colorForeground">#99000000</item>
     </style>
-
-    <!-- Light mode -->
-    <!-- Screen background -->
-<!--    <style name="SCREEN">-->
-<!--        <item name="android:background">#BCC9D5</item>-->
-<!--    </style>-->
-<!--    &lt;!&ndash; Text background &ndash;&gt;-->
-<!--    <style name="TEXT">-->
-<!--        <item name="android:textColor">@color/textSetting</item>-->
-<!--    </style>-->
-<!--    &lt;!&ndash; Button background &ndash;&gt;-->
-<!--    <style name="BUTTON">-->
-<!--        <item name="android:background">@drawable/pressed_button</item>-->
-<!--        <item name="android:textColor">#FFF</item>-->
-<!--    </style>-->
 </resources>

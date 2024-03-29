@@ -3,6 +3,7 @@ package edu.poly.nhtr.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ActivitySettingsBinding binding;
     PreferenceManager preferenceManager;
+    SwitchCompat switchMode;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    boolean nightMode;
 
 
     private Bitmap getConversionImage(String encodedImage) {
@@ -151,6 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
+        switchModeTheme();
     }
 
     public void showToast(String message) {
@@ -230,6 +236,32 @@ public class SettingsActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.btnlogout.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void switchModeTheme() {
+        sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        nightMode = sharedPreferences.getBoolean("nightMode", false);
+
+        // Ensure the switchCompat view is properly referenced in your layout file
+        switchMode = binding.nightMode;
+
+        if (nightMode) {
+            switchMode.setChecked(true);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+
+        switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                editor = sharedPreferences.edit();
+                editor.putBoolean("nightMode", true);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                editor = sharedPreferences.edit();
+                editor.putBoolean("nightMode", false);
+            }
+            editor.apply();
+        });
     }
 
 }
