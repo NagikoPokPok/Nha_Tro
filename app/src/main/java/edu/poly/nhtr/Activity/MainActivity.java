@@ -234,10 +234,12 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
             @Override
             public void onClick(View v) {
                 FirebaseFirestore database = FirebaseFirestore.getInstance();
+                String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
                 HashMap<String, Object> home = new HashMap<>();
                 home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
                 home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
                 home.put(Constants.KEY_TIMESTAMP, new Date());
+                home.put(Constants.KEY_USER_ID, currentUserId);
                 database.collection(Constants.KEY_COLLECTION_HOMES)
                         .add(home)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -267,11 +269,12 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
     }
 
 
-
     private void getHomes(){
         loading(true);
+        String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES)
+                .whereEqualTo(Constants.KEY_USER_ID, currentUserId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -302,10 +305,12 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
 
                                 // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
                                 // khi setAdapter mình phải set lại là VISIBLE
+
                                 binding.usersRecyclerView.setVisibility(View.VISIBLE);
+
                                 Log.d("MainActivity", "Adapter set successfully");
-                            } else {
-                                showErrorMessage("No users available");
+                            }else{
+                                binding.txtNotification.setVisibility(View.VISIBLE);
                             }
 
                         }else {
@@ -322,7 +327,13 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
 
 
     private void loading(Boolean isLoading) {
-        binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
+        if (isLoading) {
+            // Hiển thị thanh tiến trình nếu đang tải
+            binding.progressBar.setVisibility(View.VISIBLE);
+        } else {
+            // Ẩn thanh tiến trình nếu không có tải
+            binding.progressBar.setVisibility(View.INVISIBLE);
+        }
     }
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         private ImageView imageView;

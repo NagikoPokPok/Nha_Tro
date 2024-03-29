@@ -113,13 +113,15 @@
                 android:layout_marginTop="10dp"/>
 
             <TextView
+                android:id="@+id/txt_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bạn chưa tạo nhà trọ nào \n Bấm dấu + để thêm mới nhà trọ"
                 android:gravity="center"
                 android:textSize="18sp"
                 style="@style/TEXT_2"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/usersRecyclerView"
