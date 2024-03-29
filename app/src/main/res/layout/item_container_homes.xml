@@ -14,15 +14,31 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/txt_name_home"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/primary_text"
-            android:textSize="14sp"
-            />
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/txt_name_home"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"
+                android:layout_marginEnd="10dp"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_menu"
+                android:layout_gravity="end"
+                />
+
+        </LinearLayout>
+
 
 
         <LinearLayout
@@ -32,8 +48,8 @@
             android:layout_marginTop="10dp">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/home_icon2"/>
 
             <TextView
@@ -43,7 +59,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/primary_text"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:layout_marginStart="10dp"/>
 
 
