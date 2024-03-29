@@ -9,6 +9,12 @@
     <style name="SCREEN">
         <item name="android:background">#252C4B</item>
     </style>
+
+    <!-- Screen trắng -->
+    <style name="SCREEN_WHITE">
+        <item name="android:background">#252C4B</item>
+    </style>
+
     <!-- Text background -->
     <style name="TEXT">
         <item name="android:textColor">@color/white</item>
@@ -36,6 +42,11 @@
     </style>
 
     <style name="TEXT_2">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!--    Dành cho chữ trắng-->
+    <style name="TEXT_3">
         <item name="android:textColor">@color/white</item>
     </style>
 </resources>

@@ -4,15 +4,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
+
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,19 +23,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import edu.poly.nhtr.R;
 
 import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
-import edu.poly.nhtr.fragment.SettingFragment;
+
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
@@ -65,7 +75,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
         binding = ActivityChangeProfileBinding.inflate(getLayoutInflater());
         binding.getRoot();
         preferenceManager = new PreferenceManager(getApplicationContext());
-        loadUserDetail();
+
         setListener();
 
         //Message Toast from Change Password
@@ -85,18 +95,9 @@ public class ChangeProfileActivity extends AppCompatActivity {
         //return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
         return resizedBitmap;
     }
-    private void loadUserDetail(){
+    private void loadUserDetails(){
 
         try {
-
-//           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
-//           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//           encodedImage = encodedImage(bitmap);
-//
-//           byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
-//           Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
-//           imageProfile.setImageBitmap(encodedBitmap);
-
             imageProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
             txt_add_image.setVisibility(View.INVISIBLE);
         }catch (Exception e){
@@ -110,40 +111,92 @@ public class ChangeProfileActivity extends AppCompatActivity {
     }
     private void setListener(){
 
-        imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        imgBack.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isValidChangeDetails()){
-                    updateProfile();
+        btn_save.setOnClickListener(v -> {
+            if(isValidChangeDetails()){
+                updateProfile();
+            }
+        });
+        txt_move_changePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
+            startActivity(intent);
+        });
+        imageProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pickImage.launch(intent);
+            //preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
+        });
+
+        // Kiểm tra tài khoản đăng nhập là tài khoản Email hay Google
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            List<? extends UserInfo> providerData = currentUser.getProviderData();
+            // Lặp qua danh sách các tài khoản cấp thông tin xác thực
+            for (UserInfo userInfo : providerData) {
+                String providerId = userInfo.getProviderId();
+                if (providerId.equals("google.com")) {
+                    // TH đăng nhập bằng tài khoản Google
+                    loadInfoGoogleAccount();
+                    return; // Thoát khỏi vòng lặp khi thấy đúng tài khoản Google
                 }
             }
-        });
-        txt_move_changePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
-                startActivity(intent);
-            }
-        });
-        imageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                pickImage.launch(intent);
-                //preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
-            }
-        });
+            // Nếu là tài khoản Email thì tải thông tin người dùng từ SharedPreferences
+            loadUserDetails();
+        } else {
+            // Không có người dùng nào đang đăng nhập, tải thông tin từ SharedPreferences
+            loadUserDetails();
+        }
     }
+
+    // Đưa tên, ảnh đại diện từ Google
+    private void loadInfoGoogleAccount() {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if (account != null) {
+            String userName = account.getDisplayName();
+            name.setText(userName);
+
+            String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
+            new DownloadImageTask(imageProfile).execute(photoUrl);
+
+            txt_add_image.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private ImageView imageView;
+
+        public DownloadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String imageUrl = urls[0];
+            Bitmap bitmap = null;
+            try {
+                InputStream in = new java.net.URL(imageUrl).openStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", Objects.requireNonNull(e.getMessage()));
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                imageView.setImageBitmap(result);
+            }
+        }
+    }
+
+
     private String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
     {
         int previewWidth = 150;
@@ -180,7 +233,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
         if (!ten.matches("^[\\p{L}\\s]+$")) {
             //warning.setText("Tên chỉ được xuất hiện các kí tự là chữ và số");
-            showToast("Please enter only alphabetical characters");
+            showToast("Tên chỉ được xuất hiện các kí tự là chữ và số");
             return false;
         } else if (phoneNum.getText().toString().trim().isEmpty()) {
             //warning.setText("Số điện thoại không được để trống");
@@ -188,7 +241,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
             return false;
         } else if (!phoneNumber.matches("^0[0-9]{9}$")) {
             //warning.setText("Số điện thoại chỉ gồm những kí tự là số từ 0-9");
-            showToast("Enter a valid 10-digit phone number starting with 0");
+            showToast("Số điện thoại có 10 kí tự và chỉ gồm những kí tự là số từ 0-9");
             return false;
         } else {
             return true;
@@ -224,11 +277,8 @@ public class ChangeProfileActivity extends AppCompatActivity {
                         Toast.makeText(ChangeProfileActivity.this, "Cập nhật tông tin thất bại", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-
-
     }
+
     private  void RefreshPrefernceManager(){
         preferenceManager.putString(Constants.KEY_NAME, name.getText().toString());
         preferenceManager.putString(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
@@ -248,3 +298,11 @@ public class ChangeProfileActivity extends AppCompatActivity {
         }
     }
 }
+
+//           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);
+//           Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//           encodedImage = encodedImage(bitmap);
+//
+//           byte[] encodedBytes = Base64.decode(encodedImage(bitmap), Base64.DEFAULT);
+//           Bitmap encodedBitmap = BitmapFactory.decodeByteArray(encodedBytes, 0, encodedBytes.length);
+//           imageProfile.setImageBitmap(encodedBitmap);

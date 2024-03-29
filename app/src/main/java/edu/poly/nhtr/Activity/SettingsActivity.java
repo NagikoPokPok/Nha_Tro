@@ -42,8 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     SwitchCompat switchMode;
     SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    boolean nightMode;
+
 
 
     private Bitmap getConversionImage(String encodedImage) {
@@ -85,6 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_setting);
+        switchMode = findViewById(R.id.nightMode);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
             @Override
@@ -133,7 +133,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Lặp qua danh sách các tài khoản cấp thông tin xác thực
             for (UserInfo userInfo : providerData) {
                 String providerId = userInfo.getProviderId();
-                if (providerId != null && providerId.equals("google.com")) {
+                if (providerId.equals("google.com")) {
                     // TH đăng nhập bằng tài khoản Google
                     getInfoFromGoogle();
                     return; // Thoát khỏi vòng lặp khi thấy đúng tài khoản Google
@@ -145,17 +145,7 @@ public class SettingsActivity extends AppCompatActivity {
             // Không có người dùng nào đang đăng nhập, tải thông tin từ SharedPreferences
             loadUserDetails();
         }
-//        binding.nightMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if(isChecked){
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//                }
-//                else {
-//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//                }
-//            }
-//        });
+
         switchModeTheme();
     }
 
@@ -180,6 +170,8 @@ public class SettingsActivity extends AppCompatActivity {
             new DownloadImageTask(binding.imgProfile).execute(photoUrl);
 
             binding.imgAva.setVisibility(View.INVISIBLE);
+
+
         }
     }
 
@@ -220,6 +212,14 @@ public class SettingsActivity extends AppCompatActivity {
         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
         preferenceManager.removePreference(Constants.KEY_USER_ID);
         preferenceManager.removePreference(Constants.KEY_NAME);
+        preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
+        preferenceManager.removePreference(Constants.KEY_ADDRESS);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constants.KEY_MODE, false);
+        editor.apply();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // Trở lại Settings Activity
         Intent intent = new Intent(SettingsActivity.this, SignInActivity.class);
@@ -240,10 +240,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void switchModeTheme() {
         sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMode = sharedPreferences.getBoolean("nightMode", false);
+        boolean nightMode = sharedPreferences.getBoolean(Constants.KEY_MODE, false);
 
-        // Ensure the switchCompat view is properly referenced in your layout file
-        switchMode = binding.nightMode;
 
         if (nightMode) {
             switchMode.setChecked(true);
@@ -253,15 +251,12 @@ public class SettingsActivity extends AppCompatActivity {
         switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                editor = sharedPreferences.edit();
-                editor.putBoolean("nightMode", true);
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                editor = sharedPreferences.edit();
-                editor.putBoolean("nightMode", false);
             }
-            editor.apply();
+            sharedPreferences.edit().putBoolean(Constants.KEY_MODE, isChecked).apply();
         });
     }
+
 
 }

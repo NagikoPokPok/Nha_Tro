@@ -52,15 +52,21 @@
 
 
     <!-- Light mode -->
-    <!-- Screen background -->
+    <!-- Screen xanh nhạt -->
     <style name="SCREEN">
         <item name="android:background">#C4E2FD</item>
+    </style>
+
+    <!-- Screen trắng -->
+    <style name="SCREEN_WHITE">
+        <item name="android:background">@color/white</item>
     </style>
 
     <!-- Dành cho chữ xanh -->
     <style name="TEXT">
         <item name="android:textColor">@color/textSetting</item>
     </style>
+
     <!-- Button background -->
     <style name="BUTTON">
         <item name="android:background">@drawable/pressed_button</item>
@@ -87,6 +93,10 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <!--    Dành cho chữ trắng-->
+    <style name="TEXT_3">
+        <item name="android:textColor">@color/white</item>
+    </style>
     <!--    Theme cho chế độ ngày/đêm-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/night_mode</item>
