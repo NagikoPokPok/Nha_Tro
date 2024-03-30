@@ -6,18 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.ServiceManagenment.Managerment_ServiceActivity;
+import edu.poly.nhtr.databinding.ActivityNotificationBinding;
 
 public class NotificationActivity extends AppCompatActivity {
-
+    Button btn_service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
-
+        btn_service = findViewById(R.id.btn_service);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setSelectedItemId(R.id.menu_notification);
@@ -36,6 +40,14 @@ public class NotificationActivity extends AppCompatActivity {
 
             }
             return false;
+        });
+        btn_service.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NotificationActivity.this, Managerment_ServiceActivity.class);
+                startActivity(intent);
+                finish();
+            }
         });
     }
 }
