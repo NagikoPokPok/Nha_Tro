@@ -1,11 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.NhàTrọ" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<!--        <item name="android:src">@drawable/backgroundtop</item>-->
     </style>
 
     <style name="Theme.NhàTrọ" parent="Base.Theme.NhàTrọ" />
+
 
     <style name="Circular">
         <item name="cornerSize">50%</item>
@@ -48,10 +48,12 @@
 
 
 
-
-
-
     <!-- Light mode -->
+    <style name="New.Theme.NhàTrọ" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Default day theme drawable for ShapeableImageView -->
+        <item name="android:src">@drawable/backgroundtop</item>
+    </style>
+
     <!-- Screen xanh nhạt -->
     <style name="SCREEN">
         <item name="android:background">#C4E2FD</item>
@@ -97,6 +99,8 @@
     <style name="TEXT_3">
         <item name="android:textColor">@color/white</item>
     </style>
+
+
     <!--    Theme cho chế độ ngày/đêm-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/night_mode</item>

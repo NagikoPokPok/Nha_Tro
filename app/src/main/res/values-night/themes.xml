@@ -5,6 +5,12 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
     <!-- Dark mode -->
+
+    <style name="New.Theme.NhàTrọ" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Default day theme drawable for ShapeableImageView -->
+        <item name="android:src">@drawable/backgroundtop_night</item>
+    </style>
+
     <!-- Screen background -->
     <style name="SCREEN">
         <item name="android:background">#252C4B</item>
