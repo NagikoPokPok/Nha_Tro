@@ -233,37 +233,43 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseFirestore database = FirebaseFirestore.getInstance();
-                String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
-                HashMap<String, Object> home = new HashMap<>();
-                home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
-                home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
-                home.put(Constants.KEY_TIMESTAMP, new Date());
-                home.put(Constants.KEY_USER_ID, currentUserId);
-                database.collection(Constants.KEY_COLLECTION_HOMES)
-                        .add(home)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
-                                preferenceManager.putString(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
-                                preferenceManager.putString(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+                if (edtNameHome.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Enter home name", Toast.LENGTH_SHORT).show();
+                } else if (edtAddress.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Enter home address", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseFirestore database = FirebaseFirestore.getInstance();
+                    String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+                    HashMap<String, Object> home = new HashMap<>();
+                    home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
+                    home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+                    home.put(Constants.KEY_TIMESTAMP, new Date());
+                    home.put(Constants.KEY_USER_ID, currentUserId);
+                    database.collection(Constants.KEY_COLLECTION_HOMES)
+                            .add(home)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
+                                    preferenceManager.putString(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
+                                    preferenceManager.putString(Constants.KEY_ADDRESS, edtAddress.getText().toString());
 
-                                Toast.makeText(MainActivity.this, "Add success.",
-                                        Toast.LENGTH_SHORT).show();
-                                getHomes();
-                                dialog.dismiss();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "Add failed.",
-                                        Toast.LENGTH_SHORT).show();
-                                loading(false);
+                                    Toast.makeText(MainActivity.this, "Add success.",
+                                            Toast.LENGTH_SHORT).show();
+                                    getHomes();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this, "Add failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                    loading(false);
 
-                            }
-                        });
+                                }
+                            });
+                }
             }
         });
     }
@@ -306,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                                 // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
                                 // khi setAdapter mình phải set lại là VISIBLE
 
+                                binding.txtNotification.setVisibility(View.GONE);
                                 binding.usersRecyclerView.setVisibility(View.VISIBLE);
 
                                 Log.d("MainActivity", "Adapter set successfully");

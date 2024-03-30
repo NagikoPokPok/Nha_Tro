@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:background="@drawable/bg_white_corner_16_border_gray"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:hint="Ví dụ: Nhà trọ MyHome"/>
 
         <TextView
@@ -54,11 +54,8 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:background="@drawable/bg_white_corner_16_border_gray"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:hint="Ví dụ: 254 Nguyễn Văn Linh"/>
-
-
-
 
 
         <Button
