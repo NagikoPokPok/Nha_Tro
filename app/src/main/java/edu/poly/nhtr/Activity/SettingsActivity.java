@@ -126,6 +126,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         binding.btnBack.setOnClickListener(v -> back());
 
+        switchModeTheme();
+
         // Kiểm tra tài khoản đăng nhập là tài khoản Email hay Google
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -146,7 +148,7 @@ public class SettingsActivity extends AppCompatActivity {
             loadUserDetails();
         }
 
-        switchModeTheme();
+
     }
 
     public void showToast(String message) {
