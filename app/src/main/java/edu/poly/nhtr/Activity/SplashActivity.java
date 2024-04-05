@@ -1,21 +1,17 @@
 package edu.poly.nhtr.Activity;
 
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.databinding.ActivitySignUpBinding;
-import edu.poly.nhtr.databinding.ActivitySplashBinding;
 
 public class SplashActivity extends AppCompatActivity {
 

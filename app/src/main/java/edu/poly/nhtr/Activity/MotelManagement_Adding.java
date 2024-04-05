@@ -3,7 +3,7 @@ package edu.poly.nhtr.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMotelManagementAddingBinding;

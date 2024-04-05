@@ -1,9 +1,13 @@
 package edu.poly.nhtr.Class;
 
+import android.util.Log;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class PasswordHasher {
+    private static final String TAG = "PasswordHashed";
+
     public static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -15,7 +19,7 @@ public class PasswordHasher {
             }
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Lỗi mã hóa: " + e.getMessage());
             return null;
         }
     }

@@ -7,34 +7,27 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
-import android.util.Log;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.view.MotionEvent;
-import android.view.View;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.drawable.IconCompat;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewpager.widget.ViewPager;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,33 +36,30 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.ktx.Firebase;
-import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
-import java.io.ByteArrayOutputStream;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainBinding;
 
-import edu.poly.nhtr.databinding.ActivitySettingsBinding;
-import edu.poly.nhtr.fragment.ViewPagerAdapter;
+
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
@@ -134,11 +124,6 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                 openAddHomeDialog(Gravity.CENTER);
             }
         });
-
-
-
-
-
     }
 
     private void setListeners() {
