@@ -41,7 +41,8 @@ public class SettingsActivity extends AppCompatActivity {
     PreferenceManager preferenceManager;
     SwitchCompat switchMode;
     SharedPreferences sharedPreferences;
-
+    SharedPreferences.Editor editor;
+    boolean nightMode;
 
 
     private Bitmap getConversionImage(String encodedImage) {
@@ -214,9 +215,10 @@ public class SettingsActivity extends AppCompatActivity {
         preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
         preferenceManager.removePreference(Constants.KEY_ADDRESS);
 
+        // Chuyển theme
         SharedPreferences sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constants.KEY_MODE, false);
+        editor.putBoolean("nightMode", false);
         editor.apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -239,23 +241,27 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void switchModeTheme() {
         sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        boolean nightMode = sharedPreferences.getBoolean(Constants.KEY_MODE, false);
+        nightMode = sharedPreferences.getBoolean("nightMode", false);
 
-
-        if (nightMode) {
+        if(nightMode) {
             switchMode.setChecked(true);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
-        switchMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        switchMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nightMode) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    editor = sharedPreferences.edit();
+                    editor.putBoolean("nightMode", false);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    editor = sharedPreferences.edit();
+                    editor.putBoolean("nightMode", true);
+                }
+                editor.apply();
             }
-            sharedPreferences.edit().putBoolean(Constants.KEY_MODE, isChecked).apply();
         });
     }
-
-
 }
