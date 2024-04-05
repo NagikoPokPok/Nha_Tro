@@ -96,34 +96,25 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         setListeners();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.menu_home);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.menu_home) {
+                return true;
+            } else if (item.getItemId() == R.id.menu_notification) {
+                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+                overridePendingTransition(0,0);
+                return true;
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.menu_home) {
-                    return true;
-                } else if (item.getItemId() == R.id.menu_notification) {
-                    startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-                    overridePendingTransition(0,0);
-                    return true;
+            } else if (item.getItemId() == R.id.menu_setting) {
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                overridePendingTransition(0,0);
+                return true;
 
-                } else if (item.getItemId() == R.id.menu_setting) {
-                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                    overridePendingTransition(0,0);
-                    return true;
-
-                }
-                return false;
             }
+            return false;
         });
 
         // Xử lý Dialog Thêm nhà trọ
-        binding.imgAddHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openAddHomeDialog(Gravity.CENTER);
-            }
-        });
+        binding.imgAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
     }
 
     private void setListeners() {
@@ -134,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
             // Lặp qua danh sách các tài khoản cấp thông tin xác thực
             for (UserInfo userInfo : providerData) {
                 String providerId = userInfo.getProviderId();
-                if (providerId != null && providerId.equals("google.com")) {
+                if (providerId.equals("google.com")) {
                     // TH đăng nhập bằng tài khoản Google
                     getInfoFromGoogle();
                     return; // Thoát khỏi vòng lặp khi thấy đúng tài khoản Google
@@ -153,8 +144,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         int width = 150;
         int height = 150;
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-        return resizedBitmap;
+        return Bitmap.createScaledBitmap(bitmap, width, height, true);
     }
 
     private void loadUserDetails() {
@@ -342,7 +332,6 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                 bitmap = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 Log.e("Error", Objects.requireNonNull(e.getMessage()));
-                e.printStackTrace();
             }
             return bitmap;
         }
