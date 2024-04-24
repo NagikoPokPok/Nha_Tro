@@ -4,10 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:bottomRightRadius="40dp"
         android:bottomLeftRadius="40dp"/>
-    <stroke android:color="@color/button_color"
+    <stroke android:color="@color/colorPrimary"
         android:width="2dp"/>
 
-    <solid android:color="@color/button_color"/>
+    <solid android:color="@color/colorPrimary"/>
 
 
 </shape>

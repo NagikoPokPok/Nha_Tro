@@ -413,7 +413,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                 resendEnable = true;
                 resend.setText("Resend Code");
                 random = 0;
-                resend.setTextColor(getResources().getColor(R.color.primary));
+                resend.setTextColor(getResources().getColor(R.color.colorPrimary));
                 Toast.makeText(VerifyOTPActivity.this, "Quá giờ để nhập OTP. Vui lòng chọn Resend để nhận OTP mới!", Toast.LENGTH_SHORT).show();
 
             }

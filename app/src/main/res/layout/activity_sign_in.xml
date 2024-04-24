@@ -60,20 +60,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:fontFamily="@font/paytone_one"
+
             android:layout_gravity="center"
             android:text="Welcome Back"
             android:textColor="#2196F3"
             android:textSize="35sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_background" />
+ />
 
         <TextView
             android:id="@+id/txt_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/paytone_one"
+
             android:text="Login to your account"
             android:layout_gravity="center"
             android:textColor="#707070"
@@ -93,7 +93,7 @@
             android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/ic_account"
             android:drawablePadding="13dp"
-            android:fontFamily="@font/gelasio"
+
             android:hint="Email"
             android:maxLines="1"
             android:imeOptions="actionNext"
@@ -117,7 +117,7 @@
             android:drawableLeft="@drawable/ic_pass"
             android:drawablePadding="13dp"
             android:layout_gravity="center"
-            android:fontFamily="@font/gelasio"
+
             android:hint="Password"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
@@ -148,7 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
-            android:fontFamily="@font/gelasio"
+
             android:text="Forgot Password?"
             android:textColor="#2196F3"
             android:textStyle="bold"
@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
-                android:fontFamily="@font/gelasio"
+
                 android:text="Or Login with"
                 android:textColor="#707070" />
 
@@ -243,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:fontFamily="@font/gelasio"
+
                 android:text="Don't have account?"
                 android:textColor="#707070" />
 

@@ -296,7 +296,7 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
             public void onFinish() {
                 resendEnable = true;
                 resend.setText("Resend Code");
-                resend.setTextColor(getResources().getColor(R.color.primary));
+                resend.setTextColor(getResources().getColor(R.color.colorPrimary));
 
             }
         }.start();

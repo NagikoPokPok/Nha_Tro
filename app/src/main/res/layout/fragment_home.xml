@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Ảnh"
-                android:textColor="@color/secondary_text"
+
                 android:textSize="18sp" />
 
         </FrameLayout>

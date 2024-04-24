@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Ảnh"
-                android:textColor="@color/secondary_text"
+
                 android:textSize="18sp" />
 
         </FrameLayout>
@@ -149,7 +149,6 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:gravity="center"
-                android:textColor="@color/error"
                 android:textSize="14sp"
                 android:visibility="gone"/>
 
