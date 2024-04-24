@@ -3,11 +3,11 @@
     android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="30dp"/>
-    <stroke android:color="@color/button_color"
+    <stroke android:color="@color/colorPrimary"
         android:width="2dp"/>
-    <size android:width="250dp"
-        android:height="50dp"/>
-    <solid android:color="@color/button_color"/>
+    <size android:width="350dp"
+        android:height="65dp"/>
+    <solid android:color="@color/colorPrimary"/>
 
 
 </shape>

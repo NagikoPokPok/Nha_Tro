@@ -9,31 +9,17 @@
     android:background="@drawable/home_7">
 
 
-
-
-<!--      <ImageView-->
-<!--          android:id="@+id/imageView3"-->
-<!--          android:layout_width="match_parent"-->
-<!--          android:layout_height="wrap_content"-->
-<!--          android:scaleType="centerCrop"-->
-<!--          android:src="@drawable/home_2"-->
-<!--          app:layout_constraintEnd_toEndOf="parent"-->
-<!--          app:layout_constraintStart_toStartOf="parent"-->
-<!--          app:layout_constraintTop_toTopOf="parent"-->
-<!--         />-->
-
-
     <TextView
         android:id="@+id/txt_NameApp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:fontFamily="@font/paytone_one"
+        android:fontFamily="@font/inter_bold"
         android:gravity="center"
         android:text="Welcome to HOMEMATE"
         android:textAlignment="center"
         android:textColor="@color/colorTextBlack"
-        android:textSize="30sp"
+        android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -44,11 +30,11 @@
         android:layout_height="wrap_content"
        android:gravity="center"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/paytone_one"
+        android:fontFamily="@font/inter_bold"
         android:text="Explore and find your home"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:fontFamily="@font/antic_slab"
+        android:fontFamily="@font/inter_medium"
         android:text="You can find the best home for your family "
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -78,11 +64,12 @@
         android:layout_gravity="center"
         android:layout_marginBottom="40dp"
         android:background="@drawable/custom_button"
-        app:backgroundTint="@null"
+        android:fontFamily="@font/inter_bold"
         android:text="Get Started Now"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:textStyle="bold"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
