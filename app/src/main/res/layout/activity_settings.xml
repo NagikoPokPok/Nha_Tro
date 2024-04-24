@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/SCREEN"
+    style="@style/SCREEN_WHITE"
     android:orientation="vertical"
 
     tools:context=".Activity.SettingsActivity"
@@ -15,6 +15,7 @@
         android:id="@+id/layout_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         >
 
         <ImageView
@@ -30,8 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/c_i_t"
-            style="@style/TEXT"
-            android:textSize="22sp"
+            style="@style/TEXT_3"
+            android:textSize="24sp"
             android:textStyle="bold" />
     </RelativeLayout>
     
@@ -67,9 +68,11 @@
             <ImageView
                 android:id="@+id/img_ava"
                 android:layout_width="80dp"
-                android:layout_height="60dp"
+                android:layout_height="80dp"
                 android:layout_gravity="center"
-                android:src="@drawable/user" />
+                android:background="@drawable/round_back_avatar"
+                android:src="@drawable/icon_user"
+                android:padding="15dp"/>
 
         </FrameLayout>
 
@@ -80,8 +83,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="@string/t_n"
+            android:fontFamily="@font/inter_medium"
             style="@style/TEXT"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:textStyle="bold"/>
         
         <TextView
@@ -89,18 +93,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0xxx-xxx-xxx"
+            android:fontFamily="@font/inter_medium"
             style="@style/TEXT"
-            android:textSize="12sp"
+            android:textSize="18sp"
             android:layout_gravity="center"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/ChangeProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
             android:layout_marginTop="20dp"
             android:paddingStart="30dp"
             style="@style/BUTTON"
             android:text="@string/thay_i_th_ng_tin"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="16sp"
             android:textAllCaps="false"
             android:layout_gravity="center"
             android:paddingEnd="30dp"/>
@@ -124,9 +131,9 @@
                     android:layout_width="40dp"
                     android:id="@+id/nightModeIcon"
                     android:layout_height="40dp"
-                    android:src="@drawable/moon"
+                    android:src="@drawable/icon_night"
                     android:background="@drawable/round_back_night_mode"
-                    android:padding="12dp"/>
+                    android:padding="10dp"/>
                 
                 <TextView
                     android:layout_marginStart="20dp"
@@ -162,7 +169,7 @@
                     android:layout_height="40dp"
                     android:src="@drawable/notification"
                     android:background="@drawable/round_back_notification"
-                    android:padding="12dp"/>
+                    android:padding="10dp"/>
 
                 <TextView
                     android:layout_marginStart="20dp"
@@ -207,8 +214,9 @@
                     android:layout_width="40dp"
                     android:id="@+id/send_email"
                     android:layout_height="40dp"
-                    android:background="@drawable/mail02"
-                    android:padding="12dp"/>
+                    android:src="@drawable/icon_gmail"
+                    android:background="@drawable/round_back_gmail"
+                    android:padding="10dp"/>
 
                 <TextView
                     android:layout_marginStart="20dp"
@@ -226,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/img_toSupport"
                     android:src="@drawable/icon_right"
-                    style="@style/BUTTON_NO_BORDER"
+                    style="@style/BUTTON_SETTING"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>
 
@@ -242,8 +250,8 @@
                     android:layout_width="40dp"
                     android:id="@+id/help"
                     android:layout_height="40dp"
-                    android:background="@drawable/question_icon01"
-                    android:padding="12dp"/>
+                    android:background="@drawable/icon_ask"
+                    android:padding="15dp"/>
 
                 <TextView
                     android:layout_marginStart="20dp"
@@ -261,7 +269,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/toHelp"
                     android:src="@drawable/icon_right"
-                    style="@style/BUTTON_NO_BORDER"
+                    style="@style/BUTTON_SETTING"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>
 
@@ -277,7 +285,7 @@
                     android:layout_width="40dp"
                     android:id="@+id/about_us"
                     android:layout_height="40dp"
-                    android:background="@drawable/information01"
+                    android:background="@drawable/icon_info"
                     android:padding="12dp"/>
 
                 <TextView
@@ -296,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/to_About_Us"
                     android:src="@drawable/icon_right"
-                    style="@style/BUTTON_NO_BORDER"
+                    style="@style/BUTTON_SETTING"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"/>
 
@@ -306,7 +314,7 @@
         <FrameLayout
             android:id="@+id/frm_log_out"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
@@ -314,17 +322,18 @@
             android:animateLayoutChanges="true">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnlogout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/ng_xu_t"
-                app:iconGravity="end"
+                android:id="@+id/btn_logout"
                 style="@style/BUTTON"
-                app:backgroundTint="@null"
-                app:icon = "@drawable/icon_logout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/ng_xu_t"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textSize="18sp"/>
+                app:backgroundTint="@null"
+                app:icon="@drawable/icon_logout"
+                app:iconGravity="end" />
 
             <ProgressBar
                 android:id="@+id/progressBar"

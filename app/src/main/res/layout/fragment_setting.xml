@@ -61,7 +61,7 @@
                     android:layout_width="80dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/user" />
+                    android:src="@drawable/icon_user" />
 
             </FrameLayout>
 
@@ -117,7 +117,7 @@
                         android:layout_width="40dp"
                         android:id="@+id/nightModeIcon"
                         android:layout_height="40dp"
-                        android:src="@drawable/moon"
+                        android:src="@drawable/icon_night"
                         android:background="@drawable/round_back_night_mode"
                         android:padding="12dp"/>
 
@@ -199,7 +199,7 @@
                         android:layout_width="40dp"
                         android:id="@+id/send_email"
                         android:layout_height="40dp"
-                        android:background="@drawable/mail02"
+                        android:background="@drawable/icon_gmail"
                         android:padding="12dp"/>
 
                     <TextView
@@ -233,7 +233,7 @@
                         android:layout_width="40dp"
                         android:id="@+id/help"
                         android:layout_height="40dp"
-                        android:background="@drawable/question_icon01"
+                        android:background="@drawable/icon_ask"
                         android:padding="12dp"/>
 
                     <TextView
@@ -267,7 +267,7 @@
                         android:layout_width="40dp"
                         android:id="@+id/about_us"
                         android:layout_height="40dp"
-                        android:background="@drawable/information01"
+                        android:background="@drawable/icon_info"
                         android:padding="12dp"/>
 
                     <TextView

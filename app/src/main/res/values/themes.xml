@@ -47,6 +47,20 @@
     </style>
 
 
+    <!-- Dành cho chữ xanh -->
+    <style name="TEXT">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <!--    Dành cho chữ đen-->
+    <style name="TEXT_2">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!--    Dành cho chữ trắng-->
+    <style name="TEXT_3">
+        <item name="android:textColor">@color/white</item>
+    </style>
 
     <!-- Light mode -->
     <style name="New.Theme.NhàTrọ" parent="Theme.Material3.DayNight.NoActionBar">
@@ -64,10 +78,6 @@
         <item name="android:background">@color/white</item>
     </style>
 
-    <!-- Dành cho chữ xanh -->
-    <style name="TEXT">
-        <item name="android:textColor">@color/textSetting</item>
-    </style>
 
     <!-- Button background -->
     <style name="BUTTON">
@@ -77,11 +87,15 @@
     </style>
 
     <style name="BUTTON_NO_BORDER">
-        <item name="android:tint">@color/textSetting</item>
+        <item name="android:tint">@color/white</item>
+    </style>
+
+    <style name="BUTTON_SETTING">
+        <item name="android:tint">@color/colorPrimary</item>
     </style>
 
     <style name="BACKGROUND_BUTTON">
-        <item name="android:background">@drawable/round_back_white</item>
+        <item name="android:background">@drawable/round_back_setting</item>
     </style>
 
     <style name="BOTTOM_BAR">
@@ -89,17 +103,6 @@
         <item name="itemTextColor">@color/custom_color</item>
         <item name="itemIconTint">@color/custom_color</item>
     </style>
-
-<!--    Dành cho chữ đen-->
-    <style name="TEXT_2">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <!--    Dành cho chữ trắng-->
-    <style name="TEXT_3">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
 
     <!--    Theme cho chế độ ngày/đêm-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">

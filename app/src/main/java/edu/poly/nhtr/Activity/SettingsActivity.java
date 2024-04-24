@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        binding.btnlogout.setOnClickListener(v -> {
+        binding.btnLogout.setOnClickListener(v -> {
             try {
                 logout();
             } catch (InterruptedException e) {
@@ -233,11 +233,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loading(Boolean isLoading) {
         if (isLoading) {
-            binding.btnlogout.setVisibility(View.INVISIBLE);
+            binding.btnLogout.setVisibility(View.INVISIBLE);
             binding.progressBar.setVisibility(View.VISIBLE);
         } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
-            binding.btnlogout.setVisibility(View.VISIBLE);
+            binding.btnLogout.setVisibility(View.VISIBLE);
         }
     }
 
