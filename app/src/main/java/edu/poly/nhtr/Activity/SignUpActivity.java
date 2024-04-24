@@ -7,7 +7,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
@@ -24,6 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
@@ -54,6 +58,44 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         setListeners();
+
+        binding.pass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = s.toString();
+
+                // Check for minimum length first
+                if (password.length() < 8) {
+                    binding.layoutPassword.setHelperText("Enter Minimum 8 chars");
+                    binding.layoutPassword.setError("");
+                    return; // Exit early if password is less than 8 characters
+                }
+
+                // Improved regular expression for special characters
+                Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+                Matcher matcher = pattern.matcher(password);
+                boolean isPwdContainsSpeChar = matcher.find();
+
+                if (isPwdContainsSpeChar) {
+                    binding.layoutPassword.setHelperText("Strong Password");
+                    binding.layoutPassword.setError("");
+                } else {
+                    binding.layoutPassword.setHelperText("");
+                    binding.layoutPassword.setError("Weak Password, Include minimum 1 special char");
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void setListeners() {
