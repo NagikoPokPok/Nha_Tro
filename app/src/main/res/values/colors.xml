@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!-- login colors -->
+	<!-- Main Color For Project -->
+	<color name="colorPrimary">#0054FF</color>
+	<color name="colorButton">#E15528</color>
+	<color name="colorGray">#B1B1B1</color>
+	<color name="colorTextBlack">#1E1E1E</color>
 
-	<color name="colorPrimary">#008577</color>
-	<color name="colorPrimaryDark">#00574B</color>
-	<color name="colorAccent">#D81B60</color>
-	<color name="purple_200">#FFBB86FC</color>
-	<color name="purple_500">#FF6200EE</color>
-	<color name="purple_700">#FF3700B3</color>
-	<color name="teal_200">#FF03DAC5</color>
-	<color name="teal_700">#FF018786</color>
+	<color name="colorGreen">#3FB13D</color>
+	<color name="colorOrange">#E55555</color>
+	<color name="colorRed">#920F0F</color>
+
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
-	<color name= "gray">#ACABAB</color>
 
-
-	<color name="primary">#1C2E46</color>
-	<color name="primary_dark">#142232</color>
-	<color name="primary_text">#212121</color>
-	<color name="secondary_text">#757575</color>
-	<color name="input_background">#ECECEC</color>
-	<color name="icon_background">#20FFFFFF</color>
-	<color name="error">#B00020</color>
-	<color name="received_message_background">#090D16</color>
 
 <!--	 Màu bên trang setting-->
 	<color name="main">#C8EDFD</color>
@@ -36,25 +26,7 @@
 <!--	Màu cho khung to-->
 	<color name="big_fragment">#3F97DD</color>
 
-<!--	Thêm mới trọ-->
 
-	<color name="_bg__th_m_m_i_tr__1_color">#EEEEEE</color>
-	<color name="rectangle_3_color">#FFFFFF</color>
-	<color name="_bg__notification_ek1_color">#000000</color>
-	<color name="nh_p_s__ph_ng_color">#A8A8A8</color>
-	<color name="v__d___th____a_color">#BBBABA</color>
-	<color name="s__ph_ng_tr_n_1_t_ng___t_ng_s__ph_ng___s__t_ng_color">#BFAD0D</color>
-	<color name="rectangle_10_color">#46E7FD</color>
-	<color name="rectangle_11_color">#D9D9D9</color>
-	<color name="rectangle_12_color">#46E8FE</color>
-	<color name="ti_p_theo_color">#616161</color>
-	<color name="rectangle_13_color">#E9E9E9</color>
-	<color name="__ng_ek2_color">#020202</color>
-
-
-	<color name="button_color">#2196F3</color>
-	<color name="yellow">#FFEB3B</color>
-	
 <!--	Dark mode-->
 	<color name="grey">#aaa</color>
 	<color name="darkGrey">#121212</color>
