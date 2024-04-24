@@ -132,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/pressed_button"
                 android:text="Lưu thay đổi"
-                android:textColor="@color/_bg__th_m_m_i_tr__1_color"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 app:backgroundTint="@null"
                 app:icon="@drawable/img_reset"
