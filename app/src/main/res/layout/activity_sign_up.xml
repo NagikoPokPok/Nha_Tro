@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_signup">
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,17 +26,17 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="170dp"
         android:layout_marginEnd="32dp"
+        android:hint="Tên đầy đủ"
+        android:textColorHint="@color/colorTextBlack"
         app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/colorPrimary"
         app:endIconMode="clear_text"
+        app:hintTextColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:startIconDrawable="@drawable/ic_account_blue"
         app:startIconTint="@color/colorPrimary"
-        android:hint="Tên đầy đủ"
-        android:textColorHint="@color/colorTextBlack"
-        app:hintTextColor="@color/colorPrimary"
 
         >
 
@@ -164,8 +165,9 @@
             app:iconGravity="textStart"
             android:textSize="16sp"
             android:textStyle="bold"
+            style="@style/BUTTON"
             app:backgroundTint="@null"
-            android:background="@drawable/custom_button"
+            android:fontFamily="@font/inter_bold"
             app:icon = "@drawable/icon_getin"/>
 
         <ProgressBar

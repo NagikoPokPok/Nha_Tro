@@ -193,9 +193,9 @@
             app:icon = "@drawable/ic_verify"
             app:iconGravity="textStart"
             app:backgroundTint="@null"
-            android:text="VERIFY"
+            android:text="XÁC THỰC"
             android:textColor="@color/white"
-            android:textStyle="bold"
+            android:fontFamily="@font/inter_bold"
             android:textSize="16sp"/>
 
         <ProgressBar

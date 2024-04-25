@@ -26,9 +26,9 @@
     </style>
 
     <style name="SpecificCornerCut">
-        <item name="cornerSizeBottomRight">50dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
         <item name="cornerFamilyBottomRight">rounded</item>
-        <item name="cornerSizeBottomLeft">50dp</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
         <item name="cornerFamilyBottomLeft">rounded</item>
     </style>
 
@@ -160,4 +160,20 @@
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
         <item name="android:colorForeground">#99000000</item>
     </style>
+
+
+    <style name="normal_font">
+        <applicationStyles>
+            <item name="android:fontFamily">@font/inter_light</item>
+            <item name="android:textSize">16sp</item>
+        </applicationStyles>
+    </style>
+
+    <style name="plus_font">
+        <item name="android:fontFamily">@font/inter_bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>
