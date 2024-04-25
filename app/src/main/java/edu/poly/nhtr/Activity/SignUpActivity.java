@@ -40,9 +40,6 @@ public class SignUpActivity extends AppCompatActivity {
 
      ActivitySignUpBinding binding;
 
-
-    String encodedImage;
-    ImageView passwordIcon, confirmPassword;
     private boolean passwordShowing = false;
     PreferenceManager preferenceManager;
 
@@ -53,13 +50,10 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         preferenceManager = new PreferenceManager(getApplicationContext());
-        passwordIcon = binding.iconPassword;
-        confirmPassword = binding.iconConfirmPassword;
-
 
         setListeners();
 
-        binding.pass.addTextChangedListener(new TextWatcher() {
+        binding.edtPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 
@@ -71,22 +65,29 @@ public class SignUpActivity extends AppCompatActivity {
 
                 // Check for minimum length first
                 if (password.length() < 8) {
-                    binding.layoutPassword.setHelperText("Enter Minimum 8 chars");
+                    binding.layoutPassword.setHelperText("Nhập ít nhất 8 ký tự");
                     binding.layoutPassword.setError("");
                     return; // Exit early if password is less than 8 characters
                 }
+                else if(password.length() >=8 && password.length() <=10)
+                {
+                    // Improved regular expression for special characters
+                    Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+                    Matcher matcher = pattern.matcher(password);
+                    boolean isPwdContainsSpeChar = matcher.find();
 
-                // Improved regular expression for special characters
-                Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
-                Matcher matcher = pattern.matcher(password);
-                boolean isPwdContainsSpeChar = matcher.find();
+                    if (isPwdContainsSpeChar) {
+                        binding.layoutPassword.setHelperText("Mật khẩu mạnh");
+                        binding.layoutPassword.setError("");
+                    } else {
+                        binding.layoutPassword.setHelperText("");
+                        binding.layoutPassword.setError("Mật khẩu yếu, nhập ít nhất 1 ký tự đặc biệt");
+                    }
+                }
 
-                if (isPwdContainsSpeChar) {
-                    binding.layoutPassword.setHelperText("Strong Password");
-                    binding.layoutPassword.setError("");
-                } else {
+                else{
                     binding.layoutPassword.setHelperText("");
-                    binding.layoutPassword.setError("Weak Password, Include minimum 1 special char");
+                    binding.layoutPassword.setError("Tối đa 10 ký tự");
                 }
 
             }
@@ -96,50 +97,78 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
+
+        binding.edtConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String password = binding.edtPassword.getText().toString().trim();
+                String confirmPassword = s.toString().trim();
+
+                if(confirmPassword.equals(password)) {
+                    binding.layoutConfirmPassword.setHelperText("Xác minh mật khẩu chính xác");
+                    binding.layoutConfirmPassword.setError("");
+                } else {
+                    binding.layoutConfirmPassword.setHelperText("");
+                    binding.layoutConfirmPassword.setError("Mật khẩu không trùng");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        binding.edtName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = binding.edtName.getText().toString().trim();
+                if(name.length()>=0) {
+                    binding.layoutName.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        binding.edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String email = binding.edtEmail.getText().toString().trim();
+                if(email.length()>=0) {
+                    binding.layoutEmail.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
     }
 
     private void setListeners() {
 
-        passwordIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // checking if password is showing or not
-                if(passwordShowing)
-                {
-                    passwordShowing = false;
-                    binding.edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    passwordIcon.setImageResource(edu.poly.nhtr.R.drawable.password_show_2);
-                }
-                else {
-                    passwordShowing = true;
-                    binding.edtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    passwordIcon.setImageResource(R.drawable.password_hide);
-                }
-
-                binding.edtPassword.setSelection(binding.edtPassword.length());
-            }
-        });
-
-        confirmPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // checking if password is showing or not
-                if(passwordShowing)
-                {
-                    passwordShowing = false;
-                    binding.edtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    confirmPassword.setImageResource(edu.poly.nhtr.R.drawable.password_show_2);
-                }
-                else {
-                    passwordShowing = true;
-                    binding.edtConfirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    confirmPassword.setImageResource(R.drawable.password_hide);
-                }
-
-                binding.edtConfirmPassword.setSelection(binding.edtConfirmPassword.length());
-
-            }
-        });
         binding.txtSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,14 +182,6 @@ public class SignUpActivity extends AppCompatActivity {
                 if (isValidSignUpDetails()) {
                     checkExisted(binding.edtEmail.getText().toString().trim());
                 }
-            }
-        });
-        binding.layoutImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                pickImage.launch(intent);
             }
         });
     }
@@ -195,7 +216,7 @@ public class SignUpActivity extends AppCompatActivity {
                             String hashedPassword = PasswordHasher.hashPassword(binding.edtPassword.getText().toString());
                             intent.putExtra("password",hashedPassword);
                             intent.putExtra("name",binding.edtName.getText().toString());
-                            intent.putExtra("image",encodedImage);
+                            //intent.putExtra("image",encodedImage);
                             startActivity(intent);
                         }
                     } else {
@@ -219,23 +240,23 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     // Hàm truy cập thư viện để lấy ảnh
-    private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    if (result.getData() != null) {
-                        Uri imageUri = result.getData().getData();
-                        try {
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            binding.imgProfile.setImageBitmap(bitmap);
-                            binding.txtAddImage.setVisibility(View.GONE);
-                            encodedImage = encodedImage(bitmap);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
+//    private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+//            result -> {
+//                if (result.getResultCode() == RESULT_OK) {
+//                    if (result.getData() != null) {
+//                        Uri imageUri = result.getData().getData();
+//                        try {
+//                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+//                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+//                            binding.imgProfile.setImageBitmap(bitmap);
+//                            binding.txtAddImage.setVisibility(View.GONE);
+//                            encodedImage = encodedImage(bitmap);
+//                        } catch (FileNotFoundException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            });
 
     private Boolean isValidSignUpDetails() {
         String name = binding.edtName.getText().toString().trim();
@@ -243,25 +264,27 @@ public class SignUpActivity extends AppCompatActivity {
         String email = binding.edtEmail.getText().toString().trim();
         if (name.isEmpty()) {
             showToast("Enter name");
+            binding.layoutName.setError("Không được bỏ trống");
             return false;
-        } else if (!name.matches("^[\\p{L}\\s]+$")) {
-            showToast("Please enter only alphabetical characters");
-            return false;
-
         } else if (binding.edtEmail.getText().toString().trim().isEmpty()) {
             showToast("Enter email");
+            binding.layoutEmail.setError("Không được bỏ trống");
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.edtEmail.getText().toString()).matches()) {
             showToast("Enter valid email address");
+            binding.layoutEmail.setError("Email không hợp lệ");
             return false;
         } else if (binding.edtPassword.getText().toString().trim().isEmpty()) {
             showToast("Enter password");
+            binding.layoutPassword.setError("Không được bỏ trống");
             return false;
         } else if (binding.edtConfirmPassword.getText().toString().trim().isEmpty()) {
             showToast("Confirm your password");
+            binding.layoutConfirmPassword.setError("Không được bỏ trống");
             return false;
         } else if (!binding.edtPassword.getText().toString().trim().equals(binding.edtConfirmPassword.getText().toString().trim())) {
             showToast("Password and confirm must be the same");
+
             return false;
         } else {
             return true;
