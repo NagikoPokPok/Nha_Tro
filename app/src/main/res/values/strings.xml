@@ -101,4 +101,5 @@
     <string name="nhap_lai_mat_khau_moi">Nhập lại mật khẩu mới</string>
     <string name="mat_khau_hien_tai">Mật khẩu hiện tại</string>
     <string name="mat_khau_moi">Mật khẩu mới</string>
+    <string name="Sdt">0xxx-xxx-xxx</string>
 </resources>

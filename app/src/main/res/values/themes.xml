@@ -46,20 +46,61 @@
         <item name="cornerSizeBottomLeft">16dp</item>
     </style>
 
-
+    <!--    Cỡ chữ medium-->
     <!-- Dành cho chữ xanh -->
-    <style name="TEXT">
+    <style name="TEXT_MED">
         <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
     </style>
 
     <!--    Dành cho chữ đen-->
-    <style name="TEXT_2">
-        <item name="android:textColor">@color/black</item>
+    <style name="TEXT_MED_2">
+        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
     </style>
 
     <!--    Dành cho chữ trắng-->
-    <style name="TEXT_3">
+    <style name="TEXT_MED_3">
         <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+
+    <!--    Cỡ chữ Bold-->
+    <!-- Dành cho chữ xanh -->
+    <style name="TEXT_BOLD">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+    </style>
+
+    <!--    Dành cho chữ đen-->
+    <style name="TEXT_BOLD_2">
+        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+    </style>
+
+    <!--    Dành cho chữ trắng-->
+    <style name="TEXT_BOLD_3">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+    </style>
+
+    <!--    Cỡ chữ Light-->
+    <!-- Dành cho chữ xanh -->
+    <style name="TEXT_LIGHT">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/inter_light</item>
+    </style>
+
+    <!--    Dành cho chữ đen-->
+    <style name="TEXT_LIGHT_2">
+        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:fontFamily">@font/inter_light</item>
+    </style>
+
+    <!--    Dành cho chữ trắng-->
+    <style name="TEXT_LIGHT_3">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/inter_light</item>
     </style>
 
     <!-- Light mode -->
@@ -84,6 +125,7 @@
         <item name="android:background">@drawable/pressed_button</item>
         <item name="android:textColor">@color/white</item>
         <item name="iconTint">@color/white</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
     </style>
 
     <style name="BUTTON_NO_BORDER">

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/c_i_t"
-            style="@style/TEXT_3"
+            style="@style/TEXT_BOLD_3"
             android:textSize="24sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -83,8 +83,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="@string/t_n"
-            android:fontFamily="@font/inter_medium"
-            style="@style/TEXT"
+            style="@style/TEXT_MED"
             android:textSize="24sp"
             android:textStyle="bold"/>
         
@@ -92,9 +91,8 @@
             android:id="@+id/phoneNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0xxx-xxx-xxx"
-            android:fontFamily="@font/inter_medium"
-            style="@style/TEXT"
+            android:text="@string/Sdt"
+            style="@style/TEXT_MED"
             android:textSize="18sp"
             android:layout_gravity="center"/>
 
@@ -106,7 +104,6 @@
             android:paddingStart="30dp"
             style="@style/BUTTON"
             android:text="@string/thay_i_th_ng_tin"
-            android:fontFamily="@font/inter_bold"
             android:textSize="16sp"
             android:textAllCaps="false"
             android:layout_gravity="center"
@@ -141,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/ch_ban_m"
-                    style="@style/TEXT"
+                    style="@style/TEXT_MED"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_toEndOf="@id/nightModeIcon"/>
@@ -177,7 +174,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/b_t_th_ng_b_o"
-                    style="@style/TEXT"
+                    style="@style/TEXT_MED"
+                    android:fontFamily=""
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_toEndOf="@id/notification_icon"/>
@@ -224,7 +222,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/g_i_mail_h_tr"
-                    style="@style/TEXT"
+                    style="@style/TEXT_MED"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_toEndOf="@id/send_email"/>
@@ -259,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/h_ng_d_n"
-                    style="@style/TEXT"
+                    style="@style/TEXT_MED"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_toEndOf="@id/help"/>
@@ -294,7 +292,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/v_ch_ng_t_i"
-                    style="@style/TEXT"
+                    style="@style/TEXT_MED"
                     android:textStyle="bold"
                     android:textSize="18sp"
                     android:layout_toEndOf="@id/about_us"/>
@@ -327,7 +325,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:fontFamily="@font/inter_bold"
                 android:text="@string/ng_xu_t"
                 android:textSize="20sp"
                 android:textStyle="bold"
