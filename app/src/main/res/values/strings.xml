@@ -95,4 +95,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="h_ng_d_n">Hướng dẫn</string>
+    <string name="i_m_t_kh_u">ĐỔI MẬT KHẨU</string>
+    <string name="doi_mat_khau">Đổi mật khẩu</string>
+    <string name="mat_khau_cu">Mật khẩu cũ</string>
+    <string name="nhap_lai_mat_khau_moi">Nhập lại mật khẩu mới</string>
+    <string name="mat_khau_hien_tai">Mật khẩu hiện tại</string>
+    <string name="mat_khau_moi">Mật khẩu mới</string>
 </resources>

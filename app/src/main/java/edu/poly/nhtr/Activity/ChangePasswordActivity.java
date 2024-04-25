@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,16 +22,17 @@ import java.util.Objects;
 
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.databinding.ActivityChangePasswordBinding;
+import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class ChangePasswordActivity extends AppCompatActivity {
     EditText edt_pass, edt_newPass, edt_newPassConf;
-    Button btn_changePass;
     ImageView back;
     private FirebaseAuth mAuth;
     private PreferenceManager preferenceManager;
-
+    private ActivityChangePasswordBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +41,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
         edt_newPass = findViewById(R.id.edt_NewPassword);
         edt_newPassConf = findViewById(R.id.edt_NewPassConfirm);
         back = findViewById(R.id.img_back);
-        btn_changePass = findViewById(R.id.btn_Change_Password);
         preferenceManager = new PreferenceManager(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
+        binding = ActivityChangePasswordBinding.inflate(getLayoutInflater());
+        binding.getRoot();
         setListener();
     }
 
     private void setListener() {
-        btn_changePass.setOnClickListener(v -> {
+        binding.btnChangePass.setOnClickListener(v -> {
             String oldInputPassword = PasswordHasher.hashPassword(edt_pass.getText().toString());
             String oldPassword = preferenceManager.getString(Constants.KEY_PASSWORD);
             String newPassword = PasswordHasher.hashPassword(edt_newPass.getText().toString());

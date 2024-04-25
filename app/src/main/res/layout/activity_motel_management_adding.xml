@@ -94,7 +94,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="@string/sao"
-
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@id/ten_nha_tro"
