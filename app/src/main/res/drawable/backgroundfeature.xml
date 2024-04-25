@@ -4,8 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="#FFFFFF"/>
     <corners android:radius="20dp"/>
-    <stroke android:color="#E1DFDF"
-        android:width="3dp"/>
+    <stroke android:color="#0080FF"
+        android:width="2dp"/>
 
 
 

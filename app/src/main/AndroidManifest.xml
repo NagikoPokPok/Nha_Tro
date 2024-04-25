@@ -15,6 +15,9 @@
         android:theme="@style/Theme.NhàTrọ"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.Service.ServiceMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".ServiceManagenment.Managerment_ServiceActivity"
             android:exported="false" />
         <activity
