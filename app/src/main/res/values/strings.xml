@@ -101,4 +101,13 @@
     <string name="nhap_lai_mat_khau_moi">Nhập lại mật khẩu mới</string>
     <string name="mat_khau_hien_tai">Mật khẩu hiện tại</string>
     <string name="mat_khau_moi">Mật khẩu mới</string>
+    <string name="Sdt">0xxx-xxx-xxx</string>
+    <string name="thay_doi_mat_khau">Thay đổi mật khẩu</string>
+    <string name="nut_quay_ve">Nút quay về</string>
+    <string name="khung_avatar">Khung avatar</string>
+    <string name="moon">Hình trăng</string>
+    <string name="bell">Chuông thông báo</string>
+    <string name="Gmail">Gmail</string>
+    <string name="ask">Hỏi</string>
+    <string name="information">Thông tin</string>
 </resources>

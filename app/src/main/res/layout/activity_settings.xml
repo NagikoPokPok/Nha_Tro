@@ -19,12 +19,13 @@
         >
 
         <ImageView
+            android:contentDescription="@string/nut_quay_ve"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:id="@+id/btn_back"
             android:src="@drawable/back_btn"
             style="@style/BUTTON_NO_BORDER"
-            android:padding="14dp" />
+            android:padding="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -66,6 +67,7 @@
                 app:riv_oval="true" />
 
             <ImageView
+                android:contentDescription="@string/khung_avatar"
                 android:id="@+id/img_ava"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -125,6 +127,7 @@
                 android:layout_height="wrap_content">
                 
                 <ImageView
+                    android:contentDescription="@string/moon"
                     android:layout_width="40dp"
                     android:id="@+id/nightModeIcon"
                     android:layout_height="40dp"
@@ -161,6 +164,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:contentDescription="@string/bell"
                     android:layout_width="40dp"
                     android:id="@+id/notification_icon"
                     android:layout_height="40dp"
@@ -209,6 +213,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:contentDescription="@string/Gmail"
                     android:layout_width="40dp"
                     android:id="@+id/send_email"
                     android:layout_height="40dp"
@@ -245,6 +250,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:contentDescription="@string/ask"
                     android:layout_width="40dp"
                     android:id="@+id/help"
                     android:layout_height="40dp"
@@ -280,6 +286,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:contentDescription="@string/information"
                     android:layout_width="40dp"
                     android:id="@+id/about_us"
                     android:layout_height="40dp"
