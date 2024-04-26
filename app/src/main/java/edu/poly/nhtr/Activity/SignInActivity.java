@@ -140,17 +140,6 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         binding.googleIcon.setOnClickListener(v -> googleSignIn());
-        binding.chkShowPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    binding.inputPassword.setTransformationMethod(null);
-                }
-                else{
-                    binding.inputPassword.setTransformationMethod( new PasswordTransformationMethod());
-                }
-            }
-        });
     }
 
     private void signIn(){
