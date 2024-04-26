@@ -8,10 +8,13 @@
     android:background="@drawable/background_signup"
     app:layoutDescription="@xml/activity_change_profile_scene"
     tools:context=".Activity.ChangeProfileActivity">
+
     <ImageView
+        android:contentDescription="@string/nut_quay_ve"
         android:id="@+id/img_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/img_back2"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,10 +23,10 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="80dp"
         android:fontFamily="@font/inter_bold"
-        android:text="  Hồ Sơ\nCá Nhân"
+        android:text="@string/hoso_canhan"
         android:textColor="@color/black"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -51,7 +54,7 @@
             android:backgroundTint="@color/white"
             app:cardCornerRadius="15dp"
             app:cardElevation="4dp"
-            app:strokeColor="@color/grey">
+            app:strokeColor="@color/colorGray">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,7 +73,7 @@
                         android:id="@+id/img_profile"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:background="@drawable/backgrund_image_2"
+                        android:background="@drawable/background_them_anh"
                         android:scaleType="centerCrop"
                         app:riv_oval="true" />
 
@@ -79,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Thêm ảnh"
+                        android:text="@string/them_anh"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
 
@@ -90,7 +93,7 @@
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="10dp"
                     app:boxStrokeColor="@color/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -98,8 +101,9 @@
                         style="@style/TEXT_LIGHT_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
                         android:drawableStart="@drawable/icon_password"
-                        android:hint="Tên đầy đủ"
+                        android:hint="@string/ten_day_du"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,6 +111,7 @@
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     app:boxStrokeColor="@color/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -114,8 +119,9 @@
                         style="@style/TEXT_LIGHT_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
                         android:drawableStart="@drawable/icon_phone_number"
-                        android:hint="Số điện thoại"
+                        android:hint="@string/so_dien_thoai"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,6 +129,8 @@
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     app:boxStrokeColor="@color/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -130,8 +138,9 @@
                         style="@style/TEXT_LIGHT_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
                         android:drawableStart="@drawable/icon_address"
-                        android:hint="Địa chỉ"
+                        android:hint="@string/dia_chi"
                         android:inputType="textMultiLine" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -140,7 +149,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
@@ -148,14 +157,15 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="20dp"
                 android:background="@drawable/pressed_button"
-                android:text="Lưu thay đổi"
-                android:textColor="@color/white"
+                android:text="@string/luu_thay_doi"
+                style="@style/TEXT_BOLD_3"
                 android:textSize="16sp"
                 app:backgroundTint="@null"
-                app:icon="@drawable/img_reset"
+                app:icon="@drawable/icon_save"
                 app:iconGravity="textStart" />
 
             <ProgressBar
@@ -173,20 +183,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
-            android:fontFamily="@font/inter_light"
-            android:text="ĐỔI MẬT KHẨU"
+            style="@style/TEXT_MED"
+            android:text="@string/DOI_MAT_KHAU_GACH_CHAN"
             android:textColor="#3B4AE5"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="120dp"
-            android:layout_height="1dp"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:background="#3F51B5" />
-
-
+            />
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

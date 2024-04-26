@@ -62,4 +62,11 @@
     <string name="ask">Hỏi</string>
     <string name="information">Thông tin</string>
     <string name="sdt">0xxx-xxx-xxx</string>
+    <string name="hoso_canhan">Hồ Sơ\nCá Nhân</string>
+    <string name="dia_chi">Địa chỉ</string>
+    <string name="ten_day_du">Tên đầy đủ</string>
+    <string name="so_dien_thoai">Số điện thoại</string>
+    <string name="luu_thay_doi">Lưu thay đổi</string>
+    <string name="them_anh">Thêm ảnh</string>
+    <string name="DOI_MAT_KHAU_GACH_CHAN"><u>ĐỔI MẬT KHẨU</u></string>
 </resources>

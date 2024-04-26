@@ -61,9 +61,9 @@ public class ChangeProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_profile);
         imgBack = findViewById(R.id.img_back);
-        name = findViewById(R.id.edt_name1);
-        phoneNum = findViewById(R.id.edt_phoneNumber1);
-        diachi = findViewById(R.id.edt_address1);
+        name = findViewById(R.id.edt_name);
+        phoneNum = findViewById(R.id.edt_phoneNumber);
+        diachi = findViewById(R.id.edt_address);
         imageProfile = findViewById(R.id.img_profile);
         btn_save = findViewById(R.id.btn_save);
         txt_add_image = findViewById(R.id.txt_add_image);
