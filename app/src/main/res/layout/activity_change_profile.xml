@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:background="@drawable/background_signup"
     app:layoutDescription="@xml/activity_change_profile_scene"
     tools:context=".Activity.ChangeProfileActivity">
     <ImageView
@@ -19,13 +19,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EDIT PROFILE"
-        android:textColor="@color/white"
-        android:textSize="22sp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="  Hồ Sơ\nCá Nhân"
+        android:textColor="@color/black"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.097"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="100dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,12 +39,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="60dp"
             app:cardCornerRadius="15dp"
+            android:backgroundTint="@color/white"
+            app:strokeColor="@color/grey"
             app:cardElevation="4dp">
 
             <LinearLayout
@@ -80,45 +86,54 @@
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:boxStrokeColor="@color/colorPrimary"
                     android:layout_marginTop="0dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_name1"
+                        android:id="@+id/edt_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Tên của bạn"
+                        android:drawableStart="@drawable/icon_password"
+                        android:hint="Tên đầy đủ"
+                        style="@style/TEXT_LIGHT_2"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:boxStrokeColor="@color/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_phoneNumber1"
+                        android:id="@+id/edt_phoneNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/icon_phone_number"
                         android:hint="Số điện thoại"
+                        style="@style/TEXT_LIGHT_2"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    app:boxStrokeColor="@color/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_address1"
+                        android:id="@+id/edt_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/icon_address"
                         android:hint="Địa chỉ"
+                        style="@style/TEXT_LIGHT_2"
                         android:inputType="textMultiLine" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -153,9 +168,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
-
+            android:fontFamily="@font/inter_light"
             android:text="ĐỔI MẬT KHẨU"
-            android:textColor="#3F51B5"
+            android:textColor="#3B4AE5"
             android:textStyle="bold" />
 
         <View
