@@ -287,12 +287,12 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                                 // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
                                 // khi setAdapter mình phải set lại là VISIBLE
 
-                                binding.txtNotification.setVisibility(View.GONE);
+                                //binding.txtNotification.setVisibility(View.GONE);
                                 binding.usersRecyclerView.setVisibility(View.VISIBLE);
 
                                 Log.d("MainActivity", "Adapter set successfully");
                             }else{
-                                binding.txtNotification.setVisibility(View.VISIBLE);
+                                //binding.txtNotification.setVisibility(View.VISIBLE);
                             }
 
                         }else {
