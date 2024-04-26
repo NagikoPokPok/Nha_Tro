@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
@@ -36,18 +37,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0.292">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="60dp"
-            app:cardCornerRadius="15dp"
             android:backgroundTint="@color/white"
-            app:strokeColor="@color/grey"
-            app:cardElevation="4dp">
+            app:cardCornerRadius="15dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/grey">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,16 +90,16 @@
                     style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:boxStrokeColor="@color/colorPrimary"
-                    android:layout_marginTop="0dp">
+                    android:layout_marginTop="0dp"
+                    app:boxStrokeColor="@color/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_name"
+                        style="@style/TEXT_LIGHT_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/icon_password"
                         android:hint="Tên đầy đủ"
-                        style="@style/TEXT_LIGHT_2"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,11 +111,11 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_phoneNumber"
+                        style="@style/TEXT_LIGHT_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/icon_phone_number"
                         android:hint="Số điện thoại"
-                        style="@style/TEXT_LIGHT_2"
                         android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,11 +127,11 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_address"
+                        style="@style/TEXT_LIGHT_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/icon_address"
                         android:hint="Địa chỉ"
-                        style="@style/TEXT_LIGHT_2"
                         android:inputType="textMultiLine" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,9 +142,10 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:animateLayoutChanges="true"
-            android:layout_gravity="center">
+            android:animateLayoutChanges="true">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
                 android:layout_width="wrap_content"
