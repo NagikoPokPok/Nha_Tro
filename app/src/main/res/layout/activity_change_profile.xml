@@ -150,21 +150,24 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:paddingHorizontal="20dp"
             android:animateLayoutChanges="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
-                android:layout_width="240dp"
-                android:layout_height="48dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/pressed_button"
                 android:text="@string/luu_thay_doi"
                 style="@style/TEXT_BOLD_3"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 app:backgroundTint="@null"
                 app:icon="@drawable/icon_save"
                 app:iconGravity="textStart" />

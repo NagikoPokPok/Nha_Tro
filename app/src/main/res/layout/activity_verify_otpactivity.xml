@@ -8,12 +8,22 @@
     android:overScrollMode="never"
     android:scrollbars="none">
 
+    <ImageView
+        android:contentDescription="@string/nut_quay_ve"
+        android:id="@+id/img_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/img_back2" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal">
-
 
         <ImageView
             android:layout_width="130dp"
@@ -165,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/Khong_nhan_duoc_otp"
                 style="@style/TEXT_MED_2"
-                android:textSize="14sp"/>
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/textResendOTP"
@@ -174,39 +184,44 @@
                 android:layout_marginStart="5dp"
                 style="@style/TEXT_BOLD_3"
                 android:text="@string/GUI_LAI_OTP"
-                android:textSize="15sp"
-                android:textColor="#F44336" />
+                android:textSize="16sp"
+                android:textColor="@color/colorTextRed" />
 
 
         </LinearLayout>
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/btnVerify"
+            android:id="@+id/frame_verify"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_margin="20dp"
-            style="@style/BUTTON"
-            android:layout_gravity="center"
-            app:icon = "@drawable/ic_verify"
-            app:iconGravity="textStart"
-            app:backgroundTint="@null"
-            android:text="@string/XAC_THUC"
-            android:textColor="@color/white"
-            android:fontFamily="@font/inter_bold"
-            android:textSize="16sp"/>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:paddingHorizontal="20dp"
+            android:animateLayoutChanges="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerify"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/pressed_button"
+                android:text="@string/XAC_NHAN"
+                app:iconGravity="textStart"
+                android:textSize="20sp"
+                app:backgroundTint="@null"
+                app:icon="@drawable/ic_verify"
+                />
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="invisible"
+                android:layout_gravity="center"/>
 
         </FrameLayout>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

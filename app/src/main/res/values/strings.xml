@@ -77,4 +77,12 @@
     <string name="XAC_THUC_OTP">XÁC THỰC OTP</string>
     <string name="Khong_nhan_duoc_otp">Không nhận được OTP?</string>
     <string name="GUI_LAI_OTP">GỬI LẠI OTP</string>
+    <string name="XAC_NHAN">XÁC NHẬN</string>
+    <string name="Khong_nhan_duoc_ma">Không nhận được mã ?</string>
+    <string name="GUI_LAI_MA">GỬI LẠI MÃ</string>
+    <string name="nhap_ma_xac_nhan_gui_qua_mail">Nhập mã xác nhận đã được gửi qua gmail</string>
+    <string name="tieu_de">Quản Lí \nNhà Trọ</string>
+    <string name="xac_nhan_qua_mail">Chúng tôi sẽ xác nhận quên mật khẩu thông qua email của bạn</string>
+    <string name="dat_lai_mat_khau_moi">Đặt lại mật khẩu mới</string>
+    <string name="Ma_xac_nhan">Mã xác nhận tài khoản</string>
 </resources>
