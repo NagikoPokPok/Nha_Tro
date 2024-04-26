@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         });
 
         // Xử lý Dialog Thêm nhà trọ
-        binding.imgAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
+        binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
     }
 
     private void setListeners() {
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         if (encodedImg != null && !encodedImg.isEmpty()) {
             try {
                 Bitmap profileImage = getConversionImage(encodedImg);
-                binding.imageProfile.setImageBitmap(profileImage);
+                binding.imgProfile.setImageBitmap(profileImage);
                 binding.txtAddImage.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 binding.txtAddImage.setVisibility(View.VISIBLE); // Nếu không có ảnh thì để mặc định
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
             binding.name.setText(userName);
 
             String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
-            new MainActivity.DownloadImageTask(binding.imageProfile).execute(photoUrl);
+            new MainActivity.DownloadImageTask(binding.imgProfile).execute(photoUrl);
         }
     }
 

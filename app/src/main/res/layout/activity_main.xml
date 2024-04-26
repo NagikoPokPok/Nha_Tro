@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,39 +7,31 @@
     style="@style/SCREEN_WHITE"
     tools:context=".Activity.MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_top"
+    <FrameLayout
+        android:id="@+id/frm_top_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="110dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView5"
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            style="@style/New.Theme.NhàTrọ"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/SpecificCornerCut" />
+            android:layout_height="110dp"
+            android:background="@drawable/custom_main" />
 
         <FrameLayout
-            android:id="@+id/layoutImage"
+            android:id="@+id/frm_Image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="20dp">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/image_Profile"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:id="@+id/img_Profile"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
                 app:riv_oval="true" />
@@ -50,46 +42,49 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Ảnh"
-
-                android:textSize="18sp" />
+                android:textSize="12sp" />
 
         </FrameLayout>
-
-        <TextView
-            android:id="@+id/txt_hello"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="60dp"
-            android:text="Xin Chào"
-            style="@style/TEXT_3"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/layoutImage"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="108dp"
+            android:layout_marginTop="35dp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="25sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/layoutImage"
-            app:layout_constraintTop_toBottomOf="@id/txt_hello" />
+            android:fontFamily="@font/inter_bold"
+            />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_menu"
+            android:backgroundTint="@color/white"
+            android:layout_gravity="right"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="20dp"/>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+
+
+
+
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_top"
-        android:layout_above="@id/bottom_navigation">
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/frm_top_main"
+        app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="200dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,29 +92,23 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="HEALTHMATE - Quản lý nhà trọ"
-                android:gravity="center"
-                android:textSize="20sp"
-                style="@style/TEXT_2"/>
+            <!--            <androidx.constraintlayout.utils.widget.ImageFilterView-->
+            <!--                android:layout_width="300dp"-->
+            <!--                android:layout_height="300dp"-->
+            <!--                android:background="@drawable/img_add_home"-->
+            <!--                android:layout_gravity="center_horizontal"-->
+            <!--                android:visibility="gone"-->
+            <!--                android:scaleType="center"/>-->
 
-            <ImageView
-                android:id="@+id/img_add_home"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_add"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:id="@+id/txt_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bạn chưa tạo nhà trọ nào \n Bấm dấu + để thêm mới nhà trọ"
-                android:gravity="center"
-                android:textSize="18sp"
+                android:text="@string/my_text"
+                android:fontFamily="@font/inter_light"
+                android:textAlignment="center"
+                android:textSize="20sp"
                 style="@style/TEXT_2"
                 android:layout_marginTop="10dp"
                 android:visibility="gone"/>
@@ -152,25 +141,40 @@
                 android:textSize="14sp"
                 android:visibility="gone"/>
 
-
-
-
         </LinearLayout>
-
-
-
-
-
     </ScrollView>
 
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_home"
+        style="@style/BUTTON"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="100dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Thêm Nhà trọ"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:backgroundTint="@null"
+        app:icon="@drawable/ic_add"
+        app:iconGravity="textStart"
+        app:iconSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.841"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:layout_alignParentBottom="true"
         style="@style/BOTTOM_BAR"
         app:menu="@menu/menu_bottom_navigation"
-         />
+        />
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
