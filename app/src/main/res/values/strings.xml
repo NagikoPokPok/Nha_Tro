@@ -69,4 +69,12 @@
     <string name="luu_thay_doi">Lưu thay đổi</string>
     <string name="them_anh">Thêm ảnh</string>
     <string name="DOI_MAT_KHAU_GACH_CHAN"><u>ĐỔI MẬT KHẨU</u></string>
+    <string name="QUEN_MAT_KHAU">Quên Mật Khẩu?</string>
+    <string name="dat_lai_mat_khau">Đặt lại mật khẩu</string>
+    <string name="text_xac_nhan">Chúng tôi sẽ xác nhận quên mật khẩu thông qua email của bạn</string>
+    <string name="XAC_THUC">XÁC THỰC</string>
+    <string name="nhap_ma_otp_duoc_gui_ve_may">Nhập mã OTP được gửi về máy</string>
+    <string name="XAC_THUC_OTP">XÁC THỰC OTP</string>
+    <string name="Khong_nhan_duoc_otp">Không nhận được OTP?</string>
+    <string name="GUI_LAI_OTP">GỬI LẠI OTP</string>
 </resources>

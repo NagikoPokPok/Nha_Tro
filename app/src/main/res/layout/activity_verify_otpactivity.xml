@@ -26,10 +26,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="OTP Verification"
-            android:textColor="@color/black"
+            android:text="@string/XAC_THUC_OTP"
+            style="@style/TEXT_BOLD_2"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -38,9 +38,10 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="50dp"
             android:gravity="center"
-            android:text="Enter the OTP sent to"
-            android:textColor="#575353"
-            android:textSize="14sp"/>
+            android:text="@string/nhap_ma_otp_duoc_gui_ve_may"
+            style="@style/TEXT_LIGHT_2"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/textMobile"
@@ -162,19 +163,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Didn't receive the OTP ?"
-                android:textColor="#575353"
+                android:text="@string/Khong_nhan_duoc_otp"
+                style="@style/TEXT_MED_2"
                 android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/textResendOTP"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="RESEND OTP"
+                android:layout_marginStart="5dp"
+                style="@style/TEXT_BOLD_3"
+                android:text="@string/GUI_LAI_OTP"
                 android:textSize="15sp"
-                android:textColor="#F44336"
-                android:textStyle="bold"/>
+                android:textColor="#F44336" />
 
 
         </LinearLayout>
@@ -185,15 +186,15 @@
 
         <Button
             android:id="@+id/btnVerify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:background="@drawable/custom_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            style="@style/BUTTON"
             android:layout_gravity="center"
             app:icon = "@drawable/ic_verify"
             app:iconGravity="textStart"
             app:backgroundTint="@null"
-            android:text="XÁC THỰC"
+            android:text="@string/XAC_THUC"
             android:textColor="@color/white"
             android:fontFamily="@font/inter_bold"
             android:textSize="16sp"/>
