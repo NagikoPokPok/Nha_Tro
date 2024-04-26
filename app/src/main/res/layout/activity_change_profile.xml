@@ -25,11 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="80dp"
-        android:fontFamily="@font/inter_bold"
+        style="@style/TEXT_BOLD_3"
+        android:textSize="28sp"
         android:text="@string/hoso_canhan"
         android:textColor="@color/black"
-        android:textSize="28sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.097"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +101,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="10dp"
-                        android:drawableStart="@drawable/icon_password"
+                        android:drawableTint="@color/colorPrimary"
+                        android:drawableStart="@drawable/icon_user_den"
                         android:hint="@string/ten_day_du"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
