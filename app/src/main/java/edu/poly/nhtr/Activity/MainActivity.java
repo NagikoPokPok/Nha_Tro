@@ -6,9 +6,17 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -71,12 +80,33 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
     ActivityMainBinding binding;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Cài đặt binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //Set three fonts into one textview
+        Spannable text1  = new SpannableString("Bạn chưa có nhà trọ\n Hãy nhấn nút ");
+        Typeface interLightTypeface = Typeface.createFromAsset(getAssets(), "font/inter_light.ttf");
+        text1.setSpan(new TypefaceSpan(interLightTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        binding.txtNotification.setText(text1);
+
+        Spannable text2  = new SpannableString("+");
+        Typeface interBoldTypeface = Typeface.createFromAsset(getAssets(), "font/inter_bold.ttf");
+        text2.setSpan(new TypefaceSpan(interBoldTypeface), 0, text2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        binding.txtNotification.append(text2);
+
+        Spannable text3  = new SpannableString(" để thêm nhà trọ.");
+        Typeface interLightTypeface2 = Typeface.createFromAsset(getAssets(), "font/inter_light.ttf");
+        text3.setSpan(new TypefaceSpan(interLightTypeface2), 0, text3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        binding.txtNotification.append(text3);
+
+
+
+
 
         //Set preference
         preferenceManager = new PreferenceManager(getApplicationContext());
@@ -182,6 +212,21 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_add_home);
 
+        //Anh xa view cho dialog
+        TextView nameHome = dialog.findViewById(R.id.txt_name_home);
+        TextView addressHome = dialog.findViewById(R.id.txt_address_home);
+
+        // Set dấu * đỏ cho TextView
+        Typeface interLightTypeface = Typeface.createFromAsset(getAssets(), "font/inter_light.ttf");
+        Typeface interBoldTypeface = Typeface.createFromAsset(getAssets(), "font/inter_bold.ttf");
+        Spannable text1  = new SpannableString(" *");
+        text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        nameHome.append(text1);
+        addressHome.append(text1);
+
+
+
         Window window = dialog.getWindow();
         if(window == null)
         {
@@ -200,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
             dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
         }
         dialog.show();
+
+
 
         EditText edtNameHome = dialog.findViewById(R.id.edt_name_home);
         EditText edtAddress = dialog.findViewById(R.id.edt_address);
@@ -287,12 +334,14 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                                 // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
                                 // khi setAdapter mình phải set lại là VISIBLE
 
-                                //binding.txtNotification.setVisibility(View.GONE);
+                                binding.txtNotification.setVisibility(View.GONE);
+                                binding.imgAddHome.setVisibility(View.GONE);
                                 binding.usersRecyclerView.setVisibility(View.VISIBLE);
 
                                 Log.d("MainActivity", "Adapter set successfully");
                             }else{
-                                //binding.txtNotification.setVisibility(View.VISIBLE);
+                                binding.txtNotification.setVisibility(View.VISIBLE);
+                                binding.imgAddHome.setVisibility(View.VISIBLE);
                             }
 
                         }else {
