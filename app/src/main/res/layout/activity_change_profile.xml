@@ -27,7 +27,7 @@
         android:layout_marginTop="80dp"
         style="@style/TEXT_BOLD_3"
         android:textSize="28sp"
-        android:text="@string/hoso_canhan"
+        android:text="  Hồ Sơ\nCá Nhân"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.097"
@@ -157,8 +157,9 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_width="240dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginHorizontal="20dp"
                 android:background="@drawable/pressed_button"
                 android:text="@string/luu_thay_doi"
