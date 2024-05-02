@@ -131,7 +131,6 @@
         app:boxBackgroundColor="@color/white"
         app:boxBackgroundMode="outline"
         app:errorEnabled="true"
-        app:helperText="Nhập lại mật khẩu"
         app:helperTextEnabled="true"
         app:helperTextTextColor="@color/colorGreen"
         app:hintTextColor="@color/colorPrimary">
@@ -157,18 +156,18 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_sign_up"
+            style="@style/BUTTON"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/inter_bold"
             android:gravity="center"
             android:text="ĐĂNG KÝ"
-            app:iconGravity="textStart"
             android:textSize="16sp"
             android:textStyle="bold"
-            style="@style/BUTTON"
             app:backgroundTint="@null"
-            android:fontFamily="@font/inter_bold"
-            app:icon = "@drawable/icon_getin"/>
+            app:icon="@drawable/icon_getin"
+            app:iconGravity="textStart" />
 
         <ProgressBar
             android:id="@+id/progressBar"
