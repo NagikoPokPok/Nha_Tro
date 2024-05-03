@@ -6,10 +6,19 @@
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
     android:layout_marginTop="20dp"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="8dp"
     app:strokeColor="@color/colorGray"
-    app:strokeWidth="1dp"
+    app:strokeWidth="2dp"
   >
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="1"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:textColor="@color/white"
+        android:background="@drawable/sonhatro"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +29,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="40dp">
 
             <TextView
                 android:id="@+id/txt_name_home"
@@ -49,12 +59,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="15dp">
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/home_icon2"/>
+                android:src="@drawable/icon_address_pin"/>
 
             <TextView
                 android:id="@+id/txt_home_address"
@@ -69,18 +79,149 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_detail"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:text="Số phòng :"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="start" />
+
+            <TextView
+                android:id="@+id/txt_so_phong"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="0"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18dp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="end"
+                  />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:text="Số phòng trống :"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="start" />
+
+            <TextView
+                android:id="@+id/txt_so_phong_trong"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="0"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18dp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="end"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:text="Số phòng nợ tiền :"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="start" />
+
+            <TextView
+                android:id="@+id/txt_so_phong_no_tien"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="0"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18dp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="end"
+                />
+        </LinearLayout>
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:text="CHI TIẾT"
-            android:layout_gravity="end"
-            app:iconGravity="textStart"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:backgroundTint="#E15528"
-            android:layout_marginTop="10dp"
-            app:icon = "@drawable/icon_getin"/>
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="#707070" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="Doanh thu tháng :"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_light"
+                android:layout_gravity="start" />
+
+            <TextView
+                android:id="@+id/txt_doanh_thu_thang"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="0"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18dp"
+                android:fontFamily="@font/inter_bold"
+                android:layout_gravity="end"
+                />
+
+
+        </LinearLayout>
+
 
 
 
