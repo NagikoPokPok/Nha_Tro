@@ -9,7 +9,7 @@
     app:cardCornerRadius="8dp"
     app:strokeColor="@color/black"
     app:strokeWidth="1dp"
-
+    android:backgroundTint="@color/white"
   >
     <TextView
         android:layout_width="55dp"
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="10dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -98,8 +98,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="18sp"
-                android:fontFamily="@font/inter_light"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
                 android:layout_gravity="start" />
 
             <TextView
@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="10dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -131,8 +131,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="18sp"
-                android:fontFamily="@font/inter_light"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
                 android:layout_gravity="start" />
 
             <TextView
@@ -154,7 +154,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="10dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -164,8 +164,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="18sp"
-                android:fontFamily="@font/inter_light"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
                 android:layout_gravity="start" />
 
             <TextView
@@ -199,18 +199,18 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="10dp">
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:layout_height="match_parent"
                 android:text="Doanh thu tháng :"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="18sp"
-                android:fontFamily="@font/inter_light"
+                android:fontFamily="@font/inter_medium"
                 android:layout_gravity="start" />
 
             <TextView
