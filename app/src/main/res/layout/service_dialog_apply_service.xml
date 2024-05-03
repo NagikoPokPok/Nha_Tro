@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:srcCompat="@drawable/icon_exit"
-            android:background="null"
+            android:background="@null"
             android:layout_gravity="right"/>
         <ImageView
             android:id="@+id/img_service"

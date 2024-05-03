@@ -131,12 +131,12 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.menu_home) {
                 return true;
-            } else if (item.getItemId() == R.id.menu_notification) {
-                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-                overridePendingTransition(0,0);
-                return true;
+//            } else if (item.getItemId() == R.id.menu_notification) {
+//                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+//                overridePendingTransition(0,0);
+//                return true;
 
-            } else if (item.getItemId() == R.id.menu_setting) {
+            } else if (item.getItemId() == R.id.menu_settings) {
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 overridePendingTransition(0,0);
                 return true;

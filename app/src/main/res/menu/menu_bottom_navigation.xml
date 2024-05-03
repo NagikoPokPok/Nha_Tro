@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/menu_home" android:title="Home" android:icon="@drawable/home_icon2"/>
-    <item android:id="@+id/menu_notification" android:title="Notification" android:icon="@drawable/notification"/>
-    <item android:id="@+id/menu_setting" android:title="Settings" android:icon="@drawable/setting_icon3"/>
+    <item android:id="@+id/menu_home"
+        android:icon="@drawable/icon_home"
+        android:title="@string/phong_tro" />
+
+    <item android:id="@+id/menu_services"
+        android:icon="@drawable/icon_services"
+        android:title="@string/dich_vu" />
+
+    <item android:id="@+id/menu_index"
+        android:title="@string/chi_so"
+        android:icon="@drawable/icon_index" />
+
+    <item android:id="@+id/menu_statistic"
+        android:title="@string/thong_ke"
+        android:icon="@drawable/icon_statistic"/>
+
+    <item android:id="@+id/menu_settings"
+        android:title="@string/cai_dat"
+        android:icon="@drawable/icon_settings" />
 
 </menu>

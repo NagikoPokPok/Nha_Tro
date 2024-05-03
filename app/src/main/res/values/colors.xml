@@ -25,9 +25,6 @@
 	<color name="background_set">#D3F5FA</color>
 	<color name="security">#D95F69</color>
 
-<!--	Màu cho khung to-->
-	<color name="big_fragment">#3F97DD</color>
-
 
 <!--	Dark mode-->
 	<color name="grey">#aaa</color>

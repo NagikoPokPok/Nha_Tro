@@ -87,4 +87,8 @@
     <string name="Ma_xac_nhan">Mã xác nhận tài khoản</string>
     <string name="phong">Phòng</string>
     <string name="menu">Menu</string>
+    <string name="phong_tro">Phòng trọ</string>
+    <string name="thong_ke">Thống kê</string>
+    <string name="chi_so">Chỉ số</string>
+    <string name="dich_vu">Dịch vụ</string>
 </resources>

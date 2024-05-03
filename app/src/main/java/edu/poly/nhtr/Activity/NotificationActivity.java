@@ -25,16 +25,16 @@ public class NotificationActivity extends AppCompatActivity {
         btn_service = findViewById(R.id.btn_service);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        bottomNavigationView.setSelectedItemId(R.id.menu_notification);
+        // bottomNavigationView.setSelectedItemId(R.id.menu_notification);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.menu_home) {
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 overridePendingTransition(0,0);
                 return true;
-            } else if (item.getItemId() == R.id.menu_notification) {
-                return true;
+//            } else if (item.getItemId() == R.id.menu_notification) {
+//                return true;
 
-            } else if (item.getItemId() == R.id.menu_setting) {
+            } else if (item.getItemId() == R.id.menu_settings) {
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 overridePendingTransition(0,0);
                 return true;

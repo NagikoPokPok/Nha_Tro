@@ -83,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.menu_setting);
+        bottomNavigationView.setSelectedItemId(R.id.menu_settings);
         switchMode = findViewById(R.id.nightMode);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -93,12 +93,12 @@ public class SettingsActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
-                } else if (item.getItemId() == R.id.menu_notification) {
-                    startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
+//                } else if (item.getItemId() == R.id.menu_notification) {
+//                    startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+//                    overridePendingTransition(0, 0);
+//                    return true;
 
-                } else if (item.getItemId() == R.id.menu_setting) {
+                } else if (item.getItemId() == R.id.menu_settings) {
                     return true;
 
                 }
