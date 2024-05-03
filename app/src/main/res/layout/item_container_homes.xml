@@ -9,6 +9,7 @@
     app:cardCornerRadius="8dp"
     app:strokeColor="@color/black"
     app:strokeWidth="1dp"
+
   >
     <TextView
         android:layout_width="55dp"

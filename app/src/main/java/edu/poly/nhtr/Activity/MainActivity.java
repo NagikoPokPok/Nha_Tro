@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         EditText edtNameHome = dialog.findViewById(R.id.edt_name_home);
         EditText edtAddress = dialog.findViewById(R.id.edt_address);
         Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
         // Xử lý/ hiệu chỉnh màu nút button add home
         TextWatcher textWatcher = new TextWatcher() {
@@ -319,6 +320,15 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                 }
             }
         });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
     }
 
     // Cập nhật màu cho button
