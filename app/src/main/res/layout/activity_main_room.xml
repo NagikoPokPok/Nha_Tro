@@ -25,24 +25,17 @@
             android:id="@+id/frm_Image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="30dp">
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_Profile"
+            <ImageView
+                android:contentDescription="@string/nut_quay_ve"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/background_image"
-                android:scaleType="fitXY"
-                app:riv_oval="true" />
-
-            <TextView
-                android:id="@+id/txt_add_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Ảnh"
-                android:textSize="12sp" />
+                android:id="@+id/btn_back"
+                android:src="@drawable/back_btn"
+                style="@style/BUTTON_NO_BORDER"
+                android:padding="5dp" />
 
         </FrameLayout>
 
@@ -59,6 +52,8 @@
             />
 
         <ImageView
+            android:contentDescription="@string/menu"
+            android:id="@+id/menu"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_menu"
@@ -66,13 +61,7 @@
             android:layout_gravity="end"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="20dp"/>
-
-
     </FrameLayout>
-
-
-
-
 
 
     <ScrollView
@@ -106,7 +95,6 @@
                 android:id="@+id/txt_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textColor="@color/colorTextBlack"
@@ -149,10 +137,11 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_home"
         style="@style/BUTTON"
-        android:layout_width="210dp"
+        android:layout_width="140dp"
         android:layout_height="60dp"
+        android:layout_marginStart="100dp"
         android:layout_marginBottom="100dp"
-        android:text="Thêm Nhà trọ"
+        android:text="@string/phong"
         android:textSize="20sp"
         app:backgroundTint="@null"
         app:icon="@drawable/icon_add"

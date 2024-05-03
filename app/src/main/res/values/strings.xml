@@ -85,4 +85,6 @@
     <string name="xac_nhan_qua_mail">Chúng tôi sẽ xác nhận quên mật khẩu thông qua email của bạn</string>
     <string name="dat_lai_mat_khau_moi">Đặt lại mật khẩu mới</string>
     <string name="Ma_xac_nhan">Mã xác nhận tài khoản</string>
+    <string name="phong">Phòng</string>
+    <string name="menu">Menu</string>
 </resources>
