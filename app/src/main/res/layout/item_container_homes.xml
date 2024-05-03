@@ -10,6 +10,7 @@
     app:strokeColor="@color/black"
     app:strokeWidth="1dp"
     android:backgroundTint="@color/white"
+
   >
     <TextView
         android:layout_width="55dp"
