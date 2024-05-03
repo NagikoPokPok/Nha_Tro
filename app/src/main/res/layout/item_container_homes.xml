@@ -7,15 +7,16 @@
     android:layout_marginEnd="20dp"
     android:layout_marginTop="20dp"
     app:cardCornerRadius="8dp"
-    app:strokeColor="@color/colorGray"
-    app:strokeWidth="2dp"
+    app:strokeColor="@color/black"
+    app:strokeWidth="1dp"
   >
     <TextView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:text="1"
         android:gravity="center"
         android:textSize="25dp"
+        android:fontFamily="@font/inter_bold"
         android:textColor="@color/white"
         android:background="@drawable/sonhatro"
         />
@@ -24,25 +25,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginStart="40dp">
+            android:layout_marginStart="50dp">
 
             <TextView
                 android:id="@+id/txt_name_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:text="Hoàng Minh Thảo"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="18sp"
-                android:layout_marginEnd="10dp"
-                android:textStyle="bold"
-                />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:layout_width="30dp"
@@ -59,11 +59,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="50dp">
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_marginStart="10dp"
                 android:src="@drawable/icon_address_pin"/>
 
             <TextView
@@ -71,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:text="123123"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
@@ -185,6 +188,8 @@
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_weight="1"
             android:background="#707070" />
 
