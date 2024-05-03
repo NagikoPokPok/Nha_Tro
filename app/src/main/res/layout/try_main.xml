@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:background="@drawable/bg_white_corner_16_border_gray"
+            android:background="@drawable/custom_edittext"
             android:hint="Ví dụ: Nhà trọ MyHome"
             android:imeOptions="actionNext"
             android:padding="12dp" />
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:background="@drawable/bg_white_corner_16_border_gray"
+            android:background="@drawable/custom_edittext"
             android:layout_marginTop="7dp"
             android:hint="Ví dụ: 254 Nguyễn Văn Linh"/>
 

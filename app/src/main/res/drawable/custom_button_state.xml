@@ -5,7 +5,7 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/custom_button_add"/>
+        android:drawable="@drawable/custom_button_clicked"/>
 
     <item
         android:drawable="@drawable/custom_button_add"/>

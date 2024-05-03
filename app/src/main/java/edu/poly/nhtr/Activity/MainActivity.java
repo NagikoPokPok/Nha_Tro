@@ -255,11 +255,14 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
                 if (edtNameHome.getText().toString().trim().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter home name", Toast.LENGTH_SHORT).show();
+
                 } else if (edtAddress.getText().toString().trim().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter home address", Toast.LENGTH_SHORT).show();
                 } else {
+                    btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
                     FirebaseFirestore database = FirebaseFirestore.getInstance();
                     String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
                     HashMap<String, Object> home = new HashMap<>();
