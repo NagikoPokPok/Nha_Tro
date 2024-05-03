@@ -96,7 +96,7 @@
                 app:iconGravity="textStart"
                 android:textSize="16sp"
                 android:fontFamily="@font/inter_medium"
-                android:background="@drawable/custom_button_state"
+                android:background="@drawable/custom_button_clicked"
                 app:backgroundTint="@null"
                  />
 

@@ -11,9 +11,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
@@ -252,17 +254,37 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         EditText edtAddress = dialog.findViewById(R.id.edt_address);
         Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
 
+        // Xử lý/ hiệu chỉnh màu nút button add home
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateButtonState(edtNameHome, edtAddress, btnAddHome);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        // Thêm TextWatcher cho cả hai EditText
+        edtNameHome.addTextChangedListener(textWatcher);
+        edtAddress.addTextChangedListener(textWatcher);
+
+
+        // Xử lý sự kiện cho button
         btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+
                 if (edtNameHome.getText().toString().trim().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter home name", Toast.LENGTH_SHORT).show();
 
                 } else if (edtAddress.getText().toString().trim().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter home address", Toast.LENGTH_SHORT).show();
                 } else {
-                    btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+
                     FirebaseFirestore database = FirebaseFirestore.getInstance();
                     String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
                     HashMap<String, Object> home = new HashMap<>();
@@ -297,6 +319,17 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
                 }
             }
         });
+    }
+
+    // Cập nhật màu cho button
+    private void updateButtonState(EditText edtNameHome, EditText edtAddress, Button btnAddHome) {
+        String name = edtNameHome.getText().toString().trim();
+        String address = edtAddress.getText().toString().trim();
+        if (name.isEmpty() || address.isEmpty()) {
+            btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+        } else {
+            btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+        }
     }
 
 
