@@ -26,12 +26,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="30dp">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_Profile"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:background="@drawable/background_image"
                 android:scaleType="fitXY"
                 app:riv_oval="true" />
@@ -50,13 +50,12 @@
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="108dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="40dp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/white"
+            style="@style/TEXT_BOLD_3"
             android:textSize="25sp"
-            android:fontFamily="@font/inter_bold"
             />
 
         <ImageView
@@ -64,8 +63,8 @@
             android:layout_height="40dp"
             android:background="@drawable/ic_menu"
             android:backgroundTint="@color/white"
-            android:layout_gravity="right"
-            android:layout_marginTop="35dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="20dp"/>
 
 
@@ -158,7 +157,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:backgroundTint="@null"
-        app:icon="@drawable/ic_add"
+        app:icon="@drawable/icon_add"
         app:iconGravity="textStart"
         app:iconSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
