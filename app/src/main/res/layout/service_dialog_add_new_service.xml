@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Thêm dịch vụ mới"
+        android:textSize="24dp"
+        android:fontFamily="@font/inter_bold"/>
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#756B68"
+        android:visibility="visible"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="15dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Tên dịch vụ"
+                android:fontFamily="@font/inter_medium"
+                />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:paddingLeft="5dp"
+                android:src="@drawable/icon_asterisk"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_serviceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/custom_edittext"
+            android:hint="Ví dụ: Điện, nước,..."
+            android:imeOptions="actionNext"
+            android:padding="9dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Ảnh đại diện"
+                android:fontFamily="@font/inter_medium"
+                />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:paddingLeft="5dp"
+                android:src="@drawable/icon_asterisk"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_service"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/image_service"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Huỷ"
+            android:textColor="@color/colorButton"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            android:background="@drawable/custom_button_cancel"
+            android:layout_marginEnd="18dp"
+            android:fontFamily="@font/inter_medium"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Tiếp tục"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:layout_marginStart="18dp"
+            android:fontFamily="@font/inter_medium"
+            android:background="@drawable/custom_button_add"
+            app:backgroundTint="@null"
+            />
+
+    </LinearLayout>
+</LinearLayout>

@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.poly.nhtr.Activity.Service.ServiceMainActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.ServiceManagenment.Managerment_ServiceActivity;
 
@@ -44,7 +45,7 @@ public class NotificationActivity extends AppCompatActivity {
         btn_service.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(NotificationActivity.this, Managerment_ServiceActivity.class);
+                Intent intent = new Intent(NotificationActivity.this, ServiceMainActivity.class);
                 startActivity(intent);
                 finish();
             }
