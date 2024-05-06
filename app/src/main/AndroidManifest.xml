@@ -32,9 +32,7 @@
         <activity
             android:name=".Activity.ConfirmAccountForgotPasswordActivity"
             android:exported="false" />
-        <activity
-            android:name=".Activity.BillManagement"
-            android:exported="false" />
+
         <activity
             android:name=".Activity.SignInActivity"
             android:exported="true" />
