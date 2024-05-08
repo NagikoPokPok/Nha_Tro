@@ -1,11 +1,15 @@
 package edu.poly.nhtr.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Base64;
@@ -19,8 +23,11 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.ChangeProfileActivity;
@@ -43,6 +50,10 @@ public class SettingFragment extends Fragment {
 
     private PreferenceManager preferenceManager;
 
+    SwitchCompat switchMode;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    boolean nightMode;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -98,6 +109,7 @@ public class SettingFragment extends Fragment {
     }
 
 
+
     private Bitmap getConversionImage(String encodedImage){
         byte[] bytes = Base64.decode(encodedImage,Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -107,19 +119,29 @@ public class SettingFragment extends Fragment {
         return resizedBitmap;
     }
 
-    private void loadUserDetails(){
+    private void loadUserDetails() {
         binding.edtName.setText(preferenceManager.getString(Constants.KEY_NAME));
-        try {
-            binding.imgProfile.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
+        if(preferenceManager.getString(Constants.KEY_PHONE_NUMBER)!=null)
             binding.phoneNum.setText(preferenceManager.getString(Constants.KEY_PHONE_NUMBER));
-            binding.imgAva.setVisibility(View.INVISIBLE);
-        }catch (Exception e){
-            Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+        String encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
+        if (encodedImage != null && !encodedImage.isEmpty()) {
+            try {
+                Bitmap profileImage = getConversionImage(encodedImage);
+                binding.imgProfile.setImageBitmap(profileImage);
+                binding.imgAva.setVisibility(View.INVISIBLE); // Ẩn ảnh mặc định nếu có ảnh người dùng
+            } catch (Exception e) {
+                // Xử lý ngoại lệ khi không thể tải ảnh
+                binding.imgAva.setVisibility(View.VISIBLE); // Hiển thị ảnh mặc định nếu xảy ra ngoại lệ
+                Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Nếu không có ảnh, hiển thị ảnh mặc định và ẩn ảnh người dùng
+            binding.imgAva.setVisibility(View.VISIBLE);
         }
     }
 
     private void setListeners() {
-        binding.btnlogout.setOnClickListener(v -> {
+        binding.btnLogout.setOnClickListener(v -> {
             try {
                 logout();
             } catch (InterruptedException e) {
@@ -127,21 +149,43 @@ public class SettingFragment extends Fragment {
             }
         });
         binding.ChangeProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ChangeProfileActivity.class);
-            requireActivity().startActivity(intent);
+            Intent intent = new Intent(requireContext(), ChangeProfileActivity.class);
+            startActivity(intent);
             requireActivity().finish();
-
         });
 
         binding.btnBack.setOnClickListener(v -> back());
 
-        getInfoFromGoogle();
+        switchModeTheme();
+
+        // Kiểm tra tài khoản đăng nhập là tài khoản Email hay Google
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            List<? extends UserInfo> providerData = currentUser.getProviderData();
+            // Lặp qua danh sách các tài khoản cấp thông tin xác thực
+            for (UserInfo userInfo : providerData) {
+                String providerId = userInfo.getProviderId();
+                if (providerId.equals("google.com")) {
+                    // TH đăng nhập bằng tài khoản Google
+                    getInfoFromGoogle();
+                    return; // Thoát khỏi vòng lặp khi thấy đúng tài khoản Google
+                }
+            }
+            // Nếu là tài khoản Email thì tải thông tin người dùng từ SharedPreferences
+            loadUserDetails();
+        } else {
+            // Không có người dùng nào đang đăng nhập, tải thông tin từ SharedPreferences
+            loadUserDetails();
+        }
     }
+
 
     public void back() {
-
-
+        Intent intent = new Intent(requireContext(), MainActivity.class);
+        startActivity(intent);
+        requireActivity().finish();
     }
+
 
     // Lấy ảnh đại diện và tên từ Google
     private void getInfoFromGoogle() {
@@ -183,22 +227,71 @@ public class SettingFragment extends Fragment {
             }
         }
     }
-    public void logout() throws InterruptedException {
 
-        // Đăng xuất khỏi Firebase
-        FirebaseAuth.getInstance().signOut();
-
-        // Xóa cài đặt về người dùng
-        PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-        preferenceManager.removePreference(Constants.KEY_USER_ID);
-        preferenceManager.removePreference(Constants.KEY_NAME);
-
-        // Trở lại Settings Activity
-        Intent intent = new Intent(requireActivity(), SignInActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        requireActivity().startActivity(intent);
-        requireActivity().finish();
-
+    public void showToast(String message) {
+        Toast.makeText(requireActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+    public void logout() throws InterruptedException {
+            showToast("Signing out ...");
+            // Đăng xuất khỏi Firebase
+            FirebaseAuth.getInstance().signOut();
+
+            // Xóa cài đặt về người dùng
+            PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+            preferenceManager.removePreference(Constants.KEY_USER_ID);
+            preferenceManager.removePreference(Constants.KEY_NAME);
+            preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
+            preferenceManager.removePreference(Constants.KEY_ADDRESS);
+
+            // Chuyển theme
+            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("nightMode", false);
+            editor.apply();
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+            // Trở lại Settings Activity
+            Intent intent = new Intent(requireContext(), SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        }
+
+        private void loading(Boolean isLoading) {
+            if (isLoading) {
+                binding.btnLogout.setVisibility(View.INVISIBLE);
+                binding.progressBar.setVisibility(View.VISIBLE);
+            } else {
+                binding.progressBar.setVisibility(View.INVISIBLE);
+                binding.btnLogout.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void switchModeTheme() {
+            sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+            nightMode = sharedPreferences.getBoolean("nightMode", false);
+
+            if(nightMode) {
+                switchMode.setChecked(true);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+
+            switchMode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (nightMode) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        editor = sharedPreferences.edit();
+                        editor.putBoolean("nightMode", false);
+                    } else {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        editor = sharedPreferences.edit();
+                        editor.putBoolean("nightMode", true);
+                    }
+                    editor.apply();
+                }
+            });
+        }
 }

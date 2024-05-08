@@ -145,10 +145,10 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_home"
         style="@style/BUTTON"
-        android:layout_width="210dp"
+        android:layout_width="220dp"
         android:layout_height="60dp"
         android:layout_marginBottom="50dp"
-        android:text="Thêm Nhà trọ"
+        android:text="@string/them_nha_tro"
         android:textSize="20sp"
         app:backgroundTint="@null"
         app:icon="@drawable/icon_add"
@@ -169,7 +169,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_alignParentBottom="true"
         style="@style/BOTTOM_BAR"
-        app:menu="@menu/menu_bottom_navigation"
+        app:menu="@menu/menu_bottom_navigation_home"
         />
 
 

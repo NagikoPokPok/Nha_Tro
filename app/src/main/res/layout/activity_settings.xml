@@ -359,7 +359,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_alignParentBottom="true"
         style="@style/BOTTOM_BAR"
-        app:menu="@menu/menu_bottom_navigation"
+        app:menu="@menu/menu_bottom_navigation_home"
         />
 
 

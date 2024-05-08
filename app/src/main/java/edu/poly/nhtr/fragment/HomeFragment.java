@@ -96,17 +96,6 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        nameTextView = view.findViewById(R.id.name);
-        profileImageView = view.findViewById(R.id.image_Profile);
-        addImageView = view.findViewById(R.id.txt_add_image);
-
-        nameTextView.setText(preferenceManager.getString(Constants.KEY_NAME));
-        try {
-            profileImageView.setImageBitmap(getConversionImage(preferenceManager.getString(Constants.KEY_IMAGE)));
-            addImageView.setVisibility(View.INVISIBLE);
-        } catch (Exception e) {
-            Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
-        }
 
         return view;
     }
