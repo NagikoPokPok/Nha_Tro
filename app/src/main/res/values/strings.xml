@@ -91,4 +91,7 @@
     <string name="thong_ke">Thống kê</string>
     <string name="chi_so">Chỉ số</string>
     <string name="dich_vu">Dịch vụ</string>
+    <string name="nha_tro">Nhà trọ</string>
+    <string name="thong_bao">Thông báo</string>
+    <string name="them_nha_tro">Thêm Nhà trọ</string>
 </resources>

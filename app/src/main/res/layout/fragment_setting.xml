@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BCC9D5"
+    style="@style/SCREEN_WHITE"
     android:orientation="vertical"
-    tools:context=".fragment.SettingFragment">
+
+    tools:context=".fragment.SettingFragment"
+    >
+
 
     <RelativeLayout
+        android:id="@+id/layout_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        >
 
         <ImageView
+            android:contentDescription="@string/nut_quay_ve"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginTop="5dp"
             android:id="@+id/btn_back"
             android:src="@drawable/back_btn"
-            app:tint="#0E2ADA"
-            android:padding="14dp" />
+            style="@style/BUTTON_NO_BORDER"
+            android:padding="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/cai_dat"
-            android:textColor="@color/textSetting"
-            android:textSize="22sp"
+            style="@style/TEXT_BOLD_3"
+            android:textSize="25sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_top"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,11 +67,14 @@
                     app:riv_oval="true" />
 
                 <ImageView
+                    android:contentDescription="@string/khung_avatar"
                     android:id="@+id/img_ava"
                     android:layout_width="80dp"
-                    android:layout_height="60dp"
+                    android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/icon_user" />
+                    android:background="@drawable/round_back_avatar"
+                    android:src="@drawable/icon_user"
+                    android:padding="15dp"/>
 
             </FrameLayout>
 
@@ -72,36 +85,36 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:text="@string/ten"
-                android:textColor="@color/textSetting"
-                android:textSize="22sp"
+                style="@style/TEXT_MED"
+                android:textSize="24sp"
                 android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/phoneNum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0905100300"
-                android:textColor="@color/textSetting"
-                android:textSize="12sp"
+                android:text="@string/sdt"
+                style="@style/TEXT_MED"
+                android:textSize="18sp"
                 android:layout_gravity="center"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ChangeProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="220dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:paddingStart="30dp"
-                android:background="@drawable/pressed_button"
+                style="@style/BUTTON"
                 android:text="@string/thay_doi_thong_tin"
+                android:textSize="16sp"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:paddingEnd="30dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_back_white"
+                style="@style/BACKGROUND_BUTTON"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="40dp"
@@ -114,12 +127,13 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:contentDescription="Hình trăng"
                         android:layout_width="40dp"
                         android:id="@+id/nightModeIcon"
                         android:layout_height="40dp"
                         android:src="@drawable/icon_night"
                         android:background="@drawable/round_back_night_mode"
-                        android:padding="12dp"/>
+                        android:padding="10dp"/>
 
                     <TextView
                         android:layout_marginStart="20dp"
@@ -127,12 +141,13 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text="@string/che_do_ban_dem"
-                        android:textColor="@color/textSetting"
+                        style="@style/TEXT_MED"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_toEndOf="@id/nightModeIcon"/>
 
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/nightMode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -149,12 +164,13 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:contentDescription="@string/bell"
                         android:layout_width="40dp"
                         android:id="@+id/notification_icon"
                         android:layout_height="40dp"
                         android:src="@drawable/notification"
                         android:background="@drawable/round_back_notification"
-                        android:padding="12dp"/>
+                        android:padding="10dp"/>
 
                     <TextView
                         android:layout_marginStart="20dp"
@@ -162,7 +178,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text="@string/bat_thong_bao"
-                        android:textColor="@color/textSetting"
+                        style="@style/TEXT_MED"
+                        android:fontFamily=""
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_toEndOf="@id/notification_icon"/>
@@ -182,7 +199,7 @@
                 android:id="@+id/linear_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_back_white"
+                style="@style/BACKGROUND_BUTTON"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="40dp"
@@ -196,11 +213,13 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:contentDescription="@string/Gmail"
                         android:layout_width="40dp"
                         android:id="@+id/send_email"
                         android:layout_height="40dp"
-                        android:background="@drawable/icon_gmail"
-                        android:padding="12dp"/>
+                        android:src="@drawable/icon_gmail"
+                        android:background="@drawable/round_back_gmail"
+                        android:padding="10dp"/>
 
                     <TextView
                         android:layout_marginStart="20dp"
@@ -208,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text="@string/gui_mail_ho_tro"
-                        android:textColor="@color/textSetting"
+                        style="@style/TEXT_MED"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_toEndOf="@id/send_email"/>
@@ -218,6 +237,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/img_toSupport"
                         android:src="@drawable/icon_right"
+                        style="@style/BUTTON_SETTING"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
 
@@ -230,19 +250,20 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:contentDescription="@string/ask"
                         android:layout_width="40dp"
                         android:id="@+id/help"
                         android:layout_height="40dp"
                         android:background="@drawable/icon_ask"
-                        android:padding="12dp"/>
+                        android:padding="15dp"/>
 
                     <TextView
                         android:layout_marginStart="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="@string/ho_tro"
-                        android:textColor="@color/textSetting"
+                        android:text="@string/huong_dan"
+                        style="@style/TEXT_MED"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_toEndOf="@id/help"/>
@@ -252,6 +273,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/toHelp"
                         android:src="@drawable/icon_right"
+                        style="@style/BUTTON_SETTING"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
 
@@ -264,6 +286,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:contentDescription="@string/information"
                         android:layout_width="40dp"
                         android:id="@+id/about_us"
                         android:layout_height="40dp"
@@ -276,7 +299,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:text="@string/ve_chung_toi"
-                        android:textColor="@color/textSetting"
+                        style="@style/TEXT_MED"
                         android:textStyle="bold"
                         android:textSize="18sp"
                         android:layout_toEndOf="@id/about_us"/>
@@ -286,6 +309,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/to_About_Us"
                         android:src="@drawable/icon_right"
+                        style="@style/BUTTON_SETTING"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
 
@@ -295,25 +319,23 @@
             <FrameLayout
                 android:id="@+id/frm_log_out"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="60dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:animateLayoutChanges="true">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnlogout"
+                    android:id="@+id/btn_logout"
+                    style="@style/BUTTON"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Đăng xuất"
-                    app:iconGravity="end"
-                    android:background="@drawable/pressed_button"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/dang_xuat"
+                    android:textSize="20sp"
                     app:backgroundTint="@null"
-                    app:icon = "@drawable/icon_logout"
-                    android:textStyle="bold"
-                    android:textSize="18sp"/>
+                    app:icon="@drawable/icon_logout"
+                    app:iconGravity="end" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -322,6 +344,8 @@
                     android:layout_gravity="center"
                     android:visibility="invisible" />
             </FrameLayout>
+
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+</RelativeLayout>

@@ -126,25 +126,24 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
 
         // Xử lý bottom navigation
         setListeners();
-//        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-//        bottomNavigationView.setSelectedItemId(R.id.menu_home);
-//        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-//            if (item.getItemId() == R.id.menu_home) {
-//                return true;
-////            } else if (item.getItemId() == R.id.menu_notification) {
-////                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-////                overridePendingTransition(0,0);
-////                return true;
-//
-//            } else if (item.getItemId() == R.id.menu_settings) {
-//                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-//                overridePendingTransition(0,0);
-//                return true;
-//
-//            }
-//            return false;
-//        });
-//
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.menu_home);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.menu_home) {
+                return true;
+            } else if (item.getItemId() == R.id.menu_notification) {
+                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+                overridePendingTransition(0,0);
+                return true;
+            } else if (item.getItemId() == R.id.menu_settings) {
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                overridePendingTransition(0,0);
+                return true;
+
+            }
+            return false;
+        });
+
            // Xử lý Dialog Thêm nhà trọ
            binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
     }

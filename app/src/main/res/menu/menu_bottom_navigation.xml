@@ -17,8 +17,4 @@
         android:title="@string/thong_ke"
         android:icon="@drawable/icon_statistic"/>
 
-    <item android:id="@+id/menu_settings"
-        android:title="@string/cai_dat"
-        android:icon="@drawable/icon_settings" />
-
 </menu>
