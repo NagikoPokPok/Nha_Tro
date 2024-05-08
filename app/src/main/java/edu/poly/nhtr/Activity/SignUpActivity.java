@@ -122,8 +122,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
             String password = binding.edtPassword.getText().toString().trim();
             String confirmPassword = binding.edtConfirmPassword.getText().toString().trim();
 
-
+            // Khởi tạo đối tượng cho User
             User user = new User(name, email, password, confirmPassword);
+            // Thực hiện công việc sign up
             presenter.signUp(user);
         });
     }

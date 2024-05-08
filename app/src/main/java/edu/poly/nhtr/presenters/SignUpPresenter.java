@@ -53,6 +53,9 @@ public class SignUpPresenter {
     }
 
     private boolean isValidSignUpDetails(String name, String email, String password, String confirmPassword) {
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+        Matcher matcher = pattern.matcher(password);
+        boolean isPwdContainsSpeChar = matcher.find();
         if (TextUtils.isEmpty(name)) {
             view.showErrorMessage("Hãy nhập tên");
             view.setNameErrorMessage("Không được bỏ trống");
@@ -69,7 +72,11 @@ public class SignUpPresenter {
             view.showErrorMessage("Hãy nhập mật khẩu");
             view.setPasswordErrorMessage("Không được bỏ trống");
             return false;
-        } else if (TextUtils.isEmpty(confirmPassword)) {
+        } else if (password.length() < 8 || password.length() > 32 || !isPwdContainsSpeChar ) {
+            view.showErrorMessage("Hãy nhập mật khẩu");
+            view.setPasswordErrorMessage("Mật khẩu không hợp lệ");
+            return false;
+        }else if (TextUtils.isEmpty(confirmPassword)) {
             view.showErrorMessage("Xác nhận mật khẩu");
             view.setConfirmPasswordErrorMessage("Không được bỏ trống");
             return false;
@@ -84,7 +91,7 @@ public class SignUpPresenter {
         if (password.length() < 8) {
             view.setPasswordHelperText("Nhập ít nhất 8 ký tự");
             view.setPasswordError("");
-        } else if (password.length() >= 8 && password.length() <= 10) {
+        } else if (password.length() >= 8 && password.length() <= 32) {
             Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
             Matcher matcher = pattern.matcher(password);
             boolean isPwdContainsSpeChar = matcher.find();
@@ -97,13 +104,13 @@ public class SignUpPresenter {
             }
         } else {
             view.setPasswordHelperText("");
-            view.setPasswordError("Tối đa 10 ký tự");
+            view.setPasswordError("Tối đa 32 ký tự");
         }
     }
 
     public void handleConfirmPasswordChanged(String password, String confirmPassword) {
 
-        if(confirmPassword.equals(password)) {
+        if(confirmPassword.equals(password) && password.length() > 0) {
             view.setConfirmPasswordHelperText("Xác minh mật khẩu chính xác");
             view.setConfirmPasswordError("");
         } else {
