@@ -1,72 +1,73 @@
 package edu.poly.nhtr.Activity;
 
-
-import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.TypefaceSpan;
-import android.util.Base64;
-import android.util.Log;
-import android.view.Gravity;
-
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-
-import androidx.annotation.NonNull;
+//import android.app.Dialog;
+//import android.graphics.Bitmap;
+//import android.graphics.BitmapFactory;
+//import android.graphics.Color;
+//import android.graphics.Typeface;
+//import android.graphics.drawable.ColorDrawable;
+//import android.os.AsyncTask;
+//
+//import android.text.Editable;
+//import android.text.Spannable;
+//import android.text.SpannableString;
+//import android.text.Spanned;
+//import android.text.TextWatcher;
+//import android.text.style.ForegroundColorSpan;
+//import android.text.style.TypefaceSpan;
+//import android.util.Base64;
+//import android.util.Log;
+//import android.view.Gravity;
+//
+//import android.view.View;
+//import android.view.Window;
+//import android.view.WindowManager;
+//import android.widget.Button;
+//import android.widget.EditText;
+//
+//import android.widget.ImageView;
+//import android.widget.TextView;
+//import android.widget.Toast;
+//
+//
+//import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.io.InputStream;
-import java.util.Objects;
-
-import edu.poly.nhtr.Adapter.HomeAdapter;
+//import androidx.fragment.app.FragmentStatePagerAdapter;
+//
+//import androidx.recyclerview.widget.LinearLayoutManager;
+//import androidx.viewpager.widget.ViewPager;
+//
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.OnFailureListener;
+//import com.google.android.gms.tasks.OnSuccessListener;
+//import com.google.android.gms.tasks.Task;
+//import com.google.android.gms.auth.api.signin.GoogleSignIn;
+//import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+//
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.firestore.DocumentReference;
+//import com.google.firebase.firestore.FirebaseFirestore;
+//import com.google.firebase.firestore.QueryDocumentSnapshot;
+//import com.google.firebase.firestore.QuerySnapshot;
+//
+//import com.google.firebase.auth.FirebaseUser;
+//import com.google.firebase.auth.UserInfo;
+//
+//
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.Date;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.io.InputStream;
+//import java.util.Objects;
+//
+//import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainBinding;
 
@@ -74,15 +75,16 @@ import edu.poly.nhtr.databinding.ActivityMainBinding;
 import edu.poly.nhtr.fragment.HomeFragment;
 import edu.poly.nhtr.fragment.NotificationFragment;
 import edu.poly.nhtr.fragment.SettingFragment;
-import edu.poly.nhtr.fragment.ViewPagerAdapter;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
-import edu.poly.nhtr.utilities.Constants;
-import edu.poly.nhtr.utilities.PreferenceManager;
+//import edu.poly.nhtr.fragment.ViewPagerAdapter;
+
+//import edu.poly.nhtr.utilities.Constants;
+//import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity implements HomeListener {
 
-    PreferenceManager preferenceManager;
+    // PreferenceManager preferenceManager;
     ActivityMainBinding binding;
 
     @Override
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
 //        Typeface interLightTypeface = Typeface.createFromAsset(getAssets(), "font/inter_light.ttf");
 //        text1.setSpan(new TypefaceSpan(interLightTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //        binding.txtNotification.setText(text1);
-//
+
 //        Spannable text2  = new SpannableString("+");
 //        Typeface interBoldTypeface = Typeface.createFromAsset(getAssets(), "font/inter_bold.ttf");
 //        text2.setSpan(new TypefaceSpan(interBoldTypeface), 0, text2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -199,6 +201,18 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         });
     }
 
+    // Hàm thay thế Fragment
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onUserClicked(Home home) {
+
+    }
 
 //    // Lấy ảnh đại diện và tên từ Google
 //    private void getInfoFromGoogle() {
@@ -442,16 +456,5 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
 //    }
 //
 //
-      // Hàm thay thế Fragment
-private void replaceFragment(Fragment fragment) {
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    fragmentTransaction.replace(R.id.fragment_container, fragment);
-    fragmentTransaction.commit();
-}
 
-    @Override
-    public void onUserClicked(Home home) {
-
-    }
 }
