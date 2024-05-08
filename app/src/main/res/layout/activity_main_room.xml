@@ -92,7 +92,6 @@
                 android:adjustViewBounds="true"
                 android:visibility="gone"/>
 
-
             <TextView
                 android:id="@+id/txt_notification"
                 android:layout_width="match_parent"
@@ -101,8 +100,7 @@
                 android:textSize="20sp"
                 android:textColor="@color/colorTextBlack"
                 android:layout_marginTop="10dp"
-                android:visibility="gone"
-                />
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/usersRecyclerView"

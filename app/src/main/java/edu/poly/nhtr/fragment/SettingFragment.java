@@ -94,6 +94,7 @@ public class SettingFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -101,6 +102,7 @@ public class SettingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSettingBinding.inflate(inflater, container, false);
+        switchMode = binding.nightMode;
 
         loadUserDetails();
         setListeners();
@@ -277,6 +279,7 @@ public class SettingFragment extends Fragment {
                 switchMode.setChecked(true);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
+
 
             switchMode.setOnClickListener(new View.OnClickListener() {
                 @Override
