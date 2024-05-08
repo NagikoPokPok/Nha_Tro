@@ -1,5 +1,13 @@
 package edu.poly.nhtr.models;
 
+import android.text.TextUtils;
+import android.util.Patterns;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import edu.poly.nhtr.Class.PasswordHasher;
+import edu.poly.nhtr.utilities.Constants;
+
 public class User {
 
     public String name, email, password, confirmPassword;
