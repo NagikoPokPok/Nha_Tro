@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_home"
+        android:icon="@drawable/icon_home"
+        android:title="@string/nha_tro" />
+
+    <item android:id="@+id/menu_notification"
+        android:title="@string/thong_bao"
+        android:icon="@drawable/notification" />
+
+    <item android:id="@+id/menu_settings"
+        android:title="@string/cai_dat"
+        android:icon="@drawable/icon_settings" />
+
+</menu>
