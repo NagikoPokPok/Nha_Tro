@@ -1,5 +1,7 @@
 package edu.poly.nhtr.Activity;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -35,10 +37,11 @@ import java.util.Objects;
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
+import edu.poly.nhtr.interfaces.SignInInterface;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements SignInInterface {
 
     private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
@@ -108,7 +111,7 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(SignInActivity.this, "Tài khoản chưa được đăng nhập", Toast.LENGTH_SHORT).show();
         }
     }
-    private void loading(Boolean isLoading)
+    public void loading(Boolean isLoading)
     {
         if(isLoading)
         {
@@ -118,6 +121,13 @@ public class SignInActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.buttonSignIn.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void entryMain() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void setListeners() {
@@ -202,11 +212,11 @@ public class SignInActivity extends AppCompatActivity {
                 });
     }
 
-    private void showToast(String message){
+     public void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private Boolean isValidSignInDetails(){
+    public Boolean isValidSignInDetails(){
         if(binding.inputEmail.getText().toString().trim().isEmpty()) {
             showToast("Vui lòng nhập email");
             return false;
