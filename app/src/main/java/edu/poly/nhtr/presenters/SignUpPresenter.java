@@ -82,6 +82,7 @@ public class SignUpPresenter {
             return false;
         } else if (!password.equals(confirmPassword)) {
             view.showErrorMessage("Password and confirm must be the same");
+            view.setConfirmPasswordErrorMessage("Mật khẩu chưa trùng nhau");
             return false;
         }
         return true;
@@ -110,12 +111,18 @@ public class SignUpPresenter {
 
     public void handleConfirmPasswordChanged(String password, String confirmPassword) {
 
-        if(confirmPassword.equals(password) && password.length() > 0) {
+        if (confirmPassword.isEmpty()) {
+            // Xóa thông báo lỗi và trợ giúp
+            view.setConfirmPasswordHelperText("");
+            view.setConfirmPasswordError("");
+        } else if (confirmPassword.equals(password)) {
+            // Hiển thị thông báo xác nhận thành công
             view.setConfirmPasswordHelperText("Xác minh mật khẩu chính xác");
             view.setConfirmPasswordError("");
         } else {
+            // Hiển thị thông báo lỗi xác nhận mật khẩu
             view.setConfirmPasswordHelperText("");
-            view.setConfirmPasswordError("Mật khẩu không trùng");
+            view.setConfirmPasswordError("Mật khẩu không trùng khớp");
         }
     }
 
