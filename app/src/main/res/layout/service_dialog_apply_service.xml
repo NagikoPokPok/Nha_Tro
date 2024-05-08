@@ -144,7 +144,8 @@
             android:background="@drawable/custom_edittext"
             android:text="0"
             android:imeOptions="actionNext"
-            android:padding="9dp" />
+            android:padding="9dp"
+            />
 
         <View
             android:id="@+id/view3"
