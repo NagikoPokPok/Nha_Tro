@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:text="Thêm dịch vụ mới"
         android:textSize="24dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/inter_bold"/>
     <View
         android:id="@+id/view"
@@ -72,11 +73,7 @@
                 android:fontFamily="@font/inter_medium"
                 />
 
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:paddingLeft="5dp"
-                android:src="@drawable/icon_asterisk"/>
+
 
         </LinearLayout>
 
@@ -93,7 +90,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp">
 
         <Button

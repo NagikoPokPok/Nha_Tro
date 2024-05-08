@@ -1,87 +1,91 @@
 package edu.poly.nhtr.Activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
 
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.utilities.Constants;
+import edu.poly.nhtr.interfaces.ForgotPasswordInterface;
+import edu.poly.nhtr.presenters.ForgotPasswordPresenter;
 
-public class ForgotPasswordActivity extends AppCompatActivity {
-    Button setPassword;
-
+public class ForgotPasswordActivity extends AppCompatActivity implements ForgotPasswordInterface {
+    Button btn_SetPassword;
 
     ImageView back;
     TextView email,warning;
-    ProgressDialog progressDialog;
+    ProgressBar progressBar;
+    private ForgotPasswordPresenter forgotPasswordPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
-        setPassword = findViewById(R.id.btn_DatLaiMK);
+        btn_SetPassword = findViewById(R.id.btn_DatLaiMK);
         email = findViewById(R.id.edt_emailForgotPassword);
         back = findViewById(R.id.img_back);
         warning = findViewById(R.id.txt_warning);
-        progressDialog = new ProgressDialog(this);
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ForgotPasswordActivity.this,SignInActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        forgotPasswordPresenter = new ForgotPasswordPresenter(this);
+
+        progressBar = findViewById(R.id.progressBar);
+
+        setListener();
+    }
+
+
+
+    private void setListener() {
+        // Nút quay lại
+        back.setOnClickListener(v -> {
+            Intent intent = new Intent(ForgotPasswordActivity.this,SignInActivity.class);
+            startActivity(intent);
+            finish();
         });
-        setPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                String emailAddress = email.getText().toString();
-
-                String[] strings = emailAddress.split("@");
-                if(strings.length!=2 || !strings[1].equals("gmail.com")) {
-                    progressDialog.dismiss();
-                    warning.setText("x Email không hợp lệ");
-                    Toast.makeText(ForgotPasswordActivity.this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
-                }else{
-                    FirebaseFirestore databse = FirebaseFirestore.getInstance();
-                    databse.collection(Constants.KEY_COLLECTION_USERS)
-                            .whereEqualTo(Constants.KEY_EMAIL, emailAddress)
-                            .get()
-                            .addOnCompleteListener(Task->{
-                                if(Task.isSuccessful() && Task.getResult()!=null && Task.getResult().getDocuments().size() >0){
-                                    progressDialog.dismiss();
-                                    Intent intent = new Intent(ForgotPasswordActivity.this, ConfirmAccountForgotPasswordActivity.class);
-                                    intent.putExtra("gmail",emailAddress);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else{
-                                    progressDialog.dismiss();
-                                    warning.setText("x Tài khoản chưa được đăng kí");
-                                    Toast.makeText(ForgotPasswordActivity.this, "Email không tồn tại", Toast.LENGTH_SHORT).show();
-                                }
-
-                            });
-
-                }
-            }
-
+        //Nút đặt lại mật khẩu
+        btn_SetPassword.setOnClickListener(v -> {
+            String emailAddress = email.getText().toString();
+            forgotPasswordPresenter.setNewPassword(emailAddress);
         });
+    }
+
+    @Override
+    public void success() {
+        Intent intent = new Intent(ForgotPasswordActivity.this, ConfirmAccountForgotPasswordActivity.class);
+        intent.putExtra("gmail",email.getText().toString().trim());
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void error() {
+
+    }
+
+    @Override
+    public void showLoading() {
+        btn_SetPassword.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        btn_SetPassword.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
