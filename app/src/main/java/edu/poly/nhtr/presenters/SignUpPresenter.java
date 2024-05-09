@@ -88,7 +88,11 @@ public class SignUpPresenter {
         return true;
     }
 
-    public void handlePasswordChanged(String password) {
+    public void handlePasswordChanged(String password, String confirmPassword) {
+        if(!confirmPassword.isEmpty() && !confirmPassword.equals(password))
+        {
+            view.setConfirmPasswordText("");
+        }
         if (password.length() < 8) {
             view.setPasswordHelperText("Nhập ít nhất 8 ký tự");
             view.setPasswordError("");

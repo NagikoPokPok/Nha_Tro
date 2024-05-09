@@ -19,4 +19,6 @@ public interface SignUpInterface {
     void setConfirmPasswordError(String error);
     void setNameErrorEnabled(Boolean isEmpty);
     void setEmailErrorEnabled(Boolean isEmpty);
+
+    void setConfirmPasswordText(String message);
 }

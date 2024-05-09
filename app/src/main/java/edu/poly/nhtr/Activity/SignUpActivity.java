@@ -45,9 +45,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                binding.edtConfirmPassword.setText("");
-                presenter.handlePasswordChanged(s.toString());
-
+                String confirmPassword = binding.edtConfirmPassword.getText().toString();
+                presenter.handlePasswordChanged(s.toString(), confirmPassword);
             }
 
             @Override
@@ -207,6 +206,11 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
     @Override
     public void setEmailErrorEnabled(Boolean isEmpty) {
         binding.layoutEmail.setErrorEnabled(isEmpty);
+    }
+
+    @Override
+    public void setConfirmPasswordText(String message) {
+        binding.edtConfirmPassword.setText(message);
     }
 
 }
