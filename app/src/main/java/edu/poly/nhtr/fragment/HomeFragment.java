@@ -289,21 +289,24 @@ public class HomeFragment extends Fragment {
 
         // Xử lý sự kiện cho button
         btnAddHome.setOnClickListener(v -> {
-
             if (edtNameHome.getText().toString().trim().isEmpty()) {
                 Toast.makeText(requireContext(), "Enter home name", Toast.LENGTH_SHORT).show();
-
             } else if (edtAddress.getText().toString().trim().isEmpty()) {
                 Toast.makeText(requireContext(), "Enter home address", Toast.LENGTH_SHORT).show();
             } else {
+                // Lấy thông tin người dùng từ tài khoản Google
+                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+                String currentUserId = "";
+                if (account != null) {
+                    currentUserId = account.getId();
+                }
 
                 FirebaseFirestore database = FirebaseFirestore.getInstance();
-                String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
                 HashMap<String, Object> home = new HashMap<>();
                 home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
                 home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
                 home.put(Constants.KEY_TIMESTAMP, new Date());
-                home.put(Constants.KEY_USER_ID, currentUserId);
+                home.put(Constants.KEY_USER_ID, currentUserId); // Sử dụng ID người dùng Google
                 database.collection(Constants.KEY_COLLECTION_HOMES)
                         .add(home)
                         .addOnSuccessListener(documentReference -> {
@@ -311,23 +314,18 @@ public class HomeFragment extends Fragment {
                             preferenceManager.putString(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
                             preferenceManager.putString(Constants.KEY_ADDRESS, edtAddress.getText().toString());
 
-                            Toast.makeText(requireContext(), "Add success.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Add success.", Toast.LENGTH_SHORT).show();
                             getHomes();
                             dialog.dismiss();
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(requireContext(), "Add failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Add failed.", Toast.LENGTH_SHORT).show();
                             loading(false);
-
                         });
             }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-
-
     }
 
     // Cập nhật màu cho button
@@ -344,7 +342,12 @@ public class HomeFragment extends Fragment {
 
     private void getHomes() {
         loading(true);
-        String currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+        // Lấy thông tin người dùng từ tài khoản Google
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+        String currentUserId = "";
+        if (account != null) {
+            currentUserId = account.getId();
+        }
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES)
                 .whereEqualTo(Constants.KEY_USER_ID, currentUserId)
