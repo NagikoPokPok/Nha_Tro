@@ -182,10 +182,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                style="@style/TEXT_BOLD_3"
+                style="@style/TEXT_BOLD"
                 android:text="@string/GUI_LAI_OTP"
+                android:textColor="@color/colorRed"
                 android:textSize="16sp"
-                android:textColor="@color/colorTextRed" />
+                 />
 
 
         </LinearLayout>
