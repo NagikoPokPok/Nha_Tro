@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
 //        }
 //    }
 
-    private void setClickNavigationBottomMenu() {
+    public void setClickNavigationBottomMenu() {
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             if (item.getItemId() == R.id.menu_home) {

@@ -38,6 +38,7 @@ import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.interfaces.SignInInterface;
+import edu.poly.nhtr.presenters.SignInPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
@@ -47,6 +48,7 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
     private PreferenceManager preferenceManager;
     private FirebaseAuth mAuth;
 
+    private SignInPresenter signInPresenter;
     FirebaseDatabase database;
 
     private GoogleSignInClient googleSignInClient;
@@ -61,6 +63,7 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         setContentView(binding.getRoot());
         setListeners();
 
+        signInPresenter = new SignInPresenter(this);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
@@ -244,52 +247,30 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         });
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            try {
-                GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-
-                if (googleSignInAccount != null) {
-                    firebaseAuth(googleSignInAccount.getIdToken());
-                } else {
-                    Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
-                }
-            } catch (ApiException e) {
-                Toast.makeText(this, "Đăng nhập thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Toast.makeText(this, "Có sự cố xảy ra khi đăng nhập", Toast.LENGTH_SHORT).show();
-            }
+        if (signInPresenter != null) {
+            signInPresenter.onActivityResult(requestCode, resultCode, data);
+        } else {
+            // Ví dụ: Hiển thị thông báo lỗi
+            Toast.makeText(this, "Lỗi: signInPresenter không được khởi tạo", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void firebaseAuth(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("id", Objects.requireNonNull(user).getUid());
-                        map.put("name", user.getDisplayName());
-                        map.put("profile", Objects.requireNonNull(user.getPhotoUrl()).toString());
-
-                        database.getReference().child("users").child(user.getUid()).setValue(map);
-
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), "Có sự cố xảy ra khi đăng nhập", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        signInPresenter.firebaseAuth(idToken);
     }
+
+    public void notifySignInSuccess() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+
+
 
 }

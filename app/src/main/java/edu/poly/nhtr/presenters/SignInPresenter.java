@@ -6,11 +6,27 @@ import android.content.Intent;
 import android.util.Patterns;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+
 import edu.poly.nhtr.Activity.MainActivity;
+import edu.poly.nhtr.Activity.SignInActivity;
 import edu.poly.nhtr.Class.PasswordHasher;
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.interfaces.SignInInterface;
 import edu.poly.nhtr.interfaces.SignUpInterface;
@@ -22,9 +38,16 @@ public class SignInPresenter {
     private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
     private SignInInterface view;
+    private GoogleSignInClient googleSignInClient;
+    private static final String TAG = "SignInActivity";
+    private final int RC_SIGN_IN = 20;
 
     public void signIn(User user){
 
+    }
+
+    public SignInPresenter(SignInInterface view) {
+        this.view = view;
     }
     void check(User user){
         view.loading(true);
@@ -77,6 +100,55 @@ public class SignInPresenter {
         } else  {
             return true;
         }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            if (task.isSuccessful()) {
+                try {
+                    GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
+                    if (googleSignInAccount != null) {
+                        firebaseAuth(googleSignInAccount.getIdToken());
+                    } else {
+                        view.showToast("Đăng nhập thất bại");
+                    }
+                } catch (ApiException e) {
+                    view.showToast("Đăng nhập thất bại: " + e.getMessage());
+                }
+            } else {
+                view.showToast("Có sự cố xảy ra khi đăng nhập");
+            }
+        }
+    }
+
+
+
+    public void firebaseAuth(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                        // Lưu thông tin người dùng vào Firestore
+                        HashMap<String, Object> userData = new HashMap<>();
+                        userData.put(Constants.KEY_NAME, user.getDisplayName());
+                        userData.put(Constants.KEY_EMAIL, user.getEmail());
+                        userData.put(Constants.KEY_IMAGE, user.getPhotoUrl().toString());
+                        // Thêm các thông tin khác nếu cần
+
+                        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS)
+                                .document(user.getUid())
+                                .set(userData)
+                                .addOnSuccessListener(aVoid -> view.notifySignInSuccess())
+                                .addOnFailureListener(e -> view.showToast("Có sự cố xảy ra khi lưu thông tin người dùng"));
+                    } else {
+                        // Đăng nhập thất bại
+                        view.showToast("Có sự cố xảy ra khi đăng nhập");
+                    }
+                });
     }
 
 
