@@ -1,5 +1,6 @@
 package edu.poly.nhtr.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import edu.poly.nhtr.databinding.ActivitySignUpBinding;
@@ -109,6 +111,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
             }
         });
 
+        binding.googleIcon.setOnClickListener(v -> presenter.googleSignIn());
     }
 
     private void setListeners() {
@@ -213,4 +216,45 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
         binding.edtConfirmPassword.setText(message);
     }
 
+        @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (presenter != null) {
+            presenter.onActivityResult(requestCode, resultCode, data);
+        } else {
+            // Ví dụ: Hiển thị thông báo lỗi
+            Toast.makeText(this, "Lỗi: signInPresenter không được khởi tạo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void firebaseAuth(String idToken) {
+        presenter.firebaseAuth(idToken);
+    }
+
+    public void notifySignInSuccess() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public String getStringFromResources(int defaultWebClientId) {
+        return getResources().getString(defaultWebClientId);
+    }
+
+    @Override
+    public void showToast(String message){
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

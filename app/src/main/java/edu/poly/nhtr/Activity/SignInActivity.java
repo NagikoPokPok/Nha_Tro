@@ -2,6 +2,7 @@ package edu.poly.nhtr.Activity;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -152,7 +153,7 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
             finish();
         });
 
-        binding.googleIcon.setOnClickListener(v -> googleSignIn());
+        binding.googleIcon.setOnClickListener(v -> signInPresenter.googleSignIn());
     }
 
     private void signIn(){
@@ -234,18 +235,16 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         }
     }
 
-    public void googleSignIn() {
-        GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut().addOnCompleteListener(this, task -> {
-            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build();
-
-            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-            Intent intent = googleSignInClient.getSignInIntent();
-            startActivityForResult(intent, RC_SIGN_IN);
-        });
+    @Override
+    public Context getContext() {
+        return this;
     }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
 
 
 
@@ -270,7 +269,10 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         finish();
     }
 
-
+    @Override
+    public String getStringFromResources(int defaultWebClientId) {
+        return getResources().getString(defaultWebClientId);
+    }
 
 
 }
