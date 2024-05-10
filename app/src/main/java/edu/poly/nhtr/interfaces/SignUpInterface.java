@@ -1,5 +1,8 @@
 package edu.poly.nhtr.interfaces;
 
+import android.content.Context;
+import android.content.Intent;
+
 public interface SignUpInterface {
 
     void showErrorMessage(String message);
@@ -21,4 +24,11 @@ public interface SignUpInterface {
     void setEmailErrorEnabled(Boolean isEmpty);
 
     void setConfirmPasswordText(String message);
+    void firebaseAuth(String idToken);
+    void  notifySignInSuccess();
+    Context getContext();
+
+    String getStringFromResources(int defaultWebClientId);
+    void showToast(String message);
+    void startActivityForResult(Intent intent, int requestCode);
 }
