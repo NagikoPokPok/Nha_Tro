@@ -41,7 +41,7 @@ import papaya.in.sendmail.SendMail;
 public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInterface {
     PreferenceManager preferenceManager;
     VerifyOTPPresenter presenter;
-    private String email = "", name = "", password = "";
+    private String email = "", name = "", password = "", encodedImage = "";
 
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
     private TextView resend;
@@ -344,6 +344,7 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
         user.put(Constants.KEY_NAME, name);
         user.put(Constants.KEY_EMAIL, email);
         user.put(Constants.KEY_PASSWORD, password);
+        user.put(Constants.KEY_IMAGE, encodedImage);
         //user.put(Constants.KEY_IMAGE, encodedImage);
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
@@ -355,6 +356,7 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
                         preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
                         preferenceManager.putString(Constants.KEY_NAME, name);
                         preferenceManager.putString(Constants.KEY_PASSWORD, password);
+                        preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
                         //preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
                         FirebaseAuth auth = FirebaseAuth.getInstance();
 
