@@ -1,25 +1,16 @@
 package edu.poly.nhtr.presenters;
 
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
-import edu.poly.nhtr.utilities.PreferenceManager;
+
 
 public class HomePresenter {
 

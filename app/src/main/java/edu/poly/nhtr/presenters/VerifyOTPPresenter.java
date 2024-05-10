@@ -29,7 +29,6 @@ public class VerifyOTPPresenter {
             view.hideLoading();
         } else {
             String code = otp.fullCode();
-
             if (!code.equals(String.valueOf(random))) {
                 view.showToast("Sai OTP");
                 view.clearOTP();

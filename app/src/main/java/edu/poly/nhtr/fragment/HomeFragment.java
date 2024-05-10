@@ -322,9 +322,6 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
 
-
-
-
     private void showErrorMessage(String message) {
         binding.txtErrorMessage.setText(message);
         binding.txtErrorMessage.setVisibility(View.VISIBLE);
