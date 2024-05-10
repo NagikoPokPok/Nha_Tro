@@ -191,7 +191,7 @@ public class SettingFragment extends Fragment implements SettingsInterface {
 
 
     public void showToast(String message) {
-        Toast.makeText(requireActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
     }
 
     public void logout() throws InterruptedException {
