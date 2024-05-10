@@ -41,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -59,6 +60,7 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentHomeBinding;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.presenters.HomePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
@@ -67,14 +69,16 @@ import edu.poly.nhtr.utilities.PreferenceManager;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
-//
-        private View view;
+public class HomeFragment extends Fragment implements HomeListener {
+    //
+    private View view;
 //    private TextView nameTextView, addImageView;
 //    private ImageView profileImageView;
 
     private PreferenceManager preferenceManager;
     private FragmentHomeBinding binding;
+    private  HomePresenter homePresenter;
+    private Dialog dialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -112,11 +116,37 @@ public class HomeFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        dialog = new Dialog(requireActivity());
+
+        // Khai bao presenter
+        homePresenter = new HomePresenter(this);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
+
+        editFonts();
+
+        //Set preference
+        preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
+
+        // Set up RecyclerView layout manager
+        binding.usersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
+
+        // Load user's information
+        loadUserDetails();
+
+        // Load home information
+        homePresenter.getHomes();
+
+        setListeners();
+
+        // Xử lý Dialog Thêm nhà trọ
+        binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
+    }
+
+    private void editFonts() {
         //Set three fonts into one textview
         Spannable text1  = new SpannableString("Bạn chưa có nhà trọ\n Hãy nhấn nút ");
         Typeface interLightTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_light.ttf");
@@ -132,26 +162,6 @@ public class HomeFragment extends Fragment {
         Typeface interLightTypeface2 = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_light.ttf");
         text3.setSpan(new TypefaceSpan(interLightTypeface2), 0, text3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         binding.txtNotification.append(text3);
-
-
-        //Set preference
-        preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
-
-        // Set up RecyclerView layout manager
-        binding.usersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
-
-
-        // Load user's information
-        loadUserDetails();
-
-        // Load home information
-        getHomes();
-
-
-        setListeners();
-
-        // Xử lý Dialog Thêm nhà trọ
-             binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
     }
 
     @Override
@@ -210,7 +220,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-        // Lấy ảnh đại diện và tên từ Google
+    // Lấy ảnh đại diện và tên từ Google
     private void getInfoFromGoogle() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
         if (account != null) {
@@ -223,7 +233,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void openAddHomeDialog(int gravity) {
-        final Dialog dialog = new Dialog(requireContext());
+
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_add_home);
 
@@ -289,40 +299,12 @@ public class HomeFragment extends Fragment {
 
         // Xử lý sự kiện cho button
         btnAddHome.setOnClickListener(v -> {
-            if (edtNameHome.getText().toString().trim().isEmpty()) {
-                Toast.makeText(requireContext(), "Enter home name", Toast.LENGTH_SHORT).show();
-            } else if (edtAddress.getText().toString().trim().isEmpty()) {
-                Toast.makeText(requireContext(), "Enter home address", Toast.LENGTH_SHORT).show();
-            } else {
-                // Lấy thông tin người dùng từ tài khoản Google
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
-                String currentUserId = "";
-                if (account != null) {
-                    currentUserId = account.getId();
-                }
+            String name = edtNameHome.getText().toString();
+            String address = edtAddress.getText().toString();
 
-                FirebaseFirestore database = FirebaseFirestore.getInstance();
-                HashMap<String, Object> home = new HashMap<>();
-                home.put(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
-                home.put(Constants.KEY_ADDRESS, edtAddress.getText().toString());
-                home.put(Constants.KEY_TIMESTAMP, new Date());
-                home.put(Constants.KEY_USER_ID, currentUserId); // Sử dụng ID người dùng Google
-                database.collection(Constants.KEY_COLLECTION_HOMES)
-                        .add(home)
-                        .addOnSuccessListener(documentReference -> {
-                            preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
-                            preferenceManager.putString(Constants.KEY_NAME_HOME, edtNameHome.getText().toString());
-                            preferenceManager.putString(Constants.KEY_ADDRESS, edtAddress.getText().toString());
+            Home home = new Home(name, address);
+            homePresenter.addHome(home);
 
-                            Toast.makeText(requireContext(), "Add success.", Toast.LENGTH_SHORT).show();
-                            getHomes();
-                            dialog.dismiss();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(requireContext(), "Add failed.", Toast.LENGTH_SHORT).show();
-                            loading(false);
-                        });
-            }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -340,60 +322,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void getHomes() {
-        loading(true);
-        // Lấy thông tin người dùng từ tài khoản Google
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
-        String currentUserId = "";
-        if (account != null) {
-            currentUserId = account.getId();
-        }
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.KEY_COLLECTION_HOMES)
-                .whereEqualTo(Constants.KEY_USER_ID, currentUserId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (isAdded()) { // Kiểm tra fragment đã được gắn kết với activity chưa
-                        loading(false);
 
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            List<Home> homes = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Duyệt qua document và lấy danh sách các nhà trọ
-                                Home home = new Home();
-                                home.nameHome = document.getString(Constants.KEY_NAME_HOME);
-                                home.addressHome = document.getString(Constants.KEY_ADDRESS);
-                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
-                                home.idHome = document.getId();
-                                homes.add(home);
-                            }
-
-                            Log.d("MainActivity", "Number of homes: " + homes.size());
-
-                            if (!homes.isEmpty()) {
-                                HomeAdapter homesAdapter = new HomeAdapter(homes, (HomeListener) requireContext());
-                                binding.usersRecyclerView.setAdapter(homesAdapter);
-                                Collections.sort(homes, (obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
-                                homesAdapter.notifyDataSetChanged();
-                                binding.usersRecyclerView.smoothScrollToPosition(0);
-
-                                // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
-                                // khi setAdapter mình phải set lại là VISIBLE
-                                binding.txtNotification.setVisibility(View.GONE);
-                                binding.imgAddHome.setVisibility(View.GONE);
-                                binding.usersRecyclerView.setVisibility(View.VISIBLE);
-
-                                Log.d("MainActivity", "Adapter set successfully");
-                            } else {
-                                binding.txtNotification.setVisibility(View.VISIBLE);
-                                binding.imgAddHome.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            showErrorMessage("Error fetching users");
-                        }
-                    }
-                });
-    }
 
 
     private void showErrorMessage(String message) {
@@ -402,15 +331,81 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void loading(Boolean isLoading) {
-        if (isLoading) {
-            // Hiển thị thanh tiến trình nếu đang tải
-            binding.progressBar.setVisibility(View.VISIBLE);
-        } else {
-            // Ẩn thanh tiến trình nếu không có tải
-            binding.progressBar.setVisibility(View.INVISIBLE);
-        }
+    @Override
+    public void onUserClicked(Home home) {
+
     }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public String getInfoUserFromGoogleAccount() {
+        // Lấy thông tin người dùng từ tài khoản Google
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+        String currentUserId = "";
+        if (account != null) {
+            currentUserId = account.getId();
+        }
+        else {
+            currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+        }
+        return currentUserId;
+    }
+
+    @Override
+    public void putHomeInfoInPreferences(String nameHome, String address, DocumentReference documentReference) {
+        preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
+        preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
+        preferenceManager.putString(Constants.KEY_ADDRESS, address);
+    }
+
+    @Override
+    public void dialogClose() {
+        dialog.dismiss();
+    }
+
+    @Override
+    public void hideLoading() {
+        binding.progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void addHome(List <Home> homes) {
+        HomeAdapter homesAdapter = new HomeAdapter(homes, this);
+        binding.usersRecyclerView.setAdapter(homesAdapter);
+        Collections.sort(homes, (obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
+        homesAdapter.notifyDataSetChanged();
+        binding.usersRecyclerView.smoothScrollToPosition(0);
+
+        // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
+        // khi setAdapter mình phải set lại là VISIBLE
+        binding.txtNotification.setVisibility(View.GONE);
+        binding.imgAddHome.setVisibility(View.GONE);
+        binding.usersRecyclerView.setVisibility(View.VISIBLE);
+        Log.d("MainActivity", "Adapter set successfully");
+    }
+
+    @Override
+    public void addHomeFailed() {
+        binding.txtNotification.setVisibility(View.VISIBLE);
+        binding.imgAddHome.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean isAdded2() {
+        if(isAdded())
+            return true;
+        return false;
+    }
+
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         private ImageView imageView;
 

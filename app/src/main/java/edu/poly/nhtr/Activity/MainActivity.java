@@ -82,7 +82,7 @@ import edu.poly.nhtr.models.Home;
 //import edu.poly.nhtr.utilities.Constants;
 //import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class MainActivity extends AppCompatActivity implements HomeListener {
+public class MainActivity extends AppCompatActivity  {
 
     // PreferenceManager preferenceManager;
     ActivityMainBinding binding;
@@ -209,10 +209,7 @@ public class MainActivity extends AppCompatActivity implements HomeListener {
         fragmentTransaction.commit();
     }
 
-    @Override
-    public void onUserClicked(Home home) {
 
-    }
 
 //    // Lấy ảnh đại diện và tên từ Google
 //    private void getInfoFromGoogle() {
