@@ -30,7 +30,7 @@ public class HomePresenter {
             FirebaseFirestore database = FirebaseFirestore.getInstance();
             HashMap<String, Object> homeInfo = new HashMap<>();
             homeInfo.put(Constants.KEY_NAME_HOME, home.getNameHome());
-            homeInfo.put(Constants.KEY_ADDRESS, home.getAddressHome());
+            homeInfo.put(Constants.KEY_ADDRESS_HOME, home.getAddressHome());
             homeInfo.put(Constants.KEY_TIMESTAMP, new Date());
             homeInfo.put(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount()); // Sử dụng ID người dùng Google
             database.collection(Constants.KEY_COLLECTION_HOMES)
@@ -68,7 +68,7 @@ public class HomePresenter {
                                 // Duyệt qua document và lấy danh sách các nhà trọ
                                 Home home = new Home();
                                 home.nameHome = document.getString(Constants.KEY_NAME_HOME);
-                                home.addressHome = document.getString(Constants.KEY_ADDRESS);
+                                home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
                                 home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
                                 homes.add(home);

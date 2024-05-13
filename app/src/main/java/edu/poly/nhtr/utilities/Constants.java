@@ -14,6 +14,7 @@ public class Constants {
     public static final String KEY_USER = "user";
     public static final String KEY_COLLECTION_HOMES = "homes";
     public static final String KEY_NAME_HOME= "nameHome";
+    public static final String KEY_ADDRESS_HOME= "addressHome";
     public static final String KEY_NUMBER_OF_ROOMS= "numberOfRooms";
     public static final String KEY_NUMBER_OF_ROOMS_AVAILABLE = "numberOfRoomsAvailable";
     public static final String KEY_HOME_ID = "homeId";

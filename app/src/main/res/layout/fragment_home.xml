@@ -59,6 +59,7 @@
             />
 
         <ImageView
+            android:id="@+id/img_menu_edit_delete"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_menu"
@@ -79,7 +80,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="5dp"
         android:padding="10dp"
-        android:foregroundGravity="center">
+        android:foregroundGravity="center"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -203,7 +205,7 @@
                 />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/usersRecyclerView"
+                android:id="@+id/homesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
@@ -213,7 +215,8 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingBottom="15dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                />
 
             <ProgressBar
                 android:id="@+id/progressBar"
