@@ -32,7 +32,6 @@ import edu.poly.nhtr.utilities.Constants;
 public class SignUpPresenter {
 
     private SignUpInterface view;
-    private GoogleSignInClient googleSignInClient;
     private static final String TAG = "SignUpActivity";
     private final int RC_SIGN_IN = 20;
 

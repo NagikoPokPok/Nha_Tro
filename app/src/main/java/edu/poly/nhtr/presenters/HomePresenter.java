@@ -15,6 +15,8 @@ import edu.poly.nhtr.utilities.Constants;
 public class HomePresenter {
 
     private HomeListener homeListener;
+
+
     public HomePresenter(HomeListener homeListener) {
         this.homeListener = homeListener;
     }
