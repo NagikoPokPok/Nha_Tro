@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
+<group>
     <item android:title="Chỉnh sửa"
         android:id="@+id/menu_edit"
         android:icon="@drawable/ic_edit"
         />
+</group>
 
-    <item android:title="Xoá phòng"
-        android:id="@+id/menu_delete"
-        android:icon="@drawable/ic_delete"
-        />
+
+
+    <group>
+        <item android:title="Xoá phòng"
+            android:id="@+id/menu_delete"
+            android:icon="@drawable/ic_delete"
+            />
+
+    </group>
+
+
+
+
+
+
 </menu>

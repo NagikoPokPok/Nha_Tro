@@ -2,11 +2,21 @@ package edu.poly.nhtr.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Home implements Serializable {
     public String nameHome, addressHome, numberOfRooms, numberOfRoomsAvailable, idHome;
+    public HashMap<String, String> existingHomes = new HashMap<>();
 
     public Date dateObject;
+
+    public HashMap<String, String> getExistingHomes() {
+        return existingHomes;
+    }
+
+    public void setExistingHomes(HashMap<String, String> existingHomes) {
+        this.existingHomes = existingHomes;
+    }
 
     public Home()
     {

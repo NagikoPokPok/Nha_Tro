@@ -9,7 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -140,23 +140,16 @@ public class HomeFragment extends Fragment implements HomeListener {
         setListeners();
 
         // Xử lý Dialog Thêm nhà trọ
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
 
         // Xử lý nút 3 chấm menu
         binding.imgMenuEditDelete.setOnClickListener(view -> openMenu(view));
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_edit_delete, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     private void openMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-//        MenuInflater menuInflater = popupMenu.getMenuInflater();
-//        menuInflater.inflate(R.menu.menu_edit_delete, popupMenu.getMenu());
-
+        popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_edit) {
@@ -171,22 +164,6 @@ public class HomeFragment extends Fragment implements HomeListener {
             return false;
         });
         popupMenu.inflate(R.menu.menu_edit_delete);
-        try {
-            Field[] fields = popupMenu.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                if ("mPopup".equals(field.getName())) {
-                    field.setAccessible(true);
-                    Object menuPopupHelper = field.get(popupMenu);
-                    Class<?> classPopupHelper = Class.forName(menuPopupHelper.getClass().getName());
-                    Method setForceIcons = classPopupHelper.getMethod("setForceShowIcon", boolean.class);
-                    setForceIcons.invoke(menuPopupHelper, true);
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         popupMenu.show();
     }
 
@@ -278,7 +255,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     private void openAddHomeDialog(int gravity) {
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         dialog.setContentView(R.layout.layout_dialog_add_home);
 
         //Anh xa view cho dialog
@@ -342,8 +319,8 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Xử lý sự kiện cho button
         btnAddHome.setOnClickListener(v -> {
-            String name = edtNameHome.getText().toString();
-            String address = edtAddress.getText().toString();
+            String name = edtNameHome.getText().toString().trim();
+            String address = edtAddress.getText().toString().trim();
 
             Home home = new Home(name, address);
             homePresenter.addHome(home);
