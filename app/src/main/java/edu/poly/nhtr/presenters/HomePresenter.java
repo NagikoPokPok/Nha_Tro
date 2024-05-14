@@ -121,10 +121,28 @@ public class HomePresenter {
                                 homeListener.addHomeFailed();
                             }
                         } else {
-
+                                homeListener.addHomeFailed();
                         }
                     }
 
+                });
+    }
+
+
+    public void deleteHome(Home home)
+    {
+        FirebaseFirestore.getInstance()
+                .collection(Constants.KEY_COLLECTION_HOMES)
+                .document(home.getIdHome())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Xoá thành công, thông báo và cập nhật giao diện
+                    homeListener.showToast("Xoá nhà trọ thành công");
+                    getHomes(); // Cập nhật danh sách nhà trọ
+                })
+                .addOnFailureListener(e -> {
+                    // Xoá thất bại, thông báo lỗi
+                    homeListener.showToast("Xoá nhà trọ thất bại");
                 });
     }
 

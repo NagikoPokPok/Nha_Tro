@@ -1,6 +1,8 @@
 package edu.poly.nhtr.listeners;
 
 
+import android.view.View;
+
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.List;
@@ -9,6 +11,7 @@ import edu.poly.nhtr.models.Home;
 
 public interface HomeListener {
     void onUserClicked(Home home);
+    void openPopup(View view, Home home);
 
     void showToast(String message);
     String getInfoUserFromGoogleAccount();

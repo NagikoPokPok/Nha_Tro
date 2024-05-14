@@ -349,11 +349,6 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     @Override
-    public void onUserClicked(Home home) {
-
-    }
-
-    @Override
     public void showToast(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
@@ -422,6 +417,8 @@ public class HomeFragment extends Fragment implements HomeListener {
     public void addHomeFailed() {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddHome.setVisibility(View.VISIBLE);
+        binding.homesRecyclerView.setVisibility(View.INVISIBLE);
+        binding.frmMenuTools.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -457,6 +454,37 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
+
+    @Override
+    public void onUserClicked(Home home) {
+
+    }
+
+    @Override
+    public void openPopup(View view, Home home) {
+        openMenuForEachHome(view, home);
+    }
+
+    private void openMenuForEachHome(View view, Home home) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.setForceShowIcon(true);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_edit) {
+                // Thực hiện hành động cho mục chỉnh sửa
+                showToast("Edit item");
+                return true;
+            } else if (itemId == R.id.menu_delete) {
+                // Thực hiện hành động cho mục xóa
+                homePresenter.deleteHome(home);
+                showToast("Delete item");
+                return true;
+            }
+            return false;
+        });
+        popupMenu.inflate(R.menu.menu_edit_delete);
+        popupMenu.show();
+    }
 
 
 }
