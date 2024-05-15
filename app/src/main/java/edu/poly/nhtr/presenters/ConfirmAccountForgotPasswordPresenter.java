@@ -1,26 +1,21 @@
 package edu.poly.nhtr.presenters;
 
-
 import android.os.CountDownTimer;
 
 import java.util.Random;
 
-import edu.poly.nhtr.interfaces.VerifyOTPInterface;
+import edu.poly.nhtr.interfaces.ConfirmAccountForgotPasswordInterface;
 import edu.poly.nhtr.models.OTP;
 
+public class ConfirmAccountForgotPasswordPresenter {
+    final private ConfirmAccountForgotPasswordInterface view;
 
-public class VerifyOTPPresenter {
     private CountDownTimer countDownTimer;
-    final private VerifyOTPInterface view;
     private int random = 0;
     final private int resendTime = 60;
-
-
-    public VerifyOTPPresenter(VerifyOTPInterface view) {
+    public ConfirmAccountForgotPasswordPresenter(ConfirmAccountForgotPasswordInterface view) {
         this.view = view;
-
     }
-
     public void verifyOTP(OTP otp)
     {
         view.showLoading();
@@ -29,6 +24,7 @@ public class VerifyOTPPresenter {
             view.hideLoading();
         } else {
             String code = otp.fullCode();
+
             if (!code.equals(String.valueOf(random))) {
                 view.showToast("Sai OTP");
                 view.clearOTP();

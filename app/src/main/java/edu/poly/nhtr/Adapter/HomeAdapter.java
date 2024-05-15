@@ -1,8 +1,5 @@
 package edu.poly.nhtr.Adapter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +35,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
-        holder.setHomeData(homes.get(position));
+        holder.setHomeData(homes.get(position), position);
     }
 
     @Override
@@ -54,13 +51,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             super(itemContainerUserBinding.getRoot());
             this.binding = itemContainerUserBinding;
         }
-        void setHomeData(Home home){
+        void setHomeData(Home home, int position){
             binding.txtNameHome.setText(home.nameHome);
             binding.txtHomeAddress.setText(home.addressHome);
+            binding.txtOrdinalNumber.setText(String.valueOf(position + 1));
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     homeListener.onUserClicked(home);
+                }
+            });
+
+            binding.imgMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    homeListener.openPopup(v, home);
                 }
             });
         }

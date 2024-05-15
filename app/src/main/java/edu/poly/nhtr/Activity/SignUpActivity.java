@@ -8,8 +8,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Objects;
 
 import edu.poly.nhtr.databinding.ActivitySignUpBinding;
 import edu.poly.nhtr.interfaces.SignUpInterface;
@@ -34,10 +37,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
         setListeners();
 
-        hieuChinhEditText();
+        customiseEditText();
     }
 
-    private void hieuChinhEditText() {
+    private void customiseEditText() {
 
         binding.edtPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -47,7 +50,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String confirmPassword = binding.edtConfirmPassword.getText().toString();
+                String confirmPassword = Objects.requireNonNull(binding.edtConfirmPassword.getText()).toString();
                 presenter.handlePasswordChanged(s.toString(), confirmPassword);
             }
 
@@ -65,7 +68,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String password = binding.edtPassword.getText().toString().trim();
+                String password = Objects.requireNonNull(binding.edtPassword.getText()).toString().trim();
                 presenter.handleConfirmPasswordChanged(password, s.toString());
             }
 
@@ -83,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = binding.edtName.getText().toString().trim();
+                String name = Objects.requireNonNull(binding.edtName.getText()).toString().trim();
                 presenter.handleNameChanged(name);
             }
 
@@ -101,7 +104,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String email = binding.edtEmail.getText().toString().trim();
+                String email = Objects.requireNonNull(binding.edtEmail.getText()).toString().trim();
                 presenter.handleEmailChanged(email);
             }
 
@@ -120,10 +123,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
             startActivity(intent);
         });
         binding.btnSignUp.setOnClickListener(v -> {
-            String name = binding.edtName.getText().toString().trim();
-            String email = binding.edtEmail.getText().toString().trim();
-            String password = binding.edtPassword.getText().toString().trim();
-            String confirmPassword = binding.edtConfirmPassword.getText().toString().trim();
+            String name = Objects.requireNonNull(binding.edtName.getText()).toString().trim();
+            String email = Objects.requireNonNull(binding.edtEmail.getText()).toString().trim();
+            String password = Objects.requireNonNull(binding.edtPassword.getText()).toString().trim();
+            String confirmPassword = Objects.requireNonNull(binding.edtConfirmPassword.getText()).toString().trim();
 
             // Khởi tạo đối tượng cho User
             User user = new User(name, email, password, confirmPassword);
@@ -217,7 +220,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
     }
 
         @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
+    public void startActivityForResult(@NonNull Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
     }
 

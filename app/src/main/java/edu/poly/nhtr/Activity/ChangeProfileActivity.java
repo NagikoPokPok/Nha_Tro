@@ -2,7 +2,6 @@ package edu.poly.nhtr.Activity;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -12,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -25,18 +23,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,39 +38,37 @@ import edu.poly.nhtr.R;
 
 import edu.poly.nhtr.databinding.ActivityChangeProfileBinding;
 
+import edu.poly.nhtr.interfaces.ChangeProfileInterface;
+import edu.poly.nhtr.presenters.ChangeProfilePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class ChangeProfileActivity extends AppCompatActivity {
+public class ChangeProfileActivity extends AppCompatActivity implements ChangeProfileInterface {
     private ActivityChangeProfileBinding binding;
-    private PreferenceManager preferenceManager;
-    private String encodedImage;
+    public PreferenceManager preferenceManager;
+    public String encodedImage;
+    public ChangeProfilePresenter presenter;
     Button btn_save;
-    TextView warning, txt_move_changePassword, txt_add_image;
-    EditText name, phoneNum, diachi;
-    ImageView imageProfile,imgBack;
+    public TextView warning, txt_move_changePassword, txt_add_image;
+    public EditText name, phoneNum, diachi;
+    public ImageView imageProfile,imgBack;
     ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_profile);
-        imgBack = findViewById(R.id.img_back);
-        name = findViewById(R.id.edt_name);
-        phoneNum = findViewById(R.id.edt_phoneNumber);
-        diachi = findViewById(R.id.edt_address);
-        imageProfile = findViewById(R.id.img_profile);
-        btn_save = findViewById(R.id.btn_save);
-        txt_add_image = findViewById(R.id.txt_add_image);
-        progressBar = findViewById(R.id.progressBar);
 
-        //warning = findViewById(R.id.txt_warning1);
-        txt_move_changePassword = findViewById(R.id.txt_move_change_password);
+        init();
 
-        binding = ActivityChangeProfileBinding.inflate(getLayoutInflater());
-        binding.getRoot();
         preferenceManager = new PreferenceManager(getApplicationContext());
+        presenter = new ChangeProfilePresenter(this, this);
 
         setListener();
+
+        //warning = findViewById(R.id.txt_warning1);
+//        binding = ActivityChangeProfileBinding.inflate(getLayoutInflater());
+//        binding.getRoot();
+
 
         //Message Toast from Change Password
         Intent intent = getIntent();
@@ -84,6 +76,18 @@ public class ChangeProfileActivity extends AppCompatActivity {
             String mes = intent.getStringExtra("message");
             showToast(mes);
         }
+    }
+
+    public void init(){
+        imgBack = findViewById(R.id.img_back);
+        name = findViewById(R.id.edt_name);
+        phoneNum = findViewById(R.id.edt_phoneNumber);
+        diachi = findViewById(R.id.edt_address);
+        imageProfile = findViewById(R.id.img_profile);
+        btn_save = findViewById(R.id.btn_save);
+        txt_add_image = findViewById(R.id.txt_add_image);
+        txt_move_changePassword = findViewById(R.id.txt_move_change_password);
+        progressBar = findViewById(R.id.progressBar);
     }
 
     private Bitmap getConversionImage(String encodedImage){
@@ -110,26 +114,30 @@ public class ChangeProfileActivity extends AppCompatActivity {
 
     }
     private void setListener(){
-
+        //Nút back
         imgBack.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
             finish();
         });
-
+        //Nút lưu thay đổi
         btn_save.setOnClickListener(v -> {
-            if(isValidChangeDetails()){
-                updateProfile();
-            }
+            presenter.clickSave();
+//            if(isValidChangeDetails()){
+//                updateProfile();
+//            }
         });
+        //Nút chuyển page qua đổi mật khẩu
         txt_move_changePassword.setOnClickListener(v -> {
             Intent intent = new Intent(ChangeProfileActivity.this, ChangePasswordActivity.class);
             startActivity(intent);
         });
+        //Nút chỉnh ảnh
         imageProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            pickImage.launch(intent);
+            presenter.clickImageProfile();
+//            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            pickImage.launch(intent);
             //preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
         });
 
@@ -167,6 +175,28 @@ public class ChangeProfileActivity extends AppCompatActivity {
             txt_add_image.setVisibility(View.INVISIBLE);
 
         }
+    }
+
+    @Override
+    public void changeSuccess() {
+        showToast("Thay đổi thành công");
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showLoading() {
+        btn_save.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        btn_save.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -209,7 +239,7 @@ public class ChangeProfileActivity extends AppCompatActivity {
     }
 
     // Hàm truy cập thư viện để lấy ảnh
-    private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+    public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     if (result.getData() != null) {
@@ -226,65 +256,66 @@ public class ChangeProfileActivity extends AppCompatActivity {
                     }
                 }
             });
-    private Boolean isValidChangeDetails() {
-        String ten = name.getText().toString().trim();
-        String phoneNumber = phoneNum.getText().toString().trim();
 
-
-        if (!ten.matches("^[\\p{L}\\s]+$")) {
-            //warning.setText("Tên chỉ được xuất hiện các kí tự là chữ và số");
-            showToast("Tên chỉ được xuất hiện các kí tự là chữ và số");
-            return false;
-        } else if (phoneNum.getText().toString().trim().isEmpty()) {
-            //warning.setText("Số điện thoại không được để trống");
-            showToast("Số điện thoai khôn được để trống");
-            return false;
-        } else if (!phoneNumber.matches("^0[0-9]{9}$")) {
-            //warning.setText("Số điện thoại chỉ gồm những kí tự là số từ 0-9");
-            showToast("Số điện thoại có 10 kí tự và chỉ gồm những kí tự là số từ 0-9");
-            return false;
-        } else {
-            return true;
-        }
-    }
+//    private Boolean isValidChangeDetails() {
+//        String ten = name.getText().toString().trim();
+//        String phoneNumber = phoneNum.getText().toString().trim();
+//
+//
+//        if (!ten.matches("^[\\p{L}\\s]+$")) {
+//            //warning.setText("Tên chỉ được xuất hiện các kí tự là chữ và số");
+//            showToast("Tên chỉ được xuất hiện các kí tự là chữ và số");
+//            return false;
+//        } else if (phoneNum.getText().toString().trim().isEmpty()) {
+//            //warning.setText("Số điện thoại không được để trống");
+//            showToast("Số điện thoai khôn được để trống");
+//            return false;
+//        } else if (!phoneNumber.matches("^0[0-9]{9}$")) {
+//            //warning.setText("Số điện thoại chỉ gồm những kí tự là số từ 0-9");
+//            showToast("Số điện thoại có 10 kí tự và chỉ gồm những kí tự là số từ 0-9");
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-    private void updateProfile() {
-        loading(true);
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        HashMap<String, Object> user = new HashMap<>();
-        user.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
-        user.put(Constants.KEY_PASSWORD, preferenceManager.getString(Constants.KEY_PASSWORD));
-        user.put(Constants.KEY_NAME, name.getText().toString());
-        user.put(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
-        user.put(Constants.KEY_ADDRESS, diachi.getText().toString());
-        user.put(Constants.KEY_IMAGE, encodedImage);
-        database.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID))
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        loading(false);
-                        Toast.makeText(ChangeProfileActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
-                        RefreshPrefernceManager();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        loading(false);
-                        Toast.makeText(ChangeProfileActivity.this, "Cập nhật tông tin thất bại", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+//    private void updateProfile() {
+//        loading(true);
+//        FirebaseFirestore database = FirebaseFirestore.getInstance();
+//        HashMap<String, Object> user = new HashMap<>();
+//        user.put(Constants.KEY_EMAIL, preferenceManager.getString(Constants.KEY_EMAIL));
+//        user.put(Constants.KEY_PASSWORD, preferenceManager.getString(Constants.KEY_PASSWORD));
+//        user.put(Constants.KEY_NAME, name.getText().toString());
+//        user.put(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
+//        user.put(Constants.KEY_ADDRESS, diachi.getText().toString());
+//        user.put(Constants.KEY_IMAGE, encodedImage);
+//        database.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID))
+//                .set(user)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        loading(false);
+//                        Toast.makeText(ChangeProfileActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
+//                        RefreshPrefernceManager();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        loading(false);
+//                        Toast.makeText(ChangeProfileActivity.this, "Cập nhật tông tin thất bại", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 
-    private  void RefreshPrefernceManager(){
-        preferenceManager.putString(Constants.KEY_NAME, name.getText().toString());
-        preferenceManager.putString(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
-        preferenceManager.putString(Constants.KEY_ADDRESS, diachi.getText().toString());
-        preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
-    }
+//    private  void RefreshPrefernceManager(){
+//        preferenceManager.putString(Constants.KEY_NAME, name.getText().toString());
+//        preferenceManager.putString(Constants.KEY_PHONE_NUMBER, phoneNum.getText().toString());
+//        preferenceManager.putString(Constants.KEY_ADDRESS, diachi.getText().toString());
+//        preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
+//    }
 
     private void loading(Boolean isLoading)
     {

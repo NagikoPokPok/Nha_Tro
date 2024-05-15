@@ -9,7 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -24,6 +24,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,6 +33,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import androidx.appcompat.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,16 +45,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,13 +70,12 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 public class HomeFragment extends Fragment implements HomeListener {
     //
     private View view;
-//    private TextView nameTextView, addImageView;
-//    private ImageView profileImageView;
 
     private PreferenceManager preferenceManager;
     private FragmentHomeBinding binding;
     private  HomePresenter homePresenter;
     private Dialog dialog;
+    private Menu menu;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -132,7 +129,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
 
         // Set up RecyclerView layout manager
-        binding.usersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
+        binding.homesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
         // Load user's information
         loadUserDetails();
@@ -143,7 +140,31 @@ public class HomeFragment extends Fragment implements HomeListener {
         setListeners();
 
         // Xử lý Dialog Thêm nhà trọ
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
+
+        // Xử lý nút 3 chấm menu
+        binding.imgMenuEditDelete.setOnClickListener(view -> openMenu(view));
+    }
+
+    private void openMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.setForceShowIcon(true);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_edit) {
+                // Thực hiện hành động cho mục chỉnh sửa
+                showToast("Edit item");
+                return true;
+            } else if (itemId == R.id.menu_delete) {
+                // Thực hiện hành động cho mục xóa
+                showToast("Delete item");
+                return true;
+            }
+            return false;
+        });
+        popupMenu.inflate(R.menu.menu_edit_delete);
+        popupMenu.show();
     }
 
     private void editFonts() {
@@ -234,7 +255,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     private void openAddHomeDialog(int gravity) {
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         dialog.setContentView(R.layout.layout_dialog_add_home);
 
         //Anh xa view cho dialog
@@ -242,7 +263,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         TextView addressHome = dialog.findViewById(R.id.txt_address_home);
 
         // Set dấu * đỏ cho TextView
-        Typeface interLightTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_light.ttf");
         Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
         Spannable text1  = new SpannableString(" *");
         text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -299,8 +319,8 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Xử lý sự kiện cho button
         btnAddHome.setOnClickListener(v -> {
-            String name = edtNameHome.getText().toString();
-            String address = edtAddress.getText().toString();
+            String name = edtNameHome.getText().toString().trim();
+            String address = edtAddress.getText().toString().trim();
 
             Home home = new Home(name, address);
             homePresenter.addHome(home);
@@ -322,19 +342,11 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
 
-
-
-
     private void showErrorMessage(String message) {
         binding.txtErrorMessage.setText(message);
         binding.txtErrorMessage.setVisibility(View.VISIBLE);
     }
 
-
-    @Override
-    public void onUserClicked(Home home) {
-
-    }
 
     @Override
     public void showToast(String message) {
@@ -359,7 +371,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     public void putHomeInfoInPreferences(String nameHome, String address, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_HOME_ID, documentReference.getId());
         preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
-        preferenceManager.putString(Constants.KEY_ADDRESS, address);
+        preferenceManager.putString(Constants.KEY_ADDRESS_HOME, address);
     }
 
     @Override
@@ -380,16 +392,24 @@ public class HomeFragment extends Fragment implements HomeListener {
     @Override
     public void addHome(List <Home> homes) {
         HomeAdapter homesAdapter = new HomeAdapter(homes, this);
-        binding.usersRecyclerView.setAdapter(homesAdapter);
-        Collections.sort(homes, (obj1, obj2) -> obj1.dateObject.compareTo(obj2.dateObject));
-        homesAdapter.notifyDataSetChanged();
-        binding.usersRecyclerView.smoothScrollToPosition(0);
+        binding.homesRecyclerView.setAdapter(homesAdapter);
+
+        // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
+        homes.sort(Comparator.comparing(obj -> obj.dateObject));
+
+        // hàm notifyItemInserted dùng để thông báo cho recycler view rằng có một item được thêm vào adapter
+        homesAdapter.notifyItemInserted(homes.size()-1);
+
+        //Sau khi nhận thông báo là có item được inserted thì cho cyclerview cuộn xuống tới item vừa được thêm
+        binding.homesRecyclerView.smoothScrollToPosition(homes.size()-1);
+
 
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
         // khi setAdapter mình phải set lại là VISIBLE
         binding.txtNotification.setVisibility(View.GONE);
         binding.imgAddHome.setVisibility(View.GONE);
-        binding.usersRecyclerView.setVisibility(View.VISIBLE);
+        binding.homesRecyclerView.setVisibility(View.VISIBLE);
+        binding.frmMenuTools.setVisibility(View.VISIBLE);
         Log.d("MainActivity", "Adapter set successfully");
     }
 
@@ -397,6 +417,8 @@ public class HomeFragment extends Fragment implements HomeListener {
     public void addHomeFailed() {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddHome.setVisibility(View.VISIBLE);
+        binding.homesRecyclerView.setVisibility(View.INVISIBLE);
+        binding.frmMenuTools.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -432,6 +454,88 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
+
+    @Override
+    public void onUserClicked(Home home) {
+
+    }
+
+    @Override
+    public void openPopup(View view, Home home) {
+        openMenuForEachHome(view, home);
+    }
+
+    private void openMenuForEachHome(View view, Home home) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.setForceShowIcon(true);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_edit) {
+                // Thực hiện hành động cho mục chỉnh sửa
+                showToast("Edit item");
+                return true;
+            } else if (itemId == R.id.menu_delete) {
+                // Thực hiện hành động cho mục xóa
+                //homePresenter.deleteHome(home);
+                openDeleteHomeDialog(Gravity.CENTER, home);
+                showToast("Delete item");
+                return true;
+            }
+            return false;
+        });
+        popupMenu.inflate(R.menu.menu_edit_delete);
+        popupMenu.show();
+    }
+
+    private void openDeleteHomeDialog(int gravity, Home home) {
+
+        dialog.setContentView(R.layout.layout_dialog_delete_home);
+
+        Window window = dialog.getWindow();
+        if(window == null)
+        {
+            return;
+        }
+
+        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if(Gravity.CENTER == gravity)
+        {
+            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
+        }
+        dialog.show();
+
+
+        // Ánh xạ ID
+        TextView txt_confirm_delete = dialog.findViewById(R.id.txt_confirm_delete);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_delete_home = dialog.findViewById(R.id.btn_delete_home);
+
+        // Hiệu chỉnh TextView
+        String text = " " + home.getNameHome() + " ?";
+        txt_confirm_delete.append(text);
+
+        // Xử lý sự kiện cho Button
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_delete_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homePresenter.deleteHome(home);
+            }
+        });
+    }
 
 
 }
