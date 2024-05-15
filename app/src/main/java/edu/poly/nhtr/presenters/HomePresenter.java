@@ -139,6 +139,7 @@ public class HomePresenter {
                     // Xoá thành công, thông báo và cập nhật giao diện
                     homeListener.showToast("Xoá nhà trọ thành công");
                     getHomes(); // Cập nhật danh sách nhà trọ
+                    homeListener.dialogClose();
                 })
                 .addOnFailureListener(e -> {
                     // Xoá thất bại, thông báo lỗi

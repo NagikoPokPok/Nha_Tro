@@ -476,7 +476,8 @@ public class HomeFragment extends Fragment implements HomeListener {
                 return true;
             } else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
-                homePresenter.deleteHome(home);
+                //homePresenter.deleteHome(home);
+                openDeleteHomeDialog(Gravity.CENTER, home);
                 showToast("Delete item");
                 return true;
             }
@@ -484,6 +485,56 @@ public class HomeFragment extends Fragment implements HomeListener {
         });
         popupMenu.inflate(R.menu.menu_edit_delete);
         popupMenu.show();
+    }
+
+    private void openDeleteHomeDialog(int gravity, Home home) {
+
+        dialog.setContentView(R.layout.layout_dialog_delete_home);
+
+        Window window = dialog.getWindow();
+        if(window == null)
+        {
+            return;
+        }
+
+        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if(Gravity.CENTER == gravity)
+        {
+            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
+        }
+        dialog.show();
+
+
+        // Ánh xạ ID
+        TextView txt_confirm_delete = dialog.findViewById(R.id.txt_confirm_delete);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_delete_home = dialog.findViewById(R.id.btn_delete_home);
+
+        // Hiệu chỉnh TextView
+        String text = " " + home.getNameHome() + " ?";
+        txt_confirm_delete.append(text);
+
+        // Xử lý sự kiện cho Button
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_delete_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homePresenter.deleteHome(home);
+            }
+        });
     }
 
 
