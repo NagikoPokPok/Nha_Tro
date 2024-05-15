@@ -19,6 +19,12 @@ public class User {
         this.confirmPassword = confirmPassword;
     }
 
+    public User(String email, String password, String confirmPassword) {
+        this.email = email;
+        this.password = password;
+        this.confirmPassword = confirmPassword;
+    }
+
     public String getName() {
         return name;
     }

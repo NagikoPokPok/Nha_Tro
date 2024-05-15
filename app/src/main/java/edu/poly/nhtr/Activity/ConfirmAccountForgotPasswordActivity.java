@@ -1,13 +1,10 @@
 package edu.poly.nhtr.Activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -20,33 +17,24 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Random;
-
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.utilities.Constants;
+import edu.poly.nhtr.interfaces.ConfirmAccountForgotPasswordInterface;
+import edu.poly.nhtr.models.OTP;
+import edu.poly.nhtr.presenters.ConfirmAccountForgotPasswordPresenter;
 import edu.poly.nhtr.utilities.PreferenceManager;
 import papaya.in.sendmail.SendMail;
 
-public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
+public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity implements ConfirmAccountForgotPasswordInterface {
     PreferenceManager preferenceManager;
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
     private TextView resend;
     private ImageView back;
-    private String verificationId;
+    private Button btnVerify ;
+    private ProgressBar progressBar;
     private int selectedETPosition = 0;
     private String email="";
-    private int random = 0;
-    private boolean resendEnable = false;
+
+    ConfirmAccountForgotPasswordPresenter presenter;
 
     private int resendTime = 60;
     @Override
@@ -55,6 +43,10 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirm_account_forgot_password);
         preferenceManager = new PreferenceManager(getApplicationContext());
         back = findViewById(R.id.img_back);
+        btnVerify = findViewById(R.id.btnVerify);
+        progressBar = findViewById(R.id.progressBar);
+
+
 
         email = getIntent().getStringExtra("gmail");
 
@@ -66,6 +58,10 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
         inputCode6 = findViewById(R.id.inputCode6);
         resend = findViewById(R.id.textResendOTP);
 
+        presenter = new ConfirmAccountForgotPasswordPresenter(this);
+        presenter.startCountDownTimer();
+        presenter.random();
+
         setupOTPInputs();
         inputCode1.addTextChangedListener(textWatcher);
         inputCode2.addTextChangedListener(textWatcher);
@@ -75,39 +71,28 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
         inputCode6.addTextChangedListener(textWatcher);
 
         showKeyboard(inputCode1);
-        //Start resend count down timer
-        startCountDownTimer();
+        setListener();
+    }
 
-        final ProgressBar progressBar = findViewById(R.id.progressBar);
-        final Button btnVerify = findViewById(R.id.btnVerify);
-
-        random();
-        resend.setOnClickListener(v -> {
-            startCountDownTimer();
-            random();
+    private void setListener() {
+        resend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.startCountDownTimer();
+                presenter.random();
+            }
         });
 
         btnVerify.setOnClickListener(v -> {
-            if (checkEmpty()) {
-                Toast.makeText(ConfirmAccountForgotPasswordActivity.this, "Please enter valid code", Toast.LENGTH_SHORT).show();
+            String num1 = inputCode1.getText().toString();
+            String num2 = inputCode2.getText().toString();
+            String num3 = inputCode3.getText().toString();
+            String num4 = inputCode4.getText().toString();
+            String num5 = inputCode5.getText().toString();
+            String num6 = inputCode6.getText().toString();
 
-            } else {
-                String code = inputCode1.getText().toString() +
-                        inputCode2.getText().toString() +
-                        inputCode3.getText().toString() +
-                        inputCode4.getText().toString() +
-                        inputCode5.getText().toString() +
-                        inputCode6.getText().toString();
-
-                if (!code.equals(String.valueOf(random))) {
-                    Toast.makeText(ConfirmAccountForgotPasswordActivity.this, "Wrong OTP", Toast.LENGTH_SHORT).show();
-                } else {
-                    Intent intent = new Intent(ConfirmAccountForgotPasswordActivity.this, SetNewPasswordActivity.class);
-                    intent.putExtra("gmail", email);
-                    startActivity(intent);
-                    finish();
-                }
-            }
+            OTP otp = new OTP(num1, num2, num3, num4, num5, num6);
+            presenter.verifyOTP(otp);
         });
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -120,16 +105,6 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
-    void random() {
-        Random randomOtp = new Random();
-        random = randomOtp.nextInt(900000) + 100000; // Generate a random 6-digit OTP
-
-        SendMail mail = new SendMail("nhatrohomemate@gmail.com", "bpvd hqxd xbho gdyl", email, "Login Signup app's OTP",
-                "Your OTP is -> " + random);
-        mail.execute();
-        //"nhatrohomemate@gmail.com", "orjz scow qdli loqh"
-        //"iuxq ggco nwld zvyx
-    }
     private void setupOTPInputs()
     {
         inputCode1.addTextChangedListener(new TextWatcher() {
@@ -279,28 +254,6 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.showSoftInput(otpET, InputMethodManager.SHOW_IMPLICIT);
     }
-    private void startCountDownTimer()
-    {
-        resendEnable = false;
-        resend.setTextColor(Color.parseColor("#99000000"));
-
-        new CountDownTimer(resendTime*1000, 100){
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                resend.setText("Resend Code ("+(millisUntilFinished/1000)+")");
-
-            }
-
-            @Override
-            public void onFinish() {
-                resendEnable = true;
-                resend.setText("Resend Code");
-                resend.setTextColor(getResources().getColor(R.color.colorPrimary));
-
-            }
-        }.start();
-    }
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_DEL)
@@ -347,5 +300,75 @@ public class ConfirmAccountForgotPasswordActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(View.INVISIBLE);
+        btnVerify.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+        btnVerify.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void verifySuccess() {
+        Intent intent = new Intent(ConfirmAccountForgotPasswordActivity.this, SetNewPasswordActivity.class);
+        intent.putExtra("gmail",email);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void setBeforeTextColor() {
+        resend.setTextColor(getResources().getColor(R.color.colorGray));
+    }
+
+    @Override
+    public void setAfterTextColor() {
+        resend.setTextColor(getResources().getColor(R.color.colorPrimary));
+    }
+
+    @Override
+    public void setText(String message) {
+        resend.setText(message);
+    }
+
+    @Override
+    public void sendEmail(int code) {
+        SendMail mail = new SendMail("nhatrohomemate@gmail.com", "bpvd hqxd xbho gdyl", email, "HOMEMATE's OTP VERIFICATION",
+                "Mã xác thực của bạn là:  \n" + code);
+        mail.execute();
+    }
+
+    @Override
+    public void setTextEnabled(Boolean enabled) {
+        resend.setEnabled(enabled);
+    }
+
+    @Override
+    public void clearOTP() {
+        inputCode1.setText("");
+        inputCode2.setText("");
+        inputCode3.setText("");
+        inputCode4.setText("");
+        inputCode5.setText("");
+        inputCode6.setText("");
+        showKeyboard(inputCode1);
+    }
+    @Override
+    protected void onPause() { // Hàm này dùng để dừng việc đếm thời gian khi chuyển sang acyivity mới
+        super.onPause();
+        if (presenter != null) {
+            presenter.stopCountDownTimer();
+        }
     }
 }
