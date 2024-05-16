@@ -83,31 +83,32 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:hint="Mật khẩu"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/colorPrimary"
         app:boxStrokeErrorColor="@color/colorRed"
         app:counterEnabled="true"
         app:counterMaxLength="32"
         app:endIconMode="password_toggle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutEmail"
-        app:startIconDrawable="@drawable/ic_pass"
-        app:startIconTint="@color/colorPrimary"
-        android:hint="Mật khẩu"
-        app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="outline"
+        app:endIconCheckable="false"
         app:errorEnabled="true"
         app:helperText="Nhập mật khẩu mạnh"
         app:helperTextEnabled="true"
         app:helperTextTextColor="@color/colorGreen"
-        app:hintTextColor="@color/colorPrimary">
+        app:hintTextColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutEmail"
+        app:startIconDrawable="@drawable/ic_pass"
+        app:startIconTint="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:imeOptions="actionNext"/>
+            android:imeOptions="actionNext"
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -122,6 +123,7 @@
         app:counterEnabled="true"
         app:counterMaxLength="32"
         app:endIconMode="password_toggle"
+        app:endIconCheckable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutPassword"

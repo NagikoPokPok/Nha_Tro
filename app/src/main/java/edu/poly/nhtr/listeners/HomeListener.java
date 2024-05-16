@@ -24,9 +24,11 @@ public interface HomeListener {
     void addHome(List<Home> homes);
     void addHomeFailed();
     boolean isAdded2();
-    void openDialogSuccess();
+    void openDialogSuccess(int layout);
     void showLoadingAdd();
     void hideLoadingAdd();
     void showLoadingDelete();
     void hideLoadingDelete();
+    void setEnabledForButton(Boolean enabled, int id);
+    void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home);
 }

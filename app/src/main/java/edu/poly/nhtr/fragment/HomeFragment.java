@@ -469,7 +469,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_edit) {
                 // Thực hiện hành động cho mục chỉnh sửa
-                showToast("Edit item");
+                openUpdateHomeDialog(Gravity.CENTER, home, binding);
                 return true;
             } else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
@@ -491,6 +491,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         popupMenu.inflate(R.menu.menu_edit_delete);
         popupMenu.show();
     }
+
 
 
     private void openDeleteHomeDialog(int gravity, Home home, ItemContainerHomesBinding binding) {
@@ -544,8 +545,8 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     @Override
-    public void openDialogSuccess() {
-        dialog.setContentView(R.layout.layout_dialog_delete_home_success);
+    public void openDialogSuccess(int id) {
+        dialog.setContentView(id);
 
         Window window = dialog.getWindow();
         if (window == null) {
@@ -601,6 +602,109 @@ public class HomeFragment extends Fragment implements HomeListener {
         ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
         btnDeleteHome.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void setEnabledForButton(Boolean enabled, int id) {
+        dialog.findViewById(id).setEnabled(enabled);
+    }
+
+    @Override
+    public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home) {
+        dialog.setContentView(R.layout.layout_dialog_confirm_update_home);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if (Gravity.CENTER == gravity) {
+            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
+        }
+        dialog.show();
+
+
+        // Ánh xạ ID
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_confirm_update_home = dialog.findViewById(R.id.btn_confirm_update_home);
+
+        // Xử lý sự kiện cho Button
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_confirm_update_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homePresenter.updateSuccess(newNameHome, newAddressHome, home);
+            }
+        });
+
+
+    }
+
+    private void openUpdateHomeDialog(int gravity, Home home, ItemContainerHomesBinding binding) {
+        dialog.setContentView(R.layout.layout_dialog_update_home);
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if (Gravity.CENTER == gravity) {
+            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
+        }
+        dialog.show();
+
+
+        // Ánh xạ ID
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_update_home = dialog.findViewById(R.id.btn_update_home);
+        EditText edt_new_name_home = dialog.findViewById(R.id.edt_new_name_home);
+        EditText edt_new_address_home = dialog.findViewById(R.id.edt_new_address_home);
+
+        //Hiện thông tin lên edt
+        edt_new_name_home.setText(home.getNameHome());
+        edt_new_address_home.setText(home.getAddressHome());
+
+        // Xử lý sự kiện cho Button
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.frmImage2.setVisibility(View.GONE);
+                binding.frmImage.setVisibility(View.VISIBLE);
+                dialog.dismiss();
+
+            }
+        });
+
+        btn_update_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Lấy dữ liệu
+                String newNameHome = edt_new_name_home.getText().toString().trim();
+                String newAddressHome = edt_new_address_home.getText().toString().trim();
+                homePresenter.updateHome(newNameHome, newAddressHome, home);
+            }
+        });
+
+
     }
 
 
