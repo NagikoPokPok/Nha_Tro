@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="225dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
     android:layout_marginTop="20dp"
+    android:layout_marginEnd="10dp"
+    android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
-    app:strokeWidth="1dp"
-    android:backgroundTint="@color/white"
-  >
+    app:strokeWidth="1dp">
+
     <TextView
         android:id="@+id/txt_ordinal_number"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:text="1"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:fontFamily="@font/inter_bold"
-        android:textColor="@color/white"
         android:background="@drawable/sonhatro"
-        />
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center"
+        android:text="@string/stt"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +40,7 @@
                 android:layout_marginStart="10dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Hoàng Minh Thảo"
+                android:text="@string/hoang_minh_thao"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -66,10 +65,8 @@
                     android:id="@+id/img_menu"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_menu"
                     android:layout_gravity="center"
-                    />
-
+                    android:src="@drawable/ic_menu" />
 
 
             </FrameLayout>
@@ -87,46 +84,40 @@
                     android:background="@drawable/background_image"
                     android:backgroundTint="@color/colorGray"
                     android:scaleType="fitXY"
-                    app:riv_oval="true"
-                    />
+                    app:riv_oval="true" />
 
                 <ImageView
-
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_menu"
                     android:layout_gravity="center"
-                    />
-
-
+                    android:src="@drawable/ic_menu" />
 
             </FrameLayout>
 
         </RelativeLayout>
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginStart="50dp"
             android:layout_marginTop="-20dp"
-            android:layout_marginStart="50dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="10dp"
-                android:src="@drawable/icon_address_pin"/>
+                android:src="@drawable/icon_address_pin" />
 
             <TextView
                 android:id="@+id/txt_home_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="123123"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:text="123123"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
@@ -136,109 +127,100 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp">
+            android:orientation="horizontal">
 
             <TextView
+                style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
-                android:layout_weight="2"
                 android:layout_height="match_parent"
-                android:text="Số phòng :"
+                android:layout_gravity="start"
+                android:layout_weight="2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_medium"
-                android:layout_gravity="start" />
+                android:text="@string/so_phong"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/txt_so_phong"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="0"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="18dp"
-                android:fontFamily="@font/inter_light"
                 android:layout_gravity="end"
-                  />
+                android:layout_weight="1"
+                style="@style/TEXT_LIGHT_2"
+                android:text="@string/zero"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
+            android:orientation="horizontal">
 
             <TextView
+                style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
-                android:layout_weight="2"
                 android:layout_height="match_parent"
-                android:text="Số phòng trống :"
+                android:layout_gravity="start"
+                android:layout_weight="2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_medium"
-                android:layout_gravity="start" />
+                android:text="@string/so_phong_trong"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/txt_so_phong_trong"
+                style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="0"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="18dp"
-                android:fontFamily="@font/inter_light"
                 android:layout_gravity="end"
-                />
+                android:layout_weight="1"
+                android:text="@string/zero"
+                android:textSize="18sp" />
 
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
+            android:orientation="horizontal">
 
             <TextView
+                style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
-                android:layout_weight="2"
                 android:layout_height="match_parent"
-                android:text="Số phòng nợ tiền :"
+                android:layout_gravity="start"
+                android:layout_weight="2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_medium"
-                android:layout_gravity="start" />
+                android:text="@string/so_phong_no_tien"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/txt_so_phong_no_tien"
+                style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="0"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="18dp"
-                android:fontFamily="@font/inter_light"
                 android:layout_gravity="end"
-                />
+                android:layout_weight="1"
+                android:text="@string/zero"
+                android:textSize="18sp" />
         </LinearLayout>
-
 
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
             android:layout_weight="1"
             android:background="#707070" />
@@ -246,34 +228,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
+            android:orientation="horizontal">
 
             <TextView
+                style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
-                android:layout_weight="1.5"
                 android:layout_height="match_parent"
-                android:text="Doanh thu tháng :"
+                android:layout_gravity="start"
+                android:layout_weight="1.5"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="18sp"
-                android:fontFamily="@font/inter_medium"
-                android:layout_gravity="start" />
+                android:text="@string/doanh_thu_thang"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/txt_doanh_thu_thang"
+                style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="0"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="18dp"
-                android:fontFamily="@font/inter_bold"
                 android:layout_gravity="end"
-                />
-
+                android:layout_weight="1"
+                android:text="@string/zero"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
