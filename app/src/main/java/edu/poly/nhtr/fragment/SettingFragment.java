@@ -6,30 +6,20 @@ import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
 
-
-import java.io.InputStream;
-
-import java.util.Objects;
 
 import edu.poly.nhtr.Activity.ChangeProfileActivity;
 import edu.poly.nhtr.Activity.MainActivity;
@@ -51,7 +41,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
 
     FragmentSettingBinding binding;
 
-    SharedPreferences sharedPreferences;
     private PreferenceManager preferenceManager;
     private SettingsPresenter settingsPresenter;
     SwitchCompat switchMode;
@@ -102,7 +91,7 @@ public class SettingFragment extends Fragment implements SettingsInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSettingBinding.inflate(inflater, container, false);
