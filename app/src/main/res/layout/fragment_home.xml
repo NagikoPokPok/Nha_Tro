@@ -29,20 +29,22 @@
             android:layout_marginTop="20dp">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_Profile"
+                android:id="@+id/img_profile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/background_image"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 app:riv_oval="true" />
 
-            <TextView
-                android:id="@+id/txt_add_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:contentDescription="@string/khung_avatar"
+                android:id="@+id/img_ava"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:text="Ảnh"
-                android:textSize="12sp" />
+                android:background="@drawable/round_back_avatar_2"
+                android:src="@drawable/icon_user"
+                android:padding="10dp"/>
 
         </FrameLayout>
 

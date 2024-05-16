@@ -229,14 +229,14 @@ public class HomeFragment extends Fragment implements HomeListener {
             try {
                 Bitmap profileImage = getConversionImage(encodedImg);
                 binding.imgProfile.setImageBitmap(profileImage);
-                binding.txtAddImage.setVisibility(View.INVISIBLE);
+                binding.imgAva.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
-                binding.txtAddImage.setVisibility(View.VISIBLE); // Nếu không có ảnh thì để mặc định
+                binding.imgAva.setVisibility(View.VISIBLE); // Nếu không có ảnh thì để mặc định
                 Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
             }
         } else {
             // Nếu không có ảnh, hiển thị ảnh mặc định và ẩn ảnh người dùng
-            binding.txtAddImage.setVisibility(View.VISIBLE);
+            binding.imgAva.setVisibility(View.VISIBLE);
         }
     }
 
