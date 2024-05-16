@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
 
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
     private TextView resend;
+    private ImageView imgBack;
 
     private int selectedETPosition = 0;
 
@@ -83,6 +85,13 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
     }
 
     private void setListeners() {
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,6 +127,8 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
 
         progressBar = findViewById(R.id.progressBar);
         btnVerify = findViewById(R.id.btnVerify);
+        imgBack = findViewById(R.id.img_back);
+
     }
 
 
@@ -125,7 +136,6 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
         email = getIntent().getStringExtra("email");
         name = getIntent().getStringExtra("name");
         password = getIntent().getStringExtra("password");
-        //encodedImage = getIntent().getStringExtra("image");
 
     }
 
@@ -357,7 +367,6 @@ public class VerifyOTPActivity extends AppCompatActivity implements VerifyOTPInt
                         preferenceManager.putString(Constants.KEY_NAME, name);
                         preferenceManager.putString(Constants.KEY_PASSWORD, password);
                         preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
-                        //preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
                         FirebaseAuth auth = FirebaseAuth.getInstance();
 
                         // Tạo tài khoản mới
