@@ -1,10 +1,6 @@
 package edu.poly.nhtr.presenters;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,7 +9,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -27,7 +22,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-import edu.poly.nhtr.Activity.SignInActivity;
 import edu.poly.nhtr.interfaces.SettingsInterface;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -153,35 +147,5 @@ public class SettingsPresenter {
             }
         });
     }
-
-//    public void logout {
-//            // Hiển thị thông báo đăng xuất
-//            view.showToast("Signing out ...");
-//
-//            // Đăng xuất khỏi Firebase
-//            FirebaseAuth.getInstance().signOut();
-//
-//            // Xóa cài đặt về người dùng
-//            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-//            preferenceManager.removePreference(Constants.KEY_USER_ID);
-//            preferenceManager.removePreference(Constants.KEY_NAME);
-//            preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
-//            preferenceManager.removePreference(Constants.KEY_ADDRESS);
-//
-//            // Chuyển theme
-//            switchModeTheme();
-//
-//            // Trở lại SignIn Activity
-//            navigateToSignIn();
-//    }
-//    private void navigateToSignIn() {
-//        Intent intent = new Intent(context, SignInActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        context.startActivity(intent);
-//        ((Activity) context).finish();
-//    }
-
-
-
 
 }
