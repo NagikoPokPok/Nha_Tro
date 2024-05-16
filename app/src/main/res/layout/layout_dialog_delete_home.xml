@@ -24,11 +24,12 @@
             android:layout_gravity="center">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_Profile"
+                android:id="@+id/img_delete"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/background_image"
-                android:src="@drawable/ic_delete"
+                android:background="@drawable/round_back_icon"
+                android:src="@drawable/ic_delete_2"
+                android:padding="10dp"
                 android:scaleType="fitXY"
                 app:riv_oval="true" />
 
@@ -38,8 +39,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xác nhận xoá"
-            android:fontFamily="@font/inter_bold"
+            android:text="@string/xac_nhan_xoa"
+            style="@style/TEXT_BOLD"
             android:textSize="20sp"
             android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
@@ -49,8 +50,8 @@
             android:id="@+id/txt_confirm_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bạn có muốn xoá nhà trọ"
-            android:fontFamily="@font/inter_medium"
+            android:text="@string/ban_co_muon_xoa_nha_tro"
+            style="@style/TEXT_MED"
             android:textSize="15sp"
             android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
@@ -68,35 +69,31 @@
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Huỷ"
+                style="@style/TEXT_MED_2"
+                android:layout_gravity="start"
+                android:text="@string/huy"
                 android:textColor="@color/colorButton"
                 app:iconGravity="textStart"
                 android:textSize="16sp"
                 app:backgroundTint="@null"
                 android:background="@drawable/custom_button_cancel"
                 android:layout_marginEnd="20dp"
-                android:fontFamily="@font/inter_medium"/>
+                />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Xác nhận"
+                android:layout_gravity="end"
+                android:text="@string/xac_nhan"
                 app:iconGravity="textStart"
                 android:textSize="16sp"
-                android:fontFamily="@font/inter_medium"
+                style="@style/TEXT_MED_3"
                 android:background="@drawable/custom_button_clicked"
                 app:backgroundTint="@color/colorButton"
                 />
 
         </LinearLayout>
-
-
-
-
-
 
     </LinearLayout>
 

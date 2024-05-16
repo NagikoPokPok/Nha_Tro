@@ -24,8 +24,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -39,16 +37,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +69,6 @@ public class HomeFragment extends Fragment implements HomeListener {
     private FragmentHomeBinding binding;
     private  HomePresenter homePresenter;
     private Dialog dialog;
-    private Menu menu;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -144,7 +137,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
 
         // Xử lý nút 3 chấm menu
-        binding.imgMenuEditDelete.setOnClickListener(view -> openMenu(view));
+        binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
     }
 
     private void openMenu(View view) {
