@@ -1,9 +1,7 @@
 package edu.poly.nhtr.fragment;
 
-
 import android.content.Context;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -20,34 +18,22 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-
 import edu.poly.nhtr.Activity.ChangeProfileActivity;
 import edu.poly.nhtr.Activity.MainActivity;
-
 import edu.poly.nhtr.Activity.SignInActivity;
-
 import edu.poly.nhtr.databinding.FragmentSettingBinding;
 import edu.poly.nhtr.interfaces.SettingsInterface;
 import edu.poly.nhtr.presenters.SettingsPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SettingFragment extends Fragment implements SettingsInterface {
 
     FragmentSettingBinding binding;
-
-    private PreferenceManager preferenceManager;
     private SettingsPresenter settingsPresenter;
     SwitchCompat switchMode;
 
-    boolean nightMode;
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -59,15 +45,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SettingFragment newInstance(String param1, String param2) {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
@@ -80,20 +57,18 @@ public class SettingFragment extends Fragment implements SettingsInterface {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         settingsPresenter = new SettingsPresenter(this, requireContext(), preferenceManager); // Truyền context vào đây
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentSettingBinding.inflate(inflater, container, false);
         switchMode = binding.nightMode;
 
@@ -125,7 +100,7 @@ public class SettingFragment extends Fragment implements SettingsInterface {
     private void setListeners() {
         binding.btnLogout.setOnClickListener(v -> {
             try {
-                logout(); // Gọi phương thức logout() của presenter
+                logout();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -142,10 +117,7 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         switchModeTheme();
 
         settingsPresenter.checkAccount();
-
     }
-
-
 
     public void back() {
         Intent intent = new Intent(requireContext(), MainActivity.class);
@@ -153,13 +125,10 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         requireActivity().finish();
     }
 
-
     @Override
     public void getInfoFromGoogle() {
         settingsPresenter.getInfoFromGoogle();
     }
-
-    // Triển khai các phương thức mới từ SettingsInterface
 
     @Override
     public void setUserName(String userName) {
@@ -176,19 +145,13 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         binding.imgAva.setVisibility(View.INVISIBLE);
     }
 
-
-
-
     public void showToast(String message) {
-
+        // Implementation for showing toast
     }
 
     public void logout() throws InterruptedException {
         showToast("Signing out ...");
-        // Đăng xuất khỏi Firebase
         FirebaseAuth.getInstance().signOut();
-
-        // Xóa cài đặt về người dùng
         PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
         preferenceManager.removePreference(Constants.KEY_USER_ID);
@@ -196,20 +159,17 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
         preferenceManager.removePreference(Constants.KEY_ADDRESS);
 
-        // Chuyển theme
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("nightMode", false);
         editor.apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        // Trở lại Settings Activity
         Intent intent = new Intent(requireContext(), SignInActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
     }
-
 
     @Override
     public void switchModeTheme() {
@@ -219,18 +179,13 @@ public class SettingFragment extends Fragment implements SettingsInterface {
     @Override
     public void setNightMode(boolean nightMode) {
         switchMode.setChecked(nightMode);
-        if (nightMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
+        AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
     public void setSwitchClickListener(View.OnClickListener listener) {
         switchMode.setOnClickListener(listener);
     }
-
 
     @Override
     public void loading(Boolean isLoading) {
