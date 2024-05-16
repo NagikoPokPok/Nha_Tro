@@ -29,11 +29,11 @@
             android:layout_marginTop="20dp">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_profile"
+                android:id="@+id/img_Profile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@drawable/background_image"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 app:riv_oval="true" />
 
             <ImageView
@@ -42,9 +42,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:background="@drawable/round_back_avatar_2"
                 android:src="@drawable/icon_user"
-                android:padding="10dp"/>
+                android:padding="15dp"/>
 
         </FrameLayout>
 
