@@ -94,4 +94,8 @@
     <string name="nha_tro">Nhà trọ</string>
     <string name="thong_bao">Thông báo</string>
     <string name="them_nha_tro">Thêm Nhà trọ</string>
+    <string name="huy">Huỷ</string>
+    <string name="xac_nhan">Xác nhận</string>
+    <string name="ban_co_muon_xoa_nha_tro">Bạn có muốn xoá nhà trọ</string>
+    <string name="xac_nhan_xoa">Xác nhận xoá</string>
 </resources>
