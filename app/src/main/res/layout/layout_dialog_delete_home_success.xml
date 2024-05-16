@@ -24,23 +24,29 @@
             android:layout_gravity="center">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_delete"
+                android:id="@+id/img_Profile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/round_back_icon"
-                android:src="@drawable/ic_delete_2"
-                android:padding="10dp"
+                android:background="@drawable/background_image"
+                android:backgroundTint="@color/colorGreen"
                 android:scaleType="fitXY"
                 app:riv_oval="true" />
 
+            <ImageView
+                android:id="@+id/txt_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_tick"
+                android:backgroundTint="@color/white"/>
 
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/xac_nhan_xoa"
-            style="@style/TEXT_BOLD"
+            android:text="Thao tác thành công!"
+            android:fontFamily="@font/inter_bold"
             android:textSize="20sp"
             android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
@@ -50,58 +56,27 @@
             android:id="@+id/txt_confirm_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ban_co_muon_xoa_nha_tro"
-            style="@style/TEXT_MED"
+            android:text="Bạn đã xoá nhà trọ thành công!"
+            android:fontFamily="@font/inter_medium"
             android:textSize="15sp"
             android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
             android:gravity="center"/>
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="25dp">
-
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TEXT_MED_2"
-                android:layout_gravity="start"
-                android:text="@string/huy"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:text="Đóng"
                 android:textColor="@color/colorButton"
                 app:iconGravity="textStart"
                 android:textSize="16sp"
                 app:backgroundTint="@null"
                 android:background="@drawable/custom_button_cancel"
-                android:layout_marginEnd="20dp"
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_delete_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/xac_nhan"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                style="@style/TEXT_MED_3"
-                android:background="@drawable/custom_button_clicked"
-                app:backgroundTint="@color/colorButton"
-                />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
-                android:visibility="invisible"/>
-
-        </LinearLayout>
+                android:fontFamily="@font/inter_medium"/>
 
     </LinearLayout>
 

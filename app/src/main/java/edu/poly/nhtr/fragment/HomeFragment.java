@@ -24,8 +24,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,22 +31,21 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import androidx.appcompat.widget.PopupMenu;
+
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +53,7 @@ import java.util.Objects;
 import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentHomeBinding;
+import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.presenters.HomePresenter;
@@ -72,10 +70,10 @@ public class HomeFragment extends Fragment implements HomeListener {
     private View view;
 
     private PreferenceManager preferenceManager;
+    private HomeAdapter.HomeViewHolder viewHolder;
     private FragmentHomeBinding binding;
-    private  HomePresenter homePresenter;
+    private HomePresenter homePresenter;
     private Dialog dialog;
-    private Menu menu;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -144,7 +142,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
 
         // Xử lý nút 3 chấm menu
-        binding.imgMenuEditDelete.setOnClickListener(view -> openMenu(view));
+        binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
     }
 
     private void openMenu(View view) {
@@ -169,17 +167,17 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     private void editFonts() {
         //Set three fonts into one textview
-        Spannable text1  = new SpannableString("Bạn chưa có nhà trọ\n Hãy nhấn nút ");
+        Spannable text1 = new SpannableString("Bạn chưa có nhà trọ\n Hãy nhấn nút ");
         Typeface interLightTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_light.ttf");
         text1.setSpan(new TypefaceSpan(interLightTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         binding.txtNotification.setText(text1);
 
-        Spannable text2  = new SpannableString("+");
+        Spannable text2 = new SpannableString("+");
         Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
         text2.setSpan(new TypefaceSpan(interBoldTypeface), 0, text2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         binding.txtNotification.append(text2);
 
-        Spannable text3  = new SpannableString(" để thêm nhà trọ.");
+        Spannable text3 = new SpannableString(" để thêm nhà trọ.");
         Typeface interLightTypeface2 = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_light.ttf");
         text3.setSpan(new TypefaceSpan(interLightTypeface2), 0, text3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         binding.txtNotification.append(text3);
@@ -192,6 +190,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         return binding.getRoot();
     }
+
     private void setListeners() {
         // Kiểm tra tài khoản đăng nhập là tài khoản Email hay Google
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -229,14 +228,14 @@ public class HomeFragment extends Fragment implements HomeListener {
             try {
                 Bitmap profileImage = getConversionImage(encodedImg);
                 binding.imgProfile.setImageBitmap(profileImage);
-                binding.txtAddImage.setVisibility(View.INVISIBLE);
+                binding.imgAva.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
-                binding.txtAddImage.setVisibility(View.VISIBLE); // Nếu không có ảnh thì để mặc định
+                binding.imgAva.setVisibility(View.VISIBLE); // Nếu không có ảnh thì để mặc định
                 Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
             }
         } else {
             // Nếu không có ảnh, hiển thị ảnh mặc định và ẩn ảnh người dùng
-            binding.txtAddImage.setVisibility(View.VISIBLE);
+            binding.imgAva.setVisibility(View.VISIBLE);
         }
     }
 
@@ -264,17 +263,15 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Set dấu * đỏ cho TextView
         Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
-        Spannable text1  = new SpannableString(" *");
+        Spannable text1 = new SpannableString(" *");
         text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         nameHome.append(text1);
         addressHome.append(text1);
 
 
-
         Window window = dialog.getWindow();
-        if(window == null)
-        {
+        if (window == null) {
             return;
         }
 
@@ -285,23 +282,23 @@ public class HomeFragment extends Fragment implements HomeListener {
         windowAttributes.gravity = gravity;
         window.setAttributes(windowAttributes);
 
-        if(Gravity.CENTER == gravity)
-        {
+        if (Gravity.CENTER == gravity) {
             dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
         }
         dialog.show();
-
 
 
         EditText edtNameHome = dialog.findViewById(R.id.edt_name_home);
         EditText edtAddress = dialog.findViewById(R.id.edt_address);
         Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
 
         // Xử lý/ hiệu chỉnh màu nút button add home
         TextWatcher textWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -309,7 +306,8 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         };
 
         // Thêm TextWatcher cho cả hai EditText
@@ -360,8 +358,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         String currentUserId = "";
         if (account != null) {
             currentUserId = account.getId();
-        }
-        else {
+        } else {
             currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
         }
         return currentUserId;
@@ -390,7 +387,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     @Override
-    public void addHome(List <Home> homes) {
+    public void addHome(List<Home> homes) {
         HomeAdapter homesAdapter = new HomeAdapter(homes, this);
         binding.homesRecyclerView.setAdapter(homesAdapter);
 
@@ -398,10 +395,10 @@ public class HomeFragment extends Fragment implements HomeListener {
         homes.sort(Comparator.comparing(obj -> obj.dateObject));
 
         // hàm notifyItemInserted dùng để thông báo cho recycler view rằng có một item được thêm vào adapter
-        homesAdapter.notifyItemInserted(homes.size()-1);
+        homesAdapter.notifyItemInserted(homes.size() - 1);
 
         //Sau khi nhận thông báo là có item được inserted thì cho cyclerview cuộn xuống tới item vừa được thêm
-        binding.homesRecyclerView.smoothScrollToPosition(homes.size()-1);
+        binding.homesRecyclerView.smoothScrollToPosition(homes.size() - 1);
 
 
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
@@ -423,7 +420,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public boolean isAdded2() {
-        if(isAdded())
+        if (isAdded())
             return true;
         return false;
     }
@@ -461,11 +458,11 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     @Override
-    public void openPopup(View view, Home home) {
-        openMenuForEachHome(view, home);
+    public void openPopup(View view, Home home, ItemContainerHomesBinding binding) {
+        openMenuForEachHome(view, home, binding);
     }
 
-    private void openMenuForEachHome(View view, Home home) {
+    private void openMenuForEachHome(View view, Home home, ItemContainerHomesBinding binding) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
@@ -477,23 +474,31 @@ public class HomeFragment extends Fragment implements HomeListener {
             } else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
                 //homePresenter.deleteHome(home);
-                openDeleteHomeDialog(Gravity.CENTER, home);
-                showToast("Delete item");
+                openDeleteHomeDialog(Gravity.CENTER, home, binding);
                 return true;
             }
             return false;
         });
+
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                binding.frmImage2.setVisibility(View.GONE);
+                binding.frmImage.setVisibility(View.VISIBLE);
+            }
+        });
+
         popupMenu.inflate(R.menu.menu_edit_delete);
         popupMenu.show();
     }
 
-    private void openDeleteHomeDialog(int gravity, Home home) {
+
+    private void openDeleteHomeDialog(int gravity, Home home, ItemContainerHomesBinding binding) {
 
         dialog.setContentView(R.layout.layout_dialog_delete_home);
 
         Window window = dialog.getWindow();
-        if(window == null)
-        {
+        if (window == null) {
             return;
         }
 
@@ -505,8 +510,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         windowAttributes.gravity = gravity;
         window.setAttributes(windowAttributes);
 
-        if(Gravity.CENTER == gravity)
-        {
+        if (Gravity.CENTER == gravity) {
             dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
         }
         dialog.show();
@@ -525,6 +529,8 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                binding.frmImage2.setVisibility(View.GONE);
+                binding.frmImage.setVisibility(View.VISIBLE);
                 dialog.dismiss();
             }
         });
@@ -535,6 +541,66 @@ public class HomeFragment extends Fragment implements HomeListener {
                 homePresenter.deleteHome(home);
             }
         });
+    }
+
+    @Override
+    public void openDialogSuccess() {
+        dialog.setContentView(R.layout.layout_dialog_delete_home_success);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        window.setAttributes(windowAttributes);
+
+        dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
+        dialog.show();
+
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void showLoadingAdd() {
+        Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        btnAddHome.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingAdd() {
+        Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        btnAddHome.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showLoadingDelete() {
+        Button btnDeleteHome = dialog.findViewById(R.id.btn_delete_home);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        btnDeleteHome.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingDelete() {
+        Button btnDeleteHome = dialog.findViewById(R.id.btn_delete_home);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        btnDeleteHome.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
 

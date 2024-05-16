@@ -75,8 +75,6 @@ import edu.poly.nhtr.databinding.ActivityMainBinding;
 import edu.poly.nhtr.fragment.HomeFragment;
 import edu.poly.nhtr.fragment.NotificationFragment;
 import edu.poly.nhtr.fragment.SettingFragment;
-import edu.poly.nhtr.listeners.HomeListener;
-import edu.poly.nhtr.models.Home;
 //import edu.poly.nhtr.fragment.ViewPagerAdapter;
 
 //import edu.poly.nhtr.utilities.Constants;

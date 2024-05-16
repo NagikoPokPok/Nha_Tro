@@ -24,6 +24,10 @@ public class User {
         this.password = password;
         this.confirmPassword = confirmPassword;
     }
+    public User( String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public String getName() {
         return name;

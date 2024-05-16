@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
@@ -43,10 +44,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         return homes.size();
     }
 
-    class HomeViewHolder extends RecyclerView.ViewHolder
+    public class HomeViewHolder extends RecyclerView.ViewHolder
     {
 
-        ItemContainerHomesBinding binding;
+        public ItemContainerHomesBinding binding;
         HomeViewHolder(ItemContainerHomesBinding itemContainerUserBinding){
             super(itemContainerUserBinding.getRoot());
             this.binding = itemContainerUserBinding;
@@ -65,7 +66,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             binding.imgMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    homeListener.openPopup(v, home);
+                    binding.frmImage2.setVisibility(View.VISIBLE);
+                    binding.frmImage.setVisibility(View.GONE);
+                    homeListener.openPopup(v, home, binding);
                 }
             });
         }

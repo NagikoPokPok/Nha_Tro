@@ -46,13 +46,61 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/img_menu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_menu"
+            <FrameLayout
+                android:id="@+id/frm_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                />
+                android:visibility="visible">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/img_circle_menu"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_image"
+                    android:backgroundTint="@color/white"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
+
+                <ImageView
+                    android:id="@+id/img_menu"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_menu"
+                    android:layout_gravity="center"
+                    />
+
+
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frm_Image_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_image"
+                    android:backgroundTint="@color/colorGray"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true"
+                    />
+
+                <ImageView
+
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_menu"
+                    android:layout_gravity="center"
+                    />
+
+
+
+            </FrameLayout>
 
         </RelativeLayout>
 
@@ -62,12 +110,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="-20dp"
             android:layout_marginStart="50dp">
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginStart="10dp"
                 android:src="@drawable/icon_address_pin"/>
 
@@ -80,7 +128,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
@@ -89,7 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp">
 
             <TextView

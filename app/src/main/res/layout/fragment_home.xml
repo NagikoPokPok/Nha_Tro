@@ -36,13 +36,14 @@
                 android:scaleType="fitXY"
                 app:riv_oval="true" />
 
-            <TextView
-                android:id="@+id/txt_add_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:contentDescription="@string/khung_avatar"
+                android:id="@+id/img_ava"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:text="Ảnh"
-                android:textSize="12sp" />
+                android:src="@drawable/icon_user"
+                android:padding="15dp"/>
 
         </FrameLayout>
 

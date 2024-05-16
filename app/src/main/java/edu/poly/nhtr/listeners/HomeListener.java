@@ -7,11 +7,12 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.util.List;
 
+import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.models.Home;
 
 public interface HomeListener {
     void onUserClicked(Home home);
-    void openPopup(View view, Home home);
+    void openPopup(View view, Home home, ItemContainerHomesBinding binding);
 
     void showToast(String message);
     String getInfoUserFromGoogleAccount();
@@ -23,4 +24,9 @@ public interface HomeListener {
     void addHome(List<Home> homes);
     void addHomeFailed();
     boolean isAdded2();
+    void openDialogSuccess();
+    void showLoadingAdd();
+    void hideLoadingAdd();
+    void showLoadingDelete();
+    void hideLoadingDelete();
 }

@@ -39,6 +39,7 @@ import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.interfaces.SignInInterface;
+import edu.poly.nhtr.models.User;
 import edu.poly.nhtr.presenters.SignInPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -46,11 +47,19 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 public class SignInActivity extends AppCompatActivity implements SignInInterface {
 
     private ActivitySignInBinding binding;
-    private PreferenceManager preferenceManager;
+    public PreferenceManager preferenceManager;
     private FirebaseAuth mAuth;
 
     private SignInPresenter signInPresenter;
     FirebaseDatabase database;
+
+    public PreferenceManager getPreferenceManager() {
+        return preferenceManager;
+    }
+
+    public void setPreferenceManager(PreferenceManager preferenceManager) {
+        this.preferenceManager = preferenceManager;
+    }
 
     private GoogleSignInClient googleSignInClient;
     private static final String TAG = "SignInActivity";
@@ -64,7 +73,7 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         setContentView(binding.getRoot());
         setListeners();
 
-        signInPresenter = new SignInPresenter(this);
+        signInPresenter = new SignInPresenter(this, this);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
@@ -93,28 +102,11 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            reload();
+            signInPresenter.reload();
         }
     }
 
-    private void reload() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS)
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        String userName = documentSnapshot.getString(Constants.KEY_NAME);
-                        Toast.makeText(SignInActivity.this, "Chào mừng trở lại, " + userName + "!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(SignInActivity.this, "Thất bại khi lấy thông tin người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(SignInActivity.this, "Tài khoản chưa được đăng nhập", Toast.LENGTH_SHORT).show();
-        }
-    }
+
     public void loading(Boolean isLoading)
     {
         if(isLoading)
@@ -158,20 +150,22 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
 
     private void signIn(){
         loading(true);
+        String enteredPassword = binding.inputPassword.getText().toString();
+        String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
+                .whereEqualTo(Constants.KEY_PASSWORD,hashedPassword)
                 .get()
                 .addOnCompleteListener(task-> {
                     if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
 
-                        String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
+                        //String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
 
                         // Harness the power of hashing to secure your passwords
-                        String enteredPassword = binding.inputPassword.getText().toString();
-                        String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
-                        if (storedHashedPassword.equals(hashedPassword)) {
+
+//                        if (storedHashedPassword.equals(hashedPassword)) {
                             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
                             preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
                             preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
@@ -198,17 +192,16 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
                                             } else {
                                                 // If sign in fails, display a message to the user.
                                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                                Toast.makeText(SignInActivity.this, "Xác thực người dùng thất bại.",
-                                                        Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignInActivity.this, "Xác thực người dùng thất bại.", Toast.LENGTH_SHORT).show();
 
                                             }
                                         }
                                     });
-                        } else {
-                            // The gates remain shut, authentication denied
-                            loading(false);
-                            showToast("Sai tài khoản hoặc mật khẩu");
-                        }
+//                        } else {
+//                            // The gates remain shut, authentication denied
+//                            loading(false);
+//                            showToast("Sai tài khoản hoặc mật khẩu");
+//                        }
                     }else {
                         loading(false);
                         showToast("Sai tài khoản hoặc mật khẩu");
@@ -245,7 +238,16 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
         super.startActivityForResult(intent, requestCode);
     }
 
-
+//    @Override
+//    public void putPreference(Boolean isSignined, String id, String name, String password, String image, String email, String phoneNumber) {
+//        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, isSignined);
+//        preferenceManager.putString(Constants.KEY_USER_ID,id);
+//        preferenceManager.putString(Constants.KEY_NAME, name);
+//        preferenceManager.putString(Constants.KEY_PASSWORD, password);
+//        preferenceManager.putString(Constants.KEY_IMAGE, image);
+//        preferenceManager.putString(Constants.KEY_EMAIL, email);
+//        preferenceManager.putString(Constants.KEY_PHONE_NUMBER,phoneNumber);
+//    }
 
 
     @Override
