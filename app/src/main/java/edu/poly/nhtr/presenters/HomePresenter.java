@@ -42,6 +42,7 @@ public class HomePresenter {
     }
 
     private void checkDuplicateData(Home home) {
+        homeListener.showLoadingAdd();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES)
                 .get()
@@ -51,10 +52,12 @@ public class HomePresenter {
                             String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
                             String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                             if (nameFromFirestore != null && nameFromFirestore.toLowerCase().equals(home.getNameHome().toLowerCase())) {
+                                homeListener.hideLoadingAdd();
                                 homeListener.showToast("Tên nhà đã tồn tại");
                                 return;
                             }
                             if (addressFromFirestore != null && addressFromFirestore.toLowerCase().equals(home.getAddressHome().toLowerCase())) {
+                                homeListener.hideLoadingAdd();
                                 homeListener.showToast("Địa chỉ nhà đã tồn tại");
                                 return;
                             }
@@ -69,6 +72,7 @@ public class HomePresenter {
 
 
     private void addHomeToFirestore(Home home) {
+        homeListener.showLoadingAdd();
         HashMap<String, Object> homeInfo = new HashMap<>();
         homeInfo.put(Constants.KEY_NAME_HOME, home.getNameHome());
         homeInfo.put(Constants.KEY_ADDRESS_HOME, home.getAddressHome());
@@ -79,12 +83,14 @@ public class HomePresenter {
                 .collection(Constants.KEY_COLLECTION_HOMES)
                 .add(homeInfo)
                 .addOnSuccessListener(documentReference -> {
+                    homeListener.hideLoadingAdd();
                     homeListener.putHomeInfoInPreferences(home.getNameHome(), home.getAddressHome(), documentReference);
                     homeListener.showToast("Thêm nhà trọ thành công");
                     getHomes();
                     homeListener.dialogClose();
                 })
                 .addOnFailureListener(e -> {
+                    homeListener.hideLoadingAdd();
                     homeListener.showToast("Add failed");
                     homeListener.hideLoading();
                 });
@@ -131,17 +137,20 @@ public class HomePresenter {
 
     public void deleteHome(Home home)
     {
+        homeListener.showLoadingDelete();
         FirebaseFirestore.getInstance()
                 .collection(Constants.KEY_COLLECTION_HOMES)
                 .document(home.getIdHome())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
+                    homeListener.hideLoadingDelete();
                     // Xoá thành công, thông báo và cập nhật giao diện
-                    homeListener.showToast("Xoá nhà trọ thành công");
                     getHomes(); // Cập nhật danh sách nhà trọ
                     homeListener.dialogClose();
+                    homeListener.openDialogSuccess();
                 })
                 .addOnFailureListener(e -> {
+                    homeListener.hideLoadingDelete();
                     // Xoá thất bại, thông báo lỗi
                     homeListener.showToast("Xoá nhà trọ thất bại");
                 });
