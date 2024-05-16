@@ -15,4 +15,6 @@ public interface SignInInterface {
     String getStringFromResources(int defaultWebClientId);
     Context getContext();
     void startActivityForResult(Intent intent, int requestCode);
+
+    // String email, String phoneNumber);
 }

@@ -3,9 +3,12 @@ package edu.poly.nhtr.presenters;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -13,8 +16,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -22,9 +27,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.concurrent.Executor;
 
 import edu.poly.nhtr.Activity.MainActivity;
 import edu.poly.nhtr.Activity.SignInActivity;
+import edu.poly.nhtr.Activity.SignUpActivity;
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
@@ -35,25 +42,48 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class SignInPresenter {
-    private ActivitySignInBinding binding;
+    private SignInActivity signInActivity;
     private PreferenceManager preferenceManager;
     private SignInInterface view;
+    private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
     private static final String TAG = "SignInActivity";
     private final int RC_SIGN_IN = 20;
 
     public void signIn(User user){
-
+        if(isValidSignInDetails(user.getEmail(), user.getPassword())){
+            check(user);
+        }
     }
 
-    public SignInPresenter(SignInInterface view) {
+    public SignInPresenter(SignInInterface view, SignInActivity signInActivity) {
+        this.signInActivity =signInActivity;
         this.view = view;
+        this.preferenceManager=signInActivity.preferenceManager;
     }
-    void check(User user){
+
+     public void reload() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS)
+                    .document(userId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        String userName = documentSnapshot.getString(Constants.KEY_NAME);
+                        view.showToast("Chào mừng trở lại, " + userName + "!");
+                        view.entryMain();
+                    })
+                    .addOnFailureListener(e -> view.showToast("Thất bại khi lấy thông tin người dùng: " + e.getMessage()));
+        } else {
+            view.showToast("Tài khoản chưa được đăng nhập");
+        }
+    }
+        void check(User user){
         view.loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_EMAIL, binding.inputEmail.getText().toString())
+                .whereEqualTo(Constants.KEY_EMAIL, user.getEmail())
                 .get()
                 .addOnCompleteListener(task-> {
                     if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
@@ -62,20 +92,41 @@ public class SignInPresenter {
                         String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
 
                         // Harness the power of hashing to secure your passwords
-                        String enteredPassword = binding.inputPassword.getText().toString();
+                        String enteredPassword = user.getPassword();
                         String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
                         if (storedHashedPassword.equals(hashedPassword)) {
-                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                            preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
-                            preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
-                            preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
-                            preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE));
-                            preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
-                            preferenceManager.putString(Constants.KEY_PHONE_NUMBER, documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
+//                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+//                            preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
+//                            preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
+//                            preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
+//                            preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE));
+//                            preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
+//                            preferenceManager.putString(Constants.KEY_PHONE_NUMBER, documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
+
+//                            view.putPreference(true, documentSnapshot.getId(), documentSnapshot.getString(Constants.KEY_NAME), documentSnapshot.getString(Constants.KEY_PASSWORD), documentSnapshot.getString(Constants.KEY_IMAGE)
+//                            , documentSnapshot.getString(Constants.KEY_EMAIL), documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
+
                             try {
                                 preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
                             } catch (Exception ex){}
                             view.entryMain();
+
+                            mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
+                                    .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+                                                // Sign in success, update UI with the signed-in user's information
+                                                Log.d(TAG, "signInWithEmail:success");
+                                                FirebaseUser user = mAuth.getCurrentUser();
+
+                                            } else {
+                                                // If sign in fails, display a message to the user.
+                                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+
+                                            }
+                                        }
+                                    });
                         } else {
                             // The gates remain shut, authentication denied
                             view.loading(false);
@@ -87,14 +138,14 @@ public class SignInPresenter {
                     }
                 });
     }
-    private Boolean isValidSignInDetails(){
-        if(binding.inputEmail.getText().toString().trim().isEmpty()) {
+    private Boolean isValidSignInDetails(String email, String password){
+        if(TextUtils.isEmpty(email)) {
             view.showToast("Vui lòng nhập email");
             return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(binding.inputEmail.getText().toString()).matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             view.showToast("Email không hợp lệ");
             return false;
-        } else if (binding.inputPassword.getText().toString().trim().isEmpty()) {
+        } else if (TextUtils.isEmpty(password)) {
             view.showToast("Vui lòng nhập mật khẩu");
             return false;
         } else  {
