@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="225dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     android:layout_marginTop="20dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
     app:strokeWidth="1dp"
     android:backgroundTint="@color/white"
-
   >
     <TextView
+        android:id="@+id/txt_ordinal_number"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:text="1"
         android:gravity="center"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:fontFamily="@font/inter_bold"
         android:textColor="@color/white"
         android:background="@drawable/sonhatro"
@@ -47,6 +47,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/img_menu"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_menu"
@@ -182,14 +183,13 @@
                 />
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:layout_weight="1"
@@ -228,11 +228,6 @@
 
 
         </LinearLayout>
-
-
-
-
-
 
     </LinearLayout>
 

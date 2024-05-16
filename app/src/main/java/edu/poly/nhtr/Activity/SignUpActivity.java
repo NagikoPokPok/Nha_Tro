@@ -1,5 +1,6 @@
 package edu.poly.nhtr.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,7 +8,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Objects;
 
 import edu.poly.nhtr.databinding.ActivitySignUpBinding;
 import edu.poly.nhtr.interfaces.SignUpInterface;
@@ -32,10 +37,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
         setListeners();
 
-        hieuChinhEditText();
+        customiseEditText();
     }
 
-    private void hieuChinhEditText() {
+    private void customiseEditText() {
 
         binding.edtPassword.addTextChangedListener(new TextWatcher() {
             @Override
@@ -45,9 +50,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                binding.edtConfirmPassword.setText("");
-                presenter.handlePasswordChanged(s.toString());
-
+                String confirmPassword = Objects.requireNonNull(binding.edtConfirmPassword.getText()).toString();
+                presenter.handlePasswordChanged(s.toString(), confirmPassword);
             }
 
             @Override
@@ -64,7 +68,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String password = binding.edtPassword.getText().toString().trim();
+                String password = Objects.requireNonNull(binding.edtPassword.getText()).toString().trim();
                 presenter.handleConfirmPasswordChanged(password, s.toString());
             }
 
@@ -82,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = binding.edtName.getText().toString().trim();
+                String name = Objects.requireNonNull(binding.edtName.getText()).toString().trim();
                 presenter.handleNameChanged(name);
             }
 
@@ -100,7 +104,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String email = binding.edtEmail.getText().toString().trim();
+                String email = Objects.requireNonNull(binding.edtEmail.getText()).toString().trim();
                 presenter.handleEmailChanged(email);
             }
 
@@ -110,6 +114,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
             }
         });
 
+        binding.googleIcon.setOnClickListener(v -> presenter.googleSignIn());
     }
 
     private void setListeners() {
@@ -118,10 +123,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
             startActivity(intent);
         });
         binding.btnSignUp.setOnClickListener(v -> {
-            String name = binding.edtName.getText().toString().trim();
-            String email = binding.edtEmail.getText().toString().trim();
-            String password = binding.edtPassword.getText().toString().trim();
-            String confirmPassword = binding.edtConfirmPassword.getText().toString().trim();
+            String name = Objects.requireNonNull(binding.edtName.getText()).toString().trim();
+            String email = Objects.requireNonNull(binding.edtEmail.getText()).toString().trim();
+            String password = Objects.requireNonNull(binding.edtPassword.getText()).toString().trim();
+            String confirmPassword = Objects.requireNonNull(binding.edtConfirmPassword.getText()).toString().trim();
 
             // Khởi tạo đối tượng cho User
             User user = new User(name, email, password, confirmPassword);
@@ -209,4 +214,50 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
         binding.layoutEmail.setErrorEnabled(isEmpty);
     }
 
+    @Override
+    public void setConfirmPasswordText(String message) {
+        binding.edtConfirmPassword.setText(message);
+    }
+
+        @Override
+    public void startActivityForResult(@NonNull Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (presenter != null) {
+            presenter.onActivityResult(requestCode, resultCode, data);
+        } else {
+            // Ví dụ: Hiển thị thông báo lỗi
+            Toast.makeText(this, "Lỗi: signInPresenter không được khởi tạo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void firebaseAuth(String idToken) {
+        presenter.firebaseAuth(idToken);
+    }
+
+    public void notifySignInSuccess() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public String getStringFromResources(int defaultWebClientId) {
+        return getResources().getString(defaultWebClientId);
+    }
+
+    @Override
+    public void showToast(String message){
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
 }

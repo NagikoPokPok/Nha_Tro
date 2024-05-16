@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    android:elevation="10dp"
+    android:layout_gravity="center">
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <FrameLayout
+            android:id="@+id/frm_Image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/img_Profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/background_image"
+                android:backgroundTint="@color/colorPrimary"
+                android:scaleType="fitXY"
+                app:riv_oval="true" />
+
+            <ImageView
+                android:id="@+id/txt_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_delete"
+                android:backgroundTint="@color/white"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xác nhận xoá"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="20sp"
+            android:textColor="@color/colorTextBlack"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/txt_confirm_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn có muốn xoá nhà trọ"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="Huỷ"
+                android:textColor="@color/colorButton"
+                app:iconGravity="textStart"
+                android:textSize="16sp"
+                app:backgroundTint="@null"
+                android:background="@drawable/custom_button_cancel"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/inter_medium"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Xác nhận"
+                app:iconGravity="textStart"
+                android:textSize="16sp"
+                android:fontFamily="@font/inter_medium"
+                android:background="@drawable/custom_button_clicked"
+                app:backgroundTint="@color/colorButton"
+                />
+
+        </LinearLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

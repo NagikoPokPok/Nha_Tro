@@ -1,5 +1,8 @@
 package edu.poly.nhtr.Activity;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -35,15 +38,18 @@ import java.util.Objects;
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivitySignInBinding;
+import edu.poly.nhtr.interfaces.SignInInterface;
+import edu.poly.nhtr.presenters.SignInPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements SignInInterface {
 
     private ActivitySignInBinding binding;
     private PreferenceManager preferenceManager;
     private FirebaseAuth mAuth;
 
+    private SignInPresenter signInPresenter;
     FirebaseDatabase database;
 
     private GoogleSignInClient googleSignInClient;
@@ -58,6 +64,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setListeners();
 
+        signInPresenter = new SignInPresenter(this);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
@@ -108,7 +115,7 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(SignInActivity.this, "Tài khoản chưa được đăng nhập", Toast.LENGTH_SHORT).show();
         }
     }
-    private void loading(Boolean isLoading)
+    public void loading(Boolean isLoading)
     {
         if(isLoading)
         {
@@ -118,6 +125,13 @@ public class SignInActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
             binding.buttonSignIn.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void entryMain() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void setListeners() {
@@ -139,7 +153,7 @@ public class SignInActivity extends AppCompatActivity {
             finish();
         });
 
-        binding.googleIcon.setOnClickListener(v -> googleSignIn());
+        binding.googleIcon.setOnClickListener(v -> signInPresenter.googleSignIn());
     }
 
     private void signIn(){
@@ -202,11 +216,11 @@ public class SignInActivity extends AppCompatActivity {
                 });
     }
 
-    private void showToast(String message){
+     public void showToast(String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private Boolean isValidSignInDetails(){
+    public Boolean isValidSignInDetails(){
         if(binding.inputEmail.getText().toString().trim().isEmpty()) {
             showToast("Vui lòng nhập email");
             return false;
@@ -221,65 +235,44 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    public void googleSignIn() {
-        GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut().addOnCompleteListener(this, task -> {
-            GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.default_web_client_id))
-                    .requestEmail()
-                    .build();
-
-            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-            Intent intent = googleSignInClient.getSignInIntent();
-            startActivityForResult(intent, RC_SIGN_IN);
-        });
+    @Override
+    public Context getContext() {
+        return this;
     }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
-            try {
-                GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-
-                if (googleSignInAccount != null) {
-                    firebaseAuth(googleSignInAccount.getIdToken());
-                } else {
-                    Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
-                }
-            } catch (ApiException e) {
-                Toast.makeText(this, "Đăng nhập thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Toast.makeText(this, "Có sự cố xảy ra khi đăng nhập", Toast.LENGTH_SHORT).show();
-            }
+        if (signInPresenter != null) {
+            signInPresenter.onActivityResult(requestCode, resultCode, data);
+        } else {
+            // Ví dụ: Hiển thị thông báo lỗi
+            Toast.makeText(this, "Lỗi: signInPresenter không được khởi tạo", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void firebaseAuth(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("id", Objects.requireNonNull(user).getUid());
-                        map.put("name", user.getDisplayName());
-                        map.put("profile", Objects.requireNonNull(user.getPhotoUrl()).toString());
-
-                        database.getReference().child("users").child(user.getUid()).setValue(map);
-
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), "Có sự cố xảy ra khi đăng nhập", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        signInPresenter.firebaseAuth(idToken);
     }
+
+    public void notifySignInSuccess() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public String getStringFromResources(int defaultWebClientId) {
+        return getResources().getString(defaultWebClientId);
+    }
+
 
 }
