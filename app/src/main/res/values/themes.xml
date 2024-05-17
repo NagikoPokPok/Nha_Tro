@@ -141,7 +141,7 @@
     </style>
 
     <style name="BOTTOM_BAR">
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@drawable/back_ground_menu_bar</item>
         <item name="itemTextColor">@color/custom_color</item>
         <item name="itemIconTint">@color/custom_color</item>
     </style>

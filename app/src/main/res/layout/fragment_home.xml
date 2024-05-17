@@ -245,6 +245,7 @@
         style="@style/BUTTON"
         android:layout_width="220dp"
         android:layout_height="60dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/them_nha_tro"
         android:textSize="20sp"
         app:backgroundTint="@null"

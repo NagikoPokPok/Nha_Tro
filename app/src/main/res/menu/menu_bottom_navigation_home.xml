@@ -7,7 +7,7 @@
 
     <item android:id="@+id/menu_notification"
         android:title="@string/thong_bao"
-        android:icon="@drawable/notification" />
+        android:icon="@drawable/icon_notification" />
 
     <item android:id="@+id/menu_settings"
         android:title="@string/cai_dat"
