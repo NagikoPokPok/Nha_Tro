@@ -317,17 +317,7 @@ public class ChangeProfileActivity extends AppCompatActivity implements ChangePr
 //        preferenceManager.putString(Constants.KEY_IMAGE,encodedImage);
 //    }
 
-    private void loading(Boolean isLoading)
-    {
-        if(isLoading)
-        {
-            btn_save.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.VISIBLE);
-        }else {
-            progressBar.setVisibility(View.INVISIBLE);
-            btn_save.setVisibility(View.VISIBLE);
-        }
-    }
+
 }
 
 //           byte[] bytes = Base64.decode(preferenceManager.getString(Constants.KEY_IMAGE), Base64.DEFAULT);

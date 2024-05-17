@@ -60,11 +60,11 @@
             android:id="@+id/spinner_feeBased"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/spinner_backgroud"
             android:layout_marginTop="6dp"
             android:padding="12dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/colorGray"
             android:layout_weight="1" />
+
 
         <View
             android:id="@+id/view1"
@@ -136,16 +136,23 @@
 
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/custom_edittext"
-            android:text="0"
-            android:imeOptions="actionNext"
-            android:padding="9dp"
-            />
+            android:layout_height="match_parent"
+            app:suffixText="đ">
+
+            <com.google.android.material.textfield.TextInputEditText
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/custom_edittext"
+                android:text="0"
+                android:imeOptions="actionNext"
+                android:padding="9dp"
+
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <View
             android:id="@+id/view3"
@@ -154,6 +161,76 @@
             android:layout_marginTop="5dp"
             android:background="#756B68"
             android:visibility="visible"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="Ghi chú"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/inter_medium"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Viết những lưu ý của bạn ta đây"
+            android:textColorHint="@color/colorGray">
+
+            <com.google.android.material.textfield.TextInputEditText
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/custom_edittext"
+                android:imeOptions="actionNext"
+                android:padding="9dp"
+                android:minLines="3"
+                android:maxLines="6"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <View
+            android:id="@+id/view4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="#756B68"
+            android:visibility="visible"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:text="Áp dụng cho"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/inter_medium"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <CheckBox
+                android:id="@+id/checkBox1"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                app:buttonTint="@null"
+                style="@style/CustomCheckBox"
+                android:checked="true"
+                android:paddingLeft="5dp"
+                android:text="Phòng 101" />
+            <CheckBox
+                android:id="@+id/checkBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                app:buttonTint="@null"
+                style="@style/CustomCheckBox"
+                android:checked="false"
+                android:paddingLeft="5dp"
+                android:text="Phòng 102" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
