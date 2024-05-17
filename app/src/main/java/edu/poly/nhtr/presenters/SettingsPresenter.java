@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
+import edu.poly.nhtr.fragment.SettingFragment;
 import edu.poly.nhtr.interfaces.SettingsInterface;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -136,6 +139,7 @@ public class SettingsPresenter {
         view.setSwitchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.navigateToSettings();
                 if (nightMode) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 } else {
