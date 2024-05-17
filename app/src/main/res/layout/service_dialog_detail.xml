@@ -231,43 +231,44 @@
                 android:text="Phòng 102" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp">
 
-            <Button
-                android:id="@+id/btn_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Huỷ"
-                android:textColor="@color/colorButton"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                app:backgroundTint="@null"
-                android:background="@drawable/custom_button_cancel"
-                android:layout_marginEnd="18dp"
-                android:fontFamily="@font/inter_medium"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Áp dụng"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                android:layout_marginStart="18dp"
-                android:fontFamily="@font/inter_medium"
-                android:background="@drawable/custom_button_add"
-                app:backgroundTint="@null"
-                />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp">
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_gravity="left"
+            android:text="Xóa dịch vụ"
+            android:textColor="@color/white"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@color/colorButton"
+            android:layout_marginEnd="18dp"
+            android:fontFamily="@font/inter_medium"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_home"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right"
+            android:text="Sửa dịch vụ"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:layout_marginStart="18dp"
+            android:fontFamily="@font/inter_medium"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@null"
+            />
 
     </LinearLayout>
 
