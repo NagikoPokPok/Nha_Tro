@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -50,6 +52,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentHomeBinding;
@@ -60,11 +63,7 @@ import edu.poly.nhtr.presenters.HomePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HomeFragment extends Fragment implements HomeListener {
     //
     private View view;
@@ -88,15 +87,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -143,6 +133,8 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Xử lý nút 3 chấm menu
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
+
+        // clickCardView();
     }
 
     private void openMenu(View view) {
@@ -339,7 +331,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
-
     private void showErrorMessage(String message) {
         binding.txtErrorMessage.setText(message);
         binding.txtErrorMessage.setVisibility(View.VISIBLE);
@@ -451,10 +442,11 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
-
     @Override
     public void onUserClicked(Home home) {
-
+        Intent intent = new Intent(requireContext(), MainRoomActivity.class);
+        intent.putExtra("home", home);
+        startActivity(intent);
     }
 
     @Override

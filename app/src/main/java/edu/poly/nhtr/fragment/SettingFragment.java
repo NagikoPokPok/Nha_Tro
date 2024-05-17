@@ -10,17 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+
 
 import edu.poly.nhtr.Activity.ChangeProfileActivity;
 import edu.poly.nhtr.Activity.MainActivity;
 import edu.poly.nhtr.Activity.SignInActivity;
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentSettingBinding;
 import edu.poly.nhtr.interfaces.SettingsInterface;
 import edu.poly.nhtr.presenters.SettingsPresenter;
@@ -146,34 +151,48 @@ public class SettingFragment extends Fragment implements SettingsInterface {
     }
 
     public void showToast(String message) {
-        // Implementation for showing toast
+        Toast.makeText(requireActivity().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public void logout() throws InterruptedException {
         showToast("Signing out ...");
-        FirebaseAuth.getInstance().signOut();
-        PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-        preferenceManager.removePreference(Constants.KEY_USER_ID);
-        preferenceManager.removePreference(Constants.KEY_NAME);
-        preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
-        preferenceManager.removePreference(Constants.KEY_ADDRESS);
+        loading(true);
 
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("nightMode", false);
-        editor.apply();
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        // Add a delay of 5 seconds
+        new android.os.Handler().postDelayed(() -> {
+            FirebaseAuth.getInstance().signOut();
+            PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+            preferenceManager.removePreference(Constants.KEY_USER_ID);
+            preferenceManager.removePreference(Constants.KEY_NAME);
+            preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
+            preferenceManager.removePreference(Constants.KEY_ADDRESS);
 
-        Intent intent = new Intent(requireContext(), SignInActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        requireActivity().finish();
+            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("nightMode", false);
+            editor.apply();
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+            Intent intent = new Intent(requireContext(), SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+
+            loading(false);
+        }, 1000);
     }
 
     @Override
     public void switchModeTheme() {
         settingsPresenter.switchModeTheme();
+    }
+
+    @Override
+    public void navigateToSettings() {
+        Fragment fragment = new SettingFragment();
+        FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, fragment).commit();
     }
 
     @Override

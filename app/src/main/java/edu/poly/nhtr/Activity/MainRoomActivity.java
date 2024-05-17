@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainRoomBinding;
 import edu.poly.nhtr.fragment.HomeFragment;
+import edu.poly.nhtr.fragment.RoomFragment;
 import edu.poly.nhtr.fragment.SettingFragment;
 
 public class MainRoomActivity extends AppCompatActivity {
@@ -21,11 +22,11 @@ public class MainRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFragment(new HomeFragment());
+        replaceFragment(new RoomFragment());
 
         binding.bottomNavigation.setOnItemSelectedListener(item ->{
-            if (item.getItemId() == R.id.menu_home) {
-                replaceFragment(new HomeFragment());
+            if (item.getItemId() == R.id.menu_room) {
+                replaceFragment(new RoomFragment());
             } else if (item.getItemId() == R.id.menu_settings) {
                 replaceFragment(new SettingFragment());
             }
@@ -37,7 +38,7 @@ public class MainRoomActivity extends AppCompatActivity {
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.scroll_layout, fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
     }
 }
