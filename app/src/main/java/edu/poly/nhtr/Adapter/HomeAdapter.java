@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
@@ -59,7 +58,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    homeListener.onUserClicked(home);
+                    homeListener.onHomeClicked(home);
                 }
             });
 

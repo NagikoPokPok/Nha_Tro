@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -63,7 +62,11 @@ import edu.poly.nhtr.presenters.HomePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link HomeFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class HomeFragment extends Fragment implements HomeListener {
     //
     private View view;
@@ -87,6 +90,15 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Required empty public constructor
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment HomeFragment.
+     */
+    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -133,8 +145,6 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Xử lý nút 3 chấm menu
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
-
-        // clickCardView();
     }
 
     private void openMenu(View view) {
@@ -331,6 +341,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
+
     private void showErrorMessage(String message) {
         binding.txtErrorMessage.setText(message);
         binding.txtErrorMessage.setVisibility(View.VISIBLE);
@@ -442,12 +453,14 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
+
     @Override
-    public void onUserClicked(Home home) {
+    public void onHomeClicked(Home home) {
         Intent intent = new Intent(requireContext(), MainRoomActivity.class);
         intent.putExtra("home", home);
         startActivity(intent);
     }
+
 
     @Override
     public void openPopup(View view, Home home, ItemContainerHomesBinding binding) {
@@ -461,12 +474,12 @@ public class HomeFragment extends Fragment implements HomeListener {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_edit) {
                 // Thực hiện hành động cho mục chỉnh sửa
-                openUpdateHomeDialog(Gravity.CENTER, home, binding);
+                openUpdateHomeDialog(Gravity.CENTER, home);
                 return true;
             } else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
                 //homePresenter.deleteHome(home);
-                openDeleteHomeDialog(Gravity.CENTER, home, binding);
+                openDeleteHomeDialog(Gravity.CENTER, home);
                 return true;
             }
             return false;
@@ -475,7 +488,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
-                binding.frmImage2.setVisibility(View.GONE);
+                binding.frmImage2.setVisibility(View.INVISIBLE);
                 binding.frmImage.setVisibility(View.VISIBLE);
             }
         });
@@ -486,7 +499,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
 
-    private void openDeleteHomeDialog(int gravity, Home home, ItemContainerHomesBinding binding) {
+    private void openDeleteHomeDialog(int gravity, Home home) {
 
         dialog.setContentView(R.layout.layout_dialog_delete_home);
 
@@ -522,8 +535,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.frmImage2.setVisibility(View.GONE);
-                binding.frmImage.setVisibility(View.VISIBLE);
                 dialog.dismiss();
             }
         });
@@ -565,41 +576,17 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     @Override
-    public void showLoadingAdd() {
-        Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
-        btnAddHome.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+    public void showLoadingOfFunctions(int id) {
+        dialog.findViewById(id).setVisibility(View.INVISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideLoadingAdd() {
-        Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
-        btnAddHome.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
+    public void hideLoadingOfFunctions(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void showLoadingDelete() {
-        Button btnDeleteHome = dialog.findViewById(R.id.btn_delete_home);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
-        btnDeleteHome.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoadingDelete() {
-        Button btnDeleteHome = dialog.findViewById(R.id.btn_delete_home);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
-        btnDeleteHome.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void setEnabledForButton(Boolean enabled, int id) {
-        dialog.findViewById(id).setEnabled(enabled);
-    }
 
     @Override
     public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home) {
@@ -646,24 +633,9 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     }
 
-    private void openUpdateHomeDialog(int gravity, Home home, ItemContainerHomesBinding binding) {
-        dialog.setContentView(R.layout.layout_dialog_update_home);
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = gravity;
-        window.setAttributes(windowAttributes);
+    private void openUpdateHomeDialog(int gravity, Home home) {
 
-        if (Gravity.CENTER == gravity) {
-            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
-        }
-        dialog.show();
-
+        setupDialog(R.layout.layout_dialog_update_home,Gravity.CENTER);
 
         // Ánh xạ ID
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
@@ -679,8 +651,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.frmImage2.setVisibility(View.GONE);
-                binding.frmImage.setVisibility(View.VISIBLE);
                 dialog.dismiss();
 
             }
@@ -695,8 +665,20 @@ public class HomeFragment extends Fragment implements HomeListener {
                 homePresenter.updateHome(newNameHome, newAddressHome, home);
             }
         });
+    }
 
-
+    private void setupDialog(int layoutId, int gravity) {
+        dialog.setContentView(layoutId);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = gravity;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(Gravity.CENTER == gravity);
+            dialog.show();
+        }
     }
 
 

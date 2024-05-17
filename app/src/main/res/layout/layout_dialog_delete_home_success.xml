@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="25dp">
 
         <FrameLayout
             android:id="@+id/frm_Image"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Thao tác thành công!"
             android:fontFamily="@font/inter_bold"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"/>

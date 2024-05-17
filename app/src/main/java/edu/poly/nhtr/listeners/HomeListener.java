@@ -11,7 +11,7 @@ import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.models.Home;
 
 public interface HomeListener {
-    void onUserClicked(Home home);
+    void onHomeClicked(Home home);
     void openPopup(View view, Home home, ItemContainerHomesBinding binding);
 
     void showToast(String message);
@@ -25,10 +25,7 @@ public interface HomeListener {
     void addHomeFailed();
     boolean isAdded2();
     void openDialogSuccess(int layout);
-    void showLoadingAdd();
-    void hideLoadingAdd();
-    void showLoadingDelete();
-    void hideLoadingDelete();
-    void setEnabledForButton(Boolean enabled, int id);
+    void showLoadingOfFunctions(int id);
+    void hideLoadingOfFunctions(int id);
     void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home);
 }
