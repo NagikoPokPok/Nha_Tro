@@ -245,7 +245,7 @@
         style="@style/BUTTON"
         android:layout_width="220dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/them_nha_tro"
         android:textSize="20sp"
         app:backgroundTint="@null"
@@ -254,7 +254,7 @@
         app:iconSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.841"
+        app:layout_constraintHorizontal_bias="0.90"
         app:layout_constraintStart_toStartOf="parent" />
 
 

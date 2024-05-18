@@ -108,4 +108,5 @@
     <string name="stt">1</string>
     <string name="hoang_minh_thao">Hoàng Minh Thảo</string>
     <string name="title">Title</string>
+    <string name="quen_mat_khau_gach_chan"><u>Quên mật khẩu?</u></string>
 </resources>

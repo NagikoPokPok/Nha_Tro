@@ -66,7 +66,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:text="Đăng nhập với"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:fontFamily="@font/inter_medium"
                 android:textColor="@color/colorTextBlack" />
 
@@ -127,11 +127,12 @@
             app:layout_constraintTop_toBottomOf="@id/inputEmail"
             app:startIconDrawable="@drawable/ic_pass"
             app:startIconTint="@color/colorPrimary"
-            android:hint="Mật khẩu"
+            android:hint="@string/mat_khau"
             app:endIconMode="password_toggle"
             app:boxBackgroundColor="@color/white"
             app:boxBackgroundMode="outline"
             app:hintTextColor="@color/colorPrimary">
+            <!--            app:endIconCheckable="false"-->
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputPassword"
@@ -147,10 +148,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:text="Quên mật khẩu?"
-            android:textSize="15dp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/inter_light"
+            android:text="@string/quen_mat_khau_gach_chan"
+            android:textSize="15sp"
+            style="@style/TEXT_MED_2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
@@ -200,7 +200,7 @@
                 android:layout_marginEnd="10dp"
                 android:fontFamily="@font/inter_light"
                 android:text="Chưa có tài khoản?"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textColor="@color/colorTextBlack" />
 
             <TextView

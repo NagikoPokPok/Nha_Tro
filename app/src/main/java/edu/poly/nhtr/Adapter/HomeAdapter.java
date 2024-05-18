@@ -55,20 +55,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             binding.txtNameHome.setText(home.nameHome);
             binding.txtHomeAddress.setText(home.addressHome);
             binding.txtOrdinalNumber.setText(String.valueOf(position + 1));
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    homeListener.onHomeClicked(home);
-                }
-            });
+            binding.getRoot().setOnClickListener(v -> homeListener.onHomeClicked(home));
 
-            binding.imgMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    binding.frmImage2.setVisibility(View.VISIBLE);
-                    binding.frmImage.setVisibility(View.GONE);
-                    homeListener.openPopup(v, home, binding);
-                }
+            binding.imgMenu.setOnClickListener(v -> {
+                binding.frmImage2.setVisibility(View.VISIBLE);
+                binding.frmImage.setVisibility(View.GONE);
+                homeListener.openPopup(v, home, binding);
             });
         }
     }

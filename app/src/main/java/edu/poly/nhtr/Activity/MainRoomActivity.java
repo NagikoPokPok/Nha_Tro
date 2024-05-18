@@ -9,11 +9,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainRoomBinding;
-import edu.poly.nhtr.fragment.HomeFragment;
 import edu.poly.nhtr.fragment.IndexFragment;
 import edu.poly.nhtr.fragment.RoomFragment;
 import edu.poly.nhtr.fragment.ServiceFragment;
-import edu.poly.nhtr.fragment.SettingFragment;
 import edu.poly.nhtr.fragment.StatisticFragment;
 
 public class MainRoomActivity extends AppCompatActivity {
