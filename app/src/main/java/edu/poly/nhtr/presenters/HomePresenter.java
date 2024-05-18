@@ -21,6 +21,7 @@ import edu.poly.nhtr.utilities.Constants;
 public class HomePresenter {
 
     private HomeListener homeListener;
+
     private Dialog dialog;
     private int count;
 
@@ -39,8 +40,10 @@ public class HomePresenter {
     public void addHome(Home home) {
         if (home.getNameHome().isEmpty()) {
             homeListener.showToast("Enter home name");
+            homeListener.showErrorMessage("Nhập tên nhà trọ", R.id.layout_name_home);
         } else if (home.getAddressHome().isEmpty()) {
             homeListener.showToast("Enter home address");
+            homeListener.showErrorMessage("Nhập địa chỉ nhà trọ", R.id.layout_address_home);
         } else {
             checkDuplicateData(home);
         }
@@ -57,13 +60,15 @@ public class HomePresenter {
                             String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
                             String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                             String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
-                            if (nameFromFirestore != null && nameFromFirestore.toLowerCase().equals(home.getNameHome().toLowerCase()) && userIdFromFirestore.equals(homeListener.getInfoUserFromGoogleAccount())) {
+                            if (nameFromFirestore != null && nameFromFirestore.equalsIgnoreCase(home.getNameHome()) && userIdFromFirestore.equals(homeListener.getInfoUserFromGoogleAccount())) {
                                 homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
+                                homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
                                 homeListener.showToast("Tên nhà đã tồn tại");
                                 return;
                             }
-                            if (addressFromFirestore != null && addressFromFirestore.toLowerCase().equals(home.getAddressHome().toLowerCase()) && userIdFromFirestore.equals(homeListener.getInfoUserFromGoogleAccount())) {
+                            if (addressFromFirestore != null && addressFromFirestore.equalsIgnoreCase(home.getAddressHome()) && userIdFromFirestore.equals(homeListener.getInfoUserFromGoogleAccount())) {
                                 homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
+                                homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
                                 homeListener.showToast("Địa chỉ nhà đã tồn tại");
                                 return;
                             }

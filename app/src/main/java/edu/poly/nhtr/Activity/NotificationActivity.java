@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.poly.nhtr.Activity.Service.ServiceMainActivity;
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.ServiceManagenment.Managerment_ServiceActivity;
+//import edu.poly.nhtr.ServiceManagenment.Managerment_ServiceActivity;
 
 
 public class NotificationActivity extends AppCompatActivity {

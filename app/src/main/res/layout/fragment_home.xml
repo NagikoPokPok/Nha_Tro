@@ -82,7 +82,7 @@
         android:layout_marginTop="5dp"
         android:padding="10dp"
         android:foregroundGravity="center"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -245,7 +245,6 @@
         style="@style/BUTTON"
         android:layout_width="220dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="20dp"
         android:text="@string/them_nha_tro"
         android:textSize="20sp"
         app:backgroundTint="@null"

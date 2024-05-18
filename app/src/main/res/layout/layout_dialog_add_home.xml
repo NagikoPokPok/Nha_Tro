@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/txt_title_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
@@ -34,15 +35,27 @@
             android:textColor="@color/black"
             />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edt_name_home"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_name_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:background="@drawable/custom_edittext"
-            android:hint="Ví dụ: Nhà trọ MyHome"
-            android:imeOptions="actionNext"
-            android:padding="12dp" />
+            app:hintEnabled="false"
+            app:boxBackgroundMode="outline"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_name_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ví dụ: Nhà trọ MyHome"
+                android:imeOptions="actionNext"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
 
         <TextView
             android:id="@+id/txt_address_home"
@@ -52,18 +65,23 @@
             android:textSize="14sp"
             android:textColor="@color/black"
             android:fontFamily="@font/inter_medium"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="15dp"/>
 
-        <EditText
-            android:id="@+id/edt_address"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_address_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="@drawable/custom_edittext"
-            android:layout_marginTop="7dp"
-            android:hint="Ví dụ: 254 Nguyễn Văn Linh"/>
+            app:hintEnabled="false"
+            android:layout_marginTop="5dp"
+            app:boxBackgroundMode="outline">
 
-
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ví dụ: 254 Nguyễn Văn Linh"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <LinearLayout
@@ -71,7 +89,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="20dp">
 
             <Button
                 android:id="@+id/btn_cancel"

@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -256,8 +257,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     private void openAddHomeDialog(int gravity) {
 
-
-        dialog.setContentView(R.layout.layout_dialog_add_home);
+        setupDialog(R.layout.layout_dialog_add_home, Gravity.CENTER);
 
         //Anh xa view cho dialog
         TextView nameHome = dialog.findViewById(R.id.txt_name_home);
@@ -272,29 +272,58 @@ public class HomeFragment extends Fragment implements HomeListener {
         addressHome.append(text1);
 
 
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = gravity;
-        window.setAttributes(windowAttributes);
-
-        if (Gravity.CENTER == gravity) {
-            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
-        }
-        dialog.show();
-
-
         EditText edtNameHome = dialog.findViewById(R.id.edt_name_home);
         EditText edtAddress = dialog.findViewById(R.id.edt_address);
         Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        TextInputLayout layoutNameHome = dialog.findViewById(R.id.layout_name_home);
+        TextInputLayout layoutAddressHome = dialog.findViewById(R.id.layout_address_home);
+
+        edtNameHome.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = edtNameHome.getText().toString().trim();
+                if(!name.isEmpty())
+                {
+                    layoutNameHome.setErrorEnabled(false);
+                    layoutNameHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edtAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String address = edtAddress.getText().toString().trim();
+                if(!address.isEmpty())
+                {
+                    layoutAddressHome.setErrorEnabled(false);
+                    layoutAddressHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         // Xử lý/ hiệu chỉnh màu nút button add home
         TextWatcher textWatcher = new TextWatcher() {
@@ -330,6 +359,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
 
+
     // Cập nhật màu cho button
     private void updateButtonState(EditText edtNameHome, EditText edtAddress, Button btnAddHome) {
         String name = edtNameHome.getText().toString().trim();
@@ -340,13 +370,6 @@ public class HomeFragment extends Fragment implements HomeListener {
             btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
         }
     }
-
-
-    private void showErrorMessage(String message) {
-        binding.txtErrorMessage.setText(message);
-        binding.txtErrorMessage.setVisibility(View.VISIBLE);
-    }
-
 
     @Override
     public void showToast(String message) {
@@ -397,10 +420,10 @@ public class HomeFragment extends Fragment implements HomeListener {
         homes.sort(Comparator.comparing(obj -> obj.dateObject));
 
         // hàm notifyItemInserted dùng để thông báo cho recycler view rằng có một item được thêm vào adapter
-        homesAdapter.notifyItemInserted(homes.size() - 1);
+        homesAdapter.notifyDataSetChanged();
 
         //Sau khi nhận thông báo là có item được inserted thì cho cyclerview cuộn xuống tới item vừa được thêm
-        binding.homesRecyclerView.smoothScrollToPosition(homes.size() - 1);
+        binding.homesRecyclerView.smoothScrollToPosition(homes.size()-1);
 
 
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
@@ -422,13 +445,11 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public boolean isAdded2() {
-        if (isAdded())
-            return true;
-        return false;
+        return isAdded();
     }
 
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
+        private final ImageView imageView;
 
         public DownloadImageTask(ImageView imageView) {
             this.imageView = imageView;
@@ -498,29 +519,9 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
 
-
     private void openDeleteHomeDialog(int gravity, Home home) {
 
-        dialog.setContentView(R.layout.layout_dialog_delete_home);
-
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = gravity;
-        window.setAttributes(windowAttributes);
-
-        if (Gravity.CENTER == gravity) {
-            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
-        }
-        dialog.show();
-
+        setupDialog(R.layout.layout_dialog_delete_home, Gravity.CENTER);
 
         // Ánh xạ ID
         TextView txt_confirm_delete = dialog.findViewById(R.id.txt_confirm_delete);
@@ -549,22 +550,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void openDialogSuccess(int id) {
-        dialog.setContentView(id);
-
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        window.setAttributes(windowAttributes);
-
-        dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
-        dialog.show();
+        setupDialog(id, Gravity.CENTER);
 
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -590,26 +576,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home) {
-        dialog.setContentView(R.layout.layout_dialog_confirm_update_home);
-
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        // setLayout cho dialog bằng cách lấy MATCH_PARENT (width) và WRAP_CONTENT (height) của cả layout_dialog_delete_home
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = gravity;
-        window.setAttributes(windowAttributes);
-
-        if (Gravity.CENTER == gravity) {
-            dialog.setCancelable(true); //Nếu nhấp ra bên ngoài thì cho phép đóng dialog
-        }
-        dialog.show();
-
+        setupDialog(R.layout.layout_dialog_confirm_update_home, Gravity.CENTER);
 
         // Ánh xạ ID
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
@@ -633,9 +600,16 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     }
 
+    @Override
+    public void showErrorMessage(String message, int id) {
+        TextInputLayout layout_name_home = dialog.findViewById(id);
+        layout_name_home.setError(message);
+
+    }
+
     private void openUpdateHomeDialog(int gravity, Home home) {
 
-        setupDialog(R.layout.layout_dialog_update_home,Gravity.CENTER);
+        setupDialog(R.layout.layout_dialog_update_home, Gravity.CENTER);
 
         // Ánh xạ ID
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
