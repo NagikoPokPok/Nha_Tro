@@ -35,7 +35,6 @@ import android.widget.ImageView;
 
 import androidx.appcompat.widget.PopupMenu;
 
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -255,6 +254,20 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
+    private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text
+    {
+        Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
+        Spannable text1 = new SpannableString(s);
+        text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text1;
+    }
+
+    private void setIDComponents()
+    {
+
+    }
+
     private void openAddHomeDialog(int gravity) {
 
         setupDialog(R.layout.layout_dialog_add_home, Gravity.CENTER);
@@ -262,23 +275,24 @@ public class HomeFragment extends Fragment implements HomeListener {
         //Anh xa view cho dialog
         TextView nameHome = dialog.findViewById(R.id.txt_name_home);
         TextView addressHome = dialog.findViewById(R.id.txt_address_home);
-
-        // Set dấu * đỏ cho TextView
-        Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
-        Spannable text1 = new SpannableString(" *");
-        text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        nameHome.append(text1);
-        addressHome.append(text1);
-
-
+        TextView title = dialog.findViewById(R.id.txt_title_dialog);
         EditText edtNameHome = dialog.findViewById(R.id.edt_name_home);
-        EditText edtAddress = dialog.findViewById(R.id.edt_address);
+        EditText edtAddress = dialog.findViewById(R.id.edt_address_home);
         Button btnAddHome = dialog.findViewById(R.id.btn_add_home);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
         TextInputLayout layoutNameHome = dialog.findViewById(R.id.layout_name_home);
         TextInputLayout layoutAddressHome = dialog.findViewById(R.id.layout_address_home);
+
+        // Set dấu * đỏ cho TextView
+        nameHome.append(customizeText(" *"));
+        addressHome.append(customizeText(" *"));
+
+        //Set thông tin cho dialog
+        title.setText("Tạo mới nhà trọ");
+        edtNameHome.setHint("Ví dụ: Nhà trọ MyHome");
+        edtAddress.setHint("Ví dụ: 254 Nguyễn Văn Linh");
+        btnAddHome.setText("Tạo");
+
 
         edtNameHome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -361,13 +375,13 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     // Cập nhật màu cho button
-    private void updateButtonState(EditText edtNameHome, EditText edtAddress, Button btnAddHome) {
+    private void updateButtonState(EditText edtNameHome, EditText edtAddress, Button btn) {
         String name = edtNameHome.getText().toString().trim();
         String address = edtAddress.getText().toString().trim();
         if (name.isEmpty() || address.isEmpty()) {
-            btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+            btn.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
         } else {
-            btnAddHome.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+            btn.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
         }
     }
 
@@ -613,13 +627,87 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Ánh xạ ID
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
-        Button btn_update_home = dialog.findViewById(R.id.btn_update_home);
-        EditText edt_new_name_home = dialog.findViewById(R.id.edt_new_name_home);
-        EditText edt_new_address_home = dialog.findViewById(R.id.edt_new_address_home);
+        Button btn_update_home = dialog.findViewById(R.id.btn_add_home);
+        EditText edt_new_name_home = dialog.findViewById(R.id.edt_name_home);
+        EditText edt_new_address_home = dialog.findViewById(R.id.edt_address_home);
+        TextView title = dialog.findViewById(R.id.txt_title_dialog);
+        TextView txt_name_home = dialog.findViewById(R.id.txt_name_home);
+        TextView txt_address_home = dialog.findViewById(R.id.txt_address_home);
+        TextInputLayout layoutNameHome = dialog.findViewById(R.id.layout_name_home);
+        TextInputLayout layoutAddressHome = dialog.findViewById(R.id.layout_address_home);
+
 
         //Hiện thông tin lên edt
         edt_new_name_home.setText(home.getNameHome());
         edt_new_address_home.setText(home.getAddressHome());
+        title.setText("Chỉnh sửa thông tin nhà trọ");
+        btn_update_home.setText("Cập nhật");
+        txt_name_home.append(customizeText(" *"));
+        txt_address_home.append(customizeText(" *"));
+        btn_update_home.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+
+        edt_new_name_home.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = edt_new_name_home.getText().toString().trim();
+                if(!name.isEmpty())
+                {
+                    layoutNameHome.setErrorEnabled(false);
+                    layoutNameHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_new_address_home.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String address = edt_new_address_home.getText().toString().trim();
+                if(!address.isEmpty())
+                {
+                    layoutAddressHome.setErrorEnabled(false);
+                    layoutAddressHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateButtonState(edt_new_name_home, edt_new_address_home, btn_update_home);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+
+        // Thêm TextWatcher cho cả hai EditText
+        edt_new_name_home.addTextChangedListener(textWatcher);
+        edt_new_address_home.addTextChangedListener(textWatcher);
 
         // Xử lý sự kiện cho Button
         btn_cancel.setOnClickListener(new View.OnClickListener() {

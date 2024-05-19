@@ -3,117 +3,118 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg_white_corner_16"
-    android:layout_margin="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:text="Chỉnh sửa thông tin nhà trọ"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:fontFamily="@font/inter_bold"
-        android:background="@drawable/bg_yellow_corner_16_top" />
+    <include layout="@layout/layout_dialog_parent"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="12dp"-->
+<!--        android:text="Chỉnh sửa thông tin nhà trọ"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="20sp"-->
+<!--        android:gravity="center"-->
+<!--        android:fontFamily="@font/inter_bold"-->
+<!--        android:background="@drawable/bg_yellow_corner_16_top" />-->
 
-        <TextView
-            android:id="@+id/txt_name_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tên nhà trọ"
-            android:fontFamily="@font/inter_medium"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            />
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="16dp">-->
 
-        <EditText
-            android:id="@+id/edt_new_name_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:background="@drawable/custom_edittext"
-            android:imeOptions="actionNext"
-            android:padding="12dp" />
+<!--        <TextView-->
+<!--            android:id="@+id/txt_name_home"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Tên nhà trọ"-->
+<!--            android:fontFamily="@font/inter_medium"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="@color/black"-->
+<!--            />-->
 
-        <TextView
-            android:id="@+id/txt_address_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Địa chỉ"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/inter_medium"
-            android:layout_marginTop="16dp"/>
+<!--        <EditText-->
+<!--            android:id="@+id/edt_new_name_home"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="7dp"-->
+<!--            android:background="@drawable/custom_edittext"-->
+<!--            android:imeOptions="actionNext"-->
+<!--            android:padding="12dp" />-->
 
-        <EditText
-            android:id="@+id/edt_new_address_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="@drawable/custom_edittext"
-            android:layout_marginTop="7dp" />
+<!--        <TextView-->
+<!--            android:id="@+id/txt_address_home"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Địa chỉ"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:fontFamily="@font/inter_medium"-->
+<!--            android:layout_marginTop="16dp"/>-->
 
-
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp">
-
-            <Button
-                android:id="@+id/btn_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Huỷ"
-                android:textColor="@color/colorButton"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                app:backgroundTint="@null"
-                android:background="@drawable/custom_button_cancel"
-                android:layout_marginEnd="20dp"
-                android:fontFamily="@font/inter_medium"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_update_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Cập nhật"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                android:fontFamily="@font/inter_medium"
-                android:background="@drawable/custom_button_clicked"
-                app:backgroundTint="@color/colorButton"
-                />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
-                android:visibility="invisible"/>
-
-        </LinearLayout>
+<!--        <EditText-->
+<!--            android:id="@+id/edt_new_address_home"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="12dp"-->
+<!--            android:background="@drawable/custom_edittext"-->
+<!--            android:layout_marginTop="7dp" />-->
 
 
 
 
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="15dp">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/btn_cancel"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="left"-->
+<!--                android:text="Huỷ"-->
+<!--                android:textColor="@color/colorButton"-->
+<!--                app:iconGravity="textStart"-->
+<!--                android:textSize="16sp"-->
+<!--                app:backgroundTint="@null"-->
+<!--                android:background="@drawable/custom_button_cancel"-->
+<!--                android:layout_marginEnd="20dp"-->
+<!--                android:fontFamily="@font/inter_medium"/>-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/btn_update_home"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="right"-->
+<!--                android:text="Cập nhật"-->
+<!--                app:iconGravity="textStart"-->
+<!--                android:textSize="16sp"-->
+<!--                android:fontFamily="@font/inter_medium"-->
+<!--                android:background="@drawable/custom_button_clicked"-->
+<!--                app:backgroundTint="@color/colorButton"-->
+<!--                />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/progressBar"-->
+<!--                android:layout_width="25dp"-->
+<!--                android:layout_height="25dp"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:layout_marginStart="-70dp"-->
+<!--                android:visibility="invisible"/>-->
+
+<!--        </LinearLayout>-->
 
 
 
-    </LinearLayout>
+
+
+
+
+<!--    </LinearLayout>-->
 
 </LinearLayout>
