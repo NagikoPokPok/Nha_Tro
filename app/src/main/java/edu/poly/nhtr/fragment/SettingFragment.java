@@ -69,6 +69,7 @@ public class SettingFragment extends Fragment implements SettingsInterface {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -188,12 +189,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         settingsPresenter.switchModeTheme();
     }
 
-    @Override
-    public void navigateToSettings() {
-        Fragment fragment = new SettingFragment();
-        FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container, fragment).commit();
-    }
 
     @Override
     public void setNightMode(boolean nightMode) {

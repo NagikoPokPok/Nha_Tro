@@ -1,5 +1,6 @@
 package edu.poly.nhtr.presenters;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,8 +12,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,7 +23,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-import edu.poly.nhtr.fragment.SettingFragment;
 import edu.poly.nhtr.interfaces.SettingsInterface;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -35,6 +33,8 @@ public class SettingsPresenter {
     private final Context context;
     private final PreferenceManager preferenceManager;
     SharedPreferences sharedPreferences;
+    public static final String SETTINGS_PAGE_THEME_MODE = "SETTINGS_PAGE_THEME_MODE";
+
 
     SharedPreferences.Editor editor;
 
@@ -139,17 +139,17 @@ public class SettingsPresenter {
         view.setSwitchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.navigateToSettings();
                 if (nightMode) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
-                editor = sharedPreferences.edit();
+                editor = context.getSharedPreferences("MODE", Context.MODE_PRIVATE).edit();
                 editor.putBoolean("nightMode", !nightMode);
+                // Save the theme mode to SETTINGS_PAGE_THEME_MODE
+                editor.putBoolean(SETTINGS_PAGE_THEME_MODE, !nightMode);
                 editor.apply();
             }
         });
     }
-
 }

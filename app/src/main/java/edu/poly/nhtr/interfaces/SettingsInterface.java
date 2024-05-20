@@ -26,5 +26,4 @@ public interface SettingsInterface {
 
     void setNightMode(boolean nightMode);
     void setSwitchClickListener(android.view.View.OnClickListener listener);
-    void navigateToSettings();
 }
