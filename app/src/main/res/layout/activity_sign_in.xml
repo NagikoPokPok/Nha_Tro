@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Welcome Back"
+            android:text="@string/Welcome_Back"
             android:textColor="@color/colorPrimary"
             android:textSize="35sp"
             android:textStyle="bold"
@@ -65,12 +65,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
-                android:text="Đăng nhập với"
+                android:text="@string/dang_nhap_voi"
                 android:textSize="18sp"
-                android:fontFamily="@font/inter_medium"
-                android:textColor="@color/colorTextBlack" />
+                style="@style/TEXT_MED_2"
+                />
 
             <ImageView
+                android:contentDescription="@string/google_icon"
                 android:id="@+id/googleIcon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -94,7 +95,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
-            android:hint="Email"
+            android:hint="@string/email"
             app:boxBackgroundMode="outline"
             app:boxStrokeColor="@color/colorPrimary"
             app:endIconMode="clear_text"
@@ -169,7 +170,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/custom_button"
-                android:text="ĐĂNG NHẬP"
+                android:text="@string/DANG_NHAP"
                 android:textSize="20sp"
                 app:backgroundTint="@null"
                 app:icon="@drawable/icon_getin"
@@ -198,19 +199,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:fontFamily="@font/inter_light"
-                android:text="Chưa có tài khoản?"
-                android:textSize="15sp"
-                android:textColor="@color/colorTextBlack" />
+                style = "@style/TEXT_LIGHT_2"
+                android:text="@string/Chua_co_tai_khoan"
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đăng Ký"
+                android:text="@string/Dang_ky"
                 android:textColor="@color/colorButton"
                 android:textSize="19sp"
-                android:fontFamily="@font/inter_bold"
-                />
+                style="@style/TEXT_BOLD" />
 
         </LinearLayout>
 

@@ -6,7 +6,7 @@
     <string name="password">Password</string>
     <string name="dang_nhap">Đăng Nhập</string>
     <string name="dang_nhap_voi_gmail">Đăng nhập với Gmail</string>
-    <string name="dang_ky">Đăng Kí</string>
+    <string name="Dang_Ky">Đăng Ký</string>
     <string name="mat_khau">Mật khẩu</string>
     <string name="quan_ly_nha_tro">Quản Lý Nhà Trọ</string>
     <string name="dang_nhap_de_tiep_tuc">Đăng Nhập để tiếp tục</string>
@@ -109,4 +109,10 @@
     <string name="hoang_minh_thao">Hoàng Minh Thảo</string>
     <string name="title">Title</string>
     <string name="quen_mat_khau_gach_chan"><u>Quên mật khẩu?</u></string>
+    <string name="dang_nhap_voi">Đăng nhập với</string>
+    <string name="Chua_co_tai_khoan">Chưa có tài khoản?</string>
+    <string name="Dang_ky">Đăng ký</string>
+    <string name="Welcome_Back">Welcome Back</string>
+    <string name="DANG_NHAP">ĐĂNG NHẬP</string>
+    <string name="google_icon">Google Icon</string>
 </resources>
