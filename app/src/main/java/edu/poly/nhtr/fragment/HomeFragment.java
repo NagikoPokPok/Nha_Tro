@@ -167,8 +167,6 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         customizeLayoutSearch();
 
-
-
     }
 
     private void customizeLayoutSearch() {
