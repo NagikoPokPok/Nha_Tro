@@ -33,7 +33,6 @@ public class SettingsPresenter {
     private final Context context;
     private final PreferenceManager preferenceManager;
     SharedPreferences sharedPreferences;
-    public static final String SETTINGS_PAGE_THEME_MODE = "SETTINGS_PAGE_THEME_MODE";
 
 
     SharedPreferences.Editor editor;
@@ -146,8 +145,6 @@ public class SettingsPresenter {
                 }
                 editor = context.getSharedPreferences("MODE", Context.MODE_PRIVATE).edit();
                 editor.putBoolean("nightMode", !nightMode);
-                // Save the theme mode to SETTINGS_PAGE_THEME_MODE
-                editor.putBoolean(SETTINGS_PAGE_THEME_MODE, !nightMode);
                 editor.apply();
             }
         });

@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import edu.poly.nhtr.Activity.ChangeProfileActivity;
 import edu.poly.nhtr.Activity.MainActivity;
 import edu.poly.nhtr.Activity.SignInActivity;
-import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentSettingBinding;
 import edu.poly.nhtr.interfaces.SettingsInterface;
 import edu.poly.nhtr.presenters.SettingsPresenter;
