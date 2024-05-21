@@ -15,6 +15,8 @@ import edu.poly.nhtr.models.Home;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
 
+    private int lastActionPosition = 0;
+
     private final List<Home> homes;
     private final HomeListener homeListener;
 
@@ -63,6 +65,29 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 homeListener.openPopup(v, home, binding);
             });
         }
+    }
+
+    public void addHome(List<Home>homes) {
+
+        //homeList.add(home);
+        lastActionPosition = homes.size() - 1;
+
+    }
+
+    public void updateHome(int position, Home home) {
+        //homeList.set(position, home);
+        lastActionPosition = position;
+        notifyItemChanged(position);
+    }
+
+    public void removeHome(int position) {
+        //homeList.remove(position);
+        lastActionPosition = position < homes.size() ? position : homes.size() - 1;
+        notifyItemRemoved(position);
+    }
+
+    public int getLastActionPosition() {
+        return lastActionPosition;
     }
 
 }

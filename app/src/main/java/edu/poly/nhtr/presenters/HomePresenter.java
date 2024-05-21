@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
@@ -18,6 +19,7 @@ import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
 
 public class HomePresenter {
+    private int position = 0;
 
     private final HomeListener homeListener;
     private int count;
@@ -94,7 +96,7 @@ public class HomePresenter {
                 .addOnSuccessListener(documentReference -> {
                     homeListener.putHomeInfoInPreferences(home.getNameHome(), home.getAddressHome(), documentReference);
                     homeListener.showToast("Thêm nhà trọ thành công");
-                    getHomes();
+                    getHomes("add");
                     homeListener.dialogClose();
                     homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
                 })
@@ -104,7 +106,7 @@ public class HomePresenter {
                 });
     }
 
-    public void getHomes() {
+    public void getHomes(String action) {
         homeListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES)
@@ -124,7 +126,7 @@ public class HomePresenter {
                                 homes.add(home);
                             }
                             if (!homes.isEmpty()) {
-                                homeListener.addHome(homes);
+                                homeListener.addHome(homes, action);
                             } else {
                                 homeListener.addHomeFailed();
                             }
@@ -141,7 +143,7 @@ public class HomePresenter {
                 .document(home.getIdHome())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    getHomes();
+                    getHomes("delete");
                     homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
                     homeListener.dialogClose();
                     homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
@@ -167,6 +169,7 @@ public class HomePresenter {
     }
 
     private void checkDuplicateDataForUpdate(String newNameHome, String newAddressHome, Home home) {
+
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
@@ -175,6 +178,7 @@ public class HomePresenter {
                     String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                     String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
                     String homeIdFromFirestore = document.getId();
+                    position = position+1;
 
                     if(isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome()) && isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home))
                     {
@@ -214,7 +218,7 @@ public class HomePresenter {
                 .document(home.getIdHome())
                 .update(updateInfo)
                 .addOnSuccessListener(aVoid -> {
-                    getHomes();
+                    getHomes("update");
                     homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
                     homeListener.dialogClose();
                     homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
@@ -222,6 +226,42 @@ public class HomePresenter {
                 .addOnFailureListener(e -> {
                     homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
                     homeListener.showToast("Cập nhật thông tin nhà trọ thất bại");
+                });
+    }
+
+    public void searchHome(String nameHome)
+    {
+
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .get()
+                .addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<Home> homes = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
+                            String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
+                            String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
+
+                            if (nameFromFirestore != null && nameFromFirestore.toLowerCase().contains(nameHome.toLowerCase()) && Objects.equals(userIdFromFirestore, homeListener.getInfoUserFromGoogleAccount())) {
+                                Home home = new Home();
+                                home.nameHome = nameFromFirestore;
+                                home.addressHome = addressFromFirestore;
+                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                home.idHome = document.getId();
+                                homes.add(home);
+                            }
+                        }
+
+                        if (!homes.isEmpty()) {
+                            homeListener.addHome(homes, "search");
+                        } else {
+                            homeListener.addHomeFailed();
+                        }
+                    } else {
+                        homeListener.showToast("Không thể tìm kiếm nhà trọ");
+                    }
                 });
     }
 }

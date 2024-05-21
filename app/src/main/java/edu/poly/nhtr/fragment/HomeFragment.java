@@ -1,6 +1,10 @@
 package edu.poly.nhtr.fragment;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -25,10 +30,13 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -122,6 +130,15 @@ public class HomeFragment extends Fragment implements HomeListener {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
+        binding.rootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.edtSearchHome.clearFocus();
+                binding.rootLayout.requestFocus();
+            }
+        });
+
+
 
         editFonts();
 
@@ -135,17 +152,70 @@ public class HomeFragment extends Fragment implements HomeListener {
         loadUserDetails();
 
         // Load home information
-        homePresenter.getHomes();
+        homePresenter.getHomes("init");
 
         setListeners();
 
         // Xử lý Dialog Thêm nhà trọ
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        binding.btnAddHome.setOnClickListener(view -> openAddHomeDialog(Gravity.CENTER));
+        binding.btnAddHome.setOnClickListener(view -> {
+            openAddHomeDialog(Gravity.CENTER);
+        });
 
         // Xử lý nút 3 chấm menu
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
+
+        customizeLayoutSearch();
+
+
+
     }
+
+    private void customizeLayoutSearch() {
+        binding.layoutSearchHome.setEndIconDrawable(R.drawable.ic_search_orange);
+        binding.layoutSearchHome.setEndIconVisible(true);
+        binding.edtSearchHome.setHint("Tìm kiếm nhà trọ ...");
+
+        binding.edtSearchHome.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                {
+                    binding.layoutSearchHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+        });
+
+
+        binding.edtSearchHome.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchNameHome = Objects.requireNonNull(binding.edtSearchHome.getText()).toString().trim();
+                homePresenter.searchHome(s.toString());
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        binding.layoutSearchHome.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchNameHome = Objects.requireNonNull(binding.edtSearchHome.getText().toString().trim());
+                homePresenter.searchHome(searchNameHome);
+            }
+        });
+    }
+
 
     private void openMenu(View view) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
@@ -263,12 +333,10 @@ public class HomeFragment extends Fragment implements HomeListener {
         return text1;
     }
 
-    private void setIDComponents()
-    {
-
-    }
 
     private void openAddHomeDialog(int gravity) {
+
+        binding.edtSearchHome.clearFocus();
 
         setupDialog(R.layout.layout_dialog_add_home, Gravity.CENTER);
 
@@ -282,6 +350,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         TextInputLayout layoutNameHome = dialog.findViewById(R.id.layout_name_home);
         TextInputLayout layoutAddressHome = dialog.findViewById(R.id.layout_address_home);
+
 
         // Set dấu * đỏ cho TextView
         nameHome.append(customizeText(" *"));
@@ -303,8 +372,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String name = edtNameHome.getText().toString().trim();
-                if(!name.isEmpty())
-                {
+                if (!name.isEmpty()) {
                     layoutNameHome.setErrorEnabled(false);
                     layoutNameHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
@@ -325,8 +393,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String address = edtAddress.getText().toString().trim();
-                if(!address.isEmpty())
-                {
+                if (!address.isEmpty()) {
                     layoutAddressHome.setErrorEnabled(false);
                     layoutAddressHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
@@ -426,19 +493,29 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     @Override
-    public void addHome(List<Home> homes) {
+    public void addHome(List<Home> homes, String action) {
         HomeAdapter homesAdapter = new HomeAdapter(homes, this);
         binding.homesRecyclerView.setAdapter(homesAdapter);
 
         // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
         homes.sort(Comparator.comparing(obj -> obj.dateObject));
 
-        // hàm notifyItemInserted dùng để thông báo cho recycler view rằng có một item được thêm vào adapter
-        homesAdapter.notifyDataSetChanged();
+        if(Objects.equals(action,"init") || Objects.equals(action,"search"))
+        {
+            binding.homesRecyclerView.smoothScrollToPosition(0);
+        }
+        else if(Objects.equals(action, "add"))
+        {
+            homesAdapter.addHome(homes);
+            homesAdapter.notifyItemInserted(homesAdapter.getLastActionPosition());
+            binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
+        }else if(Objects.equals(action, "update"))
+        {
 
-        //Sau khi nhận thông báo là có item được inserted thì cho cyclerview cuộn xuống tới item vừa được thêm
-        binding.homesRecyclerView.smoothScrollToPosition(homes.size()-1);
+        }
 
+
+        //binding.homesRecyclerView.smoothScrollToPosition(0);
 
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
         // khi setAdapter mình phải set lại là VISIBLE
@@ -454,7 +531,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddHome.setVisibility(View.VISIBLE);
         binding.homesRecyclerView.setVisibility(View.INVISIBLE);
-        binding.frmMenuTools.setVisibility(View.INVISIBLE);
+        binding.frmMenuTools.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -491,6 +568,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void onHomeClicked(Home home) {
+        binding.edtSearchHome.clearFocus();
         Intent intent = new Intent(requireContext(), MainRoomActivity.class);
         intent.putExtra("home", home);
         startActivity(intent);
@@ -655,8 +733,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String name = edt_new_name_home.getText().toString().trim();
-                if(!name.isEmpty())
-                {
+                if (!name.isEmpty()) {
                     layoutNameHome.setErrorEnabled(false);
                     layoutNameHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
@@ -677,8 +754,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String address = edt_new_address_home.getText().toString().trim();
-                if(!address.isEmpty())
-                {
+                if (!address.isEmpty()) {
                     layoutAddressHome.setErrorEnabled(false);
                     layoutAddressHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }

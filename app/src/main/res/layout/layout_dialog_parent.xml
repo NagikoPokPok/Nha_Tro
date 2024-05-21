@@ -32,6 +32,7 @@
             android:fontFamily="@font/inter_medium"
             android:textSize="14sp"
             android:textColor="@color/black"
+            android:layout_marginStart="7dp"
             />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -40,8 +41,12 @@
             android:layout_height="wrap_content"
             app:hintEnabled="false"
             app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_gravity="center"
+
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -64,7 +69,8 @@
             android:textSize="14sp"
             android:textColor="@color/black"
             android:fontFamily="@font/inter_medium"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="7dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_address_home"
@@ -73,7 +79,11 @@
             app:hintEnabled="false"
             android:layout_marginTop="5dp"
             app:boxBackgroundMode="outline"
-            app:endIconMode="clear_text">
+            app:endIconMode="clear_text"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_address_home"

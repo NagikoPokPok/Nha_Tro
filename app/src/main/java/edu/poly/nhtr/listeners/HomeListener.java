@@ -21,7 +21,7 @@ public interface HomeListener {
     void dialogClose();
     void hideLoading();
     void showLoading();
-    void addHome(List<Home> homes);
+    void addHome(List<Home> homes, String action);
     void addHomeFailed();
     boolean isAdded2();
     void openDialogSuccess(int layout);
