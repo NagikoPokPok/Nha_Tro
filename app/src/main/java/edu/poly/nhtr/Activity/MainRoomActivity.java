@@ -2,6 +2,7 @@ package edu.poly.nhtr.Activity;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -18,31 +19,61 @@ public class MainRoomActivity extends AppCompatActivity {
 
 
     ActivityMainRoomBinding binding;
+    private static final String CURRENT_FRAGMENT_TAG = "CURRENT_FRAGMENT_TAG";
+    private String currentFragmentTag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFragment(new RoomFragment());
 
-        binding.bottomNavigation.setOnItemSelectedListener(item ->{
+        if (savedInstanceState != null) {
+            currentFragmentTag = savedInstanceState.getString(CURRENT_FRAGMENT_TAG);
+            Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
+            if (currentFragment != null) {
+                replaceFragment(currentFragment, currentFragmentTag);
+            }
+        }  else {
+                replaceFragment(new RoomFragment(), "RoomFragment");
+            }
+
+        // Load bottom menu
+        setClickNavigationBottomMenu();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CURRENT_FRAGMENT_TAG, currentFragmentTag);
+    }
+
+    public void setClickNavigationBottomMenu() {
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
             if (item.getItemId() == R.id.menu_room) {
-                replaceFragment(new RoomFragment());
-            } else if (item.getItemId() == R.id.menu_index) {
-                replaceFragment(new IndexFragment());
+                fragment = new RoomFragment();
+                currentFragmentTag = "RoomFragment";
             } else if (item.getItemId() == R.id.menu_services) {
-                replaceFragment(new ServiceFragment());
+                fragment = new ServiceFragment();
+                currentFragmentTag = "ServiceFragment";
             } else if (item.getItemId() == R.id.menu_statistic) {
-                replaceFragment(new StatisticFragment());
+                fragment = new StatisticFragment();
+                currentFragmentTag = "StatisticFragment";
+            } else if (item.getItemId() == R.id.menu_index) {
+                fragment = new IndexFragment();
+                currentFragmentTag = "IndexFragment";
+            }
+            if (fragment != null) {
+                replaceFragment(fragment, currentFragmentTag);
             }
             return true;
         });
     }
 
-    private void replaceFragment(Fragment fragment) {
+    private void replaceFragment(Fragment fragment, String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.replace(R.id.fragment_container, fragment, tag);
         fragmentTransaction.commit();
     }
 }
