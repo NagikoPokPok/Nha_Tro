@@ -257,7 +257,7 @@ public class HomePresenter {
                         if (!homes.isEmpty()) {
                             homeListener.addHome(homes, "search");
                         } else {
-                            homeListener.addHomeFailed();
+                            homeListener.noHomeData();
                         }
                     } else {
                         homeListener.showToast("Không thể tìm kiếm nhà trọ");

@@ -29,4 +29,5 @@ public interface HomeListener {
     void hideLoadingOfFunctions(int id);
     void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home);
     void showErrorMessage(String message, int id);
+    void noHomeData();
 }

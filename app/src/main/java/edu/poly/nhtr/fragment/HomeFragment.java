@@ -208,10 +208,21 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.layoutSearchHome.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String searchNameHome = Objects.requireNonNull(binding.edtSearchHome.getText().toString().trim());
+                String searchNameHome = Objects.requireNonNull(Objects.requireNonNull(binding.edtSearchHome.getText()).toString().trim());
                 homePresenter.searchHome(searchNameHome);
+
+                if(searchNameHome.isEmpty())
+                {
+                    binding.edtSearchHome.clearFocus();
+                }
             }
         });
+    }
+
+    @Override
+    public void noHomeData() {
+        binding.homesRecyclerView.setVisibility(View.GONE);
+        binding.layoutNoData.setVisibility(View.VISIBLE);
     }
 
 
@@ -517,6 +528,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
         // khi setAdapter mình phải set lại là VISIBLE
+        binding.layoutNoData.setVisibility(View.GONE);
         binding.txtNotification.setVisibility(View.GONE);
         binding.imgAddHome.setVisibility(View.GONE);
         binding.homesRecyclerView.setVisibility(View.VISIBLE);
@@ -696,6 +708,8 @@ public class HomeFragment extends Fragment implements HomeListener {
         layout_name_home.setError(message);
 
     }
+
+
 
     private void openUpdateHomeDialog(int gravity, Home home) {
 
