@@ -148,21 +148,66 @@ public class HomePresenter {
 
     public void deleteHome(Home home) {
         homeListener.showLoadingOfFunctions(R.id.btn_delete_home);
-        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
-                .document(home.getIdHome())
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    getHomes("delete");
-                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
-                    homeListener.dialogClose();
-                    homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
-                })
-                .addOnFailureListener(e -> {
-                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
-                    homeListener.showToast("Xoá nhà trọ thất bại");
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
 
+        // Truy vấn để lấy tất cả các tài liệu có cùng userId
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .whereEqualTo(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+
+                        // Sắp xếp danh sách tài liệu theo thời gian tăng dần
+                        documents.sort((doc1, doc2) -> {
+                            Timestamp timestamp1 = doc1.getTimestamp(Constants.KEY_TIMESTAMP);
+                            Timestamp timestamp2 = doc2.getTimestamp(Constants.KEY_TIMESTAMP);
+                            assert timestamp1 != null;
+                            assert timestamp2 != null;
+                            return timestamp1.compareTo(timestamp2);
+                        });
+
+                        position = 0;
+                        boolean found = false;
+
+                        // Duyệt qua danh sách tài liệu đã sắp xếp
+                        for (DocumentSnapshot document : documents) {
+                            position++;
+                            String homeIdFromFirestore = document.getId();
+
+                            // Kiểm tra nếu homeId khớp
+                            if (homeIdFromFirestore.equals(home.getIdHome())) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) {
+                            // Sau khi tìm thấy vị trí, thực hiện xoá tài liệu
+                            database.collection(Constants.KEY_COLLECTION_HOMES)
+                                    .document(home.getIdHome())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        getHomes("delete");
+                                        homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                                        homeListener.dialogClose();
+                                        homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                                        homeListener.showToast("Xoá nhà trọ thất bại");
+                                    });
+                        } else {
+                            homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                            homeListener.showToast("Không tìm thấy homeId");
+                        }
+                    } else {
+                        homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                        homeListener.showToast("Lỗi khi lấy tài liệu: " + task.getException());
+                    }
                 });
     }
+
 
     public void updateHome(String newNameHome, String newAddressHome, Home home) {
         homeListener.showLoadingOfFunctions(R.id.btn_add_home);
@@ -235,6 +280,7 @@ public class HomePresenter {
                             Timestamp timestamp1 = doc1.getTimestamp(Constants.KEY_TIMESTAMP);
                             Timestamp timestamp2 = doc2.getTimestamp(Constants.KEY_TIMESTAMP);
                             assert timestamp1 != null;
+                            assert timestamp2 != null;
                             return timestamp1.compareTo(timestamp2);
                         });
 

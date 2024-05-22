@@ -82,7 +82,7 @@
         android:layout_marginTop="5dp"
         android:foregroundGravity="center"
         android:padding="10dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/frm_top_main">

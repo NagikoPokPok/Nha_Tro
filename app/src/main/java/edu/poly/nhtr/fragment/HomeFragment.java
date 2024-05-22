@@ -548,6 +548,17 @@ public class HomeFragment extends Fragment implements HomeListener {
             homesAdapter.updateHome(position);
             homesAdapter.notifyItemChanged(homesAdapter.getLastActionPosition());
             binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
+        }else if(Objects.equals(action, "delete"))
+        {
+            int position = homePresenter.getPosition();
+            if(position == 1)
+            {
+                binding.homesRecyclerView.smoothScrollToPosition(0);
+            }else {
+                homesAdapter.removeHome(position);
+                homesAdapter.notifyItemRemoved(homesAdapter.getLastActionPosition());
+                binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
+            }
         }
 
 
@@ -566,7 +577,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddHome.setVisibility(View.VISIBLE);
         binding.homesRecyclerView.setVisibility(View.INVISIBLE);
-        binding.frmMenuTools.setVisibility(View.VISIBLE);
+        binding.frmMenuTools.setVisibility(View.INVISIBLE);
     }
 
     @Override

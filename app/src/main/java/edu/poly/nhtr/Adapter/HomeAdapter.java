@@ -81,13 +81,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     }
 
     public void removeHome(int position) {
-        //homeList.remove(position);
-        lastActionPosition = position < homes.size() ? position : homes.size() - 1;
-        notifyItemRemoved(position);
+        lastActionPosition = position - 2;
     }
 
     public int getLastActionPosition() {
         return lastActionPosition;
     }
 
+    public void setLastActionPosition(int lastActionPosition) {
+        this.lastActionPosition = lastActionPosition;
+    }
 }
