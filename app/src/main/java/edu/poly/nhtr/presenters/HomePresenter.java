@@ -171,14 +171,17 @@ public class HomePresenter {
     private void checkDuplicateDataForUpdate(String newNameHome, String newAddressHome, Home home) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.KEY_COLLECTION_HOMES).get().addOnCompleteListener(task -> {
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .whereEqualTo(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
                     String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                     String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
                     String homeIdFromFirestore = document.getId();
-                    position = position+1;
+                    position++;
 
                     if(isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome()) && isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home))
                     {
@@ -200,7 +203,7 @@ public class HomePresenter {
                     }
                 }
                 homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
-                homeListener.openConfirmUpdateHome(Gravity.CENTER, newNameHome, newAddressHome, home);
+                homeListener.openConfirmUpdateHome(Gravity.CENTER, newNameHome, newAddressHome, home, position);
 
             } else {
                 // Handle errors
@@ -208,7 +211,7 @@ public class HomePresenter {
         });
     }
 
-    public void updateSuccess(String newNameHome, String newAddressHome, Home home) {
+    public void updateSuccess(String newNameHome, String newAddressHome, Home home, int position) {
         homeListener.showLoadingOfFunctions(R.id.btn_confirm_update_home);
         HashMap<String, Object> updateInfo = new HashMap<>();
         updateInfo.put(Constants.KEY_NAME_HOME, newNameHome);
@@ -219,6 +222,7 @@ public class HomePresenter {
                 .update(updateInfo)
                 .addOnSuccessListener(aVoid -> {
                     getHomes("update");
+                    homeListener.showToast(position+"");
                     homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
                     homeListener.dialogClose();
                     homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);

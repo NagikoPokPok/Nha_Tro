@@ -160,6 +160,12 @@
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
         <item name="android:colorForeground">#99000000</item>
     </style>
+    
+    
+    <style name="RadioButtonStyle" parent="Theme.AppCompat.Light">
+
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
 
 
 

@@ -166,7 +166,30 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
 
         customizeLayoutSearch();
+        setListenersForTools();
 
+    }
+
+    private void setListenersForTools() {
+        binding.btnSortHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSortHomeDialog();
+            }
+        });
+
+        binding.imgSortHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSortHomeDialog();
+            }
+        });
+
+
+    }
+
+    private void openSortHomeDialog() {
+        setupDialog(R.layout.layout_dialog_sort_home, Gravity.CENTER);
     }
 
     private void customizeLayoutSearch() {
@@ -677,7 +700,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     @Override
-    public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home) {
+    public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home, int position) {
         setupDialog(R.layout.layout_dialog_confirm_update_home, Gravity.CENTER);
 
         // Ánh xạ ID
@@ -695,7 +718,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_confirm_update_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                homePresenter.updateSuccess(newNameHome, newAddressHome, home);
+                homePresenter.updateSuccess(newNameHome, newAddressHome, home, position);
             }
         });
 
