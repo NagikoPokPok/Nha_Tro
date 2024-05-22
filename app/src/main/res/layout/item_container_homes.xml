@@ -16,10 +16,9 @@
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:background="@drawable/sonhatro"
-        android:fontFamily="@font/inter_bold"
         android:gravity="center"
         android:text="@string/stt"
-        android:textColor="@color/white"
+        style="@style/TEXT_BOLD_3"
         android:textSize="20sp" />
 
     <LinearLayout
