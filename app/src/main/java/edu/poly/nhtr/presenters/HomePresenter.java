@@ -1,12 +1,19 @@
 package edu.poly.nhtr.presenters;
 
 import android.app.Dialog;
+import android.util.Log;
 import android.view.Gravity;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,20 +28,22 @@ import edu.poly.nhtr.utilities.Constants;
 public class HomePresenter {
     private int position = 0;
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     private final HomeListener homeListener;
-    private int count;
+
 
     public HomePresenter(HomeListener homeListener) {
         this.homeListener = homeListener;
     }
 
-    public int getCount() {
-        return count;
-    }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     public void addHome(Home home) {
         if (home.getNameHome().isEmpty()) {
@@ -88,7 +97,7 @@ public class HomePresenter {
         HashMap<String, Object> homeInfo = new HashMap<>();
         homeInfo.put(Constants.KEY_NAME_HOME, home.getNameHome());
         homeInfo.put(Constants.KEY_ADDRESS_HOME, home.getAddressHome());
-        homeInfo.put(Constants.KEY_TIMESTAMP, new Date());
+        homeInfo.put(Constants.KEY_TIMESTAMP, FieldValue.serverTimestamp());
         homeInfo.put(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount());
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
@@ -181,8 +190,6 @@ public class HomePresenter {
                     String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                     String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
                     String homeIdFromFirestore = document.getId();
-                    position++;
-
                     if(isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome()) && isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home))
                     {
                         homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
@@ -191,19 +198,19 @@ public class HomePresenter {
                         return;
                     }
 
-                    if (isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
+                    else if (isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
                         homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
                         homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
                         return;
                     }
-                    if (isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
+                    else if (isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
                         homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
                         homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
                         return;
                     }
                 }
                 homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
-                homeListener.openConfirmUpdateHome(Gravity.CENTER, newNameHome, newAddressHome, home, position);
+                homeListener.openConfirmUpdateHome(Gravity.CENTER, newNameHome, newAddressHome, home);
 
             } else {
                 // Handle errors
@@ -211,27 +218,73 @@ public class HomePresenter {
         });
     }
 
-    public void updateSuccess(String newNameHome, String newAddressHome, Home home, int position) {
+    public void updateSuccess(String newNameHome, String newAddressHome, Home home) {
         homeListener.showLoadingOfFunctions(R.id.btn_confirm_update_home);
-        HashMap<String, Object> updateInfo = new HashMap<>();
-        updateInfo.put(Constants.KEY_NAME_HOME, newNameHome);
-        updateInfo.put(Constants.KEY_ADDRESS_HOME, newAddressHome);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
-                .document(home.getIdHome())
-                .update(updateInfo)
-                .addOnSuccessListener(aVoid -> {
-                    getHomes("update");
-                    homeListener.showToast(position+"");
-                    homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
-                    homeListener.dialogClose();
-                    homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
-                })
-                .addOnFailureListener(e -> {
-                    homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
-                    homeListener.showToast("Cập nhật thông tin nhà trọ thất bại");
+        // Truy vấn để lấy tất cả các tài liệu có cùng userId
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .whereEqualTo(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+
+                        // Sắp xếp danh sách tài liệu theo thời gian tăng dần
+                        documents.sort((doc1, doc2) -> {
+                            Timestamp timestamp1 = doc1.getTimestamp(Constants.KEY_TIMESTAMP);
+                            Timestamp timestamp2 = doc2.getTimestamp(Constants.KEY_TIMESTAMP);
+                            assert timestamp1 != null;
+                            return timestamp1.compareTo(timestamp2);
+                        });
+
+                        position = 0;
+                        boolean found = false;
+
+                        // Duyệt qua danh sách tài liệu đã sắp xếp
+                        for (DocumentSnapshot document : documents) {
+                            position++;
+                            String homeIdFromFirestore = document.getId();
+
+                            // Kiểm tra nếu homeId khớp
+                            if (homeIdFromFirestore.equals(home.getIdHome())) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) {
+                            // Sau khi tìm thấy vị trí, thực hiện cập nhật tài liệu
+                            HashMap<String, Object> updateInfo = new HashMap<>();
+                            updateInfo.put(Constants.KEY_NAME_HOME, newNameHome);
+                            updateInfo.put(Constants.KEY_ADDRESS_HOME, newAddressHome);
+
+                            database.collection(Constants.KEY_COLLECTION_HOMES)
+                                    .document(home.getIdHome())
+                                    .update(updateInfo)
+                                    .addOnSuccessListener(aVoid -> {
+                                        getHomes("update");
+                                        //homeListener.showToast("Cập nhật thành công ở vị trí: " + getPosition());
+                                        homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
+                                        homeListener.dialogClose();
+                                        homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
+                                        homeListener.showToast("Cập nhật thông tin nhà trọ thất bại");
+                                    });
+                        } else {
+                            homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
+                            homeListener.showToast("Không tìm thấy homeId");
+                        }
+                    } else {
+                        homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
+                        homeListener.showToast("Lỗi khi lấy tài liệu: " + task.getException());
+                    }
                 });
     }
+
+
 
     public void searchHome(String nameHome)
     {

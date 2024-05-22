@@ -74,10 +74,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     }
 
-    public void updateHome(int position, Home home) {
+    public void updateHome(int position) {
         //homeList.set(position, home);
-        lastActionPosition = position;
-        notifyItemChanged(position);
+        lastActionPosition = position - 1;
+
     }
 
     public void removeHome(int position) {

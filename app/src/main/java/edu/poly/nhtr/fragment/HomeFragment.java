@@ -526,6 +526,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void addHome(List<Home> homes, String action) {
+
         HomeAdapter homesAdapter = new HomeAdapter(homes, this);
         binding.homesRecyclerView.setAdapter(homesAdapter);
 
@@ -543,11 +544,12 @@ public class HomeFragment extends Fragment implements HomeListener {
             binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
         }else if(Objects.equals(action, "update"))
         {
-
+            int position = homePresenter.getPosition();
+            homesAdapter.updateHome(position);
+            homesAdapter.notifyItemChanged(homesAdapter.getLastActionPosition());
+            binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
         }
 
-
-        //binding.homesRecyclerView.smoothScrollToPosition(0);
 
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
         // khi setAdapter mình phải set lại là VISIBLE
@@ -700,7 +702,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     @Override
-    public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home, int position) {
+    public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home) {
         setupDialog(R.layout.layout_dialog_confirm_update_home, Gravity.CENTER);
 
         // Ánh xạ ID
@@ -718,7 +720,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         btn_confirm_update_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                homePresenter.updateSuccess(newNameHome, newAddressHome, home, position);
+                homePresenter.updateSuccess(newNameHome, newAddressHome, home);
             }
         });
 
