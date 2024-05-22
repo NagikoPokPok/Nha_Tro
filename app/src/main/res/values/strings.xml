@@ -115,4 +115,7 @@
     <string name="Welcome_Back">Welcome Back</string>
     <string name="DANG_NHAP">ĐĂNG NHẬP</string>
     <string name="google_icon">Google Icon</string>
+    <string name="khung_tren">khung trên</string>
+    <string name="khung_tim_kiem">Khung tìm kiếm</string>
+    <string name="anh_them_phong">Ảnh thêm phòng</string>
 </resources>
