@@ -118,4 +118,9 @@
     <string name="khung_tren">khung trên</string>
     <string name="khung_tim_kiem">Khung tìm kiếm</string>
     <string name="anh_them_phong">Ảnh thêm phòng</string>
+    <string name="khong_co_du_lieu">Không có dữ liệu !</string>
+    <string name="Sap_xep">Sắp xếp</string>
+    <string name="Loc">Lọc</string>
+    <string name="tim_kiem_nha_tro">Tìm kiếm nhà trọ</string>
+    <string name="tim_kiem_phong_tro">Tìm kiếm phòng trọ</string>
 </resources>
