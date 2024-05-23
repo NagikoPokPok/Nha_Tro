@@ -71,7 +71,7 @@
         android:layout_marginTop="5dp"
         android:foregroundGravity="center"
         android:padding="10dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/frm_top_main">
@@ -83,10 +83,11 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/ll_search_home"
-                android:layout_width="250dp"
+                android:id="@+id/ll_search_room"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -111,6 +112,7 @@
                         android:id="@+id/edt_search_room"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:hint="@string/tim_kiem_nha_tro"
                         android:imeOptions="actionGo"
                         android:paddingStart="20dp"
                         android:paddingEnd="50dp" />
@@ -132,8 +134,8 @@
                     app:riv_oval="true" />
 
                 <ImageButton
-                    android:layout_width="24dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_filter"
                     android:backgroundTint="@color/white" />
@@ -141,6 +143,7 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/btn_sort_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -154,8 +157,9 @@
                     app:riv_oval="true" />
 
                 <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/img_sort_room"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_sort"
                     android:backgroundTint="@color/white" />
@@ -228,8 +232,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-
 
 
 
