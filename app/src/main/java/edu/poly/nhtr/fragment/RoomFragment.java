@@ -148,10 +148,10 @@ public class RoomFragment extends Fragment implements RoomListener {
             openAddRoomDialog(Gravity.CENTER);
         });
 
-
-
         customizeLayoutSearch();
     }
+
+
     private void customizeLayoutSearch() {
         binding.layoutSearchRoom.setEndIconDrawable(R.drawable.ic_search_orange);
         binding.layoutSearchRoom.setEndIconVisible(true);
@@ -221,6 +221,16 @@ public class RoomFragment extends Fragment implements RoomListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_room, container, false);
+
+        // Kiểm tra xem Bundle có tồn tại hay không
+        if (getArguments() != null) {
+            // Nhận dữ liệu từ Bundle
+            Home home = (Home) getArguments().getSerializable("home");
+
+            // Sử dụng dữ liệu 'home' như mong muốn
+            // ...
+        }
+
         return binding.getRoot();
     }
 
