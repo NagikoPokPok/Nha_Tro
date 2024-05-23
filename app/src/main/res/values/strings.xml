@@ -131,4 +131,7 @@
     <string name="ap_dung">Áp dụng</string>
     <string name="so_luong_nguoi_dang_o">Số lượng người đang ở</string>
     <string name="gia_thue_phong">Giá thuê phòng</string>
+    <string name="khach">Khách</string>
+    <string name="hoa_don">Hóa đơn</string>
+    <string name="hop_dong">Hợp đồng</string>
 </resources>

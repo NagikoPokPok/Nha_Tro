@@ -6,7 +6,7 @@
             <corners android:radius="0dp" /> <!-- Điều chỉnh bán kính góc cong tùy theo nhu cầu -->
             <padding
                 android:left="0dp"
-                android:top="1dp"
+                android:top="2dp"
                 android:right="0dp"
                 android:bottom="0dp" />
         </shape>
