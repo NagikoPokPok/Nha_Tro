@@ -1,6 +1,5 @@
 package edu.poly.nhtr.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,19 +14,34 @@ import edu.poly.nhtr.fragment.IndexFragment;
 import edu.poly.nhtr.fragment.RoomFragment;
 import edu.poly.nhtr.fragment.ServiceFragment;
 import edu.poly.nhtr.fragment.StatisticFragment;
+import edu.poly.nhtr.models.Home;
 
 public class MainRoomActivity extends AppCompatActivity {
 
-    private String home="";
-
-    ActivityMainRoomBinding binding;
     private static final String CURRENT_FRAGMENT_TAG = "CURRENT_FRAGMENT_TAG";
+    ActivityMainRoomBinding binding;
+    private String home = "";
     private String currentFragmentTag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        // Nhận dữ liệu từ Intent Home
+        Home home = (Home) getIntent().getSerializableExtra("home");
+
+        // Tạo Bundle chứa dữ liệu Home
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("home", home);
+
+        // Tạo instance của RoomFragment
+        RoomFragment roomFragment = new RoomFragment();
+
+        // Đặt Bundle vào Fragment
+        roomFragment.setArguments(bundle);
 
         if (savedInstanceState != null) {
             currentFragmentTag = savedInstanceState.getString(CURRENT_FRAGMENT_TAG);
@@ -35,9 +49,9 @@ public class MainRoomActivity extends AppCompatActivity {
             if (currentFragment != null) {
                 replaceFragment(currentFragment, currentFragmentTag);
             }
-        }  else {
-                replaceFragment(new RoomFragment(), "RoomFragment");
-            }
+        } else {
+            replaceFragment(roomFragment, "RoomFragment");
+        }
 
         // Load bottom menu
         setClickNavigationBottomMenu();
@@ -79,7 +93,7 @@ public class MainRoomActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void getHomeId(){
+    private void getHomeId() {
         home = getIntent().getStringExtra("home");
     }
 
