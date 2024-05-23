@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout_room"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/SCREEN_WHITE"
@@ -10,13 +11,13 @@
     <FrameLayout
         android:id="@+id/frm_top_main"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="90dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-        
+
+
         <ImageView
-            android:contentDescription="@string/khung_tren"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:background="@drawable/custom_main" />
@@ -36,23 +37,24 @@
                 android:src="@drawable/back_btn"
                 style="@style/BUTTON_NO_BORDER"
                 android:padding="5dp" />
+
         </FrameLayout>
 
         <TextView
-            android:id="@+id/room_name"
-            style="@style/TEXT_BOLD_3"
+            android:id="@+id/nameHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="70dp"
-            android:ellipsize="end"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="40dp"
             android:maxLines="1"
-            android:textSize="20sp" />
+            android:ellipsize="end"
+            style="@style/TEXT_BOLD_3"
+            android:textSize="25sp"
+            />
 
         <ImageView
             android:contentDescription="@string/menu"
-            android:id="@+id/img_menu_edit_delete"
+            android:id="@+id/menu"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_menu"
@@ -62,11 +64,11 @@
             android:layout_marginEnd="20dp"/>
     </FrameLayout>
 
-
     <FrameLayout
         android:id="@+id/frm_menu_tools"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:layout_marginTop="5dp"
         android:foregroundGravity="center"
         android:padding="10dp"
         android:visibility="visible"
@@ -81,11 +83,10 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/ll_search_room"
-                android:layout_width="0dp"
+                android:id="@+id/ll_search_home"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
-                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -110,7 +111,6 @@
                         android:id="@+id/edt_search_room"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/tim_kiem_phong_tro"
                         android:imeOptions="actionGo"
                         android:paddingStart="20dp"
                         android:paddingEnd="50dp" />
@@ -132,9 +132,8 @@
                     app:riv_oval="true" />
 
                 <ImageButton
-                    android:contentDescription="@string/Loc"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="24dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_filter"
                     android:backgroundTint="@color/white" />
@@ -155,9 +154,8 @@
                     app:riv_oval="true" />
 
                 <ImageButton
-                    android:contentDescription="@string/Sap_xep"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_sort"
                     android:backgroundTint="@color/white" />
@@ -169,20 +167,19 @@
 
     </FrameLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_marginTop="170dp"
         android:layout_marginBottom="15dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/btn_add_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools">
+        app:layout_constraintTop_toBottomOf="@id/frm_top_main">
 
         <ImageView
-            android:id="@+id/img_add_home"
+            android:id="@+id/img_add_room"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
@@ -204,83 +201,50 @@
 
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/layout_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/btn_add_room"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools">
-
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/img_no_data" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="@string/khong_co_du_lieu"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="18sp" />
-
-
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homesRecyclerView"
+        android:id="@+id/roomsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="170dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="60dp"
         android:clipToPadding="false"
         android:orientation="vertical"
         android:overScrollMode="never"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="@id/btn_add_room"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/frm_top_main"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btn_add_room"
+        android:layout_marginBottom="35dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/frm_top_main"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/frm_menu_tools" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
 
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_room"
         style="@style/BUTTON"
         android:layout_width="150dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="20dp"
         android:text="@string/phong"
         android:textSize="20sp"
         app:backgroundTint="@null"
         app:icon="@drawable/icon_add"
         app:iconGravity="textStart"
-        app:iconSize="20dp"
+        app:iconSize="29dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"

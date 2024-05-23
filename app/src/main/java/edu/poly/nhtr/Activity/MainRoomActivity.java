@@ -1,5 +1,6 @@
 package edu.poly.nhtr.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import edu.poly.nhtr.fragment.StatisticFragment;
 
 public class MainRoomActivity extends AppCompatActivity {
 
+    private String home="";
 
     ActivityMainRoomBinding binding;
     private static final String CURRENT_FRAGMENT_TAG = "CURRENT_FRAGMENT_TAG";
@@ -76,4 +78,9 @@ public class MainRoomActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment_container, fragment, tag);
         fragmentTransaction.commit();
     }
+
+    private void getHomeId(){
+        home = getIntent().getStringExtra("home");
+    }
+
 }

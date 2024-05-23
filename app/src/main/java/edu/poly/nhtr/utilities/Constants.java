@@ -18,6 +18,10 @@ public class Constants {
     public static final String KEY_NUMBER_OF_ROOMS= "numberOfRooms";
     public static final String KEY_NUMBER_OF_ROOMS_AVAILABLE = "numberOfRoomsAvailable";
     public static final String KEY_HOME_ID = "homeId";
+    public static final String KEY_COLLECTION_ROOMS = "rooms";
+    public static final String KEY_NAME_ROOM= "nameRoom";
+    public static final String KEY_PRICE= "price";
+    public static final String KEY_DESCRIBE= "describe";
 
     public static final String KEY_TIMESTAMP = "timestamp";
 

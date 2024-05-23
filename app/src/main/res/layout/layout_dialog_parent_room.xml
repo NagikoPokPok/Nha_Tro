@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txt_title_dialog"
+        android:id="@+id/txt_title_dialog_room"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
@@ -25,10 +25,10 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/txt_name_home"
+            android:id="@+id/txt_name_room"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tên nhà trọ"
+            android:text="Tên phòng trọ"
             android:fontFamily="@font/inter_medium"
             android:textSize="14sp"
             android:textColor="@color/black"
@@ -36,7 +36,7 @@
             />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_name_home"
+            android:id="@+id/layout_name_room"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintEnabled="false"
@@ -49,9 +49,71 @@
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_name_home"
+                android:id="@+id/edt_name_room"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionNext" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/txt_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Giá phòng"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginStart="7dp"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            android:layout_marginTop="5dp"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/txt_describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mô tả"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_marginStart="7dp"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            android:layout_marginTop="5dp"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_describe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="80dp"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,36 +121,7 @@
 
 
 
-        <TextView
-            android:id="@+id/txt_address_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Địa chỉ"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/inter_medium"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="7dp"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_address_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintEnabled="false"
-            android:layout_marginTop="5dp"
-            app:boxBackgroundMode="outline"
-            app:endIconMode="clear_text"
-            app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusTopStart="20dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_address_home"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
 
 
         <LinearLayout
@@ -96,7 +129,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="15dp">
 
             <Button
                 android:id="@+id/btn_cancel"
@@ -113,10 +146,11 @@
                 android:fontFamily="@font/inter_medium"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_home"
+                android:id="@+id/btn_add_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:text="Tạo"
                 app:iconGravity="textStart"
                 android:textSize="16sp"
                 android:fontFamily="@font/inter_medium"
@@ -129,16 +163,10 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
+                android:layout_marginStart="-75dp"
                 android:visibility="invisible"/>
 
         </LinearLayout>
-
-
-
-
-
-
 
     </LinearLayout>
 
