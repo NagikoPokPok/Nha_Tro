@@ -115,7 +115,10 @@ public class RoomFragment extends Fragment implements RoomListener {
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         dialog = new Dialog(requireActivity());
         Home home = (Home) getArguments().getSerializable("home");
-        home.getIdHome();
+        String homeId = home.getIdHome();
+        String nameHome = home.getNameHome();
+        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
+        preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);

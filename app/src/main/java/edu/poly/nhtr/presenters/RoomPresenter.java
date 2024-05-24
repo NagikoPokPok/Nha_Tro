@@ -30,6 +30,7 @@ public class RoomPresenter {
     public void setCount(int count) {
         this.count = count;
     }
+
     public void addRoom(Room room) {
         if (room.getNameRoom().isEmpty()) {
             roomListener.showErrorMessage("Nhập tên phòng trọ", R.id.layout_name_room);
