@@ -76,7 +76,12 @@
         android:layout_marginTop="100dp"
         app:tabIndicatorHeight="0dp"
         app:tabMode="fixed"
-        app:tabRippleColor="@null">
+        app:tabRippleColor="@null"
+        android:background="@drawable/tab_background"
+        app:tabBackground="@drawable/tab_background_selector"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/colorGray"
+        >
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
