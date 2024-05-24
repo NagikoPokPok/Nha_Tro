@@ -98,8 +98,8 @@ public class RoomPresenter {
                             List<Room> rooms = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Room room = new Room();
-                                room.nameRoom = document.getString(Constants.KEY_NAME_HOME);
-                                room.price = document.getString(Constants.KEY_ADDRESS_HOME);
+                                room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
+                                room.price = document.getString(Constants.KEY_PRICE);
                                 room.describe = document.getString(Constants.KEY_DESCRIBE);
                                 room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 room.roomId = document.getId();

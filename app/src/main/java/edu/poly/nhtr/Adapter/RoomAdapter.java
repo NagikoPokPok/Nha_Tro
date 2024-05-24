@@ -61,6 +61,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             binding.txtTrangThaiThanhToan.setText(room.status);
             binding.txtSoNguoiDangO.setText(room.numberOfMemberLiving);
             binding.txtPrice.setText(room.price);
+            binding.txtDescribe.setText(room.describe);
             binding.txtOrdinalNumber.setText(String.valueOf(position + 1));
 //            binding.getRoot().setOnClickListener(new View.OnClickListener() {
 //                @Override
