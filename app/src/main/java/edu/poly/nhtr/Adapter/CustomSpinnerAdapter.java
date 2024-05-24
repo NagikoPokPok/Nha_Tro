@@ -11,9 +11,10 @@ import android.widget.TextView;
 import edu.poly.nhtr.R;
 
 public class CustomSpinnerAdapter extends BaseAdapter {
-    private Context context;
-    private String[] items;
+    private final Context context;
+    private final String[] items;
     private int selectedPosition = -1;
+    private int dropDownResource;
 
     public CustomSpinnerAdapter(Context context, String[] items) {
         this.context = context;
@@ -45,12 +46,14 @@ public class CustomSpinnerAdapter extends BaseAdapter {
         ImageView checkmark = convertView.findViewById(R.id.checkmark_spinner);
 
         text.setText(items[position]);
-        if (position == selectedPosition) {
-            checkmark.setVisibility(View.VISIBLE);
-            checkmark.setColorFilter(context.getResources().getColor(android.R.color.holo_green_dark));
-        } else {
-            checkmark.setVisibility(View.GONE);
-        }
+//        if (position == selectedPosition) {
+//            checkmark.setVisibility(View.VISIBLE);
+//            checkmark.setColorFilter(context.getResources().getColor(android.R.color.holo_green_light));
+//        } else {
+////            checkmark.setVisibility(View.GONE);
+//            checkmark.setVisibility(View.VISIBLE);
+//            checkmark.setColorFilter(context.getResources().getColor(android.R.color.darker_gray));
+//        }
 
         return convertView;
     }
@@ -58,5 +61,32 @@ public class CustomSpinnerAdapter extends BaseAdapter {
     public void setSelectedPosition(int position) {
         selectedPosition = position;
         notifyDataSetChanged();
+
+
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(dropDownResource, parent, false);
+        }
+
+        TextView text = convertView.findViewById(R.id.text);
+        ImageView checkmark = convertView.findViewById(R.id.checkmark_spinner);
+
+        text.setText(items[position]);
+        if (position == selectedPosition) {
+            checkmark.setVisibility(View.VISIBLE);
+            checkmark.setColorFilter(context.getResources().getColor(android.R.color.holo_green_light));
+        } else {
+            checkmark.setVisibility(View.VISIBLE);
+            checkmark.setColorFilter(context.getResources().getColor(android.R.color.darker_gray));
+        }
+
+        return convertView;
+    }
+
+    public void setDropDownViewResource(int resource) {
+        this.dropDownResource = resource;
     }
 }

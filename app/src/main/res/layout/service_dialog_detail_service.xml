@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+    <include layout="@layout/service_dialog_detail_parent"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="-55dp"
+        android:layout_marginBottom="15dp">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_gravity="left"
+            android:text="Xóa dịch vụ"
+            android:textColor="@color/white"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@color/colorButton"
+            android:layout_marginEnd="18dp"
+            android:fontFamily="@font/inter_medium"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_home"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right"
+            android:text="Sửa dịch vụ"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:layout_marginStart="18dp"
+            android:fontFamily="@font/inter_medium"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@null"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

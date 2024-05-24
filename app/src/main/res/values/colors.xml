@@ -29,4 +29,8 @@
 <!--	Dark mode-->
 	<color name="grey">#aaa</color>
 	<color name="darkGrey">#121212</color>
+
+	<!-- Màu checkmark -->
+	<color name="checkedTrue">#24FF00</color>
+	<color name="checkedFalse">#6C6868</color>
 </resources>

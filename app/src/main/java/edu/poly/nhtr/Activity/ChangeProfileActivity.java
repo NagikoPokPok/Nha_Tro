@@ -63,6 +63,9 @@ public class ChangeProfileActivity extends AppCompatActivity implements ChangePr
         preferenceManager = new PreferenceManager(getApplicationContext());
         presenter = new ChangeProfilePresenter(this, this);
 
+        //Lấy ảnh
+        encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
+
         setListener();
 
         //warning = findViewById(R.id.txt_warning1);

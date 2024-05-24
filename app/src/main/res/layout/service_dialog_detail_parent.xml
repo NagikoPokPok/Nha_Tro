@@ -5,20 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white_corner_16"
-    android:layout_margin="16dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
+    android:layout_marginTop="15dp"
+    android:paddingBottom="60dp"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
+        android:layout_margin="9dp"
         android:orientation="vertical">
-        <ImageButton
-            android:id="@+id/btn_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@drawable/icon_exit"
-            android:background="@null"
-            android:layout_gravity="right"/>
+
         <ImageView
             android:id="@+id/img_service"
             android:layout_width="60dp"
@@ -61,9 +58,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/spinner_backgroud"
-            android:layout_marginTop="6dp"
             android:padding="12dp"
-            android:layout_weight="1" />
+            android:layout_centerInParent="true"
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="6dp" />
 
 
         <View
@@ -96,15 +94,21 @@
 
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edt_name_home"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_unit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/custom_edittext"
-            android:hint="Ví dụ: Xe, cái,..."
-            android:imeOptions="actionNext"
-            android:padding="9dp" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/custom_edittext"
+
+                android:visibility="visible"
+                android:imeOptions="actionNext"
+                android:padding="9dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <View
             android:id="@+id/view2"
@@ -137,12 +141,13 @@
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_fee"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:suffixText="đ">
 
             <com.google.android.material.textfield.TextInputEditText
-
+                android:id="@+id/edt_fee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -171,24 +176,19 @@
             android:fontFamily="@font/inter_medium"
             />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_note"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/custom_edittext"
+            android:imeOptions="actionNext"
             android:hint="Viết những lưu ý của bạn ta đây"
-            android:textColorHint="@color/colorGray">
-
-            <com.google.android.material.textfield.TextInputEditText
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/custom_edittext"
-                android:imeOptions="actionNext"
-                android:padding="9dp"
-                android:minLines="3"
-                android:maxLines="6"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:textColorHint="@color/colorGray"
+            android:padding="9dp"
+            android:minLines="3"
+            android:maxLines="6"
+            />
         <View
             android:id="@+id/view4"
             android:layout_width="match_parent"
@@ -205,71 +205,44 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/inter_medium"
             />
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_apllyFor"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="180dp"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
 
 
-            <CheckBox
-                android:id="@+id/checkBox1"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                app:buttonTint="@null"
-                style="@style/CustomCheckBox"
-                android:checked="true"
-                android:paddingLeft="5dp"
-                android:text="Phòng 101" />
-            <CheckBox
-                android:id="@+id/checkBox2"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                app:buttonTint="@null"
-                style="@style/CustomCheckBox"
-                android:checked="false"
-                android:paddingLeft="5dp"
-                android:text="Phòng 102" />
-        </LinearLayout>
+<!--            <CheckBox-->
+<!--                android:id="@+id/checkBox1"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="30dp"-->
+<!--                app:buttonTint="@null"-->
+<!--                style="@style/CustomCheckBox"-->
+<!--                android:checked="true"-->
+<!--                android:paddingLeft="5dp"-->
+<!--                android:text="Phòng 101" />-->
+<!--            <CheckBox-->
+<!--                android:id="@+id/checkBox2"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="30dp"-->
+<!--                app:buttonTint="@null"-->
+<!--                style="@style/CustomCheckBox"-->
+<!--                android:checked="false"-->
+<!--                android:paddingLeft="5dp"-->
+<!--                android:text="Phòng 102" />-->
+<!--        </LinearLayout>-->
 
 
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp">
-
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:layout_gravity="left"
-            android:text="Xóa dịch vụ"
-            android:textColor="@color/white"
-            app:iconGravity="textStart"
-            android:textSize="16sp"
-            android:background="@drawable/custom_button"
-            app:backgroundTint="@color/colorButton"
-            android:layout_marginEnd="18dp"
-            android:fontFamily="@font/inter_medium"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_home"
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:layout_gravity="right"
-            android:text="Sửa dịch vụ"
-            app:iconGravity="textStart"
-            android:textSize="16sp"
-            android:layout_marginStart="18dp"
-            android:fontFamily="@font/inter_medium"
-            android:background="@drawable/custom_button"
-            app:backgroundTint="@null"
-            />
 
     </LinearLayout>
+
 
 </LinearLayout>

@@ -49,7 +49,7 @@
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edt_serviceName"
+            android:id="@+id/edt_newServiceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -58,6 +58,15 @@
             android:imeOptions="actionNext"
             android:padding="9dp" />
 
+        <TextView
+            android:id="@+id/warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" x Bạn phải nhập tên dịch vụ"
+            android:textColor="#ED1010"
+            android:layout_marginTop="9dp"
+            android:layout_marginStart="15dp"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,7 +87,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/img_service"
+            android:id="@+id/img_newService"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/image_service"
@@ -93,7 +102,7 @@
         android:layout_marginBottom="15dp">
 
         <Button
-            android:id="@+id/btn_cancel"
+            android:id="@+id/btn_cancel_addNewService"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
@@ -107,7 +116,7 @@
             android:fontFamily="@font/inter_medium"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_home"
+            android:id="@+id/btn_continue_addNewService"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
