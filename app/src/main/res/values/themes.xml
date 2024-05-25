@@ -165,6 +165,16 @@
         <item name="itemIconTint">@color/custom_color</item>
     </style>
 
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
+    </style>
+
+    <!-- Định nghĩa style cho văn bản của tab -->
+    <style name="CustomTabTextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <!--    Theme cho chế độ ngày/đêm-->
     <style name="nightModeSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/night_mode</item>

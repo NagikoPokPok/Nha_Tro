@@ -1,10 +1,6 @@
 package edu.poly.nhtr.fragment;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,12 +9,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -30,21 +20,19 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethod;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import androidx.appcompat.widget.PopupMenu;
-
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -76,20 +64,17 @@ import edu.poly.nhtr.utilities.PreferenceManager;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment implements HomeListener {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
     //
     private View view;
-
     private PreferenceManager preferenceManager;
     private HomeAdapter.HomeViewHolder viewHolder;
     private FragmentHomeBinding binding;
     private HomePresenter homePresenter;
     private Dialog dialog;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -137,7 +122,6 @@ public class HomeFragment extends Fragment implements HomeListener {
                 binding.rootLayout.requestFocus();
             }
         });
-
 
 
         editFonts();
@@ -200,8 +184,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.edtSearchHome.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus)
-                {
+                if (hasFocus) {
                     binding.layoutSearchHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
@@ -234,8 +217,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                 String searchNameHome = Objects.requireNonNull(Objects.requireNonNull(binding.edtSearchHome.getText()).toString().trim());
                 homePresenter.searchHome(searchNameHome);
 
-                if(searchNameHome.isEmpty())
-                {
+                if (searchNameHome.isEmpty()) {
                     binding.edtSearchHome.clearFocus();
                 }
             }
@@ -533,28 +515,22 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
         homes.sort(Comparator.comparing(obj -> obj.dateObject));
 
-        if(Objects.equals(action,"init") || Objects.equals(action,"search"))
-        {
+        if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
             binding.homesRecyclerView.smoothScrollToPosition(0);
-        }
-        else if(Objects.equals(action, "add"))
-        {
+        } else if (Objects.equals(action, "add")) {
             homesAdapter.addHome(homes);
             homesAdapter.notifyItemInserted(homesAdapter.getLastActionPosition());
             binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
-        }else if(Objects.equals(action, "update"))
-        {
+        } else if (Objects.equals(action, "update")) {
             int position = homePresenter.getPosition();
             homesAdapter.updateHome(position);
             homesAdapter.notifyItemChanged(homesAdapter.getLastActionPosition());
             binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
-        }else if(Objects.equals(action, "delete"))
-        {
+        } else if (Objects.equals(action, "delete")) {
             int position = homePresenter.getPosition();
-            if(position == 1)
-            {
+            if (position == 1) {
                 binding.homesRecyclerView.smoothScrollToPosition(0);
-            }else {
+            } else {
                 homesAdapter.removeHome(position);
                 homesAdapter.notifyItemRemoved(homesAdapter.getLastActionPosition());
                 binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
@@ -585,33 +561,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         return isAdded();
     }
 
-    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private final ImageView imageView;
-
-        public DownloadImageTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String imageUrl = urls[0];
-            Bitmap bitmap = null;
-            try {
-                InputStream in = new java.net.URL(imageUrl).openStream();
-                bitmap = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", Objects.requireNonNull(e.getMessage()));
-            }
-            return bitmap;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            if (result != null) {
-                imageView.setImageBitmap(result);
-            }
-        }
-    }
-
-
     @Override
     public void onHomeClicked(Home home) {
         binding.edtSearchHome.clearFocus();
@@ -619,7 +568,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         intent.putExtra("home", home);
         startActivity(intent);
     }
-
 
     @Override
     public void openPopup(View view, Home home, ItemContainerHomesBinding binding) {
@@ -655,7 +603,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         popupMenu.inflate(R.menu.menu_edit_delete);
         popupMenu.show();
     }
-
 
     private void openDeleteHomeDialog(int gravity, Home home) {
 
@@ -711,7 +658,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
     }
 
-
     @Override
     public void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home) {
         setupDialog(R.layout.layout_dialog_confirm_update_home, Gravity.CENTER);
@@ -744,8 +690,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         layout_name_home.setError(message);
 
     }
-
-
 
     private void openUpdateHomeDialog(int gravity, Home home) {
 
@@ -864,6 +808,32 @@ public class HomeFragment extends Fragment implements HomeListener {
             window.setAttributes(windowAttributes);
             dialog.setCancelable(Gravity.CENTER == gravity);
             dialog.show();
+        }
+    }
+
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private final ImageView imageView;
+
+        public DownloadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String imageUrl = urls[0];
+            Bitmap bitmap = null;
+            try {
+                InputStream in = new java.net.URL(imageUrl).openStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", Objects.requireNonNull(e.getMessage()));
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                imageView.setImageBitmap(result);
+            }
         }
     }
 

@@ -10,10 +10,10 @@ import edu.poly.nhtr.models.OTP;
 
 
 public class VerifyOTPPresenter {
-    private CountDownTimer countDownTimer;
     final private VerifyOTPInterface view;
-    private int random = 0;
     final private int resendTime = 60;
+    private CountDownTimer countDownTimer;
+    private int random = 0;
 
 
     public VerifyOTPPresenter(VerifyOTPInterface view) {
@@ -21,8 +21,7 @@ public class VerifyOTPPresenter {
 
     }
 
-    public void verifyOTP(OTP otp)
-    {
+    public void verifyOTP(OTP otp) {
         view.showLoading();
         if (otp.isEmpty()) {
             view.showToast("Vui lòng nhập đủ OTP");
@@ -49,17 +48,17 @@ public class VerifyOTPPresenter {
         //"iuxq ggco nwld zvyx
     }
 
-    public void startCountDownTimer()
-    {
+    public void startCountDownTimer() {
         view.setTextEnabled(false);
         view.setBeforeTextColor();
-        countDownTimer =new CountDownTimer(resendTime*1000, 100){
+        countDownTimer = new CountDownTimer(resendTime * 1000, 100) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                view.setText("Gửi lại OTP ("+(millisUntilFinished/1000)+")");
+                view.setText("Gửi lại OTP (" + (millisUntilFinished / 1000) + ")");
 
             }
+
             @Override
             public void onFinish() {
                 view.setTextEnabled(true);

@@ -3,7 +3,6 @@ package edu.poly.nhtr.presenters;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Patterns;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -31,9 +30,9 @@ import edu.poly.nhtr.utilities.Constants;
 
 public class SignUpPresenter {
 
-    private SignUpInterface view;
     private static final String TAG = "SignUpActivity";
     private final int RC_SIGN_IN = 20;
+    private final SignUpInterface view;
 
     public SignUpPresenter(SignUpInterface view) {
         this.view = view;
@@ -90,11 +89,11 @@ public class SignUpPresenter {
             view.showErrorMessage("Hãy nhập mật khẩu");
             view.setPasswordErrorMessage("Không được bỏ trống");
             return false;
-        } else if (password.length() < 8 || password.length() > 32 || !isPwdContainsSpeChar ) {
+        } else if (password.length() < 8 || password.length() > 32 || !isPwdContainsSpeChar) {
             view.showErrorMessage("Hãy nhập mật khẩu");
             view.setPasswordErrorMessage("Mật khẩu không hợp lệ");
             return false;
-        }else if (TextUtils.isEmpty(confirmPassword)) {
+        } else if (TextUtils.isEmpty(confirmPassword)) {
             view.showErrorMessage("Xác nhận mật khẩu");
             view.setConfirmPasswordErrorMessage("Không được bỏ trống");
             return false;
@@ -107,8 +106,7 @@ public class SignUpPresenter {
     }
 
     public void handlePasswordChanged(String password, String confirmPassword) {
-        if(!confirmPassword.isEmpty() && !confirmPassword.equals(password))
-        {
+        if (!confirmPassword.isEmpty() && !confirmPassword.equals(password)) {
             view.setConfirmPasswordText("");
         }
         if (password.length() < 8) {
@@ -210,21 +208,17 @@ public class SignUpPresenter {
                 });
     }
 
-    public void handleNameChanged(String name)
-    {
-        if(name.length()>=0) {
+    public void handleNameChanged(String name) {
+        if (name.length() >= 0) {
             view.setNameErrorEnabled(false);
         }
     }
 
-    public void handleEmailChanged(String email)
-    {
-        if(email.length()>=0) {
+    public void handleEmailChanged(String email) {
+        if (email.length() >= 0) {
             view.setEmailErrorEnabled(false);
         }
     }
-
-
 
 
 }

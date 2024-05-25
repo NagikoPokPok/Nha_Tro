@@ -17,12 +17,6 @@
         <activity
             android:name=".Activity.MainDetailedRoomActivity"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".Activity.Service.MainActivity2"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".service_dialog_detail"-->
-<!--            android:exported="false" />-->
         <activity
             android:name=".Activity.MainRoomActivity"
             android:exported="true" />

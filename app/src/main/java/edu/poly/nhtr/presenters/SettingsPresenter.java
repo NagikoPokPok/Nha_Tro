@@ -43,8 +43,8 @@ public class SettingsPresenter {
         this.preferenceManager = preferenceManager;
     }
 
-    private Bitmap getConversionImage(String encodedImage){
-        byte[] bytes = Base64.decode(encodedImage,Base64.DEFAULT);
+    private Bitmap getConversionImage(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         int width = 150;
         int height = 150;
@@ -54,18 +54,18 @@ public class SettingsPresenter {
 
     public void loadUserDetails() {
         // Code từ loadUserDetails() của SettingFragment
-            String name = preferenceManager.getString(Constants.KEY_NAME);
-            String phoneNumber = preferenceManager.getString(Constants.KEY_PHONE_NUMBER);
-            Bitmap profileImage = null;
-            String encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
-            if (encodedImage != null && !encodedImage.isEmpty()) {
-                try {
-                    profileImage = getConversionImage(encodedImage);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        String name = preferenceManager.getString(Constants.KEY_NAME);
+        String phoneNumber = preferenceManager.getString(Constants.KEY_PHONE_NUMBER);
+        Bitmap profileImage = null;
+        String encodedImage = preferenceManager.getString(Constants.KEY_IMAGE);
+        if (encodedImage != null && !encodedImage.isEmpty()) {
+            try {
+                profileImage = getConversionImage(encodedImage);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            view.loadUserDetails(name, phoneNumber, profileImage); // Truyền dữ liệu từ Presenter tới Fragment
+        }
+        view.loadUserDetails(name, phoneNumber, profileImage); // Truyền dữ liệu từ Presenter tới Fragment
     }
 
     public void checkAccount() {
@@ -103,8 +103,28 @@ public class SettingsPresenter {
         }
     }
 
+    public void switchModeTheme() {
+        sharedPreferences = context.getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        boolean nightMode = sharedPreferences.getBoolean("nightMode", false);
+        view.setNightMode(nightMode);
+
+        view.setSwitchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nightMode) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+                editor = context.getSharedPreferences("MODE", Context.MODE_PRIVATE).edit();
+                editor.putBoolean("nightMode", !nightMode);
+                editor.apply();
+            }
+        });
+    }
+
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
+        private final ImageView imageView;
 
         public DownloadImageTask(ImageView imageView) {
             this.imageView = imageView;
@@ -128,25 +148,5 @@ public class SettingsPresenter {
                 imageView.setImageBitmap(result);
             }
         }
-    }
-
-    public void switchModeTheme() {
-        sharedPreferences = context.getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        boolean nightMode = sharedPreferences.getBoolean("nightMode", false);
-        view.setNightMode(nightMode);
-
-        view.setSwitchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (nightMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-                editor = context.getSharedPreferences("MODE", Context.MODE_PRIVATE).edit();
-                editor.putBoolean("nightMode", !nightMode);
-                editor.apply();
-            }
-        });
     }
 }

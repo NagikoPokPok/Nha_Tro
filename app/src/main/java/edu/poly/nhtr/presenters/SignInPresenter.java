@@ -1,12 +1,9 @@
 package edu.poly.nhtr.presenters;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,40 +26,36 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
 
-import edu.poly.nhtr.Activity.MainActivity;
 import edu.poly.nhtr.Activity.SignInActivity;
-import edu.poly.nhtr.Activity.SignUpActivity;
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.databinding.ActivitySignInBinding;
 import edu.poly.nhtr.interfaces.SignInInterface;
-import edu.poly.nhtr.interfaces.SignUpInterface;
 import edu.poly.nhtr.models.User;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class SignInPresenter {
-    private SignInActivity signInActivity;
-    private PreferenceManager preferenceManager;
-    private SignInInterface view;
-    private FirebaseAuth mAuth;
-    private GoogleSignInClient googleSignInClient;
     private static final String TAG = "SignInActivity";
     private final int RC_SIGN_IN = 20;
+    private final SignInActivity signInActivity;
+    private final PreferenceManager preferenceManager;
+    private final SignInInterface view;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient googleSignInClient;
 
-    public void signIn(User user){
-        if(isValidSignInDetails(user.getEmail(), user.getPassword())){
+    public SignInPresenter(SignInInterface view, SignInActivity signInActivity) {
+        this.signInActivity = signInActivity;
+        this.view = view;
+        this.preferenceManager = signInActivity.preferenceManager;
+    }
+
+    public void signIn(User user) {
+        if (isValidSignInDetails(user.getEmail(), user.getPassword())) {
             check(user);
         }
     }
 
-    public SignInPresenter(SignInInterface view, SignInActivity signInActivity) {
-        this.signInActivity =signInActivity;
-        this.view = view;
-        this.preferenceManager=signInActivity.preferenceManager;
-    }
-
-     public void reload() {
+    public void reload() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
@@ -79,14 +72,15 @@ public class SignInPresenter {
             view.showToast("Tài khoản chưa được đăng nhập");
         }
     }
-        void check(User user){
+
+    void check(User user) {
         view.loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .whereEqualTo(Constants.KEY_EMAIL, user.getEmail())
                 .get()
-                .addOnCompleteListener(task-> {
-                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size()>0){
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                         DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
 
                         String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
@@ -108,7 +102,8 @@ public class SignInPresenter {
 
                             try {
                                 preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
-                            } catch (Exception ex){}
+                            } catch (Exception ex) {
+                            }
                             view.entryMain();
 
                             mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
@@ -132,14 +127,15 @@ public class SignInPresenter {
                             view.loading(false);
                             view.showToast("Sai tài khoản hoặc mật khẩu");
                         }
-                    }else {
+                    } else {
                         view.loading(false);
                         view.showToast("Sai tài khoản hoặc mật khẩu");
                     }
                 });
     }
-    private Boolean isValidSignInDetails(String email, String password){
-        if(TextUtils.isEmpty(email)) {
+
+    private Boolean isValidSignInDetails(String email, String password) {
+        if (TextUtils.isEmpty(email)) {
             view.showToast("Vui lòng nhập email");
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -148,7 +144,7 @@ public class SignInPresenter {
         } else if (TextUtils.isEmpty(password)) {
             view.showToast("Vui lòng nhập mật khẩu");
             return false;
-        } else  {
+        } else {
             return true;
         }
     }
@@ -190,7 +186,6 @@ public class SignInPresenter {
     }
 
 
-
     public void firebaseAuth(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         FirebaseAuth.getInstance().signInWithCredential(credential)
@@ -216,7 +211,6 @@ public class SignInPresenter {
                     }
                 });
     }
-
 
 
 }
