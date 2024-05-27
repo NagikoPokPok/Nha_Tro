@@ -170,10 +170,28 @@ public class HomeFragment extends Fragment implements HomeListener {
         });
 
 
+
+    }
+
+    private void openFilterHomeDialog() {
+        setupDialog(R.layout.layout_dialog_filter_home, Gravity.CENTER);
+        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void openSortHomeDialog() {
         setupDialog(R.layout.layout_dialog_sort_home, Gravity.CENTER);
+
+        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void customizeLayoutSearch() {
@@ -190,6 +208,19 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
         });
 
+        binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterHomeDialog();
+            }
+        });
+
+        binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterHomeDialog();
+            }
+        });
 
         binding.edtSearchHome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -509,7 +540,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     @Override
     public void addHome(List<Home> homes, String action) {
 
-        HomeAdapter homesAdapter = new HomeAdapter(homes, this);
+        HomeAdapter homesAdapter = new HomeAdapter(homes, this, this);
         binding.homesRecyclerView.setAdapter(homesAdapter);
 
         // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
@@ -835,6 +866,21 @@ public class HomeFragment extends Fragment implements HomeListener {
                 imageView.setImageBitmap(result);
             }
         }
+    }
+
+
+    @Override
+    public void hideFrameTop() {
+        binding.frmTopMain.setVisibility(View.GONE);
+        binding.frmMenuTools.setVisibility(View.GONE);
+        binding.btnAddHome.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFrameTop() {
+        binding.frmTopMain.setVisibility(View.VISIBLE);
+        binding.frmMenuTools.setVisibility(View.VISIBLE);
+        binding.btnAddHome.setVisibility(View.VISIBLE);
     }
 
 

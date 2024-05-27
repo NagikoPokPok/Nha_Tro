@@ -30,4 +30,6 @@ public interface HomeListener {
     void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home);
     void showErrorMessage(String message, int id);
     void noHomeData();
+    void hideFrameTop();
+    void showFrameTop();
 }
