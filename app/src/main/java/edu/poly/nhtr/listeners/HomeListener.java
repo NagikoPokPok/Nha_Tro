@@ -1,6 +1,8 @@
 package edu.poly.nhtr.listeners;
 
 
+import android.content.DialogInterface;
+import android.view.ActionMode;
 import android.view.View;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -32,4 +34,6 @@ public interface HomeListener {
     void noHomeData();
     void hideFrameTop();
     void showFrameTop();
+    void openDeleteListHomeDialog(List<Home> listHomes, ActionMode mode);
+    void dialogAndModeClose(ActionMode mode);
 }

@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Adapter;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -98,7 +99,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             mainViewModel.getText().observe((LifecycleOwner) fragment, new Observer<String>() {
                                 @Override
                                 public void onChanged(String s) {
-                                    mode.setTitle(String.format("%s Selected", s));
+                                    mode.setTitle(String.format("Đã chọn %s nhà", s));
                                 }
                             });
                             return true;
@@ -107,25 +108,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                         @Override
                         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                             int id = item.getItemId();
-                            if(id == R.id.menu_delete)
-                            {
-                                for(Home s: selectList)
+                            if (id == R.id.menu_delete) {
+                                if(selectList.isEmpty())
                                 {
-                                    //arrayList.remove(s);
+                                    homeListener.showToast("Please select home to delete");
                                 }
-                                if(homes.isEmpty())
-                                {
-                                    //tvEmpty.setVisibility(View.VISIBLE);
+                                else{
+                                    homeListener.openDeleteListHomeDialog(selectList, mode);
                                 }
-                                mode.finish();
-
-                            }else if(id == R.id.menu_select_all)
-                            {
-                                if(selectList.size() == homes.size())
-                                {
+                                // Không gọi mode.finish() ở đây để giữ ActionMode hoạt động.
+                            } else if (id == R.id.menu_select_all) {
+                                if (selectList.size() == homes.size()) {
                                     isSelectAll = false;
                                     selectList.clear();
-                                }else{
+                                } else {
                                     isSelectAll = true;
                                     selectList.clear();
                                     selectList.addAll(homes);
