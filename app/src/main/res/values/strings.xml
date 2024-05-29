@@ -134,4 +134,14 @@
     <string name="khach">Khách</string>
     <string name="hoa_don">Hóa đơn</string>
     <string name="hop_dong">Hợp đồng</string>
+    <string name="tong_so_thanh_vien">Tổng số thành viên:</string>
+    <string name="ho_ten">Họ tên</string>
+    <string name="cccd_cmnd">Số CCCD/CMND</string>
+    <string name="ngay_sinh">Ngày sinh</string>
+    <string name="gioi_tinh">Giới tính</string>
+    <string name="ngay_tao">Ngày tạo</string>
+    <string name="gia_phong">Giá phòng</string>
+    <string name="d_thang">đ/tháng</string>
+    <string name="ngay_het_han_hop_dong">Ngày hết hạn hợp đồng</string>
+    <string name="ngay_tra_tien_phong">Ngày trả tiền phòng</string>
 </resources>
