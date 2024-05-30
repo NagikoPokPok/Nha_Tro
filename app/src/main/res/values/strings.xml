@@ -144,4 +144,8 @@
     <string name="d_thang">đ/tháng</string>
     <string name="ngay_het_han_hop_dong">Ngày hết hạn hợp đồng</string>
     <string name="ngay_tra_tien_phong">Ngày trả tiền phòng</string>
+    <string name="han_thanh_toan">Hạn thanh toán:</string>
+    <string name="ngay">Ngày</string>
+    <string name="anh_mat_truoc_cccd">Ảnh mặt trước CCCD</string>
+    <string name="anh_mat_sau_cccd">Ảnh mặt sau CCCD</string>
 </resources>
