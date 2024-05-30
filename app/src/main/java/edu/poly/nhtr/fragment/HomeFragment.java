@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,7 @@ import com.google.firebase.firestore.DocumentReference;
 import java.io.InputStream;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainRoomActivity;
@@ -170,10 +173,28 @@ public class HomeFragment extends Fragment implements HomeListener {
         });
 
 
+
+    }
+
+    private void openFilterHomeDialog() {
+        setupDialog(R.layout.layout_dialog_filter_home, Gravity.CENTER);
+        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void openSortHomeDialog() {
         setupDialog(R.layout.layout_dialog_sort_home, Gravity.CENTER);
+
+        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void customizeLayoutSearch() {
@@ -190,6 +211,19 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
         });
 
+        binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterHomeDialog();
+            }
+        });
+
+        binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterHomeDialog();
+            }
+        });
 
         binding.edtSearchHome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -509,7 +543,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     @Override
     public void addHome(List<Home> homes, String action) {
 
-        HomeAdapter homesAdapter = new HomeAdapter(homes, this);
+        HomeAdapter homesAdapter = new HomeAdapter(homes, this, this);
         binding.homesRecyclerView.setAdapter(homesAdapter);
 
         // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
@@ -545,7 +579,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.imgAddHome.setVisibility(View.GONE);
         binding.homesRecyclerView.setVisibility(View.VISIBLE);
         binding.frmMenuTools.setVisibility(View.VISIBLE);
-        Log.d("MainActivity", "Adapter set successfully");
     }
 
     @Override
@@ -638,6 +671,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         setupDialog(id, Gravity.CENTER);
 
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -835,6 +869,62 @@ public class HomeFragment extends Fragment implements HomeListener {
                 imageView.setImageBitmap(result);
             }
         }
+    }
+
+
+    @Override
+    public void hideFrameTop() {
+        binding.frmTopMain.setVisibility(View.GONE);
+        binding.frmMenuTools.setVisibility(View.GONE);
+        binding.btnAddHome.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFrameTop() {
+        binding.frmTopMain.setVisibility(View.VISIBLE);
+        binding.frmMenuTools.setVisibility(View.VISIBLE);
+        binding.btnAddHome.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void openDeleteListHomeDialog(List<Home> listHomes, ActionMode mode) {
+        dialog.setContentView(R.layout.layout_dialog_delete_home);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+
+
+            dialog.show();
+        }
+
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_delete_home = dialog.findViewById(R.id.btn_delete_home);
+
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_delete_home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homePresenter.deleteListHomes(listHomes, mode);
+            }
+        });
+    }
+
+    @Override
+    public void dialogAndModeClose(ActionMode mode) {
+        dialog.dismiss();
+        mode.finish();
     }
 
 

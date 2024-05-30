@@ -2,38 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/SCREEN_WHITE"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/SCREEN_WHITE"
     android:orientation="vertical"
 
-    tools:context=".fragment.SettingFragment"
-    >
+    tools:context=".fragment.SettingFragment">
 
 
     <RelativeLayout
         android:id="@+id/layout_top"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/colorPrimary"
-        >
+        android:background="@color/colorPrimary">
 
         <ImageView
-            android:contentDescription="@string/nut_quay_ve"
+            android:id="@+id/btn_back"
+            style="@style/BUTTON_NO_BORDER"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
-            android:id="@+id/btn_back"
-            android:src="@drawable/back_btn"
-            style="@style/BUTTON_NO_BORDER"
-            android:padding="10dp" />
+            android:contentDescription="@string/nut_quay_ve"
+            android:padding="10dp"
+            android:src="@drawable/back_btn" />
 
         <TextView
+            style="@style/TEXT_BOLD_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/cai_dat"
-            style="@style/TEXT_BOLD_3"
             android:textSize="25sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -47,7 +45,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
+
             <FrameLayout
                 android:id="@+id/layoutImage"
                 android:layout_width="wrap_content"
@@ -55,8 +54,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="17dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                >
+                app:layout_constraintStart_toStartOf="parent">
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/img_profile"
@@ -67,57 +65,57 @@
                     app:riv_oval="true" />
 
                 <ImageView
-                    android:contentDescription="@string/khung_avatar"
                     android:id="@+id/img_ava"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:background="@drawable/round_back_avatar"
-                    android:src="@drawable/icon_user"
-                    android:padding="15dp"/>
+                    android:contentDescription="@string/khung_avatar"
+                    android:padding="15dp"
+                    android:src="@drawable/icon_user" />
 
             </FrameLayout>
 
             <TextView
                 android:id="@+id/edt_name"
+                style="@style/TEXT_MED"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:text="@string/ten"
-                style="@style/TEXT_MED"
                 android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/phoneNum"
+                style="@style/TEXT_MED"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/sdt"
-                style="@style/TEXT_MED"
-                android:textSize="18sp"
-                android:layout_gravity="center"/>
+                android:textSize="18sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/ChangeProfile"
+                style="@style/BUTTON"
                 android:layout_width="220dp"
                 android:layout_height="50dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:paddingStart="30dp"
-                style="@style/BUTTON"
+                android:paddingEnd="30dp"
                 android:text="@string/thay_doi_thong_tin"
-                android:textSize="16sp"
                 android:textAllCaps="false"
-                android:layout_gravity="center"
-                android:paddingEnd="30dp"/>
+                android:textSize="16sp" />
 
             <LinearLayout
+                style="@style/BACKGROUND_BUTTON"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/BACKGROUND_BUTTON"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical"
                 android:padding="15dp">
 
@@ -127,86 +125,87 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:contentDescription="Hình trăng"
-                        android:layout_width="40dp"
                         android:id="@+id/nightModeIcon"
+                        android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/icon_night"
                         android:background="@drawable/round_back_night_mode"
-                        android:padding="10dp"/>
+                        android:contentDescription="Hình trăng"
+                        android:padding="10dp"
+                        android:src="@drawable/icon_night" />
 
                     <TextView
-                        android:layout_marginStart="20dp"
+                        style="@style/TEXT_MED"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/nightModeIcon"
                         android:text="@string/che_do_ban_dem"
-                        style="@style/TEXT_MED"
-                        android:textStyle="bold"
                         android:textSize="18sp"
-                        android:layout_toEndOf="@id/nightModeIcon"/>
+                        android:textStyle="bold" />
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/nightMode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:thumb="@drawable/thumb"
-                        app:track="@drawable/track"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp"
-                        android:theme="@style/nightModeSwitch"/>
+                        android:theme="@style/nightModeSwitch"
+                        android:thumb="@drawable/thumb"
+                        app:track="@drawable/track" />
 
                 </RelativeLayout>
 
                 <!-- Thông báo-->
                 <RelativeLayout
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
                     <ImageView
-                        android:contentDescription="@string/bell"
-                        android:layout_width="40dp"
                         android:id="@+id/notification_icon"
+                        android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/notification"
                         android:background="@drawable/round_back_notification"
-                        android:padding="10dp"/>
+                        android:contentDescription="@string/bell"
+                        android:padding="10dp"
+                        android:src="@drawable/notification" />
 
                     <TextView
-                        android:layout_marginStart="20dp"
+                        style="@style/TEXT_MED"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="@string/bat_thong_bao"
-                        style="@style/TEXT_MED"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/notification_icon"
                         android:fontFamily=""
-                        android:textStyle="bold"
+                        android:text="@string/bat_thong_bao"
                         android:textSize="18sp"
-                        android:layout_toEndOf="@id/notification_icon"/>
+                        android:textStyle="bold" />
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:thumb="@drawable/thumb"
-                        app:track="@drawable/track"
                         android:switchMinWidth="50dp"
-                        android:theme="@style/notificationSwitch"/>
+                        android:theme="@style/notificationSwitch"
+                        android:thumb="@drawable/thumb"
+                        app:track="@drawable/track" />
 
                 </RelativeLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linear_2"
+                style="@style/BACKGROUND_BUTTON"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/BACKGROUND_BUTTON"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical"
                 android:padding="15dp">
 
@@ -217,105 +216,105 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:contentDescription="@string/Gmail"
-                        android:layout_width="40dp"
                         android:id="@+id/send_email"
+                        android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/icon_gmail"
                         android:background="@drawable/round_back_gmail"
-                        android:padding="10dp"/>
+                        android:contentDescription="@string/Gmail"
+                        android:padding="10dp"
+                        android:src="@drawable/icon_gmail" />
 
                     <TextView
-                        android:layout_marginStart="20dp"
+                        style="@style/TEXT_MED"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/send_email"
                         android:text="@string/gui_mail_ho_tro"
-                        style="@style/TEXT_MED"
-                        android:textStyle="bold"
                         android:textSize="18sp"
-                        android:layout_toEndOf="@id/send_email"/>
+                        android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/img_toSupport"
+                        style="@style/BUTTON_SETTING"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/img_toSupport"
-                        android:src="@drawable/icon_right"
-                        style="@style/BUTTON_SETTING"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_right" />
 
                 </RelativeLayout>
 
                 <!-- Trợ giúp-->
                 <RelativeLayout
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
                     <ImageView
-                        android:contentDescription="@string/ask"
-                        android:layout_width="40dp"
                         android:id="@+id/help"
+                        android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/icon_ask"
-                        android:padding="15dp"/>
+                        android:contentDescription="@string/ask"
+                        android:padding="15dp" />
 
                     <TextView
-                        android:layout_marginStart="20dp"
+                        style="@style/TEXT_MED"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/help"
                         android:text="@string/huong_dan"
-                        style="@style/TEXT_MED"
-                        android:textStyle="bold"
                         android:textSize="18sp"
-                        android:layout_toEndOf="@id/help"/>
+                        android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/toHelp"
+                        style="@style/BUTTON_SETTING"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/toHelp"
-                        android:src="@drawable/icon_right"
-                        style="@style/BUTTON_SETTING"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_right" />
 
                 </RelativeLayout>
 
                 <!-- Về chúng tôi-->
                 <RelativeLayout
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
                     <ImageView
-                        android:contentDescription="@string/information"
-                        android:layout_width="40dp"
                         android:id="@+id/about_us"
+                        android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="@drawable/icon_info"
-                        android:padding="12dp"/>
+                        android:contentDescription="@string/information"
+                        android:padding="12dp" />
 
                     <TextView
-                        android:layout_marginStart="20dp"
+                        style="@style/TEXT_MED"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/about_us"
                         android:text="@string/ve_chung_toi"
-                        style="@style/TEXT_MED"
-                        android:textStyle="bold"
                         android:textSize="18sp"
-                        android:layout_toEndOf="@id/about_us"/>
+                        android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/to_About_Us"
+                        style="@style/BUTTON_SETTING"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/to_About_Us"
-                        android:src="@drawable/icon_right"
-                        style="@style/BUTTON_SETTING"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_right" />
 
                 </RelativeLayout>
             </LinearLayout>
@@ -324,8 +323,8 @@
                 android:id="@+id/frm_log_out"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="20dp"
                 android:animateLayoutChanges="true">
 

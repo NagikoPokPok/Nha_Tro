@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemHome"
     android:layout_width="wrap_content"
-    android:id="@+id/homeClick"
     android:layout_height="225dp"
     android:layout_marginStart="10dp"
-    android:layout_marginTop="20dp"
+    android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
@@ -14,12 +15,12 @@
 
     <TextView
         android:id="@+id/txt_ordinal_number"
+        style="@style/TEXT_BOLD_3"
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:background="@drawable/sonhatro"
         android:gravity="center"
         android:text="@string/stt"
-        style="@style/TEXT_BOLD_3"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -69,8 +70,20 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu" />
 
-
             </FrameLayout>
+
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/iv_check_box"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                android:theme="@style/MyCheckBoxStyle"
+               />
+
 
             <FrameLayout
                 android:id="@+id/frm_Image_2"
@@ -104,8 +117,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="-20dp"
             android:layout_marginEnd="60dp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="20dp"
@@ -122,8 +134,7 @@
                 android:maxLines="1"
                 android:text="123123"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
@@ -148,11 +159,11 @@
 
             <TextView
                 android:id="@+id/txt_so_phong"
+                style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:layout_weight="1"
-                style="@style/TEXT_LIGHT_2"
                 android:text="@string/zero"
                 android:textSize="18sp" />
 

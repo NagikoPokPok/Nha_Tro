@@ -1,109 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="310dp"
+    android:layout_height="280dp"
+    android:layout_gravity="center"
     android:background="@drawable/bg_white_corner_16"
-    android:layout_margin="16dp"
-    android:orientation="vertical"
     android:elevation="10dp"
-    android:layout_gravity="center">
+    android:orientation="vertical">
 
+
+    <TextView
+        android:id="@+id/txt_title_dialog"
+        style="@style/TEXT_MED_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_yellow_corner_16_top"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/Sap_xep"
+        android:textSize="20sp" />
+
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số lượng phòng trống"
+            android:textSize="17sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:fontFamily="@font/inter_light"
+            android:theme="@style/RadioButtonStyle"/>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Doanh thu tháng"
+            android:textSize="17sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:fontFamily="@font/inter_light"
+            android:theme="@style/RadioButtonStyle"
+            android:layout_marginTop="20dp"
+            />
+    </RadioGroup>
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="25dp">
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
 
-
-
-        <TextView
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sắp xếp"
-            android:fontFamily="@font/inter_bold"
-            android:textSize="20sp"
-            android:textColor="@color/colorTextBlack"
-            android:layout_gravity="center"
-            android:layout_marginTop="0dp"/>
+            android:layout_gravity="start"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/custom_button_cancel"
+            style="@style/TEXT_MED_4"
+            android:text="@string/huy"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart" />
 
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tên nhà trọ"
-                android:textSize="17sp"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/inter_light"
-                android:theme="@style/RadioButtonStyle"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Doanh thu tháng"
-                android:textSize="17sp"
-                android:fontFamily="@font/inter_light"
-                android:theme="@style/RadioButtonStyle"
-                android:layout_marginTop="10dp"
-               />
-        </RadioGroup>
-
-
-
-        <LinearLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp">
+            android:layout_gravity="end"
+            android:background="@drawable/custom_button_clicked"
+            style="@style/TEXT_MED_3"
+            android:text="@string/ap_dung"
+            android:textSize="16sp"
+            app:backgroundTint="@color/colorButton"
+            app:iconGravity="textStart" />
 
-            <Button
-                android:id="@+id/btn_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Huỷ"
-                android:textColor="@color/colorButton"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                app:backgroundTint="@null"
-                android:background="@drawable/custom_button_cancel"
-                android:layout_marginEnd="20dp"
-                android:fontFamily="@font/inter_medium"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_confirm_update_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Áp dụng"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                android:fontFamily="@font/inter_medium"
-                android:background="@drawable/custom_button_clicked"
-                app:backgroundTint="@color/colorButton"
-                />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
-                android:visibility="invisible"/>
-
-        </LinearLayout>
-
-
-
-
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="-70dp"
+            android:visibility="invisible" />
 
     </LinearLayout>
+
 
 </LinearLayout>

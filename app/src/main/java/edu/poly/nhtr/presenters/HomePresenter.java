@@ -2,14 +2,17 @@ package edu.poly.nhtr.presenters;
 
 import android.app.Dialog;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -367,4 +370,33 @@ public class HomePresenter {
                     }
                 });
     }
+
+    public void deleteListHomes(List<Home> homesToDelete, ActionMode mode) {
+        homeListener.showLoadingOfFunctions(R.id.btn_delete_home);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        // Bắt đầu một batch mới
+        WriteBatch batch = database.batch();
+
+        // Duyệt qua danh sách các home cần xóa và thêm thao tác xóa vào batch
+        for (Home home : homesToDelete) {
+            DocumentReference homeRef = database.collection(Constants.KEY_COLLECTION_HOMES).document(home.getIdHome());
+            batch.delete(homeRef); // Thêm thao tác xóa vào batch
+        }
+
+        // Commit batch
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    //homeListener.showToast("Xóa thành công " + homesToDelete.size() + " homes.");
+                    getHomes("init");
+                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                    homeListener.dialogAndModeClose(mode);
+                    homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                })
+                .addOnFailureListener(e -> {
+                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                    homeListener.showToast("Xóa homes thất bại: " + e.getMessage());
+                });
+    }
+
 }

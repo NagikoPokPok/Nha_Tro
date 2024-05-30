@@ -195,6 +195,11 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
+    <style name="MyCheckBoxStyle" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorPrimary</item>
+
+    </style>
+
 
     <string name="my_text">Bạn chưa có nhà trọ. \n<br />Hãy nhấn nút <b>+</b> để thêm nhà trọ.</string>
 
