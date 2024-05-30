@@ -1,8 +1,6 @@
 package edu.poly.nhtr.Adapter;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.graphics.Color;
+
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,15 +8,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +34,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private final List<Home> homes;
     private final HomeListener homeListener;
     Fragment fragment;
-    TextView tvEmpty;
     MainViewModel mainViewModel;
     boolean isEnabled = false;
     boolean isSelectAll = false;
@@ -96,7 +88,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                             toggleAllCheckboxes(true);
                             notifyDataSetChanged(); // Câu lệnh dùng để yêu cầu cập nhật lại giao diện của toàn bộ danh sách.
 
-                            mainViewModel.getText().observe((LifecycleOwner) fragment, new Observer<String>() {
+                            mainViewModel.getText().observe(fragment, new Observer<String>() {
                                 @Override
                                 public void onChanged(String s) {
                                     mode.setTitle(String.format("Đã chọn %s nhà", s));
@@ -151,27 +143,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         });
 
-        holder.binding.ivCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.binding.ivCheckBox.isChecked()) {
-                    // Item nào được setChecked laf true thì add vào list
-                    selectList.add(homes.get(holder.getAdapterPosition()));
-                } else {
-                    selectList.remove(homes.get(holder.getAdapterPosition()));
-                }
-                mainViewModel.setText(String.valueOf(selectList.size()));
+        holder.binding.ivCheckBox.setOnClickListener(v -> {
+            if (holder.binding.ivCheckBox.isChecked()) {
+                // Item nào được setChecked laf true thì add vào list
+                selectList.add(homes.get(holder.getAdapterPosition()));
+            } else {
+                selectList.remove(homes.get(holder.getAdapterPosition()));
             }
+            mainViewModel.setText(String.valueOf(selectList.size()));
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isEnabled){ // Nếu thanh actionMode vẫn còn hiện
-                    ClickItem(holder);
-                }else{
-                    homeListener.onHomeClicked(homes.get(holder.getAdapterPosition()));
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if(isEnabled){ // Nếu thanh actionMode vẫn còn hiện
+                ClickItem(holder);
+            }else{
+                homeListener.onHomeClicked(homes.get(holder.getAdapterPosition()));
             }
         });
 
@@ -236,6 +222,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                 binding.frmImage.setVisibility(View.GONE);
                 homeListener.openPopup(v, home, binding);
             });
+
+            binding.txtNumberOfRooms.setText(String.valueOf(home.numberOfRooms));
         }
     }
 
@@ -260,7 +248,4 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         return lastActionPosition;
     }
 
-    public void setLastActionPosition(int lastActionPosition) {
-        this.lastActionPosition = lastActionPosition;
-    }
 }

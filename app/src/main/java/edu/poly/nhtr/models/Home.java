@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Home implements Serializable {
-    public String nameHome, addressHome, numberOfRooms, numberOfRoomsAvailable, idHome;
+    public String nameHome, addressHome, idHome;
+    public int numberOfRooms, numberOfRoomsAvailable;
     public HashMap<String, String> existingHomes = new HashMap<>();
 
     public Date dateObject;
@@ -44,19 +45,19 @@ public class Home implements Serializable {
         this.addressHome = addressHome;
     }
 
-    public String getNumberOfRooms() {
+    public int getNumberOfRooms() {
         return numberOfRooms;
     }
 
-    public void setNumberOfRooms(String numberOfRooms) {
+    public void setNumberOfRooms(int numberOfRooms) {
         this.numberOfRooms = numberOfRooms;
     }
 
-    public String getNumberOfRoomsAvailable() {
+    public int getNumberOfRoomsAvailable() {
         return numberOfRoomsAvailable;
     }
 
-    public void setNumberOfRoomsAvailable(String numberOfRoomsAvailable) {
+    public void setNumberOfRoomsAvailable(int numberOfRoomsAvailable) {
         this.numberOfRoomsAvailable = numberOfRoomsAvailable;
     }
 

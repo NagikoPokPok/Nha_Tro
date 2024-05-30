@@ -187,10 +187,65 @@
 
 
     <LinearLayout
+        android:id="@+id/layout_type_of_sort_filter_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
+        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_title_sort_filter_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text=""
+            android:textSize="15sp"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="@color/colorTextBlack"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/bg_sort_filter_home"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/txt_type_of_sort_filter_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:text=""
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/colorTextBlack"/>
+
+            <ImageView
+                android:id="@+id/btn_cancel_sort_filter_home"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_cancel" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/btn_add_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -263,12 +318,12 @@
         android:clipToPadding="false"
         android:orientation="vertical"
         android:overScrollMode="never"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
         app:layout_constraintBottom_toTopOf="@id/btn_add_home"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_type_of_sort_filter_home" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -286,8 +341,8 @@
         style="@style/BUTTON"
         android:layout_width="200dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/them_nha_tro"
         android:textSize="18sp"
         app:backgroundTint="@null"

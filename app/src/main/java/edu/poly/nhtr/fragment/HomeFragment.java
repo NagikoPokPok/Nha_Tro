@@ -1,8 +1,8 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -29,6 +29,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +49,6 @@ import com.google.firebase.firestore.DocumentReference;
 import java.io.InputStream;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainRoomActivity;
@@ -71,10 +72,12 @@ public class HomeFragment extends Fragment implements HomeListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private static final String PREFS_NAME = "RadioPrefs";
+
     //
     private View view;
     private PreferenceManager preferenceManager;
-    private HomeAdapter.HomeViewHolder viewHolder;
     private FragmentHomeBinding binding;
     private HomePresenter homePresenter;
     private Dialog dialog;
@@ -132,6 +135,9 @@ public class HomeFragment extends Fragment implements HomeListener {
         //Set preference
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
 
+        // Remove the status of radio button
+        preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+
         // Set up RecyclerView layout manager
         binding.homesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
@@ -172,7 +178,19 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
         });
 
+        binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterHomeDialog();
+            }
+        });
 
+        binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterHomeDialog();
+            }
+        });
 
     }
 
@@ -188,6 +206,71 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     private void openSortHomeDialog() {
         setupDialog(R.layout.layout_dialog_sort_home, Gravity.CENTER);
+
+        RadioGroup radioGroup = dialog.findViewById(R.id.radio_group_sort_home);
+        Button btnApply = dialog.findViewById(R.id.btn_confirm_apply);
+
+
+        // Save the status of radio buttons
+        int selectedRadioButtonId = preferenceManager.getInt(Constants.KEY_SELECTED_RADIO_BUTTON);
+
+        // If a RadioButton was selected before, check it
+        if (selectedRadioButtonId != -1) {
+            RadioButton selectedRadioButton = dialog.findViewById(selectedRadioButtonId);
+            if (selectedRadioButton != null) {
+                selectedRadioButton.setChecked(true);
+            }
+        }
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.txtTitleSortFilterHome.setText("Sắp xếp theo:  ");
+                binding.layoutTypeOfSortFilterHome.setVisibility(View.VISIBLE);
+
+                // Get the selected RadioButton ID
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                if (selectedId == R.id.radio_btn_number_room_asc) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_number_room_asc);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterHome.setText(selectedText);
+                    homePresenter.sortHomes();
+                    dialog.dismiss();
+                } else if (selectedId == R.id.radio_btn_number_room_desc) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_number_room_desc);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterHome.setText(selectedText);
+                    dialog.dismiss();
+                } else if (selectedId == R.id.radio_btn_revenue_asc) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_revenue_asc);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterHome.setText(selectedText);
+                    dialog.dismiss();
+                } else if (selectedId == R.id.radio_btn_revenue_desc) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_revenue_desc);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterHome.setText(selectedText);
+                    dialog.dismiss();
+                } else {
+                    showToast("No option selected");
+                }
+
+                // Save the selected RadioButton ID to SharedPreferences
+                preferenceManager.putInt(Constants.KEY_SELECTED_RADIO_BUTTON, selectedId);
+            }
+        });
+
+        binding.btnCancelSortFilterHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.layoutTypeOfSortFilterHome.setVisibility(View.GONE);
+                preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+            }
+        });
+
+
+
 
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,24 +289,14 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+                    // Xoa sort khi click vao search
+                    preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+                    binding.layoutTypeOfSortFilterHome.setVisibility(View.GONE);
                     binding.layoutSearchHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
         });
 
-        binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFilterHomeDialog();
-            }
-        });
-
-        binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFilterHomeDialog();
-            }
-        });
 
         binding.edtSearchHome.addTextChangedListener(new TextWatcher() {
             @Override
@@ -245,15 +318,12 @@ public class HomeFragment extends Fragment implements HomeListener {
         });
 
 
-        binding.layoutSearchHome.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String searchNameHome = Objects.requireNonNull(Objects.requireNonNull(binding.edtSearchHome.getText()).toString().trim());
-                homePresenter.searchHome(searchNameHome);
+        binding.layoutSearchHome.setEndIconOnClickListener(v -> {
+            String searchNameHome = Objects.requireNonNull(Objects.requireNonNull(binding.edtSearchHome.getText()).toString().trim());
+            homePresenter.searchHome(searchNameHome);
 
-                if (searchNameHome.isEmpty()) {
-                    binding.edtSearchHome.clearFocus();
-                }
+            if (searchNameHome.isEmpty()) {
+                binding.edtSearchHome.clearFocus();
             }
         });
     }
@@ -546,8 +616,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         HomeAdapter homesAdapter = new HomeAdapter(homes, this, this);
         binding.homesRecyclerView.setAdapter(homesAdapter);
 
-        // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
-        homes.sort(Comparator.comparing(obj -> obj.dateObject));
 
         if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
             binding.homesRecyclerView.smoothScrollToPosition(0);
@@ -701,12 +769,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         Button btn_confirm_update_home = dialog.findViewById(R.id.btn_confirm_update_home);
 
         // Xử lý sự kiện cho Button
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
 
         btn_confirm_update_home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -906,25 +969,22 @@ public class HomeFragment extends Fragment implements HomeListener {
         Button btn_delete_home = dialog.findViewById(R.id.btn_delete_home);
 
 
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
 
-        btn_delete_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                homePresenter.deleteListHomes(listHomes, mode);
-            }
-        });
+        btn_delete_home.setOnClickListener(v -> homePresenter.deleteListHomes(listHomes, mode));
     }
 
     @Override
     public void dialogAndModeClose(ActionMode mode) {
         dialog.dismiss();
         mode.finish();
+    }
+
+    @Override
+    public void onPause() { // When move to the different fragment / activity --> remove the status of radio button
+        super.onPause();
+        // Clear the selected RadioButton ID from SharedPreferences
+        preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
     }
 
 

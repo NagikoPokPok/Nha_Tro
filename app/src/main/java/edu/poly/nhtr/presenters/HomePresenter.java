@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import edu.poly.nhtr.Class.PasswordHasher;
@@ -101,6 +102,7 @@ public class HomePresenter {
         homeInfo.put(Constants.KEY_NAME_HOME, home.getNameHome());
         homeInfo.put(Constants.KEY_ADDRESS_HOME, home.getAddressHome());
         homeInfo.put(Constants.KEY_TIMESTAMP, FieldValue.serverTimestamp());
+        homeInfo.put(Constants.KEY_NUMBER_OF_ROOMS, 0);
         homeInfo.put(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount());
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
@@ -121,24 +123,56 @@ public class HomePresenter {
     public void getHomes(String action) {
         homeListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
+        String userId = homeListener.getInfoUserFromGoogleAccount();
+
         database.collection(Constants.KEY_COLLECTION_HOMES)
-                .whereEqualTo(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount())
+                .whereEqualTo(Constants.KEY_USER_ID, userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (homeListener.isAdded2()) {
                         homeListener.hideLoading();
                         if (task.isSuccessful() && task.getResult() != null) {
                             List<Home> homes = new ArrayList<>();
+                            List<String> homeIds = new ArrayList<>();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Home home = new Home();
-                                home.nameHome = document.getString(Constants.KEY_NAME_HOME);
-                                home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
-                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
-                                home.idHome = document.getId();
-                                homes.add(home);
+                                homeIds.add(document.getId());
                             }
-                            if (!homes.isEmpty()) {
-                                homeListener.addHome(homes, action);
+
+                            if (!homeIds.isEmpty()) {
+                                database.collection(Constants.KEY_COLLECTION_ROOMS)
+                                        .whereIn(Constants.KEY_HOME_ID, homeIds)
+                                        .get()
+                                        .addOnCompleteListener(roomTask -> {
+                                            if (roomTask.isSuccessful() && roomTask.getResult() != null) {
+                                                // Tạo Map để lưu trữ số lượng rooms cho từng home
+                                                Map<String, Integer> homeRoomCount = new HashMap<>();
+                                                for (QueryDocumentSnapshot roomDocument : roomTask.getResult()) {
+                                                    String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
+                                                    homeRoomCount.put(homeId, homeRoomCount.getOrDefault(homeId, 0) + 1);
+                                                }
+
+                                                // Duyệt qua danh sách homes và cập nhật số lượng rooms từ Map
+                                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                                    Home home = new Home();
+                                                    home.nameHome = document.getString(Constants.KEY_NAME_HOME);
+                                                    home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
+                                                    home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                                    home.idHome = document.getId();
+                                                    home.numberOfRooms = homeRoomCount.getOrDefault(home.idHome, 0);
+                                                    // Update the number of rooms in Firestore
+                                                    document.getReference().update(Constants.KEY_NUMBER_OF_ROOMS, home.numberOfRooms);
+                                                    homes.add(home);
+                                                }
+
+                                                // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
+                                                homes.sort(Comparator.comparing(obj -> obj.dateObject));
+
+                                                homeListener.addHome(homes, action);
+                                            } else {
+                                                homeListener.addHomeFailed();
+                                            }
+                                        });
                             } else {
                                 homeListener.addHomeFailed();
                             }
@@ -148,6 +182,8 @@ public class HomePresenter {
                     }
                 });
     }
+
+
 
     public void deleteHome(Home home) {
         homeListener.showLoadingOfFunctions(R.id.btn_delete_home);
@@ -349,6 +385,7 @@ public class HomePresenter {
                             String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
                             String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                             String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
+                            Long numberOfRooms = document.getLong(Constants.KEY_NUMBER_OF_ROOMS);
 
                             if (nameFromFirestore != null && nameFromFirestore.toLowerCase().contains(nameHome.toLowerCase()) && Objects.equals(userIdFromFirestore, homeListener.getInfoUserFromGoogleAccount())) {
                                 Home home = new Home();
@@ -356,6 +393,7 @@ public class HomePresenter {
                                 home.addressHome = addressFromFirestore;
                                 home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
+                                home.numberOfRooms = numberOfRooms != null ? numberOfRooms.intValue() : 0;
                                 homes.add(home);
                             }
                         }
@@ -398,5 +436,46 @@ public class HomePresenter {
                     homeListener.showToast("Xóa homes thất bại: " + e.getMessage());
                 });
     }
+
+    public void sortHomes()
+    {
+        homeListener.showLoading();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        String userId = homeListener.getInfoUserFromGoogleAccount();
+
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .whereEqualTo(Constants.KEY_USER_ID, userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (homeListener.isAdded2()) {
+                        homeListener.hideLoading();
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<Home> homes = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Home home = new Home();
+                                home.nameHome = document.getString(Constants.KEY_NAME_HOME);
+                                home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
+                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                home.idHome = document.getId();
+                                home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
+                                homes.add(home);
+                            }
+                            // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
+                            homes.sort(new Comparator<Home>() {
+                                @Override
+                                public int compare(Home home1, Home home2) {
+                                    return Integer.compare(home1.numberOfRooms, home2.numberOfRooms);
+                                }
+                            });
+
+                            homeListener.addHome(homes, "init");
+                        } else {
+                            homeListener.addHomeFailed();
+                        }
+                    }
+                });
+    }
+
 
 }
