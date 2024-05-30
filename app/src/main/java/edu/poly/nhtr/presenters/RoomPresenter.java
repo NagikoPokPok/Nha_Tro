@@ -1,5 +1,9 @@
 package edu.poly.nhtr.presenters;
 
+import android.view.Gravity;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -156,6 +160,114 @@ public class RoomPresenter {
                         }
                     } else {
                         roomListener.showToast("Không thể tìm kiếm phòng trọ");
+                    }
+                });
+    }
+    public void updateRoom(String newNameRoom, String newPrice, String newDescribe, Room room) {
+        roomListener.showLoadingOfFunctions(R.id.btn_add_home);
+        if (newNameRoom.isEmpty()) {
+            roomListener.hideLoadingOfFunctions(R.id.btn_add_home);
+            roomListener.showErrorMessage("Nhập tên nhà trọ", R.id.layout_name_home);
+        } else if (newPrice.isEmpty()) {
+            roomListener.hideLoadingOfFunctions(R.id.btn_add_home);
+            roomListener.showErrorMessage("Nhập địa chỉ nhà trọ", R.id.layout_address_home);
+        } else {
+            checkDuplicateDataForUpdate(newNameRoom, newPrice, newDescribe, room);
+        }
+    }
+    private void checkDuplicateDataForUpdate(String newNameRoom, String newPrice, String newDescribe, Room room) {
+
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereEqualTo(Constants.KEY_HOME_ID, roomListener.getInfoHomeFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String nameFromFirestore = document.getString(Constants.KEY_NAME_ROOM);
+//                            String priceFromFirestore = document.getString(Constants.KEY_PRICE);
+//                            String describeFromFirestore = document.getString(Constants.KEY_DESCRIBE);
+                            String homeIdFromFirestore = document.getString(Constants.KEY_HOME_ID);
+                            String roomIdFromFirestore = document.getId();
+
+                            if (isDuplicate(nameFromFirestore, newNameRoom, homeIdFromFirestore, room) && !roomIdFromFirestore.equals(room.getRoomId())) {
+                                roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                                roomListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
+                                return;
+                            }
+                        }
+                        roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                        roomListener.openConfirmUpdateRoom(Gravity.CENTER, newNameRoom, newPrice, newDescribe, room);
+
+                    } else {
+                        // Handle errors
+                    }
+                });
+    }
+    public void updateSuccess(String newNameRoom, String newPrice, String newDescribe, Room room) {
+        roomListener.showLoadingOfFunctions(R.id.btn_confirm_update_room);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        // Truy vấn để lấy tất cả các tài liệu có cùng userId
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereEqualTo(Constants.KEY_HOME_ID, roomListener.getInfoHomeFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+
+                        // Sắp xếp danh sách tài liệu theo thời gian tăng dần
+                        documents.sort((doc1, doc2) -> {
+                            Timestamp timestamp1 = doc1.getTimestamp(Constants.KEY_TIMESTAMP);
+                            Timestamp timestamp2 = doc2.getTimestamp(Constants.KEY_TIMESTAMP);
+                            assert timestamp1 != null;
+                            assert timestamp2 != null;
+                            return timestamp1.compareTo(timestamp2);
+                        });
+
+                        position = 0;
+                        boolean found = false;
+
+                        // Duyệt qua danh sách tài liệu đã sắp xếp
+                        for (DocumentSnapshot document : documents) {
+                            position++;
+                            String roomIdFromFirestore = document.getId();
+
+                            // Kiểm tra nếu homeId khớp
+                            if (roomIdFromFirestore.equals(room.getRoomId())) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) {
+                            // Sau khi tìm thấy vị trí, thực hiện cập nhật tài liệu
+                            HashMap<String, Object> updateInfo = new HashMap<>();
+                            updateInfo.put(Constants.KEY_NAME_ROOM, newNameRoom);
+                            updateInfo.put(Constants.KEY_PRICE, newPrice);
+                            updateInfo.put(Constants.KEY_DESCRIBE, newDescribe);
+
+                            database.collection(Constants.KEY_COLLECTION_ROOMS)
+                                    .document(room.getRoomId())
+                                    .update(updateInfo)
+                                    .addOnSuccessListener(aVoid -> {
+                                        getRooms("update");
+                                        //homeListener.showToast("Cập nhật thành công ở vị trí: " + getPosition());
+                                        roomListener.hideLoadingOfFunctions(R.id.btn_confirm_update_room);
+                                        roomListener.dialogClose();
+                                        roomListener.openDialogSuccess(R.layout.layout_dialog_update_room_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        roomListener.hideLoadingOfFunctions(R.id.btn_confirm_update_room);
+                                        roomListener.showToast("Cập nhật thông tin phòng trọ thất bại");
+                                    });
+                        } else {
+                            roomListener.hideLoadingOfFunctions(R.id.btn_confirm_update_room);
+                            roomListener.showToast("Không tìm thấy phòng");
+                        }
+                    } else {
+                        roomListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
+                        roomListener.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
     }

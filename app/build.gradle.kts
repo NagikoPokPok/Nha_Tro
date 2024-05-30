@@ -74,4 +74,7 @@ dependencies {
     implementation ("com.github.1902shubh:SendMail:1.0.0")
 
 
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+
+
 }

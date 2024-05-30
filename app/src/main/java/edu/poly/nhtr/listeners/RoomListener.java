@@ -28,5 +28,5 @@ public interface RoomListener {
     void openDialogSuccess(int layout);
     void showLoadingOfFunctions(int id);
     void hideLoadingOfFunctions(int id);
-    void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home);
+    void openConfirmUpdateRoom(int gravity, String newNameRoom, String newPrice, String newDescribe, Room room);
 }
