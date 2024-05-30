@@ -1,19 +1,10 @@
 package edu.poly.nhtr.fragment;
 
-import static android.content.Intent.getIntent;
-
 import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -21,7 +12,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,24 +25,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.Adapter.RoomAdapter;
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.databinding.ActivityMainRoomBinding;
 import edu.poly.nhtr.databinding.FragmentRoomBinding;
-import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.databinding.ItemContainerRoomBinding;
 import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Home;
@@ -61,54 +46,15 @@ import edu.poly.nhtr.presenters.RoomPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RoomFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RoomFragment extends Fragment implements RoomListener {
 
     private View view;
-    private TextView nameTextView, addImageView;
-    private ImageView profileImageView;
 
     private PreferenceManager preferenceManager;
     private FragmentRoomBinding binding;
-    private ActivityMainRoomBinding binding1;
     private Dialog dialog;
     private RoomPresenter roomPresenter;
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public RoomFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RoomFragment newInstance(String param1, String param2) {
-        RoomFragment fragment = new RoomFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,21 +67,13 @@ public class RoomFragment extends Fragment implements RoomListener {
         String nameHome = home.getNameHome();
         preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
         preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-
-        }
         roomPresenter = new RoomPresenter(this);
         binding = FragmentRoomBinding.inflate(getLayoutInflater());
-        binding.rootLayoutRoom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.edtSearchRoom.clearFocus();
-                binding.rootLayoutRoom.requestFocus();
-            }
-        });
 
+        binding.rootLayoutRoom.setOnClickListener(v -> {
+            binding.edtSearchRoom.clearFocus();
+            binding.rootLayoutRoom.requestFocus();
+        });
 
 
         editFonts();
@@ -146,13 +84,10 @@ public class RoomFragment extends Fragment implements RoomListener {
         // Set up RecyclerView layout manager
         binding.roomsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
-        // Load user's information
-        loadUserDetails();
 
         // Load room information
         roomPresenter.getRooms("init");
 
-        setListeners();
 
         // Xử lý Dialog Thêm phòng trọ
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -172,8 +107,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         binding.edtSearchRoom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus)
-                {
+                if (hasFocus) {
                     binding.layoutSearchRoom.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
@@ -198,7 +132,6 @@ public class RoomFragment extends Fragment implements RoomListener {
 
             }
         });
-
 
         binding.layoutSearchRoom.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,7 +161,6 @@ public class RoomFragment extends Fragment implements RoomListener {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -246,23 +178,17 @@ public class RoomFragment extends Fragment implements RoomListener {
         return binding.getRoot();
     }
 
-    private void setListeners(){
-       loadUserDetails();
-    }
 
-    private void loadUserDetails() {
-    }
-
-    private void openAddRoomDialog(int gravity){
+    private void openAddRoomDialog(int gravity) {
         setupDialog(R.layout.layout_dialog_add_room, Gravity.CENTER);
-        TextView nameRoom= dialog.findViewById(R.id.txt_name_room);
+        TextView nameRoom = dialog.findViewById(R.id.txt_name_room);
         TextView title = dialog.findViewById(R.id.txt_title_dialog_room);
         TextView price = dialog.findViewById(R.id.txt_price);
         TextView describe = dialog.findViewById(R.id.txt_describe);
 
-        EditText edtNameRoom =dialog.findViewById(R.id.edt_name_room);
-        EditText edtPrice =dialog.findViewById(R.id.edt_price);
-        EditText edtDescribe =dialog.findViewById(R.id.edt_describe);
+        EditText edtNameRoom = dialog.findViewById(R.id.edt_name_room);
+        EditText edtPrice = dialog.findViewById(R.id.edt_price);
+        EditText edtDescribe = dialog.findViewById(R.id.edt_describe);
 
         TextInputLayout layoutNameRoom = dialog.findViewById(R.id.layout_name_room);
         TextInputLayout layoutPrice = dialog.findViewById(R.id.layout_price);
@@ -348,7 +274,7 @@ public class RoomFragment extends Fragment implements RoomListener {
             String name = edtNameRoom.getText().toString().trim();
             String priceRoom = edtPrice.getText().toString().trim();
             String describeRoom = edtDescribe.getText().toString().trim();
-            Room room = new Room(name, priceRoom, describeRoom );
+            Room room = new Room(name, priceRoom, describeRoom);
             roomPresenter.addRoom(room);
 
         });
@@ -393,7 +319,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void showErrorMessage(String message, int id) {
-        TextInputLayout layout_name_room= dialog.findViewById(id);
+        TextInputLayout layout_name_room = dialog.findViewById(id);
         layout_name_room.setError(message);
 
     }
@@ -438,12 +364,9 @@ public class RoomFragment extends Fragment implements RoomListener {
         // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
         rooms.sort(Comparator.comparing(obj -> obj.dateObject));
 
-        if(Objects.equals(action,"init") || Objects.equals(action,"search"))
-        {
+        if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
             binding.roomsRecyclerView.smoothScrollToPosition(0);
-        }
-        else if(Objects.equals(action, "add"))
-        {
+        } else if (Objects.equals(action, "add")) {
             roomAdapter.addRoom(rooms);
             roomAdapter.notifyItemInserted(roomAdapter.getLastActionPosition());
             binding.roomsRecyclerView.smoothScrollToPosition(roomAdapter.getLastActionPosition());

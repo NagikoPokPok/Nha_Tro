@@ -3,10 +3,6 @@ package edu.poly.nhtr.presenters;
 import android.content.Intent;
 import android.provider.MediaStore;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 
@@ -62,20 +58,14 @@ public class ChangeProfilePresenter {
         user.put(Constants.KEY_IMAGE, activity.encodedImage);
         database.collection(Constants.KEY_COLLECTION_USERS).document(activity.preferenceManager.getString(Constants.KEY_USER_ID))
                 .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        view.hideLoading();
-                        view.changeSuccess();
-                        RefreshPrefernceManager();
-                    }
+                .addOnSuccessListener(unused -> {
+                    view.hideLoading();
+                    view.changeSuccess();
+                    RefreshPrefernceManager();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        view.hideLoading();
-                        view.showErrorMessage("Cập nhật tông tin thất bại");
-                    }
+                .addOnFailureListener(e -> {
+                    view.hideLoading();
+                    view.showErrorMessage("Cập nhật tông tin thất bại");
                 });
     }
 
