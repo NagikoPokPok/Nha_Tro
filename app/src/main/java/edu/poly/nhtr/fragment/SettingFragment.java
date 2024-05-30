@@ -43,6 +43,8 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         binding = FragmentSettingBinding.inflate(inflater, container, false);
         switchMode = binding.nightMode;
 
+
+        settingsPresenter = new SettingsPresenter(this, requireContext(), new PreferenceManager(requireContext()));
         settingsPresenter.loadUserDetails();
         setListeners();
 

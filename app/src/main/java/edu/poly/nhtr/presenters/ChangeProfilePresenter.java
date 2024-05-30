@@ -35,11 +35,11 @@ public class ChangeProfilePresenter {
 
         if (!ten.matches("^[\\p{L}\\s]+$")) {
             //warning.setText("Tên chỉ được xuất hiện các kí tự là chữ và số");
-            view.showErrorMessage("Tên chỉ được xuất hiện các kí tự là chữ và số");
+            view.showErrorMessage("Tên chỉ được điền các kí tự chữ cái");
             return false;
         } else if (activity.phoneNum.getText().toString().trim().isEmpty()) {
             //warning.setText("Số điện thoại không được để trống");
-            view.showErrorMessage("Số điện thoai khôn được để trống");
+            view.showErrorMessage("Số điện thoai không được để trống");
             return false;
         } else if (!phoneNumber.matches("^0[0-9]{9}$")) {
             //warning.setText("Số điện thoại chỉ gồm những kí tự là số từ 0-9");
