@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Activity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -119,6 +120,9 @@ public class MainRoomActivity extends AppCompatActivity {
 
     private void backToHome() {
         binding.btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(MainRoomActivity.this, MainActivity.class);
+            intent.putExtra("FRAGMENT_TO_LOAD", "HomeFragment");
+            startActivity(intent);
             finish();
         });
     }
