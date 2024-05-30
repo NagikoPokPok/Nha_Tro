@@ -29,4 +29,5 @@ public interface RoomListener {
     void showLoadingOfFunctions(int id);
     void hideLoadingOfFunctions(int id);
     void openConfirmUpdateRoom(int gravity, String newNameRoom, String newPrice, String newDescribe, Room room);
+
 }
