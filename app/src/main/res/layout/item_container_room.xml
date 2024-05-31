@@ -67,35 +67,11 @@
                     android:id="@+id/img_menu"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_menu"
                     android:layout_gravity="center"
-                    />
-                <FrameLayout
-                    android:id="@+id/frm_Image_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:visibility="gone">
-
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/background_image"
-                        android:backgroundTint="@color/colorGray"
-                        android:scaleType="fitXY"
-                        app:riv_oval="true"
-                        />
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_menu"
-                        android:layout_gravity="center"
-                        />
-
-                </FrameLayout>
+                    android:src="@drawable/ic_menu" />
 
             </FrameLayout>
+
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/iv_check_box"
@@ -107,6 +83,30 @@
                 android:visibility="gone"
                 android:theme="@style/MyCheckBoxStyle"
                 />
+
+
+            <FrameLayout
+                android:id="@+id/frm_Image_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_image"
+                    android:backgroundTint="@color/colorGray"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_menu" />
+
+            </FrameLayout>
         </RelativeLayout>
         
         <LinearLayout
