@@ -9,8 +9,7 @@
     app:cardCornerRadius="15dp"
     app:cardElevation="4dp"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/colorGray"
-    android:layout_margin="9dp">
+    app:strokeColor="@color/colorGray">
 
     <LinearLayout
         android:layout_width="match_parent"

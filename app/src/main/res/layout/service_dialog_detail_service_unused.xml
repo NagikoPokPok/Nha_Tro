@@ -16,28 +16,28 @@
         android:layout_marginBottom="15dp">
 
         <Button
-            android:id="@+id/btn_cancel"
+            android:id="@+id/btn_delete_service"
             android:layout_width="150dp"
             android:layout_height="45dp"
             android:layout_gravity="left"
-            android:text="Xóa dịch vụ"
+            android:text="Xoá dịch vụ"
             android:textColor="@color/white"
             app:iconGravity="textStart"
             android:textSize="16sp"
             android:background="@drawable/custom_button"
             app:backgroundTint="@color/colorButton"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="9dp"
             android:fontFamily="@font/inter_medium"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_home"
+            android:id="@+id/btn_update_service"
             android:layout_width="150dp"
             android:layout_height="45dp"
             android:layout_gravity="right"
             android:text="Sửa dịch vụ"
             app:iconGravity="textStart"
             android:textSize="16sp"
-            android:layout_marginStart="18dp"
+            android:layout_marginStart="9dp"
             android:fontFamily="@font/inter_medium"
             android:background="@drawable/custom_button"
             app:backgroundTint="@null"

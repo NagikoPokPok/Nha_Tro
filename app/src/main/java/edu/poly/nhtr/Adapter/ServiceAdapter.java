@@ -2,6 +2,7 @@ package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
     public void onBindViewHolder(@NonNull ServiceAdapter.ViewHolder holder, int position) {
         // thiết lập dữ liệu
         holder.setServiceData(services.get(position));
+
+        // Set click listener for the item view
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemCLick(services.get(position));
+            }
+        });
     }
 
     @Override
@@ -52,7 +61,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         public void setServiceData(Service service){
             binding.nameService.setText(service.getName());
-            binding.feeService.setText(service.getPrice());
+            binding.feeService.setText(""+service.getPrice());
 
             //Thiết lập hành động nhấn vào
             binding.getRoot().setOnClickListener(v -> listener.onServiceClicked(service));

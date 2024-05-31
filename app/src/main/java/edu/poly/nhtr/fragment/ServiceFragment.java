@@ -23,8 +23,12 @@ import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
+
 import edu.poly.nhtr.Adapter.CustomSpinnerAdapter;
 import edu.poly.nhtr.Adapter.ServiceAdapter;
+import edu.poly.nhtr.Class.ServiceUtils;
+import edu.poly.nhtr.Class.SpacesItemDecoration;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentServiceBinding;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
@@ -45,6 +49,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     private FragmentServiceBinding binding;
     private ServicePresenter presenter;
     private Dialog dialog;
+    private List<Service> services;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -81,6 +86,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        services = ServiceUtils.addAvailableService();
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         presenter = new ServicePresenter(this);
         binding = FragmentServiceBinding.inflate(getLayoutInflater());
@@ -92,15 +98,31 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         }
 
         setListener();
+
+        // đổ dữ liệu vào recyclerView
+        setRecyclerViewData();
+    }
+
+    private void setRecyclerViewData() {
+
+        // Dịch vụ đang sử dụng
+        ServiceAdapter serviceUsedAdapter = new ServiceAdapter(this.requireActivity(), ServiceUtils.usedService(services), this);
+        binding.recyclerServiceUsed.setAdapter(serviceUsedAdapter);
+        binding.recyclerServiceUsed.setVisibility(View.VISIBLE);
+
+        //Dịch vụ chưa sử dụng
+        ServiceAdapter serviceUnusedAdapter = new ServiceAdapter(this.requireActivity(), ServiceUtils.unusedService(services), this);
+        binding.recyclerServiceUnused.setAdapter(serviceUnusedAdapter);
+        binding.recyclerServiceUnused.setVisibility(View.VISIBLE);
+
+        // Set padding between items
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        binding.recyclerServiceUsed.addItemDecoration(new SpacesItemDecoration(3, spacingInPixels, false));
+        binding.recyclerServiceUnused.addItemDecoration(new SpacesItemDecoration(3, spacingInPixels, false));
     }
 
     private void setListener() {
-        binding.btnAddNewService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAddNewServiceDialog();
-            }
-        });
+        binding.btnAddNewService.setOnClickListener(v -> openAddNewServiceDialog());
     }
 
     private void openAddNewServiceDialog() {
@@ -116,19 +138,11 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         String encodeImage = image.toString();
 
         //Xử xí button cho dialog
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        btn_cancel.setOnClickListener(v -> dialog.cancel());
 
-        btn_continue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                openApplyServiceDialog(edt_name.getText().toString(), encodeImage);
-            }
+        btn_continue.setOnClickListener(v -> {
+            dialog.cancel();
+            openApplyServiceDialog(edt_name.getText().toString(), encodeImage);
         });
     }
 
@@ -136,7 +150,6 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         setupDialog(R.layout.service_dialog_apply_service, Gravity.CENTER);
 
         //Ánh xạ view
-        ImageView image_service = dialog.findViewById(R.id.img_service);
         TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
         Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
         EditText edt_unit = dialog.findViewById(R.id.edt_unit);
@@ -155,6 +168,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
         CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
         adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
         spinner.setAdapter(adapter);
 
         //Xử lí button cho dialog
@@ -285,4 +299,137 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     public void openPopup(View view, Service service, ItemServiceBinding binding) {
 
     }
+
+    @Override
+    public void onItemCLick(Service service) {
+        //button apply service
+        Button use_service;
+
+        if(service.getApply()) setupDialog(R.layout.service_dialog_detail_service_used, Gravity.CENTER);
+        else setupDialog(R.layout.service_dialog_detail_service_unused, Gravity.CENTER);
+
+
+        //Ánh xạ id
+        ImageView exit = dialog.findViewById(R.id.img_exit);
+        TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
+        Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
+        EditText edt_unit = dialog.findViewById(R.id.edt_unit);
+        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
+        EditText edt_note = dialog.findViewById(R.id.edt_note);
+        RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+        Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
+        Button btn_apply = dialog.findViewById(R.id.btn_update_service);
+        TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
+        TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
+
+        // Set data for dialog
+        //Đổ dữ liệu cho dialog
+        txt_name.setText(service.getName());
+            //ảnh
+
+        //Spinner
+        String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(service.getFee_base());
+
+        if(service.getFee_base()==3) edt_unit.setText(service.getUnit());
+        edt_fee.setText(""+service.getPrice());
+        edt_note.setText(service.getNote());
+
+        //Xử lí button cho dialog
+        exit.setVisibility(View.VISIBLE);
+        if(service.getApply()){
+            //Nút bỏ sử dụng
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    service.setApply(false);
+                    dialog.cancel();
+                    setRecyclerViewData();
+                }
+            });
+        }else{
+            //Ánh xạ id cho nút sử dụng và hiện nó lên
+            use_service = dialog.findViewById(R.id.btn_use_service);
+            use_service.setVisibility(View.VISIBLE);
+            // Set listener
+            use_service.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    service.setApply(true);
+                    dialog.cancel();
+                    setRecyclerViewData();
+                }
+            });
+        }
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        btn_apply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isServiceDetail(layout_fee, layout_unit)){
+
+                }
+            }
+
+        });
+
+        //Xử lí hành động cho spinner
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedPosition(position);
+                setFeedbackForUnit(position);
+            }
+
+            private void setFeedbackForUnit(int position) {
+                if(position==0){
+                    edt_unit.setText("Chỉ số");
+                    edt_unit.setInputType(View.NOT_FOCUSABLE);
+                } else if (position == 1) {
+                    edt_unit.setText("Phòng");
+                    edt_unit.setInputType(View.NOT_FOCUSABLE);
+                } else if (position == 2) {
+                    edt_unit.setText("Người");
+                    edt_unit.setInputType(View.NOT_FOCUSABLE);
+                }else {
+                    edt_unit.setText(service.getUnit());
+                    edt_unit.setHint("Ví dụ: Xe, cái,...");
+                    edt_unit.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        //Xử lí các hành động cho editText khi được truy cập
+        edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
+                if(!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
+            }
+        });
+
+        edt_note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                edt_note.setHint("");
+                if(!hasFocus && edt_note.getText().toString().isEmpty()) edt_note.setHint("Viết những lưu ý của bạn ta đây");
+            }
+        });
+
+    }
+
 }

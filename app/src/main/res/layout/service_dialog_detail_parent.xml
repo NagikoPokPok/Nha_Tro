@@ -10,239 +10,267 @@
     android:layout_marginTop="15dp"
     android:paddingBottom="60dp"
     android:orientation="vertical">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="9dp"
-        android:orientation="vertical">
-
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_use_service"
+            android:layout_width="120dp"
+            android:layout_height="45dp"
+            android:background="@drawable/sonhatro"
+            app:backgroundTint="@null"
+            android:gravity="center"
+            style="@style/TEXT_BOLD_3"
+            android:text="Áp dụng"
+            android:visibility="gone"/>
         <ImageView
-            android:id="@+id/img_service"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/image_water"
-            android:layout_gravity="center"/>
-        <TextView
-            android:id="@+id/txt_serviceName"
+            android:id="@+id/img_exit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Điện"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/inter_medium"
-            android:textSize="18dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Thu phí dụa trên"
-                android:fontFamily="@font/inter_medium"
-                />
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:paddingLeft="5dp"
-                android:src="@drawable/icon_asterisk"/>
-
-        </LinearLayout>
-
-        <Spinner
-            android:id="@+id/spinner_feeBased"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/spinner_backgroud"
-            android:padding="12dp"
-            android:layout_centerInParent="true"
-            android:spinnerMode="dropdown"
-            android:layout_marginTop="6dp" />
-
-
-        <View
-            android:id="@+id/view1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="#756B68"
-            android:visibility="visible"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Đơn vị tính"
-                android:fontFamily="@font/inter_medium"
-                />
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:paddingLeft="5dp"
-                android:src="@drawable/icon_asterisk"/>
-
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_unit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_unit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/custom_edittext"
-
-                android:visibility="visible"
-                android:imeOptions="actionNext"
-                android:padding="9dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/view2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="#756B68"
-            android:visibility="visible"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18dp"
-                android:text="Mức phí theo phòng"
-                android:fontFamily="@font/inter_medium"
-                />
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:paddingLeft="5dp"
-                android:src="@drawable/icon_asterisk"/>
-
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_fee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:suffixText="đ">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_fee"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/custom_edittext"
-                android:text="0"
-                android:imeOptions="actionNext"
-                android:padding="9dp"
-
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/view3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="#756B68"
-            android:visibility="visible"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:text="Ghi chú"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/inter_medium"
-            />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edt_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:src="@drawable/icon_exit"
+            android:layout_gravity="end"
             android:layout_marginTop="6dp"
-            android:background="@drawable/custom_edittext"
-            android:imeOptions="actionNext"
-            android:hint="Viết những lưu ý của bạn ta đây"
-            android:textColorHint="@color/colorGray"
-            android:padding="9dp"
-            android:minLines="3"
-            android:maxLines="6"
-            />
-        <View
-            android:id="@+id/view4"
+            android:layout_marginEnd="6dp"
+            android:visibility="gone"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="#756B68"
-            android:visibility="visible"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:text="Áp dụng cho"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/inter_medium"
-            />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_apllyFor"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:overScrollMode="never"
-            android:visibility="visible"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical">-->
-
-
-<!--            <CheckBox-->
-<!--                android:id="@+id/checkBox1"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="30dp"-->
-<!--                app:buttonTint="@null"-->
-<!--                style="@style/CustomCheckBox"-->
-<!--                android:checked="true"-->
-<!--                android:paddingLeft="5dp"-->
-<!--                android:text="Phòng 101" />-->
-<!--            <CheckBox-->
-<!--                android:id="@+id/checkBox2"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="30dp"-->
-<!--                app:buttonTint="@null"-->
-<!--                style="@style/CustomCheckBox"-->
-<!--                android:checked="false"-->
-<!--                android:paddingLeft="5dp"-->
-<!--                android:text="Phòng 102" />-->
-<!--        </LinearLayout>-->
+            android:layout_height="match_parent"
+            android:layout_margin="9dp"
+            android:orientation="vertical">
 
 
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/img_service"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/image_water"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/txt_serviceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Điện"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="18dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:text="Thu phí dụa trên"
+                    android:fontFamily="@font/inter_medium"
+                    />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:paddingLeft="5dp"
+                    android:src="@drawable/icon_asterisk"/>
+
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spinner_feeBased"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:background="@drawable/spinner_backgroud"
+                android:spinnerMode="dropdown"
+                android:layout_marginTop="6dp" />
+
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#756B68"
+                android:visibility="visible"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:text="Đơn vị tính"
+                    android:fontFamily="@font/inter_medium"
+                    />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:paddingLeft="5dp"
+                    android:src="@drawable/icon_asterisk"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/custom_edittext"
+
+                    android:visibility="visible"
+                    android:imeOptions="actionNext"
+                    android:padding="9dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#756B68"
+                android:visibility="visible"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18dp"
+                    android:text="Mức phí theo phòng"
+                    android:fontFamily="@font/inter_medium"
+                    />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:paddingLeft="5dp"
+                    android:src="@drawable/icon_asterisk"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_fee"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:suffixText="đ">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_fee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/custom_edittext"
+                    android:text="0"
+                    android:imeOptions="actionNext"
+                    android:padding="9dp"
+
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#756B68"
+                android:visibility="visible"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Ghi chú"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/inter_medium"
+                />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/custom_edittext"
+                android:imeOptions="actionNext"
+                android:hint="Viết những lưu ý của bạn ta đây"
+                android:textColorHint="@color/colorGray"
+                android:padding="9dp"
+                android:minLines="3"
+                android:maxLines="6"
+                />
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#756B68"
+                android:visibility="visible"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Áp dụng cho"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/inter_medium"
+                />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_apllyFor"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            <!--        <LinearLayout-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:orientation="vertical">-->
+
+
+            <!--            <CheckBox-->
+            <!--                android:id="@+id/checkBox1"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="30dp"-->
+            <!--                app:buttonTint="@null"-->
+            <!--                style="@style/CustomCheckBox"-->
+            <!--                android:checked="true"-->
+            <!--                android:paddingLeft="5dp"-->
+            <!--                android:text="Phòng 101" />-->
+            <!--            <CheckBox-->
+            <!--                android:id="@+id/checkBox2"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="30dp"-->
+            <!--                app:buttonTint="@null"-->
+            <!--                style="@style/CustomCheckBox"-->
+            <!--                android:checked="false"-->
+            <!--                android:paddingLeft="5dp"-->
+            <!--                android:text="Phòng 102" />-->
+            <!--        </LinearLayout>-->
+
+
+
+        </LinearLayout>
+    </ScrollView>
 
 
 </LinearLayout>

@@ -1,16 +1,32 @@
 package edu.poly.nhtr.models;
 
 public class Service {
-    public String name, codeImage;
-    public int price;
-    public String unit;
-    public String fee_base;
-    public String note;
+    private String idHomeParent;
+    private String name, codeImage;
+    private int price;
+    private String unit;
+    private int fee_base;
+    private String note;
+    private Boolean isDeletable;
+    private Boolean isApply;
 
     public Service(String name, String codeImage, int price) {
         this.name = name;
         this.codeImage = codeImage;
         this.price = price;
+        this.isDeletable = true;
+        this.isApply = false;
+    }
+
+    public Service(String idHomeParent, String name, String codeImage, int price, String unit, int fee_base, Boolean isDeletable, Boolean isApply) {
+        this.idHomeParent = idHomeParent;
+        this.name = name;
+        this.codeImage = codeImage;
+        this.price = price;
+        this.unit = unit;
+        this.fee_base = fee_base;
+        this.isDeletable = isDeletable;
+        this.isApply = isApply;
     }
 
     public String getName() {
@@ -45,11 +61,11 @@ public class Service {
         this.unit = unit;
     }
 
-    public String getFee_base() {
+    public int getFee_base() {
         return fee_base;
     }
 
-    public void setFee_base(String fee_base) {
+    public void setFee_base(int fee_base) {
         this.fee_base = fee_base;
     }
 
@@ -59,5 +75,29 @@ public class Service {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Boolean getDeletable() {
+        return isDeletable;
+    }
+
+    public void setDeletable(Boolean deletable) {
+        isDeletable = deletable;
+    }
+
+    public Boolean getApply() {
+        return isApply;
+    }
+
+    public void setApply(Boolean apply) {
+        isApply = apply;
+    }
+
+    public String getIdHomeParent() {
+        return idHomeParent;
+    }
+
+    public void setIdHomeParent(String idHomeParent) {
+        this.idHomeParent = idHomeParent;
     }
 }

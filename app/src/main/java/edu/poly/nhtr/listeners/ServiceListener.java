@@ -9,4 +9,7 @@ import edu.poly.nhtr.models.Service;
 public interface ServiceListener {
     void onServiceClicked(Service service);
     void openPopup(View view, Service service, ItemServiceBinding binding);
+    void onItemCLick(Service service);
+
+
 }
