@@ -50,7 +50,7 @@
             android:id="@+id/txt_confirm_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/b_n_c_mu_n_x_a_ph_ng_tr"
+            android:text="@string/ban_co_muon_xoa_phong_tro"
             style="@style/TEXT_MED"
             android:textSize="15sp"
             android:textColor="@color/colorTextBlack"

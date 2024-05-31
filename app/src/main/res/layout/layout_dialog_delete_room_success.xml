@@ -56,7 +56,7 @@
             android:id="@+id/txt_delete_home_success"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/b_n_xo_ph_ng_tr_th_nh_c_ng"
+            android:text="@string/ban_xoa_phong_tro_thanh_cong"
             android:fontFamily="@font/inter_medium"
             android:textSize="15sp"
             android:textColor="@color/colorTextBlack"
