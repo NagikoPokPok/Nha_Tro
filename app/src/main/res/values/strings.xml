@@ -148,4 +148,6 @@
     <string name="ngay">Ngày</string>
     <string name="anh_mat_truoc_cccd">Ảnh mặt trước CCCD</string>
     <string name="anh_mat_sau_cccd">Ảnh mặt sau CCCD</string>
+    <string name="mat_truoc_hop_dong">Mặt trước hợp đồng</string>
+    <string name="mat_sau_hop_dong">Mặt sau hợp đồng</string>
 </resources>
