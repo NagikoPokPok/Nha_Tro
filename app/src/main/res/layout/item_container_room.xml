@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="330dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
     android:layout_marginTop="20dp"
     app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
@@ -112,10 +112,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="10dp">
 
             <TextView
+                android:id="@+id/txt_ho_ten"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -123,19 +124,19 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/inter_light"
                 android:layout_gravity="start" />
 
             <TextView
-                android:id="@+id/txt_ho_ten"
+                android:id="@+id/edt_ho_ten"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
                 android:text="Ho Quang Hieu"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
         </LinearLayout>
 
@@ -143,10 +144,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="10dp">
 
             <TextView
+                android:id="@+id/txt_so_dien_thoai"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
@@ -156,16 +158,16 @@
                 android:maxLines="1"
                 android:text="Số điện thoại :"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/txt_so_dien_thoai"
+                android:id="@+id/edt_so_dien_thoai"
                 android:layout_width="0dp"
                 android:layout_weight="2"
                 android:layout_height="match_parent"
                 android:text="0918300555"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:fontFamily="@font/inter_medium"
                 />
 
@@ -174,10 +176,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="10dp">
 
             <TextView
+                android:id="@+id/txt_trang_thai_thanh_toan"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -185,18 +188,18 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/inter_light"
                 android:layout_gravity="start" />
 
             <TextView
-                android:id="@+id/txt_trang_thai_thanh_toan"
+                android:id="@+id/edt_trang_thai_thanh_toan"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:text="Đã thanh toán"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:fontFamily="@font/inter_medium"
                 />
 
@@ -205,10 +208,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="10dp">
 
             <TextView
+                android:id="@+id/txt_so_nguoi_dang_o"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -216,18 +220,18 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/inter_light"
                 android:layout_gravity="start" />
 
             <TextView
-                android:id="@+id/txt_so_nguoi_dang_o"
+                android:id="@+id/edt_so_nguoi_dang_o"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:text="2"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:fontFamily="@font/inter_medium"
                 />
 
@@ -236,7 +240,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="10dp">
 
             <TextView
@@ -247,7 +251,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/inter_light"
                 android:layout_gravity="start" />
 
@@ -258,7 +262,7 @@
                 android:layout_height="match_parent"
                 android:text="1.500.000"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:fontFamily="@font/inter_medium"
                 />
 
@@ -266,10 +270,10 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="15dp"
             android:background="#000000" />
 
@@ -288,7 +292,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:fontFamily="@font/inter_light"
                 android:layout_gravity="start" />
 
@@ -301,7 +305,7 @@
                 android:maxLines="3"
                 android:text="View Biển"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
         </LinearLayout>
 

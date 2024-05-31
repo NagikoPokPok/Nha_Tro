@@ -45,7 +45,7 @@ public class RoomPresenter {
         }
     }
     private void checkDuplicateData(Room room, Runnable onSuccess) {
-        roomListener.showLoadingOfFunctions(R.id.btn_add_room);
+        roomListener.showLoadingOfFunctions(R.id.btn_update_room);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_ROOMS).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
@@ -83,11 +83,11 @@ public class RoomPresenter {
                     roomListener.showToast("Thêm nhà trọ thành công");
                     getRooms("add");
                     roomListener.dialogClose();
-                    roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                    roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                 })
                 .addOnFailureListener(e -> {
                     roomListener.showToast("Add failed");
-                    roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                    roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                 });
     }
     public void getRooms(String action) {
@@ -164,13 +164,13 @@ public class RoomPresenter {
                 });
     }
     public void updateRoom(String newNameRoom, String newPrice, String newDescribe, Room room) {
-        roomListener.showLoadingOfFunctions(R.id.btn_add_home);
+        roomListener.showLoadingOfFunctions(R.id.btn_update_room);
         if (newNameRoom.isEmpty()) {
-            roomListener.hideLoadingOfFunctions(R.id.btn_add_home);
-            roomListener.showErrorMessage("Nhập tên nhà trọ", R.id.layout_name_home);
+            roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
+            roomListener.showErrorMessage("Nhập tên phòng trọ", R.id.layout_name_room);
         } else if (newPrice.isEmpty()) {
             roomListener.hideLoadingOfFunctions(R.id.btn_add_home);
-            roomListener.showErrorMessage("Nhập địa chỉ nhà trọ", R.id.layout_address_home);
+            roomListener.showErrorMessage("Nhập giá phòng trọ", R.id.layout_price);
         } else {
             checkDuplicateDataForUpdate(newNameRoom, newPrice, newDescribe, room);
         }
@@ -185,18 +185,16 @@ public class RoomPresenter {
                     if (task.isSuccessful() && task.getResult() != null) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String nameFromFirestore = document.getString(Constants.KEY_NAME_ROOM);
-//                            String priceFromFirestore = document.getString(Constants.KEY_PRICE);
-//                            String describeFromFirestore = document.getString(Constants.KEY_DESCRIBE);
                             String homeIdFromFirestore = document.getString(Constants.KEY_HOME_ID);
                             String roomIdFromFirestore = document.getId();
 
                             if (isDuplicate(nameFromFirestore, newNameRoom, homeIdFromFirestore, room) && !roomIdFromFirestore.equals(room.getRoomId())) {
                                 roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
-                                roomListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
+                                roomListener.showErrorMessage("Tên phòng đã tồn tại", R.id.layout_name_room);
                                 return;
                             }
                         }
-                        roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                        roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                         roomListener.openConfirmUpdateRoom(Gravity.CENTER, newNameRoom, newPrice, newDescribe, room);
 
                     } else {

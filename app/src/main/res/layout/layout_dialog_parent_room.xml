@@ -150,12 +150,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                android:fontFamily="@font/inter_medium"
                 android:background="@drawable/custom_button_clicked"
+                android:fontFamily="@font/inter_medium"
+                android:textSize="16sp"
                 app:backgroundTint="@null"
-                />
+                app:iconGravity="textStart" />
 
             <ProgressBar
                 android:id="@+id/progressBar"

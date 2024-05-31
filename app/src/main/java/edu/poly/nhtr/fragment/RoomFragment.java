@@ -25,9 +25,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -38,6 +40,7 @@ import java.util.Objects;
 import edu.poly.nhtr.Adapter.RoomAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomBinding;
+import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.databinding.ItemContainerRoomBinding;
 import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Home;
@@ -178,6 +181,37 @@ public class RoomFragment extends Fragment implements RoomListener {
         return binding.getRoot();
     }
 
+    private void openMenuForEachRoom(View view, Room room, ItemContainerRoomBinding binding) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.setForceShowIcon(true);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_edit) {
+                // Thực hiện hành động cho mục chỉnh sửa
+                openUpdateRoomDialog(Gravity.CENTER, room);
+                return true;
+            }
+            else if (itemId == R.id.menu_delete) {
+                // Thực hiện hành động cho mục xóa
+                //homePresenter.deleteHome(home);
+                //openDeleteHomeDialog(Gravity.CENTER, home);
+                return true;
+            }
+            return false;
+        });
+
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                binding.frmImage2.setVisibility(View.INVISIBLE);
+                binding.frmImage.setVisibility(View.VISIBLE);
+            }
+        });
+
+        popupMenu.inflate(R.menu.menu_edit_delete);
+        popupMenu.show();
+    }
+
 
     private void openAddRoomDialog(int gravity) {
         setupDialog(R.layout.layout_dialog_add_room, Gravity.CENTER);
@@ -193,7 +227,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         TextInputLayout layoutNameRoom = dialog.findViewById(R.id.layout_name_room);
         TextInputLayout layoutPrice = dialog.findViewById(R.id.layout_price);
 
-        Button btnAddRoom = dialog.findViewById(R.id.btn_add_room);
+        Button btnAddRoom = dialog.findViewById(R.id.btn_update_room);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
         // Set dấu * đỏ cho TextView
@@ -201,7 +235,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         price.append(customizeText(" *"));
 
         //Set thông tin cho dialog
-        title.setText("Tạo mới nhà trọ");
+        title.setText("Tạo mới phòng trọ");
         edtNameRoom.setHint("Ví dụ: Phòng 1");
         edtPrice.setHint("Ví dụ: 1.500.000");
         edtDescribe.setHint("Ví dụ: View Biển");
@@ -313,7 +347,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void openPopup(View view, Room room, ItemContainerRoomBinding binding) {
-
+        openMenuForEachRoom(view, room, binding);
     }
 
 
@@ -430,11 +464,10 @@ public class RoomFragment extends Fragment implements RoomListener {
         EditText edt_new_name_room = dialog.findViewById(R.id.edt_name_room);
         EditText edt_new_price = dialog.findViewById(R.id.edt_price);
         EditText edt_new_describe = dialog.findViewById(R.id.edt_describe);
-        TextView title = dialog.findViewById(R.id.txt_title_dialog);
+        TextView title = dialog.findViewById(R.id.txt_title_dialog_room);
         TextView txt_name_room = dialog.findViewById(R.id.txt_name_room);
-        TextView txt_address_home = dialog.findViewById(R.id.txt_address_home);
-        TextInputLayout layoutNameHome = dialog.findViewById(R.id.layout_name_home);
-        TextInputLayout layoutAddressHome = dialog.findViewById(R.id.layout_address_home);
+        TextInputLayout layoutNameRoom = dialog.findViewById(R.id.layout_name_room);
+        TextInputLayout layotPrice = dialog.findViewById(R.id.layout_price);
 
 
         //Hiện thông tin lên edt
@@ -456,8 +489,8 @@ public class RoomFragment extends Fragment implements RoomListener {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String name = edt_new_name_room.getText().toString().trim();
                 if (!name.isEmpty()) {
-                    layoutNameHome.setErrorEnabled(false);
-                    layoutNameHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                    layoutNameRoom.setErrorEnabled(false);
+                    layoutNameRoom.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
 
@@ -477,8 +510,8 @@ public class RoomFragment extends Fragment implements RoomListener {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String address = edt_new_price.getText().toString().trim();
                 if (!address.isEmpty()) {
-                    layoutAddressHome.setErrorEnabled(false);
-                    layoutAddressHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                    layotPrice.setErrorEnabled(false);
+                    layotPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
                 }
             }
 
@@ -522,7 +555,7 @@ public class RoomFragment extends Fragment implements RoomListener {
                 // Lấy dữ liệu
                 String newNameRoom = edt_new_name_room.getText().toString().trim();
                 String newPrice = edt_new_price.getText().toString().trim();
-                String newDescribe = edt_new_price.getText().toString().trim();
+                String newDescribe = edt_new_describe.getText().toString().trim();
                 roomPresenter.updateRoom(newNameRoom, newPrice, newDescribe, room);
             }
         });
