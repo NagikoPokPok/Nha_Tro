@@ -240,6 +240,39 @@
         </LinearLayout>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_type_of_filter_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="5dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
+        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_title_filter_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            android:text="Lọc theo:  "
+            android:textSize="15sp"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="@color/colorTextBlack"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/list_type_of_filter_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            android:orientation="horizontal">
+        </com.google.android.flexbox.FlexboxLayout>
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -309,6 +342,14 @@
 
     </LinearLayout>
 
+    <!-- Barrier -->
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="layout_type_of_sort_filter_home, layout_type_of_filter_home" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homesRecyclerView"
         android:layout_width="match_parent"
@@ -323,7 +364,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_add_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_type_of_sort_filter_home" />
+        app:layout_constraintTop_toBottomOf="@id/barrier" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -342,7 +383,7 @@
         android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/them_nha_tro"
         android:textSize="18sp"
         app:backgroundTint="@null"

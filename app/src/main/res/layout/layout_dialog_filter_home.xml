@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="310dp"
-    android:layout_height="250dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="16dp"
     android:background="@drawable/bg_white_corner_16"
     android:elevation="10dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="15dp">
 
 
     <TextView
@@ -20,38 +21,115 @@
         android:padding="12dp"
         android:text="@string/bo_loc"
         android:textSize="20sp" />
-
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        style="@style/TEXT_LIGHT_2"
+    
+    <TextView
+        style="@style/TEXT_MED_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="0dp"
-        android:text="@string/da_thanh_toan"
+        android:text="Số phòng: "
         android:textSize="17sp"
-        android:theme="@style/MyCheckBoxStyle" />
-
-    <androidx.appcompat.widget.AppCompatCheckBox
-        style="@style/TEXT_LIGHT_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_0_to_5_rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
         android:paddingStart="10dp"
         android:paddingEnd="0dp"
-        android:text="@string/cho_thanh_toan"
+        android:text="Từ 0 - 5 phòng"
         android:textSize="17sp"
         android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_6_to_10_rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 6 - 10 phòng"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_10_to_more_rooms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 10 phòng trở lên"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <TextView
+        style="@style/TEXT_MED_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Doanh thu tháng: "
+        android:textSize="17sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_0_to_3_millions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 0 - 3 triệu"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_3_to_7_millions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 3 - 7 triệu"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_7_to_more_millions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 7 triệu trở lên"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton

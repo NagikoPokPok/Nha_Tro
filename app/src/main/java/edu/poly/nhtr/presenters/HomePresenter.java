@@ -437,7 +437,7 @@ public class HomePresenter {
                 });
     }
 
-    public void sortHomes()
+    public void sortHomes(String typeOfSort)
     {
         homeListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -462,19 +462,37 @@ public class HomePresenter {
                                 homes.add(home);
                             }
                             // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
-                            homes.sort(new Comparator<Home>() {
-                                @Override
-                                public int compare(Home home1, Home home2) {
-                                    return Integer.compare(home1.numberOfRooms, home2.numberOfRooms);
-                                }
-                            });
-
+                            if(typeOfSort.equals("number_room_asc")){
+                                homes = sortHomesByNumberOfHomesAscending(homes);
+                            }else if(typeOfSort.equals("number_room_desc")){
+                                homes = sortHomesByNumberOfHomesDescending(homes);
+                            }
                             homeListener.addHome(homes, "init");
                         } else {
                             homeListener.addHomeFailed();
                         }
                     }
                 });
+    }
+
+    private List<Home> sortHomesByNumberOfHomesAscending(List<Home> homes) {
+        homes.sort(new Comparator<Home>() {
+            @Override
+            public int compare(Home home1, Home home2) {
+                return Integer.compare(home1.numberOfRooms, home2.numberOfRooms);
+            }
+        });
+        return homes;
+    }
+
+    private List<Home> sortHomesByNumberOfHomesDescending(List<Home> homes) {
+        homes.sort(new Comparator<Home>() {
+            @Override
+            public int compare(Home home1, Home home2) {
+                return Integer.compare(home2.numberOfRooms, home1.numberOfRooms);
+            }
+        });
+        return homes;
     }
 
 
