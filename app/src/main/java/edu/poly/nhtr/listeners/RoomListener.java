@@ -23,6 +23,8 @@ public interface RoomListener {
     void hideLoading();
     void showLoading();
     boolean isAdded2();
+    void hideFrameTop();
+    void showFrameTop();
     void addRoom(List<Room> rooms, String action);
     void addRoomFailed();
     void openDialogSuccess(int layout);

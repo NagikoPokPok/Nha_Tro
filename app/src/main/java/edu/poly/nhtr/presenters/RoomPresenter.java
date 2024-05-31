@@ -34,6 +34,9 @@ public class RoomPresenter {
     public void setCount(int count) {
         this.count = count;
     }
+    public int getPosition() {
+        return position;
+    }
 
     public void addRoom(Room room) {
         if (room.getNameRoom().isEmpty()) {
@@ -160,6 +163,67 @@ public class RoomPresenter {
                         }
                     } else {
                         roomListener.showToast("Không thể tìm kiếm phòng trọ");
+                    }
+                });
+    }
+    public void deleteRoom(Room room) {
+        roomListener.showLoadingOfFunctions(R.id.btn_delete_room);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        // Truy vấn để lấy tất cả các tài liệu có cùng userId
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereEqualTo(Constants.KEY_HOME_ID, roomListener.getInfoHomeFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+
+                        // Sắp xếp danh sách tài liệu theo thời gian tăng dần
+                        documents.sort((doc1, doc2) -> {
+                            Timestamp timestamp1 = doc1.getTimestamp(Constants.KEY_TIMESTAMP);
+                            Timestamp timestamp2 = doc2.getTimestamp(Constants.KEY_TIMESTAMP);
+                            assert timestamp1 != null;
+                            assert timestamp2 != null;
+                            return timestamp1.compareTo(timestamp2);
+                        });
+
+                        position = 0;
+                        boolean found = false;
+
+                        // Duyệt qua danh sách tài liệu đã sắp xếp
+                        for (DocumentSnapshot document : documents) {
+                            position++;
+                            String homeIdFromFirestore = document.getId();
+
+                            // Kiểm tra nếu roomId khớp
+                            if (homeIdFromFirestore.equals(room.getRoomId())) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) {
+                            // Sau khi tìm thấy vị trí, thực hiện xoá tài liệu
+                            database.collection(Constants.KEY_COLLECTION_ROOMS)
+                                    .document(room.getRoomId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        getRooms("delete");
+                                        roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                                        roomListener.dialogClose();
+                                        roomListener.openDialogSuccess(R.layout.layout_dialog_delete_room_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                                        roomListener.showToast("Xoá phòng trọ thất bại");
+                                    });
+                        } else {
+                            roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                            roomListener.showToast("Không tìm thấy homeId");
+                        }
+                    } else {
+                        roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                        roomListener.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
     }

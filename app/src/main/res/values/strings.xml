@@ -158,4 +158,6 @@
         <item>Khác</item>
     </string-array>
 
+    <string name="b_n_c_mu_n_x_a_ph_ng_tr">Bạn có muốn xóa phòng trọ</string>
+    <string name="b_n_xo_ph_ng_tr_th_nh_c_ng">Bạn đã xoá phòng trọ thành công!</string>
 </resources>

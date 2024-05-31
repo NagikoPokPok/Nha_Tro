@@ -193,8 +193,7 @@ public class RoomFragment extends Fragment implements RoomListener {
             }
             else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
-                //homePresenter.deleteHome(home);
-                //openDeleteHomeDialog(Gravity.CENTER, home);
+                openDeleteRoomDialog(Gravity.CENTER, room);
                 return true;
             }
             return false;
@@ -392,7 +391,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void addRoom(List<Room> rooms, String action) {
-        RoomAdapter roomAdapter = new RoomAdapter(rooms, this);
+        RoomAdapter roomAdapter = new RoomAdapter(rooms, this, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
 
         // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
@@ -404,6 +403,21 @@ public class RoomFragment extends Fragment implements RoomListener {
             roomAdapter.addRoom(rooms);
             roomAdapter.notifyItemInserted(roomAdapter.getLastActionPosition());
             binding.roomsRecyclerView.smoothScrollToPosition(roomAdapter.getLastActionPosition());
+        }
+        else if (Objects.equals(action, "update")) {
+            int position = roomPresenter.getPosition();
+            roomAdapter.updateRoom(position);
+            roomAdapter.notifyItemChanged(roomAdapter.getLastActionPosition());
+            binding.roomsRecyclerView.smoothScrollToPosition(roomAdapter.getLastActionPosition());
+        } else if (Objects.equals(action, "delete")) {
+            int position = roomPresenter.getPosition();
+            if (position == 1) {
+                binding.roomsRecyclerView.smoothScrollToPosition(0);
+            } else {
+                roomAdapter.removeRoom(position);
+                roomAdapter.notifyItemRemoved(roomAdapter.getLastActionPosition());
+                binding.roomsRecyclerView.smoothScrollToPosition(roomAdapter.getLastActionPosition());
+            }
         }
         //binding.homesRecyclerView.smoothScrollToPosition(0);
 
@@ -426,6 +440,18 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     public boolean isAdded2() {
         return isAdded();
+    }
+
+    @Override
+    public void hideFrameTop() {
+        binding.frmMenuTools.setVisibility(View.GONE);
+        binding.btnAddRoom.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFrameTop() {
+        binding.frmMenuTools.setVisibility(View.VISIBLE);
+        binding.btnAddRoom.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -581,6 +607,36 @@ public class RoomFragment extends Fragment implements RoomListener {
             @Override
             public void onClick(View v) {
                 roomPresenter.updateSuccess(newNameRoom, newPrice, newDescribe, room);
+            }
+        });
+    }
+
+
+    private void openDeleteRoomDialog(int gravity, Room room) {
+
+        setupDialog(R.layout.layout_dialog_delete_room, Gravity.CENTER);
+
+        // Ánh xạ ID
+        TextView txt_confirm_delete = dialog.findViewById(R.id.txt_confirm_delete);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_delete_room = dialog.findViewById(R.id.btn_delete_room);
+
+        // Hiệu chỉnh TextView
+        String text = " " + room.getNameRoom() + " ?";
+        txt_confirm_delete.append(text);
+
+        // Xử lý sự kiện cho Button
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_delete_room.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                roomPresenter.deleteRoom(room);
             }
         });
     }

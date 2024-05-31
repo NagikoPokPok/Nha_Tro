@@ -83,6 +83,7 @@
                 android:id="@+id/edt_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="numberSigned"
                 android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
         <TextView

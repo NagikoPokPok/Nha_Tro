@@ -95,19 +95,22 @@
                         android:layout_gravity="center"
                         />
 
-
-
                 </FrameLayout>
-
-
 
             </FrameLayout>
 
-
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/iv_check_box"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                android:theme="@style/MyCheckBoxStyle"
+                />
         </RelativeLayout>
-
-
-
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
