@@ -9,68 +9,39 @@
     android:elevation="10dp"
     android:layout_gravity="center">
 
-
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="25dp">
 
-        <FrameLayout
-            android:id="@+id/frm_Image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_Profile"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/background_image"
-                android:src="@drawable/ic_edit"
-                android:scaleType="centerCrop"
-                android:padding="10dp"
-                app:riv_oval="true" />
-
-
-        </FrameLayout>
 
         <TextView
+            android:id="@+id/txt_confirm_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xác nhận sửa"
+            android:text="@string/ban_co_muon_luu_hop_dong_khong"
             android:fontFamily="@font/inter_bold"
             android:textSize="20sp"
             android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"/>
 
-        <TextView
-            android:id="@+id/txt_confirm_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bạn có muốn lưu thông tin nhà trọ ?"
-            android:fontFamily="@font/inter_medium"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextBlack"
-            android:layout_gravity="center"
-            android:gravity="center"/>
-
-
         <LinearLayout
+            android:id="@+id/layout_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp">
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="40dp">
 
             <Button
                 android:id="@+id/btn_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="Huỷ"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:text="@string/huy"
                 android:textColor="@color/colorButton"
                 app:iconGravity="textStart"
                 android:textSize="16sp"
@@ -81,10 +52,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_confirm_update_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="Xác nhận"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:text="@string/luu"
                 app:iconGravity="textStart"
                 android:textSize="16sp"
                 android:fontFamily="@font/inter_medium"
@@ -101,11 +72,6 @@
                 android:visibility="invisible"/>
 
         </LinearLayout>
-
-
-
-
-
 
     </LinearLayout>
 
