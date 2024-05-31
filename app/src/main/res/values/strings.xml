@@ -161,4 +161,7 @@
         <item>Khác</item>
     </string-array>
 
+    <string name="ban_co_muon_xoa_phong_tro">Bạn có muốn xóa phòng trọ</string>
+    <string name="ban_xoa_phong_tro_thanh_cong">Bạn đã xoá phòng trọ thành công!</string>
+
 </resources>
