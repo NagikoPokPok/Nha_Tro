@@ -211,27 +211,50 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <!-- Khung điền ngày sinh -->
-                    <EditText
-                        android:id="@+id/edt_ngay_sinh"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_ngay_sinh"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
                         android:layout_weight="1"
-                        android:autofillHints=""
-                        android:inputType="date" />
+                        android:hint="@string/dd_mm_yyyy"
+                        android:layout_gravity="center_vertical"
+                        app:boxBackgroundMode="none">
 
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_ngay_sinh"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableEnd="@drawable/icon_calendar"
+                            android:background="@drawable/bottom_outline"
+                            android:layout_marginEnd="11dp"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="-10dp"
+                            android:inputType="date" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Khung điền giới tính -->
-                    <EditText
-                        android:id="@+id/edt_gioi_tinh"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_gioi_tinh"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:autofillHints=""
+                        android:hint="@string/gioi_tinh"
+                        android:paddingTop="10dp"
                         android:layout_gravity="center_vertical"
-                        android:inputType="none" />
+                        app:boxBackgroundMode="none">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/autocomplete_gender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:background="@drawable/bottom_outline" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
                 </LinearLayout>
+
             </LinearLayout>
 
             <!-- Ngày tạo -->
@@ -240,7 +263,7 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="110dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_tao"
                 android:textSize="20sp"
@@ -308,6 +331,7 @@
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_het_han_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_het_han_hop_dong"
                 android:inputType="date"
+                android:drawableEnd="@drawable/icon_calendar"
                 android:gravity="end"/>
 
             <!-- Ngày trả tiền phòng -->
@@ -333,6 +357,7 @@
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_tra_tien_phong"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_tra_tien_phong"
                 android:inputType="date"
+                android:drawableEnd="@drawable/icon_calendar"
                 android:gravity="end"/>
 
             <!--Hạn thanh toán-->
