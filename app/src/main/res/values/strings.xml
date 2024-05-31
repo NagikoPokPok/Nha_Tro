@@ -151,6 +151,9 @@
     <string name="mat_truoc_hop_dong">Mặt trước hợp đồng</string>
     <string name="mat_sau_hop_dong">Mặt sau hợp đồng</string>
     <string name="dd_mm_yyyy">DD/mm/YYYY</string>
+    <string name="ngay_vao_o">Ngày vào ở</string>
+    <string name="ten_khach_thue">Tên khách thuê</string>
+    <string name="them_khach">Thêm khách</string>
 
     <string-array name="gender_options">
         <item>Nam</item>
