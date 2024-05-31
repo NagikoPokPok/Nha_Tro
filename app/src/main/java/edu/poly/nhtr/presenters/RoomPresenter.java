@@ -141,14 +141,14 @@ public class RoomPresenter {
                         List<Room> rooms = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String nameRoomFromFirestore = document.getString(Constants.KEY_NAME_ROOM);
-                            String prriceRoomFromFirestore = document.getString(Constants.KEY_PRICE);
+                            String priceRoomFromFirestore = document.getString(Constants.KEY_PRICE);
                             String describeRoomFromFirestore = document.getString(Constants.KEY_DESCRIBE);
                             String homeIdFromFirestore = document.getString(Constants.KEY_HOME_ID);
 
                             if (nameRoomFromFirestore != null && nameRoomFromFirestore.toLowerCase().contains(nameRoom.toLowerCase()) && Objects.equals(homeIdFromFirestore, roomListener.getInfoHomeFromGoogleAccount())) {
                                 Room room = new Room();
                                 room.nameRoom = nameRoomFromFirestore;
-                                room.price = prriceRoomFromFirestore;
+                                room.price = priceRoomFromFirestore;
                                 room.describe = describeRoomFromFirestore;
                                 room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 room.roomId = document.getId();

@@ -125,7 +125,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchNameHome = Objects.requireNonNull(binding.edtSearchRoom.getText()).toString().trim();
+                String searchNameRoom = Objects.requireNonNull(binding.edtSearchRoom.getText()).toString().trim();
                 roomPresenter.searchRoom(s.toString());
 
             }
@@ -139,8 +139,12 @@ public class RoomFragment extends Fragment implements RoomListener {
         binding.layoutSearchRoom.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String searchNameHome = Objects.requireNonNull(binding.edtSearchRoom.getText().toString().trim());
-                roomPresenter.searchRoom(searchNameHome);
+                String searchNameRoom = Objects.requireNonNull(binding.edtSearchRoom.getText().toString().trim());
+                roomPresenter.searchRoom(searchNameRoom);
+                if (searchNameRoom.isEmpty()) {
+                    binding.edtSearchRoom.clearFocus();
+                }
+
             }
         });
     }
