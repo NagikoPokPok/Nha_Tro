@@ -66,8 +66,8 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
                 android:layout_weight="1"
+                android:layout_marginTop="60dp"
                 android:text="@string/ho_ten"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="@id/txt_tong_thanh_vien"
@@ -87,27 +87,35 @@
                 app:layout_constraintStart_toEndOf="@id/txt_ten_khach" />
 
             <!--            Khung điền tên-->
-            <EditText
-                android:id="@+id/edt_ten_khach"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_ten_khach"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:autofillHints=""
-                android:inputType="textPersonName"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ten_khach"
-                app:layout_constraintTop_toTopOf="@id/txt_ten_khach"/>
+                app:layout_constraintTop_toTopOf="@id/txt_ten_khach"
+                app:boxBackgroundMode="none">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_ten_khach"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_outline"
+                    android:autofillHints=""
+                    android:inputType="textPersonName" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/txt_so_dien_thoai"
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="80dp"
                 android:layout_weight="1"
                 android:text="@string/so_dien_thoai"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@id/edt_ten_khach"
-                app:layout_constraintTop_toTopOf="@id/edt_ten_khach" />
+                app:layout_constraintStart_toStartOf="@id/til_ten_khach"
+                app:layout_constraintTop_toTopOf="@id/til_ten_khach" />
 
             <!-- Dấu "*" -->
             <TextView
@@ -124,15 +132,23 @@
                 app:layout_constraintStart_toEndOf="@id/txt_so_dien_thoai" />
 
             <!--            Khung điền số điện thoại-->
-            <EditText
-                android:id="@+id/edt_so_dien_thoai"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_so_dien_thoai"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:autofillHints=""
-                android:inputType="phone"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_dien_thoai"
-                app:layout_constraintTop_toTopOf="@id/txt_so_dien_thoai"/>
+                app:layout_constraintTop_toTopOf="@id/txt_so_dien_thoai"
+                app:boxBackgroundMode="none">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_so_dien_thoai"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_outline"
+                    android:autofillHints=""
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Số CCCD/CMND -->
             <TextView
@@ -140,12 +156,12 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="80dp"
                 android:layout_weight="1"
                 android:text="@string/cccd_cmnd"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@id/edt_so_dien_thoai"
-                app:layout_constraintTop_toTopOf="@id/edt_so_dien_thoai" />
+                app:layout_constraintStart_toStartOf="@id/til_so_dien_thoai"
+                app:layout_constraintTop_toTopOf="@id/til_so_dien_thoai" />
 
             <!-- Dấu "*" -->
             <TextView
@@ -161,25 +177,33 @@
                 app:layout_constraintStart_toEndOf="@id/txt_so_cmnd_cccd" />
 
             <!--            Khung điền tên-->
-            <EditText
-                android:id="@+id/edt_so_cmnd_cccd"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_so_cccd_cccd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:autofillHints=""
-                android:inputType="number"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_cmnd_cccd"
-                app:layout_constraintTop_toTopOf="@id/txt_so_cmnd_cccd"/>
+                app:layout_constraintTop_toTopOf="@id/txt_so_cmnd_cccd"
+                app:boxBackgroundMode="none">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_so_cccd_cccd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_outline"
+                    android:autofillHints=""
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- LinearLayout chứa trường Ngày sinh and Giới tính-->
             <LinearLayout
                 android:id="@+id/layout_ngay_sinh_gioi_tinh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="80dp"
                 android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="@id/edt_so_cmnd_cccd"
-                app:layout_constraintTop_toTopOf="@id/edt_so_cmnd_cccd">
+                app:layout_constraintStart_toStartOf="@id/til_so_cccd_cccd"
+                app:layout_constraintTop_toTopOf="@id/til_so_cccd_cccd">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -228,8 +252,7 @@
                             android:layout_height="wrap_content"
                             android:drawableEnd="@drawable/icon_calendar"
                             android:background="@drawable/bottom_outline"
-                            android:layout_marginEnd="11dp"
-                            android:paddingTop="20dp"
+                            android:layout_marginEnd="10dp"
                             android:paddingBottom="-10dp"
                             android:inputType="date" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -241,7 +264,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="@string/gioi_tinh"
-                        android:paddingTop="10dp"
+                        android:paddingTop="8dp"
                         android:layout_gravity="center_vertical"
                         app:boxBackgroundMode="none">
 
@@ -249,7 +272,6 @@
                             android:id="@+id/autocomplete_gender"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
                             android:background="@drawable/bottom_outline" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -415,8 +437,9 @@
             <!-- Khung điền ảnh mặt trước CCCD-->
             <FrameLayout
                 android:id="@+id/layout_them_anh_cccd_truoc"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
                 app:layout_constraintTop_toTopOf="@id/txt_anh_mat_truoc_cccd"
@@ -425,7 +448,7 @@
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_cccd_front"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
                 android:background="@drawable/background_image"
                 android:scaleType="centerCrop"
                 app:riv_oval="true" />
