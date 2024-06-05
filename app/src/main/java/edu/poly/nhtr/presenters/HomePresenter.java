@@ -345,7 +345,7 @@ public class HomePresenter {
                                         //homeListener.showToast("Cập nhật thành công ở vị trí: " + getPosition());
                                         homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
                                         homeListener.dialogClose();
-                                        homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                                        homeListener.openDialogSuccess(R.layout.layout_dialog_update_success);
                                     })
                                     .addOnFailureListener(e -> {
                                         homeListener.hideLoadingOfFunctions(R.id.btn_confirm_update_home);
@@ -457,7 +457,7 @@ public class HomePresenter {
                             } else if (typeOfSort.equals("number_room_desc")) {
                                 homes = sortHomesByNumberOfHomesDescending(homes);
                             }
-                            homeListener.addHome(homes, "init");
+                            homeListener.addHome(homes, "sort");
                         } else {
                             homeListener.addHomeFailed();
                         }
@@ -486,7 +486,11 @@ public class HomePresenter {
     }
 
     public void filterHome(List<Home> homes) {
-        homeListener.addHome(homes, "init");
+        if (homes.isEmpty()) {
+            homeListener.noHomeData();
+        } else {
+            homeListener.addHome(homes, "init");
+        }
     }
 
     public void getListHomes() {

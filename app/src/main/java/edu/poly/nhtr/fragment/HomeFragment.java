@@ -2,7 +2,6 @@ package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -68,7 +67,6 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class HomeFragment extends Fragment implements HomeListener {
 
-    private static final String PREFS_NAME = "RadioPrefs";
 
     //
     private View view;
@@ -130,9 +128,9 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Xử lý nút 3 chấm menu
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
 
-        customizeLayoutSearch();
+        customizeLayoutSearch();// Customize layout search
 
-        setListenersForTools();
+        setListenersForTools(); // Set listeners for sort and filter
 
         // Get Current List Homes
         homePresenter.getListHomes();
@@ -172,23 +170,43 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
 
-    private void removeFromListAndSave(String option) {
+    private void removeFromListAndSave(String option) { // Remove from listType
         for (int i = 0; i < binding.listTypeOfFilterHome.getChildCount(); i++) {
             View view = binding.listTypeOfFilterHome.getChildAt(i);
             if (view instanceof LinearLayout) {
-                TextView textView = ((LinearLayout) view).findViewById(R.id.txt_type_of_filter_home);
+                TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
                 if (textView.getText().toString().equals(option)) {
                     binding.listTypeOfFilterHome.removeView(view);
                     preferenceManager.removePreference(option);
-
                     break;
                 }
             }
         }
     }
 
+    private void filterListHomes()
+    {
+        boolean filterByRoom1 = preferenceManager.getBoolean("cbxByRoom1");
+        boolean filterByRoom2 = preferenceManager.getBoolean("cbxByRoom2");
+        boolean filterByRoom3 = preferenceManager.getBoolean("cbxByRoom3");
+
+        List<Home> filteredHomes = new ArrayList<>();
+        for (Home home : currentListHomes) {
+            if (filterByRoom1 && home.numberOfRooms >= 0 && home.numberOfRooms <= 1) {
+                filteredHomes.add(home);
+            } else if (filterByRoom2 && home.numberOfRooms > 1 && home.numberOfRooms <= 2) {
+                filteredHomes.add(home);
+            } else if (filterByRoom3 && home.numberOfRooms >2) {
+                filteredHomes.add(home);
+            }
+        }
+
+        homePresenter.filterHome(filteredHomes);
+    }
+
     private void openFilterHomeDialog() {
         setupDialog(R.layout.layout_dialog_filter_home, Gravity.CENTER);
+        homePresenter.getListHomes();
 
         AppCompatCheckBox cbxByRoom1 = dialog.findViewById(R.id.cbx_from_0_to_5_rooms);
         AppCompatCheckBox cbxByRoom2 = dialog.findViewById(R.id.cbx_from_6_to_10_rooms);
@@ -240,9 +258,12 @@ public class HomeFragment extends Fragment implements HomeListener {
 
                 // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
                 if(!filterByRoom1 && !filterByRoom2 && !filterByRoom3) {
+                    binding.layoutNoData.setVisibility(View.GONE);
                     binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+                    homePresenter.getHomes("init");
+                }else {
+                    filterListHomes(); // After put status of checkboxes in preferences, check and add them into the list
                 }
-
 
                 // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
                 for (String option : selectedOptions) {
@@ -251,7 +272,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                     for (int i = 0; i < binding.listTypeOfFilterHome.getChildCount(); i++) {
                         View view = binding.listTypeOfFilterHome.getChildAt(i);
                         if (view instanceof LinearLayout) {
-                            TextView textView = ((LinearLayout) view).findViewById(R.id.txt_type_of_filter_home);
+                            TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
                             if (textView.getText().toString().equals(option)) {
                                 alreadyExists = true;
                                 break;
@@ -267,16 +288,17 @@ public class HomeFragment extends Fragment implements HomeListener {
                         LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
 
                         // Get references to the TextView and ImageView
-                        TextView textView = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
-                        ImageView imageView = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
+                        TextView txtTypeOfFilterHome = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
+                        ImageView iconCancel = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
 
                         // Set the text for the TextView
-                        textView.setText(option);
+                        txtTypeOfFilterHome.setText(option);
 
                         // Optionally set an OnClickListener for the ImageView to remove the filter
-                        imageView.setOnClickListener(new View.OnClickListener() {
+                        iconCancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                // Remove the filter
                                 binding.listTypeOfFilterHome.removeView(filterItemLayout);
 
                                 // Update SharedPreferences to uncheck the checkbox in the dialog
@@ -292,7 +314,14 @@ public class HomeFragment extends Fragment implements HomeListener {
                                 }
 
                                 if (binding.listTypeOfFilterHome.getChildCount() == 0) {
+                                    // If no filter left in the list -> Set GONE
                                     binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+                                    binding.layoutNoData.setVisibility(View.GONE);
+                                    // And update list homes as initial
+                                    homePresenter.getHomes("init");
+                                }else {
+                                    // Update list homes after deleting some check boxes
+                                    filterListHomes();
                                 }
 
                             }
@@ -317,7 +346,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
         });
 
-        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
@@ -327,7 +356,6 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void getListHomes(List<Home> listHomes) {
-        //showToast(listHomes.size()+"");
         currentListHomes = listHomes;
     }
 
@@ -433,7 +461,6 @@ public class HomeFragment extends Fragment implements HomeListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchNameHome = Objects.requireNonNull(binding.edtSearchHome.getText()).toString().trim();
                 homePresenter.searchHome(s.toString());
 
             }
@@ -457,7 +484,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void noHomeData() {
-        binding.homesRecyclerView.setVisibility(View.GONE);
+        binding.homesRecyclerView.setVisibility(View.INVISIBLE);
         binding.layoutNoData.setVisibility(View.VISIBLE);
     }
 
@@ -737,44 +764,58 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.progressBar.setVisibility(View.VISIBLE);
     }
 
+
     @Override
     public void addHome(List<Home> homes, String action) {
-
         HomeAdapter homesAdapter = new HomeAdapter(homes, this, this);
-        binding.homesRecyclerView.setAdapter(homesAdapter);
 
-
-        if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
-            binding.homesRecyclerView.smoothScrollToPosition(0);
-        } else if (Objects.equals(action, "add")) {
-            homesAdapter.addHome(homes);
-            homesAdapter.notifyItemInserted(homesAdapter.getLastActionPosition());
-            binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
-        } else if (Objects.equals(action, "update")) {
-            int position = homePresenter.getPosition();
-            homesAdapter.updateHome(position);
-            homesAdapter.notifyItemChanged(homesAdapter.getLastActionPosition());
-            binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
-        } else if (Objects.equals(action, "delete")) {
-            int position = homePresenter.getPosition();
-            if (position == 1) {
-                binding.homesRecyclerView.smoothScrollToPosition(0);
-            } else {
-                homesAdapter.removeHome(position);
-                homesAdapter.notifyItemRemoved(homesAdapter.getLastActionPosition());
-                binding.homesRecyclerView.smoothScrollToPosition(homesAdapter.getLastActionPosition());
-            }
+        switch (action) {
+            case "init":
+            case "search":
+                homes.sort(Comparator.comparing(obj -> obj.dateObject));
+                updateRecyclerView(homesAdapter, 0);
+                break;
+            case "sort":
+                updateRecyclerView(homesAdapter, 0);
+                break;
+            case "add":
+                homesAdapter.addHome(homes);
+                updateRecyclerView(homesAdapter, homesAdapter.getLastActionPosition());
+                break;
+            case "update":
+                int updatePosition = homePresenter.getPosition();
+                homesAdapter.updateHome(updatePosition);
+                updateRecyclerView(homesAdapter, homesAdapter.getLastActionPosition());
+                break;
+            case "delete":
+                int deletePosition = homePresenter.getPosition();
+                if (deletePosition == 1) {
+                    updateRecyclerView(homesAdapter, 0);
+                } else {
+                    homesAdapter.removeHome(deletePosition);
+                    updateRecyclerView(homesAdapter, homesAdapter.getLastActionPosition());
+                }
+                break;
         }
 
+        showHomesRecyclerView();
+    }
 
-        // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
-        // khi setAdapter mình phải set lại là VISIBLE
+    private void updateRecyclerView(HomeAdapter homesAdapter, int position) {
+        binding.homesRecyclerView.setAdapter(homesAdapter);
+        //binding.layoutNoData.setVisibility(View.GONE);
+        homesAdapter.notifyDataSetChanged();
+        binding.homesRecyclerView.smoothScrollToPosition(position);
+    }
+
+    private void showHomesRecyclerView() {
         binding.layoutNoData.setVisibility(View.GONE);
         binding.txtNotification.setVisibility(View.GONE);
         binding.imgAddHome.setVisibility(View.GONE);
         binding.homesRecyclerView.setVisibility(View.VISIBLE);
         binding.frmMenuTools.setVisibility(View.VISIBLE);
     }
+
 
     @Override
     public void addHomeFailed() {
@@ -1109,13 +1150,13 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     @Override
-    public void onPause() { // When move to the different fragment / activity --> remove the status of radio button
+    public void onPause() { // When move to the different fragment / activity
         super.onPause();
         // Clear the selected RadioButton ID from SharedPreferences
         preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
 
+        // Clear the status of check boxes
         removeStatusOfCheckBoxFilterHome();
-
 
     }
 
