@@ -72,10 +72,12 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     //
     private View view;
+    private List<Home> currentListHomes = new ArrayList<>();
     private PreferenceManager preferenceManager;
     private FragmentHomeBinding binding;
     private HomePresenter homePresenter;
     private Dialog dialog;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,6 +134,9 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         setListenersForTools();
 
+        // Get Current List Homes
+        homePresenter.getListHomes();
+
 
     }
 
@@ -175,9 +180,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                 if (textView.getText().toString().equals(option)) {
                     binding.listTypeOfFilterHome.removeView(view);
                     preferenceManager.removePreference(option);
-                    if (binding.listTypeOfFilterHome.getChildCount() == 0) {
-                        binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
-                    }
+
                     break;
                 }
             }
@@ -209,21 +212,25 @@ public class HomeFragment extends Fragment implements HomeListener {
                 List<String> selectedOptions = new ArrayList<>();
 
                 // Check which CheckBoxes are selected and save their state
-                if (cbxByRoom1.isChecked()) {
+                boolean filterByRoom1 = cbxByRoom1.isChecked();
+                boolean filterByRoom2 = cbxByRoom2.isChecked();
+                boolean filterByRoom3 = cbxByRoom3.isChecked();
+
+                if (filterByRoom1) {
                     selectedOptions.add(cbxByRoom1.getText().toString());
                     preferenceManager.putBoolean("cbxByRoom1", true);
                 } else {
                     preferenceManager.putBoolean("cbxByRoom1", false);
                     removeFromListAndSave(cbxByRoom1.getText().toString());
                 }
-                if (cbxByRoom2.isChecked()) {
+                if (filterByRoom2) {
                     selectedOptions.add(cbxByRoom2.getText().toString());
                     preferenceManager.putBoolean("cbxByRoom2", true);
                 } else {
                     preferenceManager.putBoolean("cbxByRoom2", false);
                     removeFromListAndSave(cbxByRoom2.getText().toString());
                 }
-                if (cbxByRoom3.isChecked()) {
+                if (filterByRoom3) {
                     selectedOptions.add(cbxByRoom3.getText().toString());
                     preferenceManager.putBoolean("cbxByRoom3", true);
                 } else {
@@ -231,6 +238,10 @@ public class HomeFragment extends Fragment implements HomeListener {
                     removeFromListAndSave(cbxByRoom3.getText().toString());
                 }
 
+                // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
+                if(!filterByRoom1 && !filterByRoom2 && !filterByRoom3) {
+                    binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+                }
 
 
                 // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
@@ -248,8 +259,9 @@ public class HomeFragment extends Fragment implements HomeListener {
                         }
                     }
 
+
                     // If the checkbox does not exist, add it to the listTypeOfFilterHome
-                    if (!alreadyExists ) {
+                    if (!alreadyExists) {
 
                         // Inflate the layout containing the TextView and ImageView
                         LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
@@ -311,6 +323,12 @@ public class HomeFragment extends Fragment implements HomeListener {
                 dialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void getListHomes(List<Home> listHomes) {
+        //showToast(listHomes.size()+"");
+        currentListHomes = listHomes;
     }
 
     private void openSortHomeDialog() {
@@ -379,8 +397,6 @@ public class HomeFragment extends Fragment implements HomeListener {
                 homePresenter.getHomes("init");
             }
         });
-
-
 
 
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
@@ -1091,19 +1107,19 @@ public class HomeFragment extends Fragment implements HomeListener {
         mode.finish();
     }
 
+
     @Override
     public void onPause() { // When move to the different fragment / activity --> remove the status of radio button
         super.onPause();
         // Clear the selected RadioButton ID from SharedPreferences
         preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
 
-       removeStatusOfCheckBoxFilterHome();
+        removeStatusOfCheckBoxFilterHome();
 
 
     }
 
-    public void removeStatusOfCheckBoxFilterHome()
-    {
+    public void removeStatusOfCheckBoxFilterHome() {
         preferenceManager.removePreference("cbxByRoom1");
         preferenceManager.removePreference("cbxByRoom2");
         preferenceManager.removePreference("cbxByRoom3");

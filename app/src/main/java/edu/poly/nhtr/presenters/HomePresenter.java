@@ -48,7 +48,6 @@ public class HomePresenter {
     }
 
 
-
     public void addHome(Home home) {
         if (home.getNameHome().isEmpty()) {
             homeListener.showErrorMessage("Nhập tên nhà trọ", R.id.layout_name_home);
@@ -72,8 +71,7 @@ public class HomePresenter {
                     String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
                     String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
                     String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
-                    if(isDuplicate(nameFromFirestore, home.getNameHome(), userIdFromFirestore, home) && isDuplicate(addressFromFirestore, home.getAddressHome(), userIdFromFirestore, home))
-                    {
+                    if (isDuplicate(nameFromFirestore, home.getNameHome(), userIdFromFirestore, home) && isDuplicate(addressFromFirestore, home.getAddressHome(), userIdFromFirestore, home)) {
                         homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
                         homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
                         homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
@@ -184,7 +182,6 @@ public class HomePresenter {
     }
 
 
-
     public void deleteHome(Home home) {
         homeListener.showLoadingOfFunctions(R.id.btn_delete_home);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -268,38 +265,34 @@ public class HomePresenter {
                 .whereEqualTo(Constants.KEY_USER_ID, homeListener.getInfoUserFromGoogleAccount())
                 .get()
                 .addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
-                    String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
-                    String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
-                    String homeIdFromFirestore = document.getId();
-                    if(isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome()) && isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home))
-                    {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
+                            String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
+                            String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
+                            String homeIdFromFirestore = document.getId();
+                            if (isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome()) && isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home)) {
+                                homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
+                                homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
+                                homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
+                                return;
+                            } else if (isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
+                                homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
+                                homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
+                                return;
+                            } else if (isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
+                                homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
+                                homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
+                                return;
+                            }
+                        }
                         homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
-                        homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
-                        homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
-                        return;
-                    }
+                        homeListener.openConfirmUpdateHome(Gravity.CENTER, newNameHome, newAddressHome, home);
 
-                    else if (isDuplicate(nameFromFirestore, newNameHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
-                        homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
-                        homeListener.showErrorMessage("Tên nhà đã tồn tại", R.id.layout_name_home);
-                        return;
+                    } else {
+                        // Handle errors
                     }
-                    else if (isDuplicate(addressFromFirestore, newAddressHome, userIdFromFirestore, home) && !homeIdFromFirestore.equals(home.getIdHome())) {
-                        homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
-                        homeListener.showErrorMessage("Địa chỉ nhà đã tồn tại", R.id.layout_address_home);
-                        return;
-                    }
-                }
-                homeListener.hideLoadingOfFunctions(R.id.btn_add_home);
-                homeListener.openConfirmUpdateHome(Gravity.CENTER, newNameHome, newAddressHome, home);
-
-            } else {
-                // Handle errors
-            }
-        });
+                });
     }
 
     public void updateSuccess(String newNameHome, String newAddressHome, Home home) {
@@ -370,9 +363,7 @@ public class HomePresenter {
     }
 
 
-
-    public void searchHome(String nameHome)
-    {
+    public void searchHome(String nameHome) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES)
@@ -437,8 +428,7 @@ public class HomePresenter {
                 });
     }
 
-    public void sortHomes(String typeOfSort)
-    {
+    public void sortHomes(String typeOfSort) {
         homeListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userId = homeListener.getInfoUserFromGoogleAccount();
@@ -462,9 +452,9 @@ public class HomePresenter {
                                 homes.add(home);
                             }
                             // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
-                            if(typeOfSort.equals("number_room_asc")){
+                            if (typeOfSort.equals("number_room_asc")) {
                                 homes = sortHomesByNumberOfHomesAscending(homes);
-                            }else if(typeOfSort.equals("number_room_desc")){
+                            } else if (typeOfSort.equals("number_room_desc")) {
                                 homes = sortHomesByNumberOfHomesDescending(homes);
                             }
                             homeListener.addHome(homes, "init");
@@ -495,5 +485,40 @@ public class HomePresenter {
         return homes;
     }
 
+    public void filterHome(List<Home> homes) {
+        homeListener.addHome(homes, "init");
+    }
+
+    public void getListHomes() {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        String userId = homeListener.getInfoUserFromGoogleAccount();
+
+
+        database.collection(Constants.KEY_COLLECTION_HOMES)
+                .whereEqualTo(Constants.KEY_USER_ID, userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (homeListener.isAdded2()) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<Home> homes = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Home home = new Home();
+                                home.nameHome = document.getString(Constants.KEY_NAME_HOME);
+                                home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
+                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                home.idHome = document.getId();
+                                home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
+                                homes.add(home);
+                            }
+
+                            homeListener.getListHomes(homes);
+
+                        } else {
+                            homeListener.addHomeFailed();
+                        }
+                    }
+                });
+
+    }
 
 }

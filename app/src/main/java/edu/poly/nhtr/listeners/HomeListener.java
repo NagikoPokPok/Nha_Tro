@@ -36,4 +36,5 @@ public interface HomeListener {
     void showFrameTop();
     void openDeleteListHomeDialog(List<Home> listHomes, ActionMode mode);
     void dialogAndModeClose(ActionMode mode);
+    void getListHomes(List<Home> listHomes);
 }

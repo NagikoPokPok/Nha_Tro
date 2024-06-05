@@ -31,7 +31,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     private int lastActionPosition = 0;
 
-    private final List<Home> homes;
+    private List<Home> homes;
     private final HomeListener homeListener;
     Fragment fragment;
     MainViewModel mainViewModel;
@@ -246,6 +246,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     public int getLastActionPosition() {
         return lastActionPosition;
+    }
+
+    public void updateList(List<Home> newHomes) {
+        homes = newHomes;
+        notifyDataSetChanged();
     }
 
 }
