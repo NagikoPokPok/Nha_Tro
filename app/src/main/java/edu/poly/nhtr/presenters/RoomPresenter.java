@@ -233,7 +233,7 @@ public class RoomPresenter {
             roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
             roomListener.showErrorMessage("Nhập tên phòng trọ", R.id.layout_name_room);
         } else if (newPrice.isEmpty()) {
-            roomListener.hideLoadingOfFunctions(R.id.btn_add_home);
+            roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
             roomListener.showErrorMessage("Nhập giá phòng trọ", R.id.layout_price);
         } else {
             checkDuplicateDataForUpdate(newNameRoom, newPrice, newDescribe, room);
@@ -253,7 +253,7 @@ public class RoomPresenter {
                             String roomIdFromFirestore = document.getId();
 
                             if (isDuplicate(nameFromFirestore, newNameRoom, homeIdFromFirestore, room) && !roomIdFromFirestore.equals(room.getRoomId())) {
-                                roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                                roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                                 roomListener.showErrorMessage("Tên phòng đã tồn tại", R.id.layout_name_room);
                                 return;
                             }
