@@ -496,6 +496,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         EditText edt_new_describe = dialog.findViewById(R.id.edt_describe);
         TextView title = dialog.findViewById(R.id.txt_title_dialog_room);
         TextView txt_name_room = dialog.findViewById(R.id.txt_name_room);
+        TextView txt_price = dialog.findViewById(R.id.txt_price);
         TextInputLayout layoutNameRoom = dialog.findViewById(R.id.layout_name_room);
         TextInputLayout layotPrice = dialog.findViewById(R.id.layout_price);
 
@@ -507,6 +508,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         title.setText("Chỉnh sửa thông tin phòng trọ");
         btn_update_room.setText("Cập nhật");
         txt_name_room.append(customizeText(" *"));
+        txt_price.append(customizeText(" *"));
         btn_update_room.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
 
         edt_new_name_room.addTextChangedListener(new TextWatcher() {
@@ -586,6 +588,7 @@ public class RoomFragment extends Fragment implements RoomListener {
                 String newNameRoom = edt_new_name_room.getText().toString().trim();
                 String newPrice = edt_new_price.getText().toString().trim();
                 String newDescribe = edt_new_describe.getText().toString().trim();
+
                 roomPresenter.updateRoom(newNameRoom, newPrice, newDescribe, room);
             }
         });

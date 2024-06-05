@@ -227,6 +227,12 @@ public class RoomPresenter {
                     }
                 });
     }
+    void check(String newNameRoom, String newPrice, String newDescribe){
+        if(newNameRoom.equals(Constants.KEY_NAME_ROOM) && newPrice.equals(Constants.KEY_PRICE) && newDescribe.equals(Constants.KEY_DESCRIBE))
+        {
+            //
+        }
+    }
     public void updateRoom(String newNameRoom, String newPrice, String newDescribe, Room room) {
         roomListener.showLoadingOfFunctions(R.id.btn_update_room);
         if (newNameRoom.isEmpty()) {
