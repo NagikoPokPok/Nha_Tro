@@ -57,10 +57,10 @@ public class RoomPresenter {
                     String homeIdFromFirestore = document.getString(Constants.KEY_HOME_ID);
                     if(isDuplicate(nameRoomFromFirestore, room.getNameRoom(), homeIdFromFirestore, room) )
                     {
-                        roomListener.hideLoadingOfFunctions(R.id.btn_add_room);
+                        roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                         roomListener.showErrorMessage("Tên phòng đã tồn tại", R.id.layout_name_room);
-
                         return;
+
                     }
                 }
                 onSuccess.run();
