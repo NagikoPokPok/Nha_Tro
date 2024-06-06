@@ -10,6 +10,7 @@ public class Home implements Serializable {
     public HashMap<String, String> existingHomes = new HashMap<>();
 
     public Date dateObject;
+    public Boolean isHaveService;
 
     public HashMap<String, String> getExistingHomes() {
         return existingHomes;
@@ -75,5 +76,13 @@ public class Home implements Serializable {
 
     public void setDateObject(Date dateObject) {
         this.dateObject = dateObject;
+    }
+
+    public Boolean getHaveService() {
+        return isHaveService;
+    }
+
+    public void setHaveService(Boolean haveService) {
+        isHaveService = haveService;
     }
 }

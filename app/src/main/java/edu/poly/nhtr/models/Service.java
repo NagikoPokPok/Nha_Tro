@@ -18,7 +18,7 @@ public class Service {
         this.isApply = false;
     }
 
-    public Service(String idHomeParent, String name, String codeImage, int price, String unit, int fee_base, Boolean isDeletable, Boolean isApply) {
+    public Service(String idHomeParent, String name, String codeImage, int price, String unit, int fee_base, String note, Boolean isDeletable, Boolean isApply) {
         this.idHomeParent = idHomeParent;
         this.name = name;
         this.codeImage = codeImage;
@@ -27,6 +27,7 @@ public class Service {
         this.fee_base = fee_base;
         this.isDeletable = isDeletable;
         this.isApply = isApply;
+        this.note = note;
     }
 
     public String getName() {

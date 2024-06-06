@@ -12,4 +12,7 @@ public interface ServiceListener {
     void onItemCLick(Service service);
 
 
+    void ShowToast(String message);
+
+    void CloseDialog();
 }

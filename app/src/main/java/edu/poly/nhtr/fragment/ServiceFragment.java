@@ -20,8 +20,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -33,15 +35,13 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentServiceBinding;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.listeners.ServiceListener;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.presenters.ServicePresenter;
+import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ServiceFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ServiceFragment extends Fragment implements ServiceListener {
     private View view;
     private PreferenceManager preferenceManager;
@@ -51,51 +51,26 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     private Dialog dialog;
     private List<Service> services;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ServiceFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ServiceFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ServiceFragment newInstance(String param1, String param2) {
-        ServiceFragment fragment = new ServiceFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        services = ServiceUtils.addAvailableService();
+        Home home = (Home) getArguments().getSerializable("home");
+        String homeId = home.getIdHome();
+        Boolean isHomeHaveService = home.getHaveService();
+
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        if(!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) services = ServiceUtils.addAvailableService(preferenceManager.getString(Constants.KEY_HOME_ID));
+        else {
+            FirebaseFirestore data = FirebaseFirestore.getInstance();
+            services = ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID));
+        }
         presenter = new ServicePresenter(this);
         binding = FragmentServiceBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         setListener();
 
@@ -183,7 +158,10 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             @Override
             public void onClick(View v) {
                 if(isServiceDetail(layout_fee, layout_unit)){
-
+                    int price = Integer.parseInt(edt_fee.getText().toString());
+                    String idHomeParent = preferenceManager.getString(Constants.KEY_HOME_ID);
+                    Service service = new Service(idHomeParent, name.toString(), encodeImage.toString(), price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), false, false);
+                    presenter.saveToFirebase(service);
                 }
             }
 
@@ -287,6 +265,15 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_service, container, false);
+        // Kiểm tra xem Bundle có tồn tại hay không
+        if (getArguments() != null) {
+            // Nhận dữ liệu từ Bundle
+            Home home = (Home) getArguments().getSerializable("home");
+
+            // Sử dụng dữ liệu 'home' như mong muốn
+            // ...
+        }
+
         return binding.getRoot();
     }
 
@@ -430,6 +417,16 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             }
         });
 
+    }
+
+    @Override
+    public void ShowToast(String message) {
+        Toast.makeText(this.requireActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void CloseDialog() {
+        dialog.dismiss();
     }
 
 }
