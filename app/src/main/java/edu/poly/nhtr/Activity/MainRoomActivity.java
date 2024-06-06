@@ -57,6 +57,7 @@ public class MainRoomActivity extends AppCompatActivity {
 
         // Đặt Bundle vào Fragment
         roomFragment.setArguments(bundle);
+        serviceFragment.setArguments(bundle);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
