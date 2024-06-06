@@ -187,7 +187,7 @@
 
 
     <LinearLayout
-        android:id="@+id/layout_type_of_sort_filter_home"
+        android:id="@+id/layout_type_of_sort_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="20dp"
@@ -228,7 +228,7 @@
                 android:textColor="@color/colorTextBlack"/>
 
             <ImageView
-                android:id="@+id/btn_cancel_sort_filter_home"
+                android:id="@+id/btn_cancel_sort_home"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"

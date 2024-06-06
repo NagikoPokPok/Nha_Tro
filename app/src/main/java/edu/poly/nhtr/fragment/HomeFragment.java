@@ -68,8 +68,6 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class HomeFragment extends Fragment implements HomeListener {
 
-
-    //
     private View view;
     private List<Home> currentListHomes = new ArrayList<>();
     private PreferenceManager preferenceManager;
@@ -141,7 +139,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             openAddHomeDialog(Gravity.CENTER);
         });
 
-        // Xử lý nút 3 chấm menu
+        // Xử lý nút 3 chấm menu in Frame Top
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
 
         customizeLayoutSearch();// Customize layout search
@@ -216,7 +214,37 @@ public class HomeFragment extends Fragment implements HomeListener {
         homePresenter.filterHome(filteredHomes);
     }
 
+    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList)
+    {
+        boolean isAnyChecked = false;
+        for (AppCompatCheckBox checkBox : checkBoxList) {
+            if (checkBox.isChecked()) {
+                isAnyChecked = true;
+                break;
+            }
+        }
+        if (isAnyChecked) {
+            btnApply.setEnabled(true);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+        } else {
+            btnApply.setEnabled(false);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+        }
+    }
+
     private void openFilterHomeDialog() {
+        if(binding.edtSearchHome.isFocused())
+        {
+            binding.edtSearchHome.clearFocus();
+            binding.edtSearchHome.setText("");
+            homePresenter.getHomes("init");
+        }
+        // Clear the selected RadioButton ID from SharedPreferences
+        preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+        binding.layoutTypeOfSortHome.setVisibility(View.GONE);
+        homePresenter.getHomes("init");
+
+
         setupDialog(R.layout.layout_dialog_filter_home, Gravity.CENTER);
         homePresenter.getListHomes();
 
@@ -234,6 +262,29 @@ public class HomeFragment extends Fragment implements HomeListener {
         cbxByRoom1.setChecked(preferenceManager.getBoolean("cbxByRoom1"));
         cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxByRoom2"));
         cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxByRoom3"));
+
+        // Add CheckBoxes to a list
+        List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add(cbxByRoom1);
+        checkBoxList.add(cbxByRoom2);
+        checkBoxList.add(cbxByRoom3);
+
+
+        customizeButtonApplyInDialogHaveCheckBox(btnApply, checkBoxList);
+
+
+        // Create a method to check the state of all checkboxes
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customizeButtonApplyInDialogHaveCheckBox(btnApply, checkBoxList);
+            }
+        };
+
+        // Set the listener to all checkboxes
+        cbxByRoom1.setOnClickListener(checkBoxListener);
+        cbxByRoom2.setOnClickListener(checkBoxListener);
+        cbxByRoom3.setOnClickListener(checkBoxListener);
 
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,10 +423,37 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     private void openSortHomeDialog() {
+        if(binding.edtSearchHome.isFocused())
+        {
+            binding.edtSearchHome.clearFocus();
+            binding.edtSearchHome.setText("");
+            homePresenter.getHomes("init");
+        }
+        removeStatusOfCheckBoxFilterHome();
+        binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+        homePresenter.getHomes("init");
+
+
         setupDialog(R.layout.layout_dialog_sort_home, Gravity.CENTER);
 
         RadioGroup radioGroup = dialog.findViewById(R.id.radio_group_sort_home);
         Button btnApply = dialog.findViewById(R.id.btn_confirm_apply);
+
+        // Disable btnApply and set background color to gray initially
+        btnApply.setEnabled(false);
+        btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+
+        // Listen for changes in the RadioGroup
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId != -1) {
+                    // Enable btnApply and change background color to blue
+                    btnApply.setEnabled(true);
+                    btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+                }
+            }
+        });
 
 
         // Save the status of radio buttons
@@ -393,7 +471,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onClick(View v) {
                 binding.txtTitleSortFilterHome.setText("Sắp xếp theo:  ");
-                binding.layoutTypeOfSortFilterHome.setVisibility(View.VISIBLE);
+                binding.layoutTypeOfSortHome.setVisibility(View.VISIBLE);
 
                 // Get the selected RadioButton ID
                 int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -429,10 +507,10 @@ public class HomeFragment extends Fragment implements HomeListener {
             }
         });
 
-        binding.btnCancelSortFilterHome.setOnClickListener(new View.OnClickListener() {
+        binding.btnCancelSortHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.layoutTypeOfSortFilterHome.setVisibility(View.GONE);
+                binding.layoutTypeOfSortHome.setVisibility(View.GONE);
                 preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
                 homePresenter.getHomes("init");
             }
@@ -448,6 +526,10 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     private void customizeLayoutSearch() {
+
+        //homePresenter.getHomes("init");
+
+
         binding.layoutSearchHome.setEndIconDrawable(R.drawable.ic_search_orange);
         binding.layoutSearchHome.setEndIconVisible(true);
         binding.edtSearchHome.setHint("Tìm kiếm nhà trọ ...");
@@ -458,8 +540,24 @@ public class HomeFragment extends Fragment implements HomeListener {
                 if (hasFocus) {
                     // Xoa sort khi click vao search
                     preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
-                    binding.layoutTypeOfSortFilterHome.setVisibility(View.GONE);
+                    binding.layoutTypeOfSortHome.setVisibility(View.GONE);
+                    // Clear the status of check boxes
+                    removeStatusOfCheckBoxFilterHome();
+                    binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+
+                    homePresenter.getHomes("init");
+
+//                    binding.imgSortHome.setEnabled(false);
+//                    binding.imgFilterHome.setEnabled(false);
+//                    binding.btnSortHome.setEnabled(false);
+//                    binding.btnFilterHome.setEnabled(false);
+
                     binding.layoutSearchHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }else {
+                    binding.imgSortHome.setEnabled(true);
+                    binding.imgFilterHome.setEnabled(true);
+                    binding.btnSortHome.setEnabled(true);
+                    binding.btnFilterHome.setEnabled(true);
                 }
             }
         });
@@ -473,6 +571,12 @@ public class HomeFragment extends Fragment implements HomeListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Xoa sort khi click vao search
+                preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+                binding.layoutTypeOfSortHome.setVisibility(View.GONE);
+                // Clear the status of check boxes
+                removeStatusOfCheckBoxFilterHome();
+                binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
                 homePresenter.searchHome(s.toString());
 
             }
@@ -500,9 +604,27 @@ public class HomeFragment extends Fragment implements HomeListener {
         binding.layoutNoData.setVisibility(View.VISIBLE);
     }
 
+    public void hideOtherComponents(){
+        binding.layoutSearchHome.clearFocus();
+        // Clear the status of check boxes
+        removeStatusOfCheckBoxFilterHome();
+        binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+        // Clear the selected RadioButton ID from SharedPreferences
+        preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+        binding.layoutTypeOfSortHome.setVisibility(View.GONE);
+
+        homePresenter.getHomes("init");
+    }
+
 
     private void openMenu(View view) {
+        // Hide other components
+        hideOtherComponents();
+
+        // Get current list of homes
         homePresenter.getListHomes();
+
+        // Set popup menus
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.inflate(R.menu.menu_select_homes_to_delete);
         popupMenu.show();
@@ -510,6 +632,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_select_home_to_delete) {
+
                 homeAdapter = new HomeAdapter(getCurrentListHomes(), this, this);
                 getCurrentListHomes().sort(Comparator.comparing(obj -> obj.dateObject));
                 updateRecyclerView(homeAdapter, 0);
@@ -635,6 +758,10 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     private void openAddHomeDialog(int gravity) {
+
+        hideOtherComponents();
+        binding.edtSearchHome.setText("");
+
 
         binding.edtSearchHome.clearFocus();
 
@@ -867,11 +994,12 @@ public class HomeFragment extends Fragment implements HomeListener {
     }
 
     @Override
-    public void openPopup(View view, Home home, ItemContainerHomesBinding binding) {
-        openMenuForEachHome(view, home, binding);
+    public void openPopup(View view, Home home, ItemContainerHomesBinding binding2) {
+        binding.layoutSearchHome.clearFocus();
+        openMenuForEachHome(view, home, binding2);
     }
 
-    private void openMenuForEachHome(View view, Home home, ItemContainerHomesBinding binding) {
+    private void openMenuForEachHome(View view, Home home, ItemContainerHomesBinding binding2) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
@@ -891,8 +1019,8 @@ public class HomeFragment extends Fragment implements HomeListener {
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
-                binding.frmImage2.setVisibility(View.INVISIBLE);
-                binding.frmImage.setVisibility(View.VISIBLE);
+                binding2.frmImage2.setVisibility(View.INVISIBLE);
+                binding2.frmImage.setVisibility(View.VISIBLE);
             }
         });
 
@@ -939,6 +1067,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                hideOtherComponents();
             }
         });
     }

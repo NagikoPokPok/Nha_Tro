@@ -154,7 +154,7 @@
             android:background="@drawable/custom_button_clicked"
             android:text="@string/ap_dung"
             android:textSize="16sp"
-            app:backgroundTint="@color/colorButton"
+            app:backgroundTint="@null"
             app:iconGravity="textStart" />
 
         <ProgressBar
