@@ -38,6 +38,7 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -75,7 +76,15 @@ public class HomeFragment extends Fragment implements HomeListener {
     private FragmentHomeBinding binding;
     private HomePresenter homePresenter;
     private Dialog dialog;
+    private HomeAdapter homeAdapter;
 
+    public List<Home> getCurrentListHomes() {
+        return currentListHomes;
+    }
+
+    public void setCurrentListHomes(List<Home> currentListHomes) {
+        this.currentListHomes = currentListHomes;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +96,7 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Khai bao presenter
         homePresenter = new HomePresenter(this);
 
+
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
         binding.rootLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +107,12 @@ public class HomeFragment extends Fragment implements HomeListener {
         });
 
 
+
         editFonts();
+        // Load home information
+        homePresenter.getHomes("init");
+
+
 
         //Set preference
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
@@ -111,11 +126,12 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Set up RecyclerView layout manager
         binding.homesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
+
+        homeAdapter = new HomeAdapter(currentListHomes, this, this);
+
         // Load user's information
         loadUserDetails();
 
-        // Load home information
-        homePresenter.getHomes("init");
 
         setListeners();
 
@@ -131,10 +147,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         customizeLayoutSearch();// Customize layout search
 
         setListenersForTools(); // Set listeners for sort and filter
-
-        // Get Current List Homes
-        homePresenter.getListHomes();
-
 
     }
 
@@ -356,7 +368,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     @Override
     public void getListHomes(List<Home> listHomes) {
-        currentListHomes = listHomes;
+        setCurrentListHomes(listHomes);
     }
 
     private void openSortHomeDialog() {
@@ -490,23 +502,35 @@ public class HomeFragment extends Fragment implements HomeListener {
 
 
     private void openMenu(View view) {
+        homePresenter.getListHomes();
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.inflate(R.menu.menu_select_homes_to_delete);
+        popupMenu.show();
         popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.menu_edit) {
-                // Thực hiện hành động cho mục chỉnh sửa
-                showToast("Edit item");
-                return true;
-            } else if (itemId == R.id.menu_delete) {
-                // Thực hiện hành động cho mục xóa
-                showToast("Delete item");
+            if (itemId == R.id.menu_select_home_to_delete) {
+                homeAdapter = new HomeAdapter(getCurrentListHomes(), this, this);
+                getCurrentListHomes().sort(Comparator.comparing(obj -> obj.dateObject));
+                updateRecyclerView(homeAdapter, 0);
+                binding.homesRecyclerView.setAdapter(homeAdapter);
+
+                binding.homesRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                            RecyclerView.ViewHolder viewHolder = binding.homesRecyclerView.findViewHolderForAdapterPosition(0);
+                            if (viewHolder instanceof HomeAdapter.HomeViewHolder) {
+                                HomeAdapter.HomeViewHolder homeViewHolder = (HomeAdapter.HomeViewHolder) viewHolder;
+                                homeAdapter.performClick(homeViewHolder);
+                            }
+                    }
+                });
+
                 return true;
             }
             return false;
         });
-        popupMenu.inflate(R.menu.menu_edit_delete);
-        popupMenu.show();
+
     }
 
     private void editFonts() {
@@ -532,6 +556,10 @@ public class HomeFragment extends Fragment implements HomeListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+
+        homePresenter.getListHomes();
+        homeAdapter = new HomeAdapter(getCurrentListHomes(), this, this);
         return binding.getRoot();
     }
 
@@ -854,7 +882,6 @@ public class HomeFragment extends Fragment implements HomeListener {
                 return true;
             } else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
-                //homePresenter.deleteHome(home);
                 openDeleteHomeDialog(Gravity.CENTER, home);
                 return true;
             }
