@@ -348,7 +348,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="layout_type_of_sort_filter_home, layout_type_of_filter_home" />
+        app:constraint_referenced_ids="layout_type_of_sort_home, layout_type_of_filter_home" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homesRecyclerView"
