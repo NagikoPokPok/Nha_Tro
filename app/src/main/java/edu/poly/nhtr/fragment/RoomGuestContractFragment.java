@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import edu.poly.nhtr.databinding.FragmentRoomGuestContractBinding;
 
@@ -36,6 +38,7 @@ public class RoomGuestContractFragment extends Fragment {
 
         editFonts();
         addHomeFailed();
+        setListener();
     }
 
     // Hiển thị thông báo chưa có khách thuê
@@ -68,6 +71,18 @@ public class RoomGuestContractFragment extends Fragment {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddGuest.setVisibility(View.VISIBLE);
         binding.guestsRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    public void setListener() {
+        binding.btnAddContract.setOnClickListener(v -> {
+            GuestAddContractFragment guestAddContractFragment = new GuestAddContractFragment();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(binding.getRoot().getId(), guestAddContractFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
+        });
     }
 
 }
