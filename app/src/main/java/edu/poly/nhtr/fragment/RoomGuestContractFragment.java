@@ -1,5 +1,6 @@
 package edu.poly.nhtr.fragment;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.databinding.FragmentRoomGuestContractBinding;
 
 
@@ -37,7 +39,7 @@ public class RoomGuestContractFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         editFonts();
-        addHomeFailed();
+        addGuestFailed();
         setListener();
     }
 
@@ -67,7 +69,7 @@ public class RoomGuestContractFragment extends Fragment {
         binding.guestsRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    public void addHomeFailed() {
+    public void addGuestFailed() {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddGuest.setVisibility(View.VISIBLE);
         binding.guestsRecyclerView.setVisibility(View.INVISIBLE);
@@ -81,8 +83,9 @@ public class RoomGuestContractFragment extends Fragment {
             fragmentTransaction.replace(binding.getRoot().getId(), guestAddContractFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
-
         });
+
+
     }
 
 }
