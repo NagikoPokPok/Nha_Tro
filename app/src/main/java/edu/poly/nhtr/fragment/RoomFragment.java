@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -21,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +29,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -37,10 +36,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.Adapter.RoomAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomBinding;
-import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.databinding.ItemContainerRoomBinding;
 import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Home;
@@ -661,5 +660,14 @@ public class RoomFragment extends Fragment implements RoomListener {
             dialog.setCancelable(Gravity.CENTER == gravity);
             dialog.show();
         }
+    }
+
+    // Xử lí click vào container Room
+    @Override
+    public void onRoomClick(Room room) {
+        binding.edtSearchRoom.clearFocus();
+        Intent intent = new Intent(requireContext(), MainDetailedRoomActivity.class);
+        intent.putExtra("room", room);
+        startActivity(intent);
     }
 }

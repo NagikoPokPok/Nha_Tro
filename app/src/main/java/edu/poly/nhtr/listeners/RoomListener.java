@@ -32,4 +32,7 @@ public interface RoomListener {
     void hideLoadingOfFunctions(int id);
     void openConfirmUpdateRoom(int gravity, String newNameRoom, String newPrice, String newDescribe, Room room);
 
+
+    // Xử lí click vào container Room
+    void onRoomClick(Room room);
 }

@@ -182,6 +182,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             binding.txtPrice.setText(room.price);
             binding.txtDescribe.setText(room.describe);
             binding.txtOrdinalNumber.setText(String.valueOf(position + 1));
+            binding.getRoot().setOnClickListener(v-> {roomListener.onRoomClick(room);});
 
             String hoTen = binding.edtHoTen.getText().toString().trim();
             if(hoTen.isEmpty()){

@@ -29,7 +29,7 @@ public class Constants {
     public static final String KEY_MODE = "nightMode";
     public static final String KEY_SELECTED_RADIO_BUTTON = "selectedRadioButtonId";
 
-    //Service
+    // Key Service
     public static final String KEY_COLLECTION_SERVICES = "services";
     public static final String KEY_SERVICE_ID = "serviceId";
     public static final String KEY_SERVICE_PARENT_HOME_ID = "serviceParentHomeId";
@@ -41,5 +41,9 @@ public class Constants {
     public static final String KEY_SERVICE_NOTE = "serviceNote";
     public static final String KEY_SERVICE_ISDELETABLE = "serviceIsDeletable";
     public static final String KEY_SERVICE_ISAPPLY = "serviceIsApply";
+
+    // Key Room
+    public static final String KEY_ROOM_ID = "roomId";
+    public static final String KEY_ROOM_NAME = "roomName";
 
 }

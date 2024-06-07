@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemHome"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:backgroundTint="@color/white"
+    app:cardCornerRadius="15dp"
+    app:strokeColor="@color/black"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <!-- Top part with star and name -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Star icon -->
+            <ImageView
+                android:id="@+id/img_star"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_star"
+                android:visibility="visible" />
+
+            <!-- Ordinal number -->
+            <TextView
+                android:id="@+id/txt_ordinal_number"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/sonhatro"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="visible" />
+
+            <!-- Guest name -->
+            <TextView
+                android:id="@+id/txt_name_guest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/img_star"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Trần Quang Hiếu"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Menu icon -->
+            <ImageView
+                android:id="@+id/img_menu"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_menu" />
+        </RelativeLayout>
+
+        <!-- Contract representative label -->
+        <TextView
+            android:id="@+id/txt_contract_representative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:text="Người đại diện hợp đồng"
+            android:textColor="@color/colorGreen"
+            android:textSize="16sp"
+            android:visibility="visible" />
+
+        <!-- Entry date -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                style="@style/TEXT_MED_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/ngay_vao_o_hai_cham"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_entry_date"
+                style="@style/TEXT_LIGHT_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="25/03/2024"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Phone number -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                style="@style/TEXT_MED_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/so_dien_thoai_hai_cham"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_phone_number"
+                style="@style/TEXT_LIGHT_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="0799348542"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Profile status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                style="@style/TEXT_MED_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/tinh_trang_ho_so_hai_cham"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_profile_status"
+                style="@style/TEXT_LIGHT_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Đã cập nhật đầy đủ"
+                android:textColor="@color/colorGreen"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
