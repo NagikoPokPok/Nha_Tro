@@ -44,8 +44,8 @@
                 android:maxLines="1"
                 android:text="@string/hoang_minh_thao"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                android:fontFamily="@font/inter_bold" />
 
             <FrameLayout
                 android:id="@+id/frm_Image"

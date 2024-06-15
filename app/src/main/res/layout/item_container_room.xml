@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginTop="20dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp"
+    android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
-    app:strokeWidth="1dp"
-    android:backgroundTint="@color/white"
-    >
+    app:strokeWidth="1dp">
+
     <TextView
         android:id="@+id/txt_ordinal_number"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:text="1"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:fontFamily="@font/inter_bold"
-        android:textColor="@color/white"
         android:background="@drawable/sonhatro"
-        />
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="50dp">
+            android:layout_marginStart="55dp">
 
             <TextView
                 android:id="@+id/txt_name_room"
@@ -39,20 +40,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="60dp"
                 android:ellipsize="end"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center"
                 android:maxLines="1"
                 android:text="P103"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="24sp"
-                android:fontFamily="@font/inter_bold"
-                />
+                android:textSize="18sp" />
 
             <FrameLayout
                 android:id="@+id/frm_Image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:visibility="visible">
+                android:visibility="visible"
+                android:layout_margin="5dp">
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/img_circle_menu"
@@ -80,9 +83,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="7dp"
                 android:layout_marginEnd="10dp"
-                android:visibility="gone"
                 android:theme="@style/MyCheckBoxStyle"
-                />
+                android:visibility="gone" />
 
 
             <FrameLayout
@@ -90,7 +92,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:layout_margin="5dp">
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:layout_width="50dp"
@@ -108,33 +111,34 @@
 
             </FrameLayout>
         </RelativeLayout>
-        
+
         <LinearLayout
+            android:id="@+id/layout_nameOfGuest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/txt_ho_ten"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="Họ tên :"
+                android:layout_gravity="start"
+                android:layout_weight="1"
                 android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
                 android:fontFamily="@font/inter_light"
-                android:layout_gravity="start" />
+                android:maxLines="1"
+                android:text="Họ tên :"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/edt_ho_ten"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_medium"
+                android:fontFamily="@font/inter_light"
                 android:text="Ho Quang Hieu"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="15dp" />
@@ -142,11 +146,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_phone_number_of_guest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/txt_so_dien_thoai"
@@ -164,155 +169,152 @@
             <TextView
                 android:id="@+id/edt_so_dien_thoai"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:layout_height="match_parent"
+                android:fontFamily="@font/inter_light"
                 android:text="0918300555"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15dp"
-                android:fontFamily="@font/inter_medium"
-                />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
-
-            <TextView
-                android:id="@+id/txt_trang_thai_thanh_toan"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="Trạng thái :"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_light"
-                android:layout_gravity="start" />
-
-            <TextView
-                android:id="@+id/edt_trang_thai_thanh_toan"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="Đã thanh toán"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15dp"
-                android:fontFamily="@font/inter_medium"
-                />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
-
-            <TextView
-                android:id="@+id/txt_so_nguoi_dang_o"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="Số người đang ở :"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_light"
-                android:layout_gravity="start" />
-
-            <TextView
-                android:id="@+id/edt_so_nguoi_dang_o"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="2"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15dp"
-                android:fontFamily="@font/inter_medium"
-                />
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="Giá thuê :"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_light"
-                android:layout_gravity="start" />
-
-            <TextView
-                android:id="@+id/txt_price"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="1.500.000"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15dp"
-                android:fontFamily="@font/inter_medium"
-                />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            android:background="#000000" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp">
-
-
-
-            <TextView
-                android:id="@+id/txt_describe"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:fontFamily="@font/inter_medium"
-                android:maxLines="3"
-                android:text="View Biển"
                 android:textColor="@color/colorTextBlack"
                 android:textSize="15dp" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layout_payment_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_trang_thai_thanh_toan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_light"
+                android:maxLines="1"
+                android:text="Trạng thái :"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/edt_trang_thai_thanh_toan"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_medium"
+                android:text="Đã thanh toán"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_number_of_guests_are_living"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_so_nguoi_dang_o"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_light"
+                android:maxLines="1"
+                android:text="Số người đang ở :"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/edt_so_nguoi_dang_o"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_light"
+                android:text="2"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_price_of_room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_light"
+                android:maxLines="1"
+                android:text="Giá thuê :"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_price"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_light"
+                android:text="1.500.000"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line_of_item_room"
+            android:layout_width="match_parent"
+            android:layout_height="0.75dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/colorGray" />
+
+
+        <TextView
+            android:id="@+id/txt_describe"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="3"
+            android:fontFamily="@font/inter_medium"
+            android:maxLines="3"
+            android:text="View Biển"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="15sp" />
+
+
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+ Tạo hợp đồng"
-            android:textSize="15dp"
-            android:fontFamily="@font/inter_medium"
+            android:layout_gravity="end"
             android:background="@drawable/background_button"
-            android:backgroundTint="@null"
-            android:layout_gravity="end"/>
+            android:fontFamily="@font/inter_bold"
+            android:text="+  Tạo hợp đồng"
+            android:textSize="15dp"
+            app:backgroundTint="@null" />
 
 
     </LinearLayout>
-
 
 
 </com.google.android.material.card.MaterialCardView>

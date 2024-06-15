@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -185,15 +186,40 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             binding.getRoot().setOnClickListener(v-> {roomListener.onRoomClick(room);});
 
             String hoTen = binding.edtHoTen.getText().toString().trim();
+//            if(hoTen.isEmpty()){
+//                binding.edtHoTen.setVisibility(View.GONE);
+//                binding.edtSoDienThoai.setVisibility(View.GONE);
+//                binding.edtTrangThaiThanhToan.setVisibility(View.GONE);
+//                binding.edtSoNguoiDangO.setVisibility(View.GONE);
+//                binding.txtHoTen.setVisibility(View.GONE);
+//                binding.txtSoDienThoai.setVisibility(View.GONE);
+//                binding.txtTrangThaiThanhToan.setVisibility(View.GONE);
+//                binding.txtSoNguoiDangO.setVisibility(View.GONE);
+//            }
+
             if(hoTen.isEmpty()){
-                binding.edtHoTen.setVisibility(View.GONE);
-                binding.edtSoDienThoai.setVisibility(View.GONE);
-                binding.edtTrangThaiThanhToan.setVisibility(View.GONE);
-                binding.edtSoNguoiDangO.setVisibility(View.GONE);
-                binding.txtHoTen.setVisibility(View.GONE);
-                binding.txtSoDienThoai.setVisibility(View.GONE);
-                binding.txtTrangThaiThanhToan.setVisibility(View.GONE);
-                binding.txtSoNguoiDangO.setVisibility(View.GONE);
+                binding.layoutNameOfGuest.setVisibility(View.GONE);
+                binding.layoutPhoneNumberOfGuest.setVisibility(View.GONE);
+                binding.layoutPaymentStatus.setVisibility(View.GONE);
+                binding.layoutNumberOfGuestsAreLiving.setVisibility(View.GONE);
+                // Tạo LayoutParams cho LinearLayout
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.layoutPriceOfRoom.getLayoutParams();
+                // Thiết lập margin top (đơn vị là pixel)
+                params.topMargin = 30;
+                // Áp dụng LayoutParams trở lại LinearLayout
+                binding.layoutPriceOfRoom.setLayoutParams(params);
+            }
+
+            if(binding.txtDescribe.getText().length() == 0)
+            {
+                binding.lineOfItemRoom.setVisibility(View.GONE);
+                binding.txtDescribe.setVisibility(View.GONE);
+                // Tạo LayoutParams cho LinearLayout
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) binding.layoutPriceOfRoom.getLayoutParams();
+                // Thiết lập margin top (đơn vị là pixel)
+                params.bottomMargin = 40;
+                // Áp dụng LayoutParams trở lại LinearLayout
+                binding.layoutPriceOfRoom.setLayoutParams(params);
             }
 
             binding.imgMenu.setOnClickListener(v-> {
