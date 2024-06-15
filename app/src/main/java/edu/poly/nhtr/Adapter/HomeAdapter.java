@@ -277,21 +277,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     public void updateList() {
         notifyDataSetChanged();
-//        for (int position = 0; position < homes.size(); position++) {
-//            notifyItemChanged(position);
-//        }
 
-
-    }
-
-    public void enableActionMode() {
-        isEnabled = true;
-        // Xử lý hiển thị ActionMode ở đây (tương tự như khi long click vào một item)
-    }
-
-    public void disableActionMode() {
-        isEnabled = false;
-        // Xử lý khi ActionMode bị disable ở đây (tương tự như khi ActionMode bị destroy)
     }
 
 
