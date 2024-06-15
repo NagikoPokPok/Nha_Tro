@@ -197,6 +197,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     private void filterListHomes()
     {
+        showLoadingOfFunctions(R.id.btn_confirm_apply);
         boolean filterByRoom1 = preferenceManager.getBoolean("cbxByRoom1");
         boolean filterByRoom2 = preferenceManager.getBoolean("cbxByRoom2");
         boolean filterByRoom3 = preferenceManager.getBoolean("cbxByRoom3");
@@ -407,8 +408,7 @@ public class HomeFragment extends Fragment implements HomeListener {
                         binding.listTypeOfFilterHome.addView(filterItemLayout);
                     }
                 }
-
-                dialog.dismiss();
+                //dialog.dismiss();
             }
         });
 
@@ -485,23 +485,23 @@ public class HomeFragment extends Fragment implements HomeListener {
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterHome.setText(selectedText);
                     homePresenter.sortHomes("number_room_asc");
-                    dialog.dismiss();
+
                 } else if (selectedId == R.id.radio_btn_number_room_desc) {
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_number_room_desc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterHome.setText(selectedText);
                     homePresenter.sortHomes("number_room_desc");
-                    dialog.dismiss();
+
                 } else if (selectedId == R.id.radio_btn_revenue_asc) {
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_revenue_asc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterHome.setText(selectedText);
-                    dialog.dismiss();
+
                 } else if (selectedId == R.id.radio_btn_revenue_desc) {
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_revenue_desc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterHome.setText(selectedText);
-                    dialog.dismiss();
+
                 } else {
                     showToast("No option selected");
                 }
@@ -607,6 +607,7 @@ public class HomeFragment extends Fragment implements HomeListener {
     public void hideOtherComponents(String action){
         if(binding.edtSearchHome.isFocused()){
             binding.edtSearchHome.clearFocus();
+            binding.edtSearchHome.setText("");
             homePresenter.getHomes(action);
         }
         // Clear the status of check boxes
@@ -1076,7 +1077,23 @@ public class HomeFragment extends Fragment implements HomeListener {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                hideOtherComponents("update");
+                //hideOtherComponents("update");
+
+                if(binding.edtSearchHome.isFocused()){
+                    binding.edtSearchHome.clearFocus();
+                    binding.edtSearchHome.setText("");
+                }
+                // Clear the status of check boxes
+                else if(binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
+                    // Xoa sort khi click vao search
+                    preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+                    binding.layoutTypeOfSortHome.setVisibility(View.GONE);
+                }
+                else if(binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
+                    // Clear the status of check boxes
+                    removeStatusOfCheckBoxFilterHome();
+                    binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+                }
             }
         });
     }

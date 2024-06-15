@@ -429,7 +429,8 @@ public class HomePresenter {
     }
 
     public void sortHomes(String typeOfSort) {
-        homeListener.showLoading();
+        homeListener.showLoadingOfFunctions(R.id.btn_confirm_apply);
+        //homeListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userId = homeListener.getInfoUserFromGoogleAccount();
 
@@ -457,6 +458,8 @@ public class HomePresenter {
                             } else if (typeOfSort.equals("number_room_desc")) {
                                 homes = sortHomesByNumberOfHomesDescending(homes);
                             }
+                            homeListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+                            homeListener.dialogClose();
                             homeListener.addHome(homes, "sort");
                         } else {
                             homeListener.addHomeFailed();
@@ -487,8 +490,12 @@ public class HomePresenter {
 
     public void filterHome(List<Home> homes) {
         if (homes.isEmpty()) {
+            homeListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+            homeListener.dialogClose();
             homeListener.noHomeData();
         } else {
+            homeListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+            homeListener.dialogClose();
             homeListener.addHome(homes, "init");
         }
     }
