@@ -752,9 +752,40 @@ public class HomeFragment extends Fragment implements HomeListener {
             binding.name.setText(userName);
 
             String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
-            new HomeFragment.DownloadImageTask(binding.imgProfile).execute(photoUrl);
+            new HomeFragment.DownloadImageTask(binding.imgProfile, binding.imgAva).execute(photoUrl);
         }
     }
+
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private final ImageView imageView;
+        private final ImageView imgAva;
+
+        public DownloadImageTask(ImageView imageView, ImageView imgAva) {
+            this.imageView = imageView;
+            this.imgAva = imgAva;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String imageUrl = urls[0];
+            Bitmap bitmap = null;
+            try {
+                InputStream in = new java.net.URL(imageUrl).openStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", Objects.requireNonNull(e.getMessage()));
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                imageView.setImageBitmap(result);
+                imgAva.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
 
     private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text
     {
@@ -1258,31 +1289,6 @@ public class HomeFragment extends Fragment implements HomeListener {
         }
     }
 
-    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        private final ImageView imageView;
-
-        public DownloadImageTask(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String imageUrl = urls[0];
-            Bitmap bitmap = null;
-            try {
-                InputStream in = new java.net.URL(imageUrl).openStream();
-                bitmap = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", Objects.requireNonNull(e.getMessage()));
-            }
-            return bitmap;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            if (result != null) {
-                imageView.setImageBitmap(result);
-            }
-        }
-    }
 
 
     @Override
