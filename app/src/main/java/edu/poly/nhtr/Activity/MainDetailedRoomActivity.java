@@ -65,6 +65,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         setArgumentsForFragment(new RoomBillFragment(), bundle);
         setArgumentsForFragment(new RoomContractFragment(), bundle);
         setArgumentsForFragment(new RoomServiceFragment(), bundle);
+        setArgumentsForFragment(new RoomGuestContractFragment(), bundle);
     }
 
     private void setArgumentsForFragment(Fragment fragment, Bundle bundle) {
@@ -73,7 +74,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
     private void setListeners() {
         binding.nameRoom.setText(String.format("Phòng %s", preferenceManager.getString(Constants.KEY_NAME_ROOM)));
-        binding.btnBack.setOnClickListener(v -> back());
+        binding.btnBack.setOnClickListener(v -> onBackPressed());
     }
 
     private void showTabLayout() {
@@ -105,10 +106,11 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         return false;
     }
 
-    public void back() {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
-        intent.putExtra("FRAGMENT_TO_LOAD", "RoomFragment");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
-        finish();
     }
 }
