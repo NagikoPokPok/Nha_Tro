@@ -334,7 +334,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_gia_phong"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@id/txt_gia_phong"
                 app:layout_constraintTop_toBottomOf="@id/txt_gia_phong"
@@ -461,7 +461,7 @@
                     android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/txt_ngay"
+                    android:id="@+id/txt_ngay_han_thanh_toan"
                     style="@style/TEXT_MED_2"
                     android:layout_marginEnd="150dp"
                     android:layout_width="wrap_content"
@@ -476,41 +476,39 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
-                android:layout_weight="1"
+                android:layout_marginTop="32dp"
                 android:text="@string/anh_mat_truoc_cccd"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@id/layout_han_thanh_toan"
-                app:layout_constraintTop_toTopOf="@id/layout_han_thanh_toan" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_han_thanh_toan" />
 
             <!-- Khung điền ảnh mặt trước CCCD-->
             <FrameLayout
                 android:id="@+id/layout_them_anh_cccd_truoc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:layout_marginTop="50dp"
-                app:layout_constraintTop_toTopOf="@id/txt_anh_mat_truoc_cccd"
-                app:layout_constraintStart_toStartOf="@id/txt_anh_mat_truoc_cccd">
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_anh_mat_truoc_cccd">
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_cccd_front"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="@drawable/background_image"
-                android:scaleType="centerCrop"
-                app:riv_oval="true" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/img_cccd_front"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="@drawable/background_image"
+                    android:scaleType="centerCrop"
+                    app:riv_oval="true" />
 
-            <ImageView
-                android:id="@+id/img_add_cccd_front"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_gravity="center"
-                android:background="@drawable/round_back_add_image"
-                android:contentDescription="@string/khung_avatar"
-                android:padding="50dp"
-                android:src="@drawable/icon_add_image" />
+                <ImageView
+                    android:id="@+id/img_add_cccd_front"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/round_back_add_image"
+                    android:contentDescription="@string/khung_avatar"
+                    android:padding="50dp"
+                    android:src="@drawable/icon_add_image" />
             </FrameLayout>
 
             <!--Ảnh mặt sau CCCD-->
@@ -519,27 +517,26 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="280dp"
-                android:layout_weight="1"
+                android:layout_marginTop="32dp"
                 android:text="@string/anh_mat_sau_cccd"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@id/layout_them_anh_cccd_truoc"
-                app:layout_constraintTop_toTopOf="@id/layout_them_anh_cccd_truoc" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_them_anh_cccd_truoc" />
 
-            <!-- Khung điền ảnh mặt trước CCCD-->
+            <!-- Khung điền ảnh mặt sau CCCD-->
             <FrameLayout
                 android:id="@+id/layout_them_anh_cccd_sau"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="50dp"
-                app:layout_constraintTop_toTopOf="@id/txt_anh_mat_sau_cccd"
-                app:layout_constraintStart_toStartOf="@id/txt_anh_mat_sau_cccd">
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_anh_mat_sau_cccd">
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/img_cccd_back"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="250dp"
                     android:background="@drawable/background_image"
                     android:scaleType="centerCrop"
                     app:riv_oval="true" />
@@ -558,12 +555,13 @@
             <!-- LinearLayout chứa trường Hợp đồng-->
             <LinearLayout
                 android:id="@+id/layout_anh_hop_dong"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="260dp"
+                android:layout_marginTop="32dp"
                 android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="@id/layout_them_anh_cccd_sau"
-                app:layout_constraintTop_toTopOf="@id/layout_them_anh_cccd_sau">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_them_anh_cccd_sau">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -588,36 +586,32 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/mat_sau_hop_dong"
-                        android:layout_gravity="center_vertical"
                         android:textSize="20sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
 
                     <!-- Khung điền ảnh mặt trước hợp đồng-->
                     <FrameLayout
                         android:id="@+id/layout_them_anh_hop_dong_truoc"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginTop="20dp">
+                        android:layout_weight="1">
 
                         <com.makeramen.roundedimageview.RoundedImageView
                             android:id="@+id/img_contract_front"
-                            android:layout_width="250dp"
+                            android:layout_width="match_parent"
                             android:layout_height="300dp"
                             android:background="@drawable/background_add_image_rectangle"
-                            android:scaleType="centerCrop"
-                            android:layout_gravity="center"
-                            />
+                            android:scaleType="centerCrop" />
 
                         <ImageView
                             android:id="@+id/img_add_contract_front"
-                            android:layout_width="250dp"
+                            android:layout_width="match_parent"
                             android:layout_height="300dp"
                             android:layout_gravity="center"
                             android:background="@drawable/round_back_add_image"
@@ -631,22 +625,19 @@
                         android:id="@+id/layout_them_anh_hop_dong_sau"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="20dp">
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1">
 
                         <com.makeramen.roundedimageview.RoundedImageView
                             android:id="@+id/img_contract_back"
-                            android:layout_width="250dp"
+                            android:layout_width="match_parent"
                             android:layout_height="300dp"
                             android:background="@drawable/background_image"
-                            android:scaleType="centerCrop"
-                            android:layout_gravity="center"
-                             />
+                            android:scaleType="centerCrop" />
 
                         <ImageView
                             android:id="@+id/img_add_contract_back"
-                            android:layout_width="250dp"
+                            android:layout_width="match_parent"
                             android:layout_height="300dp"
                             android:layout_gravity="center"
                             android:background="@drawable/round_back_add_image"
@@ -657,31 +648,41 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_add_contract"
+            <!--  Guildline định vị nút theo chiều ngang -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/layout_anh_hop_dong"
-                app:layout_constraintTop_toTopOf="@id/layout_anh_hop_dong"
-                android:layout_marginTop="380dp"
-                android:layout_marginStart="320dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <!-- Nút lưu -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_add_contract"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
                 android:text="@string/luu"
                 style="@style/BUTTON"
                 android:textSize="18sp"
-                />
+                app:layout_constraintEnd_toStartOf="@id/btn_cancel"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/layout_anh_hop_dong" />
 
+            <!-- Nút hủy -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/layout_anh_hop_dong"
-                app:layout_constraintTop_toTopOf="@id/layout_anh_hop_dong"
-                android:layout_marginTop="380dp"
-                android:layout_marginStart="210dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/huy"
                 style="@style/BUTTON_2"
                 android:textSize="18sp"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_add_contract"
+                app:layout_constraintTop_toBottomOf="@id/layout_anh_hop_dong" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
