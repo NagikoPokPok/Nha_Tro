@@ -147,6 +147,13 @@
         <item name="android:fontFamily">@font/inter_bold</item>
     </style>
 
+    <style name="BUTTON_2">
+        <item name="android:background">@drawable/pressed_button_white</item>
+        <item name="android:textColor">@color/colorButton</item>
+        <item name="iconTint">@color/colorButton</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+    </style>
+
     <style name="BUTTON_NO_BORDER">
         <item name="android:tint">@color/white</item>
     </style>

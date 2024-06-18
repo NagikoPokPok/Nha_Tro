@@ -160,6 +160,19 @@
         <item>Nữ</item>
         <item>Khác</item>
     </string-array>
+    
+    <string-array name="numbers">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
 
     <string name="ban_co_muon_xoa_phong_tro">Bạn có muốn xóa phòng trọ</string>
     <string name="ban_xoa_phong_tro_thanh_cong">Bạn đã xoá phòng trọ thành công!</string>

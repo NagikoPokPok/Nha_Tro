@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_form"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
@@ -657,6 +657,31 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_add_contract"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/layout_anh_hop_dong"
+                app:layout_constraintTop_toTopOf="@id/layout_anh_hop_dong"
+                android:layout_marginTop="380dp"
+                android:layout_marginStart="320dp"
+                android:text="@string/luu"
+                style="@style/BUTTON"
+                android:textSize="18sp"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/layout_anh_hop_dong"
+                app:layout_constraintTop_toTopOf="@id/layout_anh_hop_dong"
+                android:layout_marginTop="380dp"
+                android:layout_marginStart="210dp"
+                android:text="@string/huy"
+                style="@style/BUTTON_2"
+                android:textSize="18sp"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
