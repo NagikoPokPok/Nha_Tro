@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -62,11 +67,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         Boolean isHomeHaveService = home.getHaveService();
 
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-        if(!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) services = ServiceUtils.addAvailableService(preferenceManager.getString(Constants.KEY_HOME_ID));
-        else {
-            FirebaseFirestore data = FirebaseFirestore.getInstance();
-            services = ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID));
-        }
+        loadData();
+
         presenter = new ServicePresenter(this);
         binding = FragmentServiceBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
@@ -74,21 +76,78 @@ public class ServiceFragment extends Fragment implements ServiceListener {
 
         setListener();
 
-        // đổ dữ liệu vào recyclerView
-        setRecyclerViewData();
+        int i = getContext().getResources().getIdentifier("image_electricity", "drawable", getContext().getPackageName());
     }
 
+    private void loadData() {
+        //set Preference of KEY_HOME_IS_HAVE_SERVICE
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
+                .document(preferenceManager.getString(Constants.KEY_HOME_ID))
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if(document.exists()) {
+                                if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null){
+                                    preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE));
+                                    Log.e("isHaveServiceDoc", document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE).toString()+" document");
+                                }
+                                else preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
+                                Log.e("isHaveService", "exists");
+                            }else
+                                preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
+                            Log.e("isHaveService", "Access successfully");
+                        }
+                        else Log.e("isHaveService", "Don't access");
+
+
+                        loadServicesData();
+
+
+                    }
+                });
+    }
+
+    private void loadServicesData() {
+        //Load data of service
+        if(!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) {
+            services = ServiceUtils.addAvailableService(preferenceManager.getString(Constants.KEY_HOME_ID), getContext());
+            setRecyclerViewData();
+        }
+        else {
+            FirebaseFirestore data = FirebaseFirestore.getInstance();
+            ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID), new ServiceUtils.OnServicesLoadedListener() {
+                @Override
+                public void onServicesLoaded(List<Service> listServices) {
+                    services = listServices;
+                    setRecyclerViewData();
+                }
+            });
+        }
+    }
+
+
     private void setRecyclerViewData() {
+        // Ensure services are not null before setting adapters
+        if (services == null) {
+            Log.e("RecyclerView", "Services data is null, skipping setting adapters.");
+            return;
+        }
+        Log.e("ServicesCount", String.valueOf(services.stream().count()));
 
         // Dịch vụ đang sử dụng
         ServiceAdapter serviceUsedAdapter = new ServiceAdapter(this.requireActivity(), ServiceUtils.usedService(services), this);
         binding.recyclerServiceUsed.setAdapter(serviceUsedAdapter);
         binding.recyclerServiceUsed.setVisibility(View.VISIBLE);
+        Log.e("ServicesCountUsed", String.valueOf(ServiceUtils.usedService(services).stream().count()));
 
         //Dịch vụ chưa sử dụng
         ServiceAdapter serviceUnusedAdapter = new ServiceAdapter(this.requireActivity(), ServiceUtils.unusedService(services), this);
         binding.recyclerServiceUnused.setAdapter(serviceUnusedAdapter);
         binding.recyclerServiceUnused.setVisibility(View.VISIBLE);
+        Log.e("ServicesCountUnused", String.valueOf(ServiceUtils.unusedService(services).stream().count()));
 
         // Set padding between items
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);

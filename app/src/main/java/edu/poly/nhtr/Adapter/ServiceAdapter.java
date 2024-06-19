@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.poly.nhtr.Class.ServiceUtils;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.listeners.ServiceListener;
 import edu.poly.nhtr.models.Service;
@@ -61,6 +62,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         public void setServiceData(Service service){
             binding.nameService.setText(service.getName());
+            binding.imageService.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
             binding.feeService.setText(""+service.getPrice());
 
             //Thiết lập hành động nhấn vào

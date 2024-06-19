@@ -7,10 +7,9 @@ import java.util.HashMap;
 import edu.poly.nhtr.listeners.ServiceListener;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.utilities.Constants;
-import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class ServicePresenter {
-    private ServiceListener listener;
+    private final ServiceListener listener;
 
     public ServicePresenter(ServiceListener listener) {
         this.listener = listener;

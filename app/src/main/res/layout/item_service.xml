@@ -22,7 +22,9 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="6dp"
-            android:src="@drawable/image_electricity"/>
+            app:backgroundTint="@null"
+            app:background="@null"
+            android:src="@drawable/image_service"/>
 
         <TextView
             android:id="@+id/name_service"
