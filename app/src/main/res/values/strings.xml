@@ -122,7 +122,6 @@
     <string name="Sap_xep">Sắp xếp</string>
     <string name="Loc">Lọc</string>
     <string name="tim_kiem_nha_tro">Tìm kiếm nhà trọ</string>
-    <string name="tim_kiem_phong_tro">Tìm kiếm phòng trọ</string>
     <string name="da_thanh_toan">Đã thanh toán</string>
     <string name="cho_thanh_toan">Chờ thanh toán</string>
     <string name="qua_han_thanh_toan">Quá hạn thanh toán</string>
@@ -181,5 +180,10 @@
     <string name="ngay_vao_o_hai_cham">Ngày vào ở:</string>
     <string name="so_dien_thoai_hai_cham">Số điện thoai:</string>
     <string name="tinh_trang_ho_so_hai_cham">Tình trạng hồ sơ:</string>
+    <string name="gia_thue_phong_tang">Giá thuê phòng tăng</string>
+    <string name="so_luong_nguoi_dang_o_tang">Số lượng người đang ở tăng</string>
+    <string name="tim_kiem_phong_troo">Tìm kiếm phòng trọ</string>
+    <string name="tim_kiem_phong_tro">Tìm kiếm phòng trọ</string>
+    <string name="ten_phong">Tên phòng</string>
 
 </resources>

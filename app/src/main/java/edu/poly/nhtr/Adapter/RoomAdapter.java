@@ -186,17 +186,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             binding.getRoot().setOnClickListener(v-> {roomListener.onRoomClick(room);});
 
             String hoTen = binding.edtHoTen.getText().toString().trim();
-//            if(hoTen.isEmpty()){
-//                binding.edtHoTen.setVisibility(View.GONE);
-//                binding.edtSoDienThoai.setVisibility(View.GONE);
-//                binding.edtTrangThaiThanhToan.setVisibility(View.GONE);
-//                binding.edtSoNguoiDangO.setVisibility(View.GONE);
-//                binding.txtHoTen.setVisibility(View.GONE);
-//                binding.txtSoDienThoai.setVisibility(View.GONE);
-//                binding.txtTrangThaiThanhToan.setVisibility(View.GONE);
-//                binding.txtSoNguoiDangO.setVisibility(View.GONE);
-//            }
-
             if(hoTen.isEmpty()){
                 binding.layoutNameOfGuest.setVisibility(View.GONE);
                 binding.layoutPhoneNumberOfGuest.setVisibility(View.GONE);

@@ -23,6 +23,7 @@ public class Constants {
     public static final String KEY_NAME_ROOM= "nameRoom";
     public static final String KEY_PRICE= "price";
     public static final String KEY_DESCRIBE= "describe";
+    public static final String KEY_NUMBER_OF_PEOPLE_LIVING= "numberOfPeopleLiving";
 
     public static final String KEY_TIMESTAMP = "timestamp";
 
@@ -44,6 +45,7 @@ public class Constants {
 
     // Key Room
     public static final String KEY_ROOM_ID = "roomId";
-    public static final String KEY_ROOM_NAME = "roomName";
+    public static final String KEY_STATUS_PAID = "statusPaid";
+
 
 }

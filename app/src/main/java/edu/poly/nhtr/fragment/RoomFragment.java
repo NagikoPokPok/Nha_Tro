@@ -22,21 +22,29 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
+import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.Adapter.RoomAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomBinding;
@@ -56,6 +64,14 @@ public class RoomFragment extends Fragment implements RoomListener {
     private FragmentRoomBinding binding;
     private Dialog dialog;
     private RoomPresenter roomPresenter;
+    private List<Room> currentListRooms = new ArrayList<>();
+    public List<Room> getCurrentListRooms() {
+        return currentListRooms ;
+    }
+
+    public void setCurrentListRooms(List<Room> currentListRooms) {
+        this.currentListRooms = currentListRooms;
+    }
 
 
     @Override
@@ -98,6 +114,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         });
 
         customizeLayoutSearch();
+        setListenersForTools(); // Set listeners for sort and filter
     }
 
 
@@ -397,15 +414,21 @@ public class RoomFragment extends Fragment implements RoomListener {
         RoomAdapter roomAdapter = new RoomAdapter(rooms, this, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
 
-        // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
-        rooms.sort(Comparator.comparing(obj -> obj.dateObject));
+
 
         if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
+            // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
+            rooms.sort(Comparator.comparing(obj -> obj.dateObject));
             binding.roomsRecyclerView.smoothScrollToPosition(0);
         } else if (Objects.equals(action, "add")) {
+            // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
+            rooms.sort(Comparator.comparing(obj -> obj.dateObject));
             roomAdapter.addRoom(rooms);
             roomAdapter.notifyItemInserted(roomAdapter.getLastActionPosition());
             binding.roomsRecyclerView.smoothScrollToPosition(roomAdapter.getLastActionPosition());
+        } else if (Objects.equals(action, "sort")) {
+            //roomAdapter.addRoom(rooms);
+            updateRecyclerView(roomAdapter, 0);
         }
         else if (Objects.equals(action, "update")) {
             int position = roomPresenter.getPosition();
@@ -427,16 +450,22 @@ public class RoomFragment extends Fragment implements RoomListener {
         // Do trong activity_users.xml, usersRecycleView đang được setVisibility là Gone, nên sau
         // khi setAdapter mình phải set lại là VISIBLE
         binding.txtNotification.setVisibility(View.GONE);
-        binding.imgAddRoom.setVisibility(View.GONE);
+        binding.imgAddHome.setVisibility(View.GONE);
         binding.roomsRecyclerView.setVisibility(View.VISIBLE);
         binding.frmMenuTools.setVisibility(View.VISIBLE);
         Log.d("RoomFragment", "Adapter set successfully");
+    }
+    private void updateRecyclerView(RoomAdapter roomAdapter, int position) {
+        binding.roomsRecyclerView.setAdapter(roomAdapter);
+        //binding.layoutNoData.setVisibility(View.GONE);
+        roomAdapter.notifyDataSetChanged();
+        binding.roomsRecyclerView.smoothScrollToPosition(position);
     }
 
     @Override
     public void addRoomFailed() {
         binding.txtNotification.setVisibility(View.VISIBLE);
-        binding.imgAddRoom.setVisibility(View.VISIBLE);
+        binding.imgAddHome.setVisibility(View.VISIBLE);
         binding.roomsRecyclerView.setVisibility(View.INVISIBLE);
         binding.frmMenuTools.setVisibility(View.VISIBLE);
     }
@@ -670,4 +699,399 @@ public class RoomFragment extends Fragment implements RoomListener {
         intent.putExtra("room", room);
         startActivity(intent);
     }
+
+    @Override
+    public void getListRooms(List<Room> listRoom) {
+        setCurrentListRooms(listRoom);
+    }
+
+    @Override
+    public void noRoomData() {
+        binding.roomsRecyclerView.setVisibility(View.INVISIBLE);
+        binding.layoutNoRoom.setVisibility(View.VISIBLE);
+    }
+
+
+    private void openSortRoomDialog() {
+        if(binding.edtSearchRoom.isFocused())
+        {
+            binding.edtSearchRoom.clearFocus();
+            binding.edtSearchRoom.setText("");
+            roomPresenter.getRooms("init");
+        }
+        else if(binding.layoutTypeOfFilterRoom.getVisibility() == View.VISIBLE) {
+            removeStatusOfCheckBoxFilterRoom();
+            binding.layoutTypeOfFilterRoom.setVisibility(View.GONE);
+            roomPresenter.getRooms("init");
+        }
+
+        setupDialog(R.layout.layout_dialog_sort_room, Gravity.CENTER);
+
+        RadioGroup radioGroup = dialog.findViewById(R.id.radio_group_sort_room);
+        Button btnApply = dialog.findViewById(R.id.btn_confirm_apply);
+
+        // Disable btnApply and set background color to gray initially
+        btnApply.setEnabled(false);
+        btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+
+        // Listen for changes in the RadioGroup
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId != -1) {
+                    // Enable btnApply and change background color to blue
+                    btnApply.setEnabled(true);
+                    btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+                }
+            }
+        });
+
+
+        // Save the status of radio buttons
+        int selectedRadioButtonId = preferenceManager.getInt(Constants.KEY_SELECTED_RADIO_BUTTON);
+
+        // If a RadioButton was selected before, check it
+        if (selectedRadioButtonId != -1) {
+            RadioButton selectedRadioButton = dialog.findViewById(selectedRadioButtonId);
+            if (selectedRadioButton != null) {
+                selectedRadioButton.setChecked(true);
+            }
+        }
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.txtTitleSortFilterRoom.setText("Sắp xếp theo:  ");
+                binding.layoutTypeOfSortRoom.setVisibility(View.VISIBLE);
+
+                // Get the selected RadioButton ID
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+
+                if (selectedId == R.id.radio_btn_number_people_living_asc) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_number_people_living_asc);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterRoom.setText(selectedText);
+                    roomPresenter.sortRooms("number_of_people_living_asc");
+
+                } else if (selectedId == R.id.radio_btn_price_asc) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_price_asc);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterRoom.setText(selectedText);
+                    roomPresenter.sortRooms("price_asc");
+
+                } else if (selectedId == R.id.radio_btn_name_room) {
+                    RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_name_room);
+                    String selectedText = selectedRadioButton.getText().toString();
+                    binding.txtTypeOfSortFilterRoom.setText(selectedText);
+                    roomPresenter.sortRooms("name_room");
+
+                }  else {
+                    showToast("No option selected");
+                }
+
+                // Save the selected RadioButton ID to SharedPreferences
+                preferenceManager.putInt(Constants.KEY_SELECTED_RADIO_BUTTON, selectedId);
+            }
+        });
+
+        binding.btnCancelSortRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.layoutTypeOfSortRoom.setVisibility(View.GONE);
+                preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+                roomPresenter.getRooms("init");
+            }
+        });
+
+
+        dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+    public void removeStatusOfCheckBoxFilterRoom() {
+        preferenceManager.removePreference("cbxRoom1");
+        preferenceManager.removePreference("cbxRoom2");
+        preferenceManager.removePreference("cbxRoom3");
+        preferenceManager.removePreference("cbxRoom4");
+    }
+
+    private void openFilterRoomDialog() {
+        if(binding.edtSearchRoom.isFocused())
+        {
+            binding.edtSearchRoom.clearFocus();
+            binding.edtSearchRoom.setText("");
+            roomPresenter.getRooms("init");
+        }
+        else if(binding.layoutTypeOfSortRoom.getVisibility() == View.VISIBLE) {
+            // Clear the selected RadioButton ID from SharedPreferences
+            preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+            binding.layoutTypeOfSortRoom.setVisibility(View.GONE);
+            roomPresenter.getRooms("init");
+        }
+
+
+        setupDialog(R.layout.layout_dialog_filter_room, Gravity.CENTER);
+        roomPresenter.getListRooms();
+
+        AppCompatCheckBox cbxByRoom1 = dialog.findViewById(R.id.cbx_paid);
+        AppCompatCheckBox cbxByRoom2 = dialog.findViewById(R.id.cbx_waiting_for_paid);
+        AppCompatCheckBox cbxByRoom3 = dialog.findViewById(R.id.cbx_overdue_paid);
+        AppCompatCheckBox cbxByRoom4 = dialog.findViewById(R.id.cbx_no_people_rent);
+
+        Button btnApply = dialog.findViewById(R.id.btn_confirm_apply);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+
+        cbxByRoom1.setChecked(preferenceManager.getBoolean("cbxRoom1"));
+        cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxRoom2"));
+        cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxRoom3"));
+        cbxByRoom4.setChecked(preferenceManager.getBoolean("cbxRoom4"));
+        showToast(preferenceManager.getBoolean("cbxRoom4")+"");
+
+        // Add CheckBoxes to a list
+        List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add(cbxByRoom1);
+        checkBoxList.add(cbxByRoom2);
+        checkBoxList.add(cbxByRoom3);
+        checkBoxList.add(cbxByRoom4);
+
+
+        customizeButtonApplyInDialogHaveCheckBox(btnApply, checkBoxList);
+
+
+        // Create a method to check the state of all checkboxes
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customizeButtonApplyInDialogHaveCheckBox(btnApply, checkBoxList);
+            }
+        };
+
+        // Set the listener to all checkboxes
+        cbxByRoom1.setOnClickListener(checkBoxListener);
+        cbxByRoom2.setOnClickListener(checkBoxListener);
+        cbxByRoom3.setOnClickListener(checkBoxListener);
+        cbxByRoom4.setOnClickListener(checkBoxListener);
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.layoutTypeOfFilterRoom.setVisibility(View.VISIBLE);
+                List<String> selectedOptions = new ArrayList<>();
+
+                // Check which CheckBoxes are selected and save their state
+                boolean filterByRoom1 = cbxByRoom1.isChecked();
+                boolean filterByRoom2 = cbxByRoom2.isChecked();
+                boolean filterByRoom3 = cbxByRoom3.isChecked();
+                boolean filterByRoom4 = cbxByRoom4.isChecked();
+
+                if (filterByRoom1) {
+                    selectedOptions.add(cbxByRoom1.getText().toString());
+                    preferenceManager.putBoolean("cbxRoom1", true);
+                } else {
+                    preferenceManager.putBoolean("cbxRoom1", false);
+                    removeFromListAndSave(cbxByRoom1.getText().toString());
+                }
+                if (filterByRoom2) {
+                    selectedOptions.add(cbxByRoom2.getText().toString());
+                    preferenceManager.putBoolean("cbxRoom2", true);
+                } else {
+                    preferenceManager.putBoolean("cbxRoom2", false);
+                    removeFromListAndSave(cbxByRoom2.getText().toString());
+                }
+                if (filterByRoom3) {
+                    selectedOptions.add(cbxByRoom3.getText().toString());
+                    preferenceManager.putBoolean("cbxRoom3", true);
+                } else {
+                    preferenceManager.putBoolean("cbxRoom3", false);
+                    removeFromListAndSave(cbxByRoom3.getText().toString());
+                }
+                if (filterByRoom4) {
+                    selectedOptions.add(cbxByRoom4.getText().toString());
+                    preferenceManager.putBoolean("cbxRoom4", true);
+                } else {
+                    preferenceManager.putBoolean("cbxRoom4", false);
+                    removeFromListAndSave(cbxByRoom4.getText().toString());
+                }
+
+                // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
+                if(!filterByRoom1 && !filterByRoom2 && !filterByRoom3 &&!filterByRoom4) {
+                    binding.layoutNoRoom.setVisibility(View.GONE);
+                    binding.layoutTypeOfFilterRoom.setVisibility(View.GONE);
+                    roomPresenter.getRooms("init");
+                }else {
+                    filterListRooms(); // After put status of checkboxes in preferences, check and add them into the list
+                }
+
+                // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
+                for (String option : selectedOptions) {
+                    // Check if the checkbox is already in the listTypeOfFilterHome
+                    boolean alreadyExists = false;
+                    for (int i = 0; i < binding.listTypeOfFilterRoom.getChildCount(); i++) {
+                        View view = binding.listTypeOfFilterRoom.getChildAt(i);
+                        if (view instanceof LinearLayout) {
+                            TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                            if (textView.getText().toString().equals(option)) {
+                                alreadyExists = true;
+                                break;
+                            }
+                        }
+                    }
+
+
+                    // If the checkbox does not exist, add it to the listTypeOfFilterHome
+                    if (!alreadyExists) {
+
+                        // Inflate the layout containing the TextView and ImageView
+                        LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
+
+                        // Get references to the TextView and ImageView
+                        TextView txtTypeOfFilterRoom = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
+                        ImageView iconCancel = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
+
+                        // Set the text for the TextView
+                        txtTypeOfFilterRoom.setText(option);
+
+                        // Optionally set an OnClickListener for the ImageView to remove the filter
+                        iconCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Remove the filter
+                                binding.listTypeOfFilterRoom.removeView(filterItemLayout);
+
+                                // Update SharedPreferences to uncheck the checkbox in the dialog
+                                if (option.equals(cbxByRoom1.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxRoom1", false);
+                                    cbxByRoom1.setChecked(false);
+                                } else if (option.equals(cbxByRoom2.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxRoom2", false);
+                                    cbxByRoom2.setChecked(false);
+                                } else if (option.equals(cbxByRoom3.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxRoom3", false);
+                                    cbxByRoom3.setChecked(false);
+                                } else if (option.equals(cbxByRoom4.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxRoom4", false);
+                                    cbxByRoom4.setChecked(false);
+                                }
+
+                                if (binding.listTypeOfFilterRoom.getChildCount() == 0) {
+                                    // If no filter left in the list -> Set GONE
+                                    binding.layoutTypeOfFilterRoom.setVisibility(View.GONE);
+                                    binding.layoutNoRoom.setVisibility(View.GONE);
+                                    // And update list homes as initial
+                                    roomPresenter.getRooms("init");
+                                }else {
+                                    // Update list homes after deleting some check boxes
+                                    filterListRooms();
+                                }
+
+                            }
+                        });
+
+                        // Set layout parameters for filterItemLayout
+                        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+                                FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                                (int) getResources().getDimension(R.dimen.filter_item_height) // Assuming filter_item_height is 40dp
+                        );
+                        int margin = (int) getResources().getDimension(R.dimen.filter_item_margin);
+                        params.setMargins(0, margin, margin, 0);
+                        filterItemLayout.setLayoutParams(params);
+
+
+                        // Add the inflated layout to the main LinearLayout
+                        binding.listTypeOfFilterRoom.addView(filterItemLayout);
+                    }
+                }
+                //dialog.dismiss();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList)
+    {
+        boolean isAnyChecked = false;
+        for (AppCompatCheckBox checkBox : checkBoxList) {
+            if (checkBox.isChecked()) {
+                isAnyChecked = true;
+                break;
+            }
+        }
+        if (isAnyChecked) {
+            btnApply.setEnabled(true);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+        } else {
+            btnApply.setEnabled(false);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+        }
+    }
+    private void removeFromListAndSave(String option) { // Remove from listType
+        for (int i = 0; i < binding.layoutTypeOfFilterRoom.getChildCount(); i++) {
+            View view = binding.layoutTypeOfFilterRoom.getChildAt(i);
+            if (view instanceof LinearLayout) {
+                TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                if (textView.getText().toString().equals(option)) {
+                    binding.layoutTypeOfFilterRoom.removeView(view);
+                    preferenceManager.removePreference(option);
+                    break;
+                }
+            }
+        }
+    }
+    private void filterListRooms()
+    {
+        showLoadingOfFunctions(R.id.btn_confirm_apply);
+        boolean filterByRoom1 = preferenceManager.getBoolean("cbxRoom1");
+        boolean filterByRoom2 = preferenceManager.getBoolean("cbxRoom2");
+        boolean filterByRoom3 = preferenceManager.getBoolean("cbxRoom3");
+        boolean filterByRoom4 = preferenceManager.getBoolean("cbxRoom4");
+
+        List<Room> filteredNoMembers = new ArrayList<>();
+        for (Room room : currentListRooms) {
+//            if (filterByRoom4 && Integer.parseInt(room.numberOfMemberLiving) == 0 ) {
+//                filteredNoMembers.add(room);
+//            }
+        }
+
+        roomPresenter.filterRoom(filteredNoMembers);
+    }
+
+    private void setListenersForTools() {
+        binding.btnSortRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSortRoomDialog();
+            }
+        });
+
+        binding.imgSortRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSortRoomDialog();
+            }
+        });
+
+        binding.btnFilterRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterRoomDialog();
+            }
+        });
+
+        binding.imgFilterRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterRoomDialog();
+            }
+        });
+
+    }
+
 }

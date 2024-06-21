@@ -482,7 +482,8 @@ public class HomePresenter {
         homes.sort(new Comparator<Home>() {
             @Override
             public int compare(Home home1, Home home2) {
-                return Integer.compare(home2.numberOfRooms, home1.numberOfRooms);
+                int a = Integer.compare(home2.numberOfRooms, home1.numberOfRooms);
+                return a;
             }
         });
         return homes;

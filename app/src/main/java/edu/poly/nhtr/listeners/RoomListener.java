@@ -35,4 +35,7 @@ public interface RoomListener {
 
     // Xử lí click vào container Room
     void onRoomClick(Room room);
+
+    void getListRooms(List<Room> listRoom);
+    void noRoomData();
 }

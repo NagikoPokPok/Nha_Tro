@@ -24,6 +24,7 @@
 
     <CheckBox
         style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_paid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -36,6 +37,7 @@
 
     <CheckBox
         style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_waiting_for_paid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -48,6 +50,7 @@
 
     <CheckBox
         style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_overdue_paid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -58,7 +61,9 @@
         android:textSize="17sp"
         android:theme="@style/RadioButtonStyle" />
 
+
     <CheckBox
+        android:id="@+id/cbx_no_people_rent"
         style="@style/TEXT_LIGHT_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,7 +74,6 @@
         android:text="@string/khong_co_nguoi_thue"
         android:textSize="17sp"
         android:theme="@style/RadioButtonStyle" />
-
 
     <LinearLayout
         android:layout_width="wrap_content"

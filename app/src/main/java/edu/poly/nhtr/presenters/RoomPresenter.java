@@ -1,5 +1,6 @@
 package edu.poly.nhtr.presenters;
 
+import android.util.Log;
 import android.view.Gravity;
 
 import com.google.firebase.Timestamp;
@@ -8,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -338,6 +340,138 @@ public class RoomPresenter {
                         roomListener.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
+    }
+    public void sortRooms(String typeOfSort) {
+        roomListener.showLoadingOfFunctions(R.id.btn_confirm_apply);
+        //homeListener.showLoading();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        String homeId = roomListener.getInfoHomeFromGoogleAccount();
+
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (roomListener.isAdded2()) {
+                        roomListener.hideLoading();
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<Room> rooms = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Room room = new Room();
+                                room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
+                                room.nameUser = document.getString(Constants.KEY_NAME);
+                                room.price = document.getString(Constants.KEY_PRICE);
+                                room.status=document.getString(Constants.KEY_STATUS_PAID);
+                                room.phoneNumer= document.getString(Constants.KEY_PHONE_NUMBER);
+                                room.describe = document.getString(Constants.KEY_DESCRIBE);
+                                room.numberOfMemberLiving = document.getString(Constants.KEY_NUMBER_OF_PEOPLE_LIVING);
+                                room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                room.roomId = document.getId();
+                                rooms.add(room);
+                            }
+                            // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
+                            if (typeOfSort.equals("price_asc")) {
+                                rooms = sortRoomByPriceAscending(rooms);
+                            } else if (typeOfSort.equals("number_of_people_living_asc")) {
+                                rooms = sortRoomByNumberOfMemberLivingAscending(rooms);
+                            } else if (typeOfSort.equals("name_room")) {
+                                rooms = sortByName(rooms);
+                            }
+                            roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+                            roomListener.dialogClose();
+                            roomListener.addRoom(rooms, "sort");
+                        } else {
+                            roomListener.addRoomFailed();
+                        }
+                    }
+                });
+    }
+    private List<Room> sortRoomByPriceAscending(List<Room> rooms) {
+
+
+        rooms.sort(new Comparator<Room>() {
+            @Override
+            public int compare(Room o1, Room o2) {
+
+                int a = Integer.parseInt(o1.price);
+                int b = Integer.parseInt(o2.price);
+                int c = Integer.compare(a,b);
+
+                return c;
+
+            }
+        });
+        roomListener.showToast(rooms.get(0).price);
+        return rooms;
+    }
+//    private List<Room> sortRoomByPriceAscending(List<Room> rooms) {
+//        rooms.sort(Comparator.comparingInt(room -> Integer.parseInt(room.getPrice())));
+//        return rooms;
+//    }
+
+    private List<Room> sortRoomByNumberOfMemberLivingAscending(List<Room> rooms) {
+        rooms.sort(new Comparator<Room>() {
+            @Override
+            public int compare(Room o1, Room o2) {
+                return Integer.compare(Integer.parseInt(o1.numberOfMemberLiving),Integer.parseInt(o2.numberOfMemberLiving));
+            }
+        });
+        return rooms;
+    }
+    private List<Room> sortByName(List<Room> rooms) {
+        rooms.sort(new Comparator<Room>() {
+            @Override
+            public int compare(Room o1, Room o2) {
+                int a = o1.getNameRoom().compareToIgnoreCase(o2.getNameRoom());
+                return a ;
+            }
+        });
+        return rooms;
+    }
+    public void getListRooms() {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        String homeId = roomListener.getInfoHomeFromGoogleAccount();
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (roomListener.isAdded2()) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<Room> rooms = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Room room = new Room();
+                                room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
+                                room.nameUser = document.getString(Constants.KEY_NAME);
+                                room.price = document.getString(Constants.KEY_PRICE);
+                                room.status=document.getString(Constants.KEY_STATUS_PAID);
+                                room.phoneNumer= document.getString(Constants.KEY_PHONE_NUMBER);
+                                room.describe = document.getString(Constants.KEY_DESCRIBE);
+                                room.numberOfMemberLiving = document.getString(Constants.KEY_NUMBER_OF_PEOPLE_LIVING);
+                                room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                room.roomId = document.getId();
+                                rooms.add(room);
+                            }
+
+                            roomListener.getListRooms(rooms);
+
+                        } else {
+                            roomListener.addRoomFailed();
+                        }
+                    }
+                });
+
+
+    }
+    public void filterRoom(List<Room> rooms) {
+        if (rooms.isEmpty()) {
+            roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+            roomListener.dialogClose();
+            roomListener.noRoomData();
+        } else {
+            roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+            roomListener.dialogClose();
+            roomListener.addRoom(rooms, "init");
+        }
     }
 
 }
