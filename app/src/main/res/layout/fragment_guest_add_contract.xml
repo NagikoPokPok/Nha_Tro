@@ -323,6 +323,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bottom_outline"
                     android:autofillHints=""
+                    android:drawableEnd="@drawable/icon_calendar"
                     android:inputType="date" />
             </com.google.android.material.textfield.TextInputLayout>
 
