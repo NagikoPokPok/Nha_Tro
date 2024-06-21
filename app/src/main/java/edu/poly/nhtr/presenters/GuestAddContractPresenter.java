@@ -1,7 +1,12 @@
 package edu.poly.nhtr.presenters;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
@@ -20,15 +25,14 @@ public class GuestAddContractPresenter {
     private final GuestAddContractInterface view;
     private final Context context;
     private static final int REQUIRED_DATE_LENGTH = 8;
+    public static final int PICK_IMAGE_FRONT = 1;
+    public static final int PICK_IMAGE_BACK = 2;
 
     public GuestAddContractPresenter(GuestAddContractInterface view, Context context) {
         this.view = view;
         this.context = context;
     }
 
-    public void initializeViews() {
-        view.initializeViews();
-    }
 
     public void setUpDropDownMenuGender() {
         view.setUpDropDownMenuGender();
@@ -138,4 +142,26 @@ public class GuestAddContractPresenter {
         String[] totalMembersOptions = context.getResources().getStringArray(R.array.numbers);
         return new ArrayAdapter<>(context, R.layout.dropdown_layout, totalMembersOptions);
     }
+
+    public Intent prepareImageSelection() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return intent;
+    }
+
+    public void handleCCCDImageSelection(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            view.setCCCDImage(selectedImage, requestCode);
+        }
+    }
+
+    public void handleContractImageSelection(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            view.setContractImage(selectedImage, requestCode);
+        }
+    }
+
+
 }
