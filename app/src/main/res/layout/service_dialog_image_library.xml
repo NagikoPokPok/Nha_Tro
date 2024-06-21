@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="360dp"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_white_corner_16"
@@ -14,14 +14,15 @@
         android:textSize="24dp"
         android:layout_gravity="center"/>
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_image_library"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
-        android:clipToPadding="true"
+
         android:orientation="vertical"
         android:overScrollMode="never"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3"/>
+        app:spanCount="4"/>
 
 </LinearLayout>

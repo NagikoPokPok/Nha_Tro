@@ -1,7 +1,9 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -33,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 
 import edu.poly.nhtr.Adapter.CustomSpinnerAdapter;
+import edu.poly.nhtr.Adapter.LibraryImageAdapter;
 import edu.poly.nhtr.Adapter.ServiceAdapter;
 import edu.poly.nhtr.Class.ServiceUtils;
 import edu.poly.nhtr.Class.SpacesItemDecoration;
@@ -54,6 +57,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     private FragmentServiceBinding binding;
     private ServicePresenter presenter;
     private Dialog dialog;
+    private Dialog dialogLibrary;
     private List<Service> services;
 
 
@@ -72,12 +76,12 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         presenter = new ServicePresenter(this);
         binding = FragmentServiceBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
+        dialogLibrary = new Dialog(requireActivity());
 
 
         setListener();
 
-        int i = getContext().getResources().getIdentifier("image_electricity", "drawable", getContext().getPackageName());
-    }
+        }
 
     private void loadData() {
         //set Preference of KEY_HOME_IS_HAVE_SERVICE
@@ -149,10 +153,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         binding.recyclerServiceUnused.setVisibility(View.VISIBLE);
         Log.e("ServicesCountUnused", String.valueOf(ServiceUtils.unusedService(services).stream().count()));
 
-        // Set padding between items
-        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
-        binding.recyclerServiceUsed.addItemDecoration(new SpacesItemDecoration(3, spacingInPixels, false));
-        binding.recyclerServiceUnused.addItemDecoration(new SpacesItemDecoration(3, spacingInPixels, false));
+        customPosition(binding.recyclerServiceUsed,3);
+        customPosition(binding.recyclerServiceUnused,3);
     }
 
     private void setListener() {
@@ -160,7 +162,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     }
 
     private void openAddNewServiceDialog() {
-        setupDialog(R.layout.service_dialog_add_new_service, Gravity.CENTER);
+        setupDialog(dialog, R.layout.service_dialog_add_new_service, Gravity.CENTER);
 
         //Ánh xạ view cho dialog
         EditText edt_name = dialog.findViewById(R.id.edt_newServiceName);
@@ -169,7 +171,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         Button btn_continue = dialog.findViewById(R.id.btn_continue_addNewService);
 
         //Xử lí ảnh
-        String encodeImage = image.toString();
+        String encodeImage = ServiceUtils.encodedImage(((BitmapDrawable) image.getDrawable()).getBitmap());
 
         //Xử xí button cho dialog
         btn_cancel.setOnClickListener(v -> dialog.cancel());
@@ -178,12 +180,34 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             dialog.cancel();
             openApplyServiceDialog(edt_name.getText().toString(), encodeImage);
         });
+
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openLibraryOfServiceImage();
+            }
+        });
+    }
+
+    private void openLibraryOfServiceImage() {
+        setupDialog(dialogLibrary, R.layout.service_dialog_image_library, Gravity.CENTER);
+
+        //Ánh xạ view
+        RecyclerView recyclerView = dialogLibrary.findViewById(R.id.recycler_image_library);
+
+        //setup Adapter for library
+        LibraryImageAdapter adapter = new LibraryImageAdapter(ServiceUtils.getImageLibraryData(this.requireActivity()), this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setVisibility(View.VISIBLE);
+
+        customPosition(recyclerView, 4);
     }
 
     private void openApplyServiceDialog(String name, String encodeImage) {
-        setupDialog(R.layout.service_dialog_apply_service, Gravity.CENTER);
+        setupDialog(dialog, R.layout.service_dialog_apply_service, Gravity.CENTER);
 
         //Ánh xạ view
+        ImageView image = dialog.findViewById(R.id.img_service);
         TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
         Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
         EditText edt_unit = dialog.findViewById(R.id.edt_unit);
@@ -196,7 +220,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
 
         //Đổ dữ liệu cho dialog
-        //image_service.setImageBitmap(encodeImage);
+        image.setImageBitmap(ServiceUtils.getConversionImage(encodeImage));
         txt_name.setText(name);
           //Spinner
         String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
@@ -305,7 +329,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     }
 
 
-    private void setupDialog(int idLayout, int gravity) {
+    private void setupDialog(Dialog dialog, int idLayout, int gravity) {
         dialog.setContentView(idLayout);
         Window window = dialog.getWindow();
         if(window != null){
@@ -347,16 +371,17 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     }
 
     @Override
-    public void onItemCLick(Service service) {
+    public void onServiceItemCLick(Service service) {
         //button apply service
         Button use_service;
 
-        if(service.getApply()) setupDialog(R.layout.service_dialog_detail_service_used, Gravity.CENTER);
-        else setupDialog(R.layout.service_dialog_detail_service_unused, Gravity.CENTER);
+        if(service.getApply()) setupDialog(dialog, R.layout.service_dialog_detail_service_used, Gravity.CENTER);
+        else setupDialog(dialog, R.layout.service_dialog_detail_service_unused, Gravity.CENTER);
 
 
         //Ánh xạ id
         ImageView exit = dialog.findViewById(R.id.img_exit);
+        ImageView image = dialog.findViewById(R.id.img_service);
         TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
         Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
         EditText edt_unit = dialog.findViewById(R.id.edt_unit);
@@ -371,7 +396,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         // Set data for dialog
         //Đổ dữ liệu cho dialog
         txt_name.setText(service.getName());
-            //ảnh
+        image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
 
         //Spinner
         String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
@@ -476,6 +501,18 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             }
         });
 
+    }
+
+    @Override
+    public void customPosition(RecyclerView recyclerView, int spanCount) {
+        // Clear all item decorations first
+        while (recyclerView.getItemDecorationCount() > 0) {
+            recyclerView.removeItemDecorationAt(0);
+        }
+        // Set padding between items
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spanCount, spacingInPixels, false));
+        recyclerView.addItemDecoration(new SpacesItemDecoration(spanCount, spacingInPixels, false));
     }
 
     @Override

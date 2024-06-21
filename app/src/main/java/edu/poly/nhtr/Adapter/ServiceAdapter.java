@@ -43,7 +43,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemCLick(services.get(position));
+                listener.onServiceItemCLick(services.get(position));
             }
         });
     }

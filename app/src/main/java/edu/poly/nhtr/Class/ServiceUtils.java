@@ -45,17 +45,17 @@ public class ServiceUtils {
 
         // Load the image from drawable
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
-//        if (bitmap == null) {
-//        Log.d("bitmap", "null");
-//            return ""; // Handle the case where the bitmap is null
-//        }
+        if (bitmap == null) {
+        Log.d("bitmap", "null");
+            return ""; // Handle the case where the bitmap is null
+        }
 
 
         // Encode the image
         return encodedImage(bitmap);
     }
 
-    private static String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
+    public static String encodedImage(Bitmap bitmap) // Hàm mã hoá ảnh thành chuỗi Base64
     {
         int previewWidth = 150;
         int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
@@ -66,11 +66,13 @@ public class ServiceUtils {
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    public static Bitmap getConversionImage(String encodedImage) {
+    public static Bitmap getConversionImage(String encodedImage){
+        return getConversionImageAndSize(encodedImage, 150, 150);
+    }
+
+    public static Bitmap getConversionImageAndSize(String encodedImage, int width, int height) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        int width = 150;
-        int height = 150;
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
     }
 
@@ -161,4 +163,28 @@ public class ServiceUtils {
     public interface OnServicesLoadedListener {
         void onServicesLoaded(List<Service> services);
     }
+
+    public static List<Bitmap> getImageLibraryData (Context context){
+        List<Bitmap> images = new ArrayList<>();
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_electricity));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_water));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_wifi));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_motor));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_service));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_guard));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_sweep));
+        images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.image_waste));
+
+        for(Bitmap image : images) {
+            image = customSizeImage(image);
+        }
+        return images;
+    }
+
+    public static Bitmap customSizeImage(Bitmap bitmap){
+        String encodeImage = encodedImage(bitmap);
+        return getConversionImageAndSize(encodeImage, 60, 60);
+    }
+
+
 }

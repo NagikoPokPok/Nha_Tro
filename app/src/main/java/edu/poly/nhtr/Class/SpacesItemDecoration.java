@@ -6,9 +6,9 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-    private int spanCount;
-    private int spacing;
-    private boolean includeEdge;
+    private final int spanCount;
+    private final int spacing;
+    private final boolean includeEdge;
 
     public SpacesItemDecoration(int spanCount, int spacing, boolean includeEdge) {
         this.spanCount = spanCount;
@@ -30,13 +30,15 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
             }
             outRect.bottom = spacing;
         } else {
-           outRect.left = column * spacing / spanCount;
-//            outRect.right = spacing - (column + 1) * spacing / spanCount;
+            outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+            outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f / spanCount) * spacing)
 
-            outRect.right = spacing;
             if (position >= spanCount) {
-                outRect.top = spacing/3;
+                outRect.top = spacing / 3; // item top
+            } else {
+                outRect.top = 0; // Ensure the first row items don't have top spacing
             }
+            outRect.bottom = 0; // Ensure bottom spacing is 0 to avoid doubling up on spacing
         }
     }
 }
