@@ -1,13 +1,22 @@
 package edu.poly.nhtr.interfaces;
 
 
-import android.net.Uri;
-
 public interface GuestAddContractInterface {
     void initializeViews();
     void setUpDropDownMenuGender();
     void setUpDropDownMenuTotalMembers();
-    void setCCCDImage(Uri image, int requestCode);
 
-    void setContractImage(Uri image, int requestCode);
+    void showErrorMessage(String message);
+
+    void setNameErrorMessage(String message);
+
+    void setPhoneErrorMessage(String message);
+
+    void setCCCDNumberErrorMessage(String message);
+
+    void setNameErrorEnabled(Boolean isEmpty);
+
+    void setPhoneNumberlErrorEnabled(Boolean isEmpty);
+
+    void setCCCDNumberlErrorEnabled(Boolean isEmpty);
 }

@@ -1,14 +1,14 @@
 package edu.poly.nhtr.presenters;
 
-import static android.app.Activity.RESULT_OK;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Patterns;
 import android.widget.ArrayAdapter;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -17,16 +17,18 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.interfaces.GuestAddContractInterface;
+import edu.poly.nhtr.models.Guest;
+import edu.poly.nhtr.models.User;
 
 public class GuestAddContractPresenter {
     private final GuestAddContractInterface view;
     private final Context context;
     private static final int REQUIRED_DATE_LENGTH = 8;
-    public static final int PICK_IMAGE_FRONT = 1;
-    public static final int PICK_IMAGE_BACK = 2;
 
     public GuestAddContractPresenter(GuestAddContractInterface view, Context context) {
         this.view = view;
@@ -149,19 +151,54 @@ public class GuestAddContractPresenter {
         return intent;
     }
 
-    public void handleCCCDImageSelection(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            view.setCCCDImage(selectedImage, requestCode);
+
+    private boolean isValidSignUpDetails(String name, String phoneNumber, String cccd) {
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+        if (TextUtils.isEmpty(name)) {
+            view.showErrorMessage("Hãy nhập tên");
+            view.setNameErrorMessage("Không được bỏ trống");
+            return false;
+        } else if (TextUtils.isEmpty(phoneNumber)) {
+            view.showErrorMessage("Hãy nhập số điện thoại");
+            view.setPhoneErrorMessage("Không được bỏ trống");
+            return false;
+        } else if (!Patterns.PHONE.matcher(phoneNumber).matches()) {
+            view.showErrorMessage("Nhập số điện thoại hợp lệ");
+            view.setPhoneErrorMessage("Số điện thoại không hợp lệ");
+            return false;
+        } else if (TextUtils.isEmpty(cccd)) {
+            view.showErrorMessage("Hãy nhập số CCCD");
+            view.setCCCDNumberErrorMessage("Không được bỏ trống");
+            return false;
+        } else if (cccd.length() != 12 ) {
+            view.showErrorMessage("Hãy nhập CCCD đúng định dạng");
+            view.setCCCDNumberErrorMessage("CCCD không hợp lệ");
+            return false;
+        }
+        return true;
+    }
+
+    public void handleNameChanged(String name) {
+        if (name.length() >= 0) {
+            view.setNameErrorEnabled(false);
         }
     }
 
-    public void handleContractImageSelection(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            view.setContractImage(selectedImage, requestCode);
+    public void handlePhoneNumberChanged(String phoneNumber) {
+        if (phoneNumber.length() >= 0) {
+            view.setPhoneNumberlErrorEnabled(false);
         }
     }
 
+    public void handleCCCDNumberChanged(String cccd) {
+        if (cccd.length() >= 0) {
+            view.setCCCDNumberlErrorEnabled(false);
+        }
+    }
 
+//    public void signUp(Guest guest) {
+//        if (isValidSignUpDetails(guest.getNameGuest(), guest.getPhoneGuest(), guest.ge(), user.getConfirmPassword())) {
+//            checkExisted(user);
+//        }
+//    }
 }
