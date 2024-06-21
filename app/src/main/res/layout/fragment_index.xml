@@ -1,14 +1,376 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.IndexFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/layout_functions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_search_home"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="32dp"
+            app:boxCornerRadiusBottomStart="32dp"
+            app:boxCornerRadiusTopEnd="32dp"
+            app:boxCornerRadiusTopStart="32dp"
+            app:boxStrokeWidth="1dp"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_search_home"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Search"
+                android:imeOptions="actionGo"
+                android:maxLines="1"
+                android:paddingStart="15dp"
+                android:textSize="13sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/layout_delete"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/background_delete_index_normal"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Delete" />
+
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="2dp"
+                android:background="@drawable/ic_delete"
+                android:backgroundTint="@color/colorGray" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_date_time"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/background_date_time_index"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_date_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_gravity="center_vertical"
+                android:text="18/06/2024"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/img_calendar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_calendar"
+                android:contentDescription="Calendar"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_marginStart="5dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_delete_many_rows"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_functions"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/layout_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox_select_all"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/checkbox_selector_index"
+                android:button="@null"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Select All"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/txt_delete_here"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Click here to delete !"
+            android:textColor="@color/colorOrange"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_delete_many_rows"
+        android:layout_marginTop="5dp"
+        android:stretchColumns="1">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <!-- Column 1: Checkbox -->
+            <!--            <CheckBox-->
+            <!--                android:id="@+id/checkBox"-->
+            <!--                android:layout_width="20dp"-->
+            <!--                android:layout_height="20dp"-->
+            <!--                android:layout_gravity="center_vertical"-->
+            <!--                android:background="@drawable/checkbox_selector"-->
+            <!--                android:button="@null"-->
+            <!--                app:buttonTint="@null"-->
+            <!--                />-->
+
+            <!-- Column 2: ID -->
+            <LinearLayout
+                android:id="@+id/layout_name_room_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/column_name_room"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="Room"
+                    android:textSize="13sp" />
+
+                <ImageButton
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_up_down" />
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <!-- Column 3: Name -->
+                <LinearLayout
+                    android:id="@+id/layout_electricity_index_old"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/column_electricity_index_old"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Chỉ số điện cũ"
+                        android:textSize="13sp" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_up_down" />
+                </LinearLayout>
+
+                <!-- Column 4: Payment -->
+                <LinearLayout
+                    android:id="@+id/layout_electricity_index_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/column_electricity_index_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Chỉ số điện mới"
+                        android:textSize="13sp" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_up_down" />
+                </LinearLayout>
+
+                <!-- Column 5: Birth Date (initially hidden) -->
+                <LinearLayout
+                    android:id="@+id/layout_water_index_old"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/column_water_index_old"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Chỉ số nước cũ"
+                        android:textSize="13sp" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_up_down" />
+                </LinearLayout>
+
+                <!-- Column 6: Address (initially hidden) -->
+                <LinearLayout
+                    android:id="@+id/layout_water_index_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/column_water_index_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Chỉ số nước mới"
+                        android:textSize="13sp" />
+
+                    <ImageButton
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_up_down" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Column 7: Button Previous -->
+            <ImageButton
+                android:id="@+id/btn_previous"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/ic_prev"
+                android:backgroundTint="@color/colorGray" />
+
+            <ImageButton
+                android:id="@+id/btn_next"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_next"
+                android:backgroundTint="@color/colorTextBlack" />
+        </TableRow>
+    </TableLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tableLayout" />
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/btn_previous_page"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Previous" />
+
+        <HorizontalScrollView
+            android:id="@+id/scroll"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/linear_scroll"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/btn_next_page"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Next" />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,93 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="10">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/img_isFilled"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_check_circle"
+            android:backgroundTint="@color/colorGreen"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/img_isNotFilled"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_cancel_filled"
+            android:backgroundTint="@color/colorRed"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txt_name_room_index"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txt_electricity_index_old"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txt_electricity_index_new"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txt_water_index_old"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txt_water_index_new"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btn_edit_index"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_edit"
+            android:backgroundTint="#624DE3" />
+
+        <ImageButton
+            android:id="@+id/btn_delete_index"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_delete_outline"
+            android:backgroundTint="#A30D11"
+            android:visibility="visible"/>
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/checkbox_selector_index"
+            android:button="@null"
+            android:visibility="gone"/>
+
+    </TableRow>
+
+</TableLayout>
