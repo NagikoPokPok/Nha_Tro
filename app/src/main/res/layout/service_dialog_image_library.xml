@@ -12,7 +12,15 @@
         android:text="THƯ VIỆN ẢNH"
         style="@style/TEXT_BOLD"
         android:textSize="24dp"
+        android:layout_margin="6dp"
         android:layout_gravity="center"/>
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="#756B68"
+        android:visibility="visible"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_image_library"
         android:layout_width="match_parent"

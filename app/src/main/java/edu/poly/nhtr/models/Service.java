@@ -2,6 +2,7 @@ package edu.poly.nhtr.models;
 
 public class Service {
     private String idHomeParent;
+    private String idService;
     private String name, codeImage;
     private int price;
     private String unit;
@@ -28,6 +29,27 @@ public class Service {
         this.isDeletable = isDeletable;
         this.isApply = isApply;
         this.note = note;
+    }
+
+    public Service(String idHomeParent, String idService, String name, String codeImage, int price, String unit, int fee_base, String note, Boolean isDeletable, Boolean isApply) {
+        this.idHomeParent = idHomeParent;
+        this.idService = idService;
+        this.name = name;
+        this.codeImage = codeImage;
+        this.price = price;
+        this.unit = unit;
+        this.fee_base = fee_base;
+        this.note = note;
+        this.isDeletable = isDeletable;
+        this.isApply = isApply;
+    }
+
+    public String getIdService() {
+        return idService;
+    }
+
+    public void setIdService(String idService) {
+        this.idService = idService;
     }
 
     public String getName() {

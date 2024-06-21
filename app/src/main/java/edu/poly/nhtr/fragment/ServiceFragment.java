@@ -1,7 +1,7 @@
 package edu.poly.nhtr.fragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -58,6 +58,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     private ServicePresenter presenter;
     private Dialog dialog;
     private Dialog dialogLibrary;
+    private Dialog dialogConfirm;
     private List<Service> services;
 
 
@@ -77,7 +78,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         binding = FragmentServiceBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
         dialogLibrary = new Dialog(requireActivity());
-
+        dialogConfirm = new Dialog(requireActivity());
 
         setListener();
 
@@ -170,33 +171,35 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel_addNewService);
         Button btn_continue = dialog.findViewById(R.id.btn_continue_addNewService);
 
-        //Xử lí ảnh
-        String encodeImage = ServiceUtils.encodedImage(((BitmapDrawable) image.getDrawable()).getBitmap());
+
+
 
         //Xử xí button cho dialog
         btn_cancel.setOnClickListener(v -> dialog.cancel());
 
         btn_continue.setOnClickListener(v -> {
             dialog.cancel();
+            //Xử lí ảnh
+            String encodeImage = ServiceUtils.encodedImage(((BitmapDrawable) image.getDrawable()).getBitmap());
             openApplyServiceDialog(edt_name.getText().toString(), encodeImage);
         });
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openLibraryOfServiceImage();
+                openLibraryOfServiceImage(image);
             }
         });
     }
 
-    private void openLibraryOfServiceImage() {
+    private void openLibraryOfServiceImage(ImageView imageView) {
         setupDialog(dialogLibrary, R.layout.service_dialog_image_library, Gravity.CENTER);
 
         //Ánh xạ view
         RecyclerView recyclerView = dialogLibrary.findViewById(R.id.recycler_image_library);
 
         //setup Adapter for library
-        LibraryImageAdapter adapter = new LibraryImageAdapter(ServiceUtils.getImageLibraryData(this.requireActivity()), this);
+        LibraryImageAdapter adapter = new LibraryImageAdapter(ServiceUtils.getImageLibraryData(this.requireActivity()), this, imageView);
         recyclerView.setAdapter(adapter);
         recyclerView.setVisibility(View.VISIBLE);
 
@@ -243,8 +246,9 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                 if(isServiceDetail(layout_fee, layout_unit)){
                     int price = Integer.parseInt(edt_fee.getText().toString());
                     String idHomeParent = preferenceManager.getString(Constants.KEY_HOME_ID);
-                    Service service = new Service(idHomeParent, name.toString(), encodeImage.toString(), price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), false, false);
+                    Service service = new Service(idHomeParent, name.toString(), encodeImage.toString(), price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), true, true);
                     presenter.saveToFirebase(service);
+
                 }
             }
 
@@ -418,6 +422,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                 @Override
                 public void onClick(View v) {
                     service.setApply(false);
+                    presenter.updateStatusOfApplyToFirebase(service);
                     dialog.cancel();
                     setRecyclerViewData();
                 }
@@ -431,8 +436,15 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                 @Override
                 public void onClick(View v) {
                     service.setApply(true);
+                    presenter.updateStatusOfApplyToFirebase(service);
                     dialog.cancel();
                     setRecyclerViewData();
+                }
+            });
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openConfirmDeleteDialog(service);
                 }
             });
         }
@@ -503,6 +515,36 @@ public class ServiceFragment extends Fragment implements ServiceListener {
 
     }
 
+    private void openConfirmDeleteDialog(Service service) {
+        setupDialog(dialogConfirm, R.layout.service_dialog_confirm_delete_service, Gravity.CENTER);
+
+        //Ánh xạ View
+        TextView edt_content_confrim = dialogConfirm.findViewById(R.id.txt_content_confirm);
+        Button btn_delete = dialogConfirm.findViewById(R.id.btn_delete_service);
+        Button btn_cancel = dialogConfirm.findViewById(R.id.btn_cancel);
+
+        //Set data
+        edt_content_confrim.setText("Bạn có chắc là muốn xóa dịch vụ này?");
+
+        //Set listener
+        btn_cancel.setOnClickListener(v -> dialogConfirm.dismiss());
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogConfirm.dismiss();
+                dialog.dismiss();
+                presenter.deleteService(service);
+
+            }
+        });
+    }
+
+    @Override
+    public void onImageItemClick(ImageView imageView, Bitmap bitmap) {
+        imageView.setImageBitmap(bitmap);
+        dialogLibrary.dismiss();
+    }
+
     @Override
     public void customPosition(RecyclerView recyclerView, int spanCount) {
         // Clear all item decorations first
@@ -516,6 +558,23 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     }
 
     @Override
+    public void deleteService(Service service) {
+        services.remove(service);
+        setRecyclerViewData();
+    }
+
+    @Override
+    public void addServiceSuccess(Service service) {
+        ServiceUtils.getAvailableService(FirebaseFirestore.getInstance(), service.getIdHomeParent(), new ServiceUtils.OnServicesLoadedListener() {
+            @Override
+            public void onServicesLoaded(List<Service> listServices) {
+                services = listServices;
+                setRecyclerViewData();
+            }
+        });
+    }
+
+    @Override
     public void ShowToast(String message) {
         Toast.makeText(this.requireActivity(), message, Toast.LENGTH_LONG).show();
     }
@@ -523,6 +582,12 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     @Override
     public void CloseDialog() {
         dialog.dismiss();
+    }
+
+    @Override
+    public void showResultUpdateStatusApply(Service service) {
+        if(service.getApply()) ShowToast("Đã sử dụng dịch vụ");
+        else ShowToast("Đã bỏ sử dụng dịch vụ");
     }
 
 }

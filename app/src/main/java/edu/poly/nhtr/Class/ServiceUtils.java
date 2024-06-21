@@ -140,6 +140,7 @@ public class ServiceUtils {
                         for (QueryDocumentSnapshot document : task.getResult()){
                             Service service = new Service(
                                     document.getString(Constants.KEY_SERVICE_PARENT_HOME_ID),
+                                    document.getId(),
                                     document.getString(Constants.KEY_SERVICE_NAME),
                                     document.getString(Constants.KEY_SERVICE_IMAGE),
                                     Objects.requireNonNull(document.getLong(Constants.KEY_SERVICE_FEE)).intValue(),
@@ -149,6 +150,7 @@ public class ServiceUtils {
                                     document.getBoolean(Constants.KEY_SERVICE_ISDELETABLE),
                                     document.getBoolean(Constants.KEY_SERVICE_ISAPPLY)
                             );
+                            Log.e("idService",service.getIdService() + " " + service.getIdHomeParent());
                             services.add(service);
                         }
 
