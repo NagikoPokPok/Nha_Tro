@@ -134,7 +134,11 @@
 
                     android:visibility="visible"
                     android:imeOptions="actionNext"
-                    android:padding="9dp" />
+                    android:padding="9dp"
+
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:cursorVisible="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
