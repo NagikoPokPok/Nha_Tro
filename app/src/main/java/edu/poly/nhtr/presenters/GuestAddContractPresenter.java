@@ -17,13 +17,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.interfaces.GuestAddContractInterface;
-import edu.poly.nhtr.models.Guest;
-import edu.poly.nhtr.models.User;
 
 public class GuestAddContractPresenter {
     private final GuestAddContractInterface view;
@@ -106,7 +103,8 @@ public class GuestAddContractPresenter {
 
                         if (month > 12) month = 12;
                         cal.set(Calendar.MONTH, month - 1);
-                        year = (year < 1900) ? 1900 : Math.min(year, 2100);
+                        Calendar c = Calendar.getInstance();
+                        year = (year < 1900) ? 1900 : Math.min(year, c.get(Calendar.YEAR));
                         cal.set(Calendar.YEAR, year);
 
                         day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
@@ -179,22 +177,17 @@ public class GuestAddContractPresenter {
     }
 
     public void handleNameChanged(String name) {
-        if (name.length() >= 0) {
-            view.setNameErrorEnabled(false);
-        }
+        view.setNameErrorEnabled(name == null || name.isEmpty());
     }
 
     public void handlePhoneNumberChanged(String phoneNumber) {
-        if (phoneNumber.length() >= 0) {
-            view.setPhoneNumberlErrorEnabled(false);
-        }
+        view.setPhoneNumberlErrorEnabled(phoneNumber == null || phoneNumber.isEmpty());
     }
 
     public void handleCCCDNumberChanged(String cccd) {
-        if (cccd.length() >= 0) {
-            view.setCCCDNumberlErrorEnabled(false);
-        }
+        view.setCCCDNumberlErrorEnabled(cccd == null || cccd.isEmpty());
     }
+
 
 //    public void signUp(Guest guest) {
 //        if (isValidSignUpDetails(guest.getNameGuest(), guest.getPhoneGuest(), guest.ge(), user.getConfirmPassword())) {

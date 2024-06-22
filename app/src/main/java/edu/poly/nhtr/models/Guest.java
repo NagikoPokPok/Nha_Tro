@@ -7,7 +7,8 @@ public class Guest {
     public boolean fileStatus;
     public Date dateIn;
 
-    public Guest(String nameGuest, String phoneGuest, boolean fileStatus, Date dateIn) {
+    public Guest(String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, Date dateIn) {
+        this.idGuest = idGuest;
         this.nameGuest = nameGuest;
         this.phoneGuest = phoneGuest;
         this.fileStatus = fileStatus;
