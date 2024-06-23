@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import edu.poly.nhtr.R;
+import edu.poly.nhtr.databinding.LayoutItemRowIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Index;
 
@@ -27,8 +27,7 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
 
     private final IndexInterface indexInterface;
 
-    public IndexAdapter(Context context, List<Index> index_list, IndexInterface indexInterface)
-    {
+    public IndexAdapter(Context context, List<Index> index_list, IndexInterface indexInterface) {
         this.context = context;
         this.index_list = index_list;
         this.indexInterface = indexInterface;
@@ -42,49 +41,47 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     @NonNull
     @Override
     public IndexAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_item_row_index, parent, false);
-
-        return new ViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutItemRowIndexBinding binding = LayoutItemRowIndexBinding.inflate(inflater, parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull IndexAdapter.ViewHolder holder, int position) {
         Index indexModel = index_list.get(position);
-        holder.nameRoom.setText(indexModel.getNameRoom());
+        holder.binding.txtNameRoomIndex.setText(indexModel.getNameRoom());
 
         if (!isNextClicked) {
+            holder.binding.txtElectricityIndexOld.setVisibility(View.VISIBLE);
+            holder.binding.txtElectricityIndexNew.setVisibility(View.VISIBLE);
+            holder.binding.txtWaterIndexOld.setVisibility(View.GONE);
+            holder.binding.txtWaterIndexNew.setVisibility(View.GONE);
 
-            holder.electricityIndexOld.setVisibility(View.VISIBLE);
-            holder.electricityIndexNew.setVisibility(View.VISIBLE);
-            holder.waterIndexOld.setVisibility(View.GONE);
-            holder.waterIndexNew.setVisibility(View.GONE);
-
-            holder.electricityIndexOld.setText(indexModel.getElectricityIndexOld());
-            holder.electricityIndexNew.setText(String.valueOf(indexModel.getElectricityIndexNew()));
+            holder.binding.txtElectricityIndexOld.setText(indexModel.getElectricityIndexOld());
+            holder.binding.txtElectricityIndexNew.setText(String.valueOf(indexModel.getElectricityIndexNew()));
         } else {
-            holder.electricityIndexOld.setVisibility(View.GONE);
-            holder.electricityIndexNew.setVisibility(View.GONE);
-            holder.waterIndexOld.setVisibility(View.VISIBLE);
-            holder.waterIndexNew.setVisibility(View.VISIBLE);
+            holder.binding.txtElectricityIndexOld.setVisibility(View.GONE);
+            holder.binding.txtElectricityIndexNew.setVisibility(View.GONE);
+            holder.binding.txtWaterIndexOld.setVisibility(View.VISIBLE);
+            holder.binding.txtWaterIndexNew.setVisibility(View.VISIBLE);
 
-            holder.waterIndexOld.setText(String.valueOf(indexModel.getWaterIndexOld()));
-            holder.waterIndexNew.setText(String.valueOf(indexModel.getWaterIndexNew()));
+            holder.binding.txtWaterIndexOld.setText(String.valueOf(indexModel.getWaterIndexOld()));
+            holder.binding.txtWaterIndexNew.setText(String.valueOf(indexModel.getWaterIndexNew()));
         }
 
-        if(isDeleteClicked){
-            holder.btn_delete.setVisibility(View.GONE);
-            holder.cbx_delete.setVisibility(View.VISIBLE);
-        }else{
-            holder.btn_delete.setVisibility(View.VISIBLE);
-            holder.cbx_delete.setVisibility(View.GONE);
+        if (isDeleteClicked) {
+            holder.binding.btnDeleteIndex.setVisibility(View.GONE);
+            holder.binding.checkBox.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.btnDeleteIndex.setVisibility(View.VISIBLE);
+            holder.binding.checkBox.setVisibility(View.GONE);
         }
 
-        if(isCheckBoxClicked){
-            holder.cbx_delete.setChecked(true);
-        }else{
-            holder.cbx_delete.setChecked(false);
+        if (isCheckBoxClicked) {
+            holder.binding.checkBox.setChecked(true);
+        } else {
+            holder.binding.checkBox.setChecked(false);
         }
-
     }
 
     @Override
@@ -93,32 +90,22 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew;
-        ImageButton btn_delete;
-        CheckBox cbx_delete;
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
+        LayoutItemRowIndexBinding binding;
 
-            nameRoom = itemView.findViewById(R.id.txt_name_room_index);
-            electricityIndexOld = itemView.findViewById(R.id.txt_electricity_index_old);
-            electricityIndexNew = itemView.findViewById(R.id.txt_electricity_index_new);
-            waterIndexOld = itemView.findViewById(R.id.txt_water_index_old);
-            waterIndexNew = itemView.findViewById(R.id.txt_water_index_new);
+        public ViewHolder(@NonNull LayoutItemRowIndexBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
 
-            btn_delete = itemView.findViewById(R.id.btn_delete_index);
-            cbx_delete = itemView.findViewById(R.id.checkBox);
-
+            binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex());
         }
     }
 
-    public void isDeleteClicked(boolean isClicked)
-    {
+    public void isDeleteClicked(boolean isClicked) {
         isDeleteClicked = isClicked;
         notifyDataSetChanged();
     }
 
-    public void isCheckBoxClicked(boolean isClicked)
-    {
+    public void isCheckBoxClicked(boolean isClicked) {
         isCheckBoxClicked = isClicked;
         notifyDataSetChanged();
     }

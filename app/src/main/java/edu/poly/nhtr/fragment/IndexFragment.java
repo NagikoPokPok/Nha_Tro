@@ -1,10 +1,13 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,8 @@ import edu.poly.nhtr.models.Index;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -46,14 +51,13 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private String date = ""; // Show month/year
     private int currentMonth;
     private int currentYear;
-    private View view;
+
+    private Dialog dialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentIndexBinding.inflate(getLayoutInflater());
-
-
 
     }
 
@@ -62,6 +66,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
                              Bundle savedInstanceState) {
        // Khởi tạo binding trong onCreateView
         binding = FragmentIndexBinding.inflate(inflater, container, false);
+        dialog = new Dialog(requireActivity());
 
         setupLayout();
         setupRecyclerView();
@@ -71,6 +76,21 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
 
         return binding.getRoot();
+    }
+
+    private void setupDialog()
+    {
+        dialog.setContentView(R.layout.layout_dialog_detailed_index);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
     }
 
     private void setupLayout() {
@@ -263,6 +283,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 }
             }
         }
+    }
+
+    @Override
+    public void showDialogDetailedIndex() {
+        setupDialog();
     }
 
 //    @Override
