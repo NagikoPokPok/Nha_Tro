@@ -27,7 +27,9 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
+import edu.poly.nhtr.presenters.IndexPresenter;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -35,6 +37,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -49,7 +52,9 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class IndexFragment extends Fragment implements IndexInterface {
+    private IndexPresenter indexPresenter;
     private FragmentIndexBinding binding;
+    private List<Index> list_index;
     protected long backpressTime;
 
     private boolean isNextClicked = false; // Track if Next button has been clicked
@@ -78,6 +83,15 @@ public class IndexFragment extends Fragment implements IndexInterface {
        // Khởi tạo binding trong onCreateView
         binding = FragmentIndexBinding.inflate(inflater, container, false);
         dialog = new Dialog(requireActivity());
+        indexPresenter = new IndexPresenter(this);
+
+        assert getArguments() != null;
+        Home home = (Home) getArguments().getSerializable("home");
+        assert home != null;
+        String homeID = home.getIdHome();
+        indexPresenter.fetchRoomsAndAddIndex(homeID);
+        indexPresenter.fetchIndexesAndStoreInList(homeID);
+
 
         setupLayout();
         setupRecyclerView();
@@ -87,6 +101,18 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
 
         return binding.getRoot();
+    }
+
+    public List<Index> getList_index() {
+        return list_index;
+    }
+
+    public void setList_index(List<Index> list_index) {
+        this.list_index = list_index;
+    }
+
+    public void showToast(String message){
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text
@@ -245,7 +271,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private void setupRecyclerView() {
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        adapter = new IndexAdapter(requireActivity(), getList(), this);
+        adapter = new IndexAdapter(requireActivity(), new ArrayList<>(), this);
         binding.recyclerView.setAdapter(adapter);
     }
 
@@ -370,15 +396,15 @@ public class IndexFragment extends Fragment implements IndexInterface {
         });
     }
 
-    private List<Index> getList() {
-        List<Index> payment_list = new ArrayList<>();
-        payment_list.add(new Index("P101", "000342", "000455", "000333", "009999"));
-        payment_list.add(new Index("P102", "123457", "645646", "000333", "009999"));
-        payment_list.add(new Index("P103", "123458", "645646", "000333", "009999"));
-        payment_list.add(new Index("P104", "123459", "645646", "000333", "009999"));
-        payment_list.add(new Index("P105", "123455", "645646", "000333", "009999"));
+    public List<Index> getList() {
 
-        return payment_list;
+        List<Index> index_list = new ArrayList<>();
+        for(int i = 0; i < getList_index().size(); i++)
+        {
+            index_list.add(new Index(getList_index().get(i).getNameRoom(), getList_index().get(i).getElectricityIndexOld(), getList_index().get(i).getElectricityIndexNew()
+            , getList_index().get(i).getWaterIndexOld(), getList_index().get(i).getWaterIndexNew()));
+        }
+        return index_list;
     }
 
     private void updateButtonsState() {
@@ -410,19 +436,13 @@ public class IndexFragment extends Fragment implements IndexInterface {
         setupDialog(index);
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (backpressTime + 1000 > System.currentTimeMillis()) {
-//            super.onBackPressed();
-//            return;
-//        } else {
-//            Toast.makeText(this, "Press Back Again to Exit", Toast.LENGTH_SHORT).show();
-//            binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
-//            binding.txtDelete.setTextColor(getResources().getColorStateList(R.color.colorGray));
-//            binding.layoutDelete.setBackground(getResources().getDrawable(R.drawable.background_delete_normal));
-//            binding.layoutDeleteManyRows.setVisibility(View.GONE);
-//            adapter.isDeleteClicked(false);
-//        }
-//        backpressTime = System.currentTimeMillis();
-//    }
+    @Override
+    public void setIndexList(List<Index> indexList) {
+        list_index = indexList;
+        if (adapter != null) {
+            adapter.setIndexList(indexList);
+        }
+    }
+
+
 }

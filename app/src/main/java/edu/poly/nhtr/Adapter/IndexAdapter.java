@@ -112,4 +112,9 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         isCheckBoxClicked = isClicked;
         notifyDataSetChanged();
     }
+
+    public void setIndexList(List<Index> indexList) {
+        this.index_list = indexList;
+        notifyDataSetChanged();
+    }
 }

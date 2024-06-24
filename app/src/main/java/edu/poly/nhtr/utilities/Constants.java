@@ -48,4 +48,16 @@ public class Constants {
     public static final String KEY_STATUS_PAID = "statusPaid";
 
 
+
+    // Index
+    public static final String KEY_COLLECTION_INDEX = "index";
+    public static final String KEY_INDEX_ID = "indexId";
+    public static final String KEY_ELECTRICITY_INDEX_OLD = "electricityIndexOld";
+    public static final String KEY_ELECTRICITY_INDEX_NEW = "electricityIndexNew";
+    public static final String KEY_WATER_INDEX_OLD = "waterIndexOld";
+    public static final String KEY_WATER_INDEX_NEW = "waterIndexNew";
+    public static final String KEY_MONTH = "month";
+    public static final String KEY_YEAR = "year";
+
+
 }

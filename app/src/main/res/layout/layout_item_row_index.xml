@@ -30,41 +30,51 @@
 
         <TextView
             android:id="@+id/txt_name_room_index"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="10dp"
             android:textSize="15sp"
-            android:textAlignment="textStart"/>
+            />
 
         <TextView
             android:id="@+id/txt_electricity_index_old"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:padding="10dp"
             android:textSize="15sp"
-            android:textAlignment="textStart"/>
+            />
 
         <TextView
             android:id="@+id/txt_electricity_index_new"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:padding="10dp"
             android:textSize="15sp"
-            android:textAlignment="textStart"/>
+            />
 
         <TextView
             android:id="@+id/txt_water_index_old"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:padding="10dp"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/txt_water_index_new"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:padding="10dp"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:visibility="gone" />
 
         <ImageButton
