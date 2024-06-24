@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_white_corner_16"
-    android:layout_margin="16dp"
+    android:layout_margin="26dp"
     android:orientation="vertical">
 
     <TextView
@@ -17,7 +17,7 @@
         android:gravity="center"
         android:fontFamily="@font/inter_bold"
         android:background="@drawable/bg_yellow_corner_16_top"
-        android:text="Thông tin chỉ số P100"/>
+        android:text="Thông tin chỉ số "/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,6 +63,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txt_electricity_index_old"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chỉ số điện cũ"
@@ -73,18 +74,19 @@
                     android:layout_marginStart="7dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_edt_electricity_index_old"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hintEnabled="false"
                     android:layout_marginTop="5dp"
                     app:boxBackgroundMode="outline"
-                    app:endIconMode="clear_text"
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
                     app:boxCornerRadiusTopStart="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_electricity_index_old"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Nhập số cũ"
@@ -104,6 +106,7 @@
                 android:layout_marginStart="10dp">
 
                 <TextView
+                    android:id="@+id/txt_electricity_index_new"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chỉ số điện mới"
@@ -114,18 +117,19 @@
                     android:layout_marginStart="7dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_edt_electricity_index_new"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hintEnabled="false"
                     android:layout_marginTop="5dp"
                     app:boxBackgroundMode="outline"
-                    app:endIconMode="clear_text"
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
                     app:boxCornerRadiusTopStart="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_electricity_index_new"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Nhập số mới"
@@ -136,6 +140,72 @@
 
 
             </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã sử dụng: "
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"/>
+
+<!--            <EditText-->
+<!--                android:layout_width="120dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:background="@drawable/background_index_calculated"-->
+<!--                android:inputType="none"-->
+<!--                android:focusable="false"-->
+<!--                android:cursorVisible="false"-->
+<!--                android:text="Hi"-->
+<!--                android:textAlignment="center"/>-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                app:hintEnabled="false"
+
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                app:boxStrokeColor="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_electricity_index_calculated"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    android:text="Hii"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:layout_gravity="center_vertical"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="kWh"
+                android:background="@drawable/background_index_unit"
+                android:padding="7dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginStart="-49dp"
+                android:layout_gravity="center_vertical"/>
 
 
 
@@ -190,6 +260,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txt_water_index_old"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chỉ số nước cũ"
@@ -200,18 +271,19 @@
                     android:layout_marginStart="7dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_edt_water_index_old"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hintEnabled="false"
                     android:layout_marginTop="5dp"
                     app:boxBackgroundMode="outline"
-                    app:endIconMode="clear_text"
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
                     app:boxCornerRadiusTopStart="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_water_index_old"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Nhập số cũ"
@@ -231,6 +303,7 @@
                 android:layout_marginStart="10dp">
 
                 <TextView
+                    android:id="@+id/txt_water_index_new"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chỉ số điện mới"
@@ -241,18 +314,19 @@
                     android:layout_marginStart="7dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_edt_water_index_new"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hintEnabled="false"
                     android:layout_marginTop="5dp"
                     app:boxBackgroundMode="outline"
-                    app:endIconMode="clear_text"
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
                     app:boxCornerRadiusTopStart="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_water_index_new"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Nhập số mới"
@@ -268,13 +342,68 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã sử dụng: "
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                app:hintEnabled="false"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_water_index_calculated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    android:text="Hii"
+                    android:fontFamily="@font/inter_medium"
+                    android:textSize="13sp"
+                    android:layout_gravity="center_vertical"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Khối"
+                android:background="@drawable/background_index_unit"
+                android:padding="7dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginStart="-49dp"
+                android:layout_gravity="center_vertical"/>
+
+
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="right"
-            android:layout_marginTop="35dp">
+            android:layout_marginTop="25dp">
 
             <Button
                 android:id="@+id/btn_cancel"

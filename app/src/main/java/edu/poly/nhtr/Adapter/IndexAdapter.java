@@ -82,6 +82,9 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         } else {
             holder.binding.checkBox.setChecked(false);
         }
+
+        // Đặt sự kiện click cho nút chỉnh sửa
+        holder.binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex(indexModel));
     }
 
     @Override
@@ -96,7 +99,7 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
             super(binding.getRoot());
             this.binding = binding;
 
-            binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex());
+            //binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex());
         }
     }
 

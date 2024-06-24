@@ -4,4 +4,6 @@
     <!-- Chiều cao của các item trong FlexboxLayout -->
     <dimen name="filter_item_height">40dp</dimen>
     <dimen name="filter_item_margin">5dp</dimen>
+
+    <dimen name="dialog_margin">16dp</dimen>
 </resources>

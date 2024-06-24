@@ -1,12 +1,21 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +24,8 @@ import android.view.ViewGroup;
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.databinding.FragmentHomeBinding;
 import edu.poly.nhtr.databinding.FragmentIndexBinding;
+import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Index;
 
@@ -26,16 +35,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 public class IndexFragment extends Fragment implements IndexInterface {
     private FragmentIndexBinding binding;
@@ -62,7 +73,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
        // Khởi tạo binding trong onCreateView
         binding = FragmentIndexBinding.inflate(inflater, container, false);
@@ -78,9 +89,84 @@ public class IndexFragment extends Fragment implements IndexInterface {
         return binding.getRoot();
     }
 
-    private void setupDialog()
+    private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text
     {
-        dialog.setContentView(R.layout.layout_dialog_detailed_index);
+        Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
+        Spannable text1 = new SpannableString(s);
+        text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text1;
+    }
+
+    private void setupDialog(Index index) {
+        LayoutDialogDetailedIndexBinding binding = LayoutDialogDetailedIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
+        setupDialogWindow(binding.getRoot().getLayoutParams());
+
+        binding.txtTitleDialog.append(index.getNameRoom());
+
+        setupTextViews(binding);
+        setupEditTexts(binding, index);
+
+        setupIndexCalculations(binding, index);
+
+        dialog.setCancelable(true);
+        dialog.show();
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void setupIndexCalculations(LayoutDialogDetailedIndexBinding binding, Index index) {
+        updateElectricityIndexCalculation(binding);
+        updateWaterIndexCalculation(binding);
+
+        addIndexTextWatchers(binding);
+    }
+
+    private void updateWaterIndexCalculation(LayoutDialogDetailedIndexBinding binding) {
+        String indexWaterOld = Objects.requireNonNull(binding.edtWaterIndexOld.getText()).toString().trim();
+        String indexWaterNew = Objects.requireNonNull(binding.edtWaterIndexNew.getText()).toString().trim();
+        int indexUsed = Integer.parseInt(indexWaterNew) - Integer.parseInt(indexWaterOld);
+        binding.edtWaterIndexCalculated.setText(String.valueOf(indexUsed));
+    }
+
+    private void updateElectricityIndexCalculation(LayoutDialogDetailedIndexBinding binding) {
+        String indexElectricityOld = Objects.requireNonNull(binding.edtElectricityIndexOld.getText()).toString().trim();
+        String indexElectricityNew = Objects.requireNonNull(binding.edtElectricityIndexNew.getText()).toString().trim();
+        int indexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
+        binding.edtElectricityIndexCalculated.setText(String.valueOf(indexUsed));
+    }
+
+    private void addIndexTextWatchers(LayoutDialogDetailedIndexBinding binding) {
+        addTextWatcher(binding.edtElectricityIndexOld, binding.edtElectricityIndexNew, () -> updateElectricityIndexCalculation(binding));
+        addTextWatcher(binding.edtElectricityIndexNew, binding.edtElectricityIndexOld, () -> updateElectricityIndexCalculation(binding));
+        addTextWatcher(binding.edtWaterIndexOld, binding.edtWaterIndexNew, () -> updateWaterIndexCalculation(binding));
+        addTextWatcher(binding.edtWaterIndexNew, binding.edtWaterIndexOld, () -> updateWaterIndexCalculation(binding));
+    }
+
+    private void addTextWatcher(TextInputEditText editText, TextInputEditText otherEditText, Runnable calculationMethod) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                calculationMethod.run();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+
+
+
+    private void setupDialogWindow(ViewGroup.LayoutParams params) {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -88,10 +174,44 @@ public class IndexFragment extends Fragment implements IndexInterface {
             WindowManager.LayoutParams windowAttributes = window.getAttributes();
             windowAttributes.gravity = Gravity.CENTER;
             window.setAttributes(windowAttributes);
-            dialog.setCancelable(true);
-            dialog.show();
+
+            // Set margin programmatically
+            if (params instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) params;
+                int margin = (int) getResources().getDimension(R.dimen.dialog_margin);
+                marginParams.setMargins(margin, margin, margin, margin);
+            }
         }
     }
+
+    private void setupTextViews(LayoutDialogDetailedIndexBinding binding) {
+        binding.txtElectricityIndexOld.append(customizeText(" *"));
+        binding.txtElectricityIndexNew.append(customizeText(" *"));
+        binding.txtWaterIndexOld.append(customizeText(" *"));
+        binding.txtWaterIndexNew.append(customizeText(" *"));
+    }
+
+    private void setupEditTexts(LayoutDialogDetailedIndexBinding binding, Index index) {
+        binding.edtElectricityIndexOld.setText(index.getElectricityIndexOld());
+        binding.edtElectricityIndexNew.setText(index.getElectricityIndexNew());
+        binding.edtWaterIndexOld.setText(index.getWaterIndexOld());
+        binding.edtWaterIndexNew.setText(index.getWaterIndexNew());
+
+        setFocusChangeListener(binding.edtElectricityIndexOld, binding.layoutEdtElectricityIndexOld);
+        setFocusChangeListener(binding.edtElectricityIndexNew, binding.layoutEdtElectricityIndexNew);
+        setFocusChangeListener(binding.edtWaterIndexOld, binding.layoutEdtWaterIndexOld);
+        setFocusChangeListener(binding.edtWaterIndexNew, binding.layoutEdtWaterIndexNew);
+    }
+
+    private void setFocusChangeListener(TextInputEditText editText, TextInputLayout layout) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                layout.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+    }
+
+
 
     private void setupLayout() {
         binding.btnPrevious.setEnabled(false); // Disable previous button initially
@@ -252,11 +372,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     private List<Index> getList() {
         List<Index> payment_list = new ArrayList<>();
-        payment_list.add(new Index("1", "123456", "645646", "000333", "009999"));
-        payment_list.add(new Index("2", "123456", "645646", "000333", "009999"));
-        payment_list.add(new Index("3", "123456", "645646", "000333", "009999"));
-        payment_list.add(new Index("4", "123456", "645646", "000333", "009999"));
-        payment_list.add(new Index("5", "123456", "645646", "000333", "009999"));
+        payment_list.add(new Index("P101", "000342", "000455", "000333", "009999"));
+        payment_list.add(new Index("P102", "123457", "645646", "000333", "009999"));
+        payment_list.add(new Index("P103", "123458", "645646", "000333", "009999"));
+        payment_list.add(new Index("P104", "123459", "645646", "000333", "009999"));
+        payment_list.add(new Index("P105", "123455", "645646", "000333", "009999"));
 
         return payment_list;
     }
@@ -286,8 +406,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
     @Override
-    public void showDialogDetailedIndex() {
-        setupDialog();
+    public void showDialogDetailedIndex(Index index) {
+        setupDialog(index);
     }
 
 //    @Override
