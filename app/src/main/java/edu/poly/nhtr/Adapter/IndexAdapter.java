@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,5 +117,7 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     public void setIndexList(List<Index> indexList) {
         this.index_list = indexList;
         notifyDataSetChanged();
+        indexInterface.showToast("Set index list");
+        indexInterface.hideLoading();
     }
 }

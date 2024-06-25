@@ -1,17 +1,32 @@
 package edu.poly.nhtr.models;
 
 public class Index {
-    String nameRoom;
+    String nameRoom, indexID;
+    String homeID;
     String electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew;
     String month, year;
 
-    public Index(String nameRoom, String electricityIndexOld, String electricityIndexNew, String waterIndexOld, String waterIndexNew) {
+    public Index(String homeID, String indexID, String nameRoom, String electricityIndexOld, String electricityIndexNew, String waterIndexOld, String waterIndexNew) {
+        this.homeID = homeID;
+        this.indexID = indexID;
         this.nameRoom = nameRoom;
         this.electricityIndexOld = electricityIndexOld;
         this.electricityIndexNew = electricityIndexNew;
         this.waterIndexOld = waterIndexOld;
         this.waterIndexNew = waterIndexNew;
 
+    }
+
+    public String getHomeID() {
+        return homeID;
+    }
+
+    public void setHomeID(String homeID) {
+        this.homeID = homeID;
+    }
+
+    public Index(String homeID) {
+        this.homeID = homeID;
     }
 
     public String getNameRoom() {
@@ -48,5 +63,13 @@ public class Index {
 
     public void setYear(String year) {
         this.year = year;
+    }
+
+    public String getIndexID() {
+        return indexID;
+    }
+
+    public void setIndexID(String indexID) {
+        this.indexID = indexID;
     }
 }

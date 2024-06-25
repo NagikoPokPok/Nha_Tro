@@ -55,7 +55,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private IndexPresenter indexPresenter;
     private FragmentIndexBinding binding;
     private List<Index> list_index;
-    protected long backpressTime;
 
     private boolean isNextClicked = false; // Track if Next button has been clicked
     private boolean isCheckBoxClicked = false;
@@ -67,37 +66,41 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private String date = ""; // Show month/year
     private int currentMonth;
     private int currentYear;
+    private String homeID;
 
     private Dialog dialog;
+    private View view;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentIndexBinding.inflate(getLayoutInflater());
+        dialog = new Dialog(requireActivity());
+        indexPresenter = new IndexPresenter(this);
+
 
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       // Khởi tạo binding trong onCreateView
-        binding = FragmentIndexBinding.inflate(inflater, container, false);
-        dialog = new Dialog(requireActivity());
-        indexPresenter = new IndexPresenter(this);
+        view = inflater.inflate(R.layout.fragment_index, container, false);
 
         assert getArguments() != null;
         Home home = (Home) getArguments().getSerializable("home");
         assert home != null;
-        String homeID = home.getIdHome();
-        indexPresenter.fetchRoomsAndAddIndex(homeID);
-        indexPresenter.fetchIndexesAndStoreInList(homeID);
-
+        homeID = home.getIdHome();
+        // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
+        indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
+            indexPresenter.fetchIndexesAndStoreInList(homeID);
+        });
 
         setupLayout();
         setupRecyclerView();
         setupPagination();
         setupDeleteRows();
         setupMonthPicker();
+
 
 
         return binding.getRoot();
@@ -111,9 +114,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         this.list_index = list_index;
     }
 
-    public void showToast(String message){
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-    }
+
 
     private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text
     {
@@ -144,6 +145,23 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 dialog.dismiss();
             }
         });
+
+        binding.btnSaveIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String indexID = index.getIndexID();
+                final String nameRoom = index.getNameRoom();
+                final String electricityIndexOld = Objects.requireNonNull(binding.edtElectricityIndexOld.getText()).toString();
+                final String electricityIndexNew = Objects.requireNonNull(binding.edtElectricityIndexNew.getText()).toString();
+                final String waterIndexOld = Objects.requireNonNull(binding.edtWaterIndexOld.getText()).toString();
+                final String waterIndexNew = Objects.requireNonNull(binding.edtWaterIndexNew.getText()).toString();
+
+                Index indexNew = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew);
+
+                indexPresenter.saveIndex(indexNew);
+            }
+        });
+
     }
 
     private void setupIndexCalculations(LayoutDialogDetailedIndexBinding binding, Index index) {
@@ -396,16 +414,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
         });
     }
 
-    public List<Index> getList() {
-
-        List<Index> index_list = new ArrayList<>();
-        for(int i = 0; i < getList_index().size(); i++)
-        {
-            index_list.add(new Index(getList_index().get(i).getNameRoom(), getList_index().get(i).getElectricityIndexOld(), getList_index().get(i).getElectricityIndexNew()
-            , getList_index().get(i).getWaterIndexOld(), getList_index().get(i).getWaterIndexNew()));
-        }
-        return index_list;
-    }
 
     private void updateButtonsState() {
         if (!isNextClicked) {
@@ -443,6 +451,29 @@ public class IndexFragment extends Fragment implements IndexInterface {
             adapter.setIndexList(indexList);
         }
     }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void closeDialog() {
+        dialog.dismiss();
+    }
+
+    @Override
+    public void showLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        binding.progressBar.setVisibility(View.GONE);
+    }
+
+
+
 
 
 }

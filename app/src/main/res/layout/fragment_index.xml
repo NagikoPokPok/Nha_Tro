@@ -187,8 +187,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="Room"
-                    android:textSize="14sp" />
+                    android:text="Phòng"
+                    android:textSize="14sp"
+                    />
 
                 <ImageButton
                     android:layout_width="20dp"
@@ -325,7 +326,19 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tableLayout" />
+        android:layout_below="@id/tableLayout"
+        android:layout_above="@id/button_layout"
+        android:layout_marginBottom="10dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@id/tableLayout"
+        android:layout_above="@id/button_layout"
+        android:layout_marginStart="200dp"
+        android:visibility="gone"
+        />
 
     <LinearLayout
         android:id="@+id/button_layout"

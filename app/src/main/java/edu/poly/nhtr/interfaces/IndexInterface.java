@@ -7,4 +7,8 @@ import edu.poly.nhtr.models.Index;
 public interface IndexInterface {
     void showDialogDetailedIndex(Index index);
     void setIndexList(List<Index> indexList);
+    void showToast(String message);
+    void closeDialog();
+    void showLoading();
+    void hideLoading();
 }

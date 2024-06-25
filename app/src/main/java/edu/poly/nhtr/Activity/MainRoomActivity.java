@@ -1,6 +1,5 @@
 package edu.poly.nhtr.Activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -27,6 +26,7 @@ public class MainRoomActivity extends AppCompatActivity {
     ActivityMainRoomBinding binding;
     private String home = "";
     private Fragment currentFragment;
+    private Bundle bundle;
 
     private PreferenceManager preferenceManager;
 
@@ -46,35 +46,11 @@ public class MainRoomActivity extends AppCompatActivity {
         preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
 
         // Tạo Bundle chứa dữ liệu Home
-        Bundle bundle = new Bundle();
+        bundle = new Bundle();
         bundle.putSerializable("home", home);
 
-        // Tạo instance của RoomFragment
-        RoomFragment roomFragment = new RoomFragment();
-        ServiceFragment serviceFragment = new ServiceFragment();
-        StatisticFragment statisticFragment = new StatisticFragment();
-        IndexFragment indexFragment = new IndexFragment();
-
-        // Đặt Bundle vào Fragment
-        roomFragment.setArguments(bundle);
-        indexFragment.setArguments(bundle);
-        serviceFragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        fragmentTransaction.add(R.id.fragment_container, roomFragment, "RoomFragment");
-        fragmentTransaction.add(R.id.fragment_container, serviceFragment, "ServiceFragment");
-        fragmentTransaction.add(R.id.fragment_container, statisticFragment, "StatisticFragment");
-        fragmentTransaction.add(R.id.fragment_container, indexFragment, "IndexFragment");
-
-        fragmentTransaction.hide(serviceFragment);
-        fragmentTransaction.hide(statisticFragment);
-        fragmentTransaction.hide(indexFragment);
-
-        fragmentTransaction.commit();
-
-        currentFragment = roomFragment;
+        // Khởi tạo fragment mặc định là RoomFragment
+        loadFragment(new RoomFragment(), "RoomFragment");
 
         setListeners();
 
@@ -82,25 +58,27 @@ public class MainRoomActivity extends AppCompatActivity {
         setClickNavigationBottomMenu();
     }
 
+    private void loadFragment(Fragment fragment, String tag) {
+        fragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment, tag);
+        fragmentTransaction.commit();
+        currentFragment = fragment;
+    }
+
     public void setClickNavigationBottomMenu() {
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.hide(currentFragment);
+            int itemId = item.getItemId();
 
-            if (item.getItemId() == R.id.menu_room) {
-                currentFragment = fragmentManager.findFragmentByTag("RoomFragment");
-            } else if (item.getItemId() == R.id.menu_services) {
-                currentFragment = fragmentManager.findFragmentByTag("ServiceFragment");
-            } else if (item.getItemId() == R.id.menu_statistic) {
-                currentFragment = fragmentManager.findFragmentByTag("StatisticFragment");
-            } else if (item.getItemId() == R.id.menu_index) {
-                currentFragment = fragmentManager.findFragmentByTag("IndexFragment");
-            }
-
-            if (currentFragment != null) {
-                fragmentTransaction.show(currentFragment);
-                fragmentTransaction.commit();
+            if (itemId == R.id.menu_room) {
+                loadFragment(new RoomFragment(), "RoomFragment");
+            } else if (itemId == R.id.menu_services) {
+                loadFragment(new ServiceFragment(), "ServiceFragment");
+            } else if (itemId == R.id.menu_statistic) {
+                loadFragment(new StatisticFragment(), "StatisticFragment");
+            } else if (itemId == R.id.menu_index) {
+                loadFragment(new IndexFragment(), "IndexFragment");
             }
 
             return true;
