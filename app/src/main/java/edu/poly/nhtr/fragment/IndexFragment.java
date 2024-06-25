@@ -25,6 +25,7 @@ import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentIndexBinding;
+import edu.poly.nhtr.databinding.LayoutDialogDeleteIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
@@ -44,9 +45,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.FieldValue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -70,13 +73,14 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     private Dialog dialog;
     private View view;
+    private List<Index> filteredIndexList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = FragmentIndexBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
-        indexPresenter = new IndexPresenter(this);
+
 
 
     }
@@ -90,6 +94,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         Home home = (Home) getArguments().getSerializable("home");
         assert home != null;
         homeID = home.getIdHome();
+        indexPresenter = new IndexPresenter(this, homeID);
         // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
         indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
             indexPresenter.fetchIndexesAndStoreInList(homeID);
@@ -100,6 +105,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
         setupPagination();
         setupDeleteRows();
         setupMonthPicker();
+
+        setupSearchEditText(binding.edtSearchIndex);
 
 
 
@@ -113,6 +120,52 @@ public class IndexFragment extends Fragment implements IndexInterface {
     public void setList_index(List<Index> list_index) {
         this.list_index = list_index;
     }
+
+    private void setupSearchEditText(TextInputEditText edtSearch) {
+
+        edtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                {
+                    binding.layoutSearchIndex.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }else{
+                    binding.layoutSearchIndex.setBoxStrokeColor(getResources().getColor(R.color.colorGray));
+                }
+            }
+        });
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterIndexes(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
+    }
+
+    private void filterIndexes(String query) {
+        filteredIndexList.clear();
+        if (query.isEmpty()) {
+            filteredIndexList.addAll(list_index);
+        } else {
+            for (Index index : list_index) {
+                if (index.getNameRoom().toLowerCase().contains(query.toLowerCase())) {
+                    filteredIndexList.add(index);
+                }
+            }
+        }
+        adapter.setIndexList(filteredIndexList);
+    }
+
 
 
 
@@ -351,6 +404,14 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 isCheckBoxClicked = true;
             }
         });
+
+        binding.txtDeleteIndexHere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<Index> selectedIndexes = adapter.getSelectedIndexes();
+                indexPresenter.deleteSelectedIndexes(selectedIndexes);
+            }
+        });
     }
 
     private void setupMonthPicker() {
@@ -465,15 +526,64 @@ public class IndexFragment extends Fragment implements IndexInterface {
     @Override
     public void showLoading() {
         binding.progressBar.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void hideLoading() {
         binding.progressBar.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void showButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.INVISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showDialogConfirmDeleteIndex(Index index) {
+        LayoutDialogDeleteIndexBinding binding = LayoutDialogDeleteIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
+
+        binding.txtConfirmDelete.append(index.getNameRoom()+" ?");
+
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        binding.btnConfirmDeleteIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                indexPresenter.deleteIndex(index);
+            }
+        });
+        setUpDialogConfirmation();
 
 
+    }
+
+    private void setUpDialogConfirmation()
+    {
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+        }
+        dialog.setCancelable(true);
+        dialog.show();
+    }
 
 
 }

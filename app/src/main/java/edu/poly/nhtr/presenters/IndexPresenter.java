@@ -6,12 +6,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +28,12 @@ import edu.poly.nhtr.utilities.Constants;
 public class IndexPresenter {
 
     private final IndexInterface indexInterface;
+    private String homeID;
 
-    public IndexPresenter(IndexInterface indexInterface) {
+    public IndexPresenter(IndexInterface indexInterface, String homeID) {
         this.indexInterface = indexInterface;
+        this.homeID = homeID;
+
     }
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -102,6 +108,8 @@ public class IndexPresenter {
         indexData.put(Constants.KEY_WATER_INDEX_OLD, "000000");
         indexData.put(Constants.KEY_WATER_INDEX_NEW, "000000");
 
+        indexData.put(Constants.KEY_TIMESTAMP, FieldValue.serverTimestamp());
+
         db.collection(Constants.KEY_COLLECTION_INDEX).document(indexID).set(indexData)
                 .addOnSuccessListener(aVoid -> {
                     indexInterface.showToast("Have a new index");
@@ -114,8 +122,8 @@ public class IndexPresenter {
     }
 
 
-
     public void fetchIndexesAndStoreInList(String homeId) {
+        indexInterface.showLoading();
         List<Index> indexList = new ArrayList<>();
 
         db.collection(Constants.KEY_COLLECTION_INDEX)
@@ -136,6 +144,7 @@ public class IndexPresenter {
                                 String electricityIndexNew = document.getString(Constants.KEY_ELECTRICITY_INDEX_NEW);
                                 String waterIndexOld = document.getString(Constants.KEY_WATER_INDEX_OLD);
                                 String waterIndexNew = document.getString(Constants.KEY_WATER_INDEX_NEW);
+                                Date date = document.getDate(Constants.KEY_TIMESTAMP);
 
                                 // Kiểm tra sự tồn tại của phòng
                                 db.collection(Constants.KEY_COLLECTION_ROOMS).document(roomID)
@@ -146,6 +155,8 @@ public class IndexPresenter {
                                                 if (roomDoc != null && roomDoc.exists()) {
                                                     // Nếu phòng tồn tại, thêm chỉ số vào danh sách
                                                     Index index = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew);
+                                                    index.setDateObject(date);
+                                                    //indexList.sort(Comparator.comparing(Index::getDateObject));
                                                     indexList.add(index);
                                                 } else {
                                                     // Nếu phòng không tồn tại, xóa chỉ số khỏi Firestore
@@ -181,28 +192,8 @@ public class IndexPresenter {
     }
 
 
-
-    public void saveIndex(Index index)
-    {
-//        db.collection(Constants.KEY_COLLECTION_INDEX)
-//                .document(index.getIndexID()) // Use the document ID
-//                .update(
-//                        Constants.KEY_ELECTRICITY_INDEX_OLD, index.getElectricityIndexOld(),
-//                        Constants.KEY_ELECTRICITY_INDEX_NEW, index.getElectricityIndexNew(),
-//                        Constants.KEY_WATER_INDEX_OLD, index.getWaterIndexOld(),
-//                        Constants.KEY_WATER_INDEX_NEW, index.getWaterIndexNew()
-//                )
-//                .addOnSuccessListener(aVoid -> {
-//                    indexInterface.showToast("Success");
-//                    fetchIndexesAndStoreInList(index.getHomeID());
-//                    indexInterface.closeDialog();
-//                    // Refresh data or update UI as needed
-//                })
-//                .addOnFailureListener(e -> {
-//
-//                });
-
-
+    public void saveIndex(Index index) {
+        indexInterface.showButtonLoading(R.id.btn_save_index);
         HashMap<String, Object> updateInfo = new HashMap<>();
         updateInfo.put(Constants.KEY_ELECTRICITY_INDEX_OLD, index.getElectricityIndexOld());
         updateInfo.put(Constants.KEY_ELECTRICITY_INDEX_NEW, index.getElectricityIndexNew());
@@ -212,12 +203,54 @@ public class IndexPresenter {
                 .document(index.getIndexID())
                 .update(updateInfo)
                 .addOnSuccessListener(aVoid -> {
+                    indexInterface.hideButtonLoading(R.id.btn_save_index);
                     fetchIndexesAndStoreInList(index.getHomeID());
                     indexInterface.closeDialog();
                 })
                 .addOnFailureListener(e -> {
 
                 });
+    }
+
+    public void deleteIndex(Index index)
+    {
+        indexInterface.showButtonLoading(R.id.btn_confirm_delete_index);
+        HashMap<String, Object> updateInfo = new HashMap<>();
+        updateInfo.put(Constants.KEY_ELECTRICITY_INDEX_OLD, "000000");
+        updateInfo.put(Constants.KEY_ELECTRICITY_INDEX_NEW, "000000");
+        updateInfo.put(Constants.KEY_WATER_INDEX_OLD, "000000");
+        updateInfo.put(Constants.KEY_WATER_INDEX_NEW, "000000");
+        db.collection(Constants.KEY_COLLECTION_INDEX)
+                .document(index.getIndexID())
+                .update(updateInfo)
+                .addOnSuccessListener(aVoid -> {
+                    indexInterface.hideButtonLoading(R.id.btn_confirm_delete_index);
+                    fetchIndexesAndStoreInList(index.getHomeID());
+                    indexInterface.closeDialog();
+                })
+                .addOnFailureListener(e -> {
+
+                });
+    }
+
+    public void deleteSelectedIndexes(List<Index> selectedIndexes) {
+        for (Index index : selectedIndexes) {
+            db.collection(Constants.KEY_COLLECTION_INDEX).document(index.getIndexID())
+                    .update(
+                            Constants.KEY_ELECTRICITY_INDEX_OLD, "000000",
+                            Constants.KEY_ELECTRICITY_INDEX_NEW, "000000",
+                            Constants.KEY_WATER_INDEX_OLD, "000000",
+                            Constants.KEY_WATER_INDEX_NEW, "000000"
+                    )
+                    .addOnSuccessListener(aVoid -> {
+
+
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("Firestore", "Error updating indexes", e);
+                    });
+        }
+        fetchIndexesAndStoreInList(homeID);
     }
 
 

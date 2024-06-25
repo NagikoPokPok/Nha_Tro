@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:padding="10dp"
             android:textSize="15sp"
-            />
+            android:fontFamily="@font/inter_medium"/>
 
         <TextView
             android:id="@+id/txt_electricity_index_old"

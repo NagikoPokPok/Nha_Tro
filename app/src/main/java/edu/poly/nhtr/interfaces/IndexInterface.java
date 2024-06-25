@@ -11,4 +11,7 @@ public interface IndexInterface {
     void closeDialog();
     void showLoading();
     void hideLoading();
+    void showButtonLoading(int id);
+    void hideButtonLoading(int id);
+    void showDialogConfirmDeleteIndex(Index index);
 }

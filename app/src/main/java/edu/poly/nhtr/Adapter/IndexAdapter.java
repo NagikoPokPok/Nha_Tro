@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.poly.nhtr.databinding.LayoutItemRowIndexBinding;
@@ -25,6 +27,8 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     private boolean isNextClicked = false;
     private boolean isDeleteClicked = false;
     private boolean isCheckBoxClicked = false;
+    private boolean multiSelectMode = false;
+    private List<Index> selectedIndexes = new ArrayList<>();
 
     private final IndexInterface indexInterface;
 
@@ -37,6 +41,15 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     public void setNextClicked(boolean nextClicked) {
         isNextClicked = nextClicked;
         notifyDataSetChanged();
+    }
+
+    public void setMultiSelectMode(boolean multiSelectMode) {
+        this.multiSelectMode = multiSelectMode;
+        notifyDataSetChanged();
+    }
+
+    public List<Index> getSelectedIndexes() {
+        return selectedIndexes;
     }
 
     @NonNull
@@ -80,12 +93,37 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
 
         if (isCheckBoxClicked) {
             holder.binding.checkBox.setChecked(true);
+            selectedIndexes.clear();
+            selectedIndexes.addAll(index_list);
         } else {
             holder.binding.checkBox.setChecked(false);
+            selectedIndexes.clear();
         }
 
         // Đặt sự kiện click cho nút chỉnh sửa
         holder.binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex(indexModel));
+        holder.binding.btnDeleteIndex.setOnClickListener(v -> indexInterface.showDialogConfirmDeleteIndex(indexModel));
+
+        //Delete many indexes
+        holder.itemView.setOnClickListener(v -> {
+            if (multiSelectMode) {
+                if (holder.binding.checkBox.isChecked()) {
+                    holder.binding.checkBox.setChecked(false);
+                    selectedIndexes.remove(indexModel);
+                } else {
+                    holder.binding.checkBox.setChecked(true);
+                    selectedIndexes.add(indexModel);
+                }
+            }
+        });
+
+        holder.binding.checkBox.setOnClickListener(v -> {
+            if (holder.binding.checkBox.isChecked()) {
+                selectedIndexes.add(indexModel);
+            } else {
+                selectedIndexes.remove(indexModel);
+            }
+        });
     }
 
     @Override
@@ -116,8 +154,8 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
 
     public void setIndexList(List<Index> indexList) {
         this.index_list = indexList;
+        indexList.sort(Comparator.comparing(Index::getDateObject));
         notifyDataSetChanged();
-        indexInterface.showToast("Set index list");
         indexInterface.hideLoading();
     }
 }
