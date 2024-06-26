@@ -3,6 +3,7 @@ package edu.poly.nhtr.presenters;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -75,6 +76,26 @@ public class ServicePresenter {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
                             listener.showResultUpdateStatusApply(service);
+                        }
+                    }
+                });
+    }
+
+    public void updateService(Service service, RecyclerView recyclerView, int position) {
+        HashMap<String, Object> newServiceInfo = new HashMap<>();
+        newServiceInfo.put(Constants.KEY_SERVICE_FEE_BASE, service.getFee_base());
+        newServiceInfo.put(Constants.KEY_SERVICE_FEE, service.getPrice());
+        newServiceInfo.put(Constants.KEY_SERVICE_UNIT, service.getUnit());
+        newServiceInfo.put(Constants.KEY_SERVICE_NOTE, service.getNote());
+
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_SERVICES)
+                .document(service.getIdService())
+                .update(newServiceInfo)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            listener.showResultUpdateService(service, recyclerView, position);
                         }
                     }
                 });

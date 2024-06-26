@@ -19,12 +19,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
     private final List<Service> services;
     private LayoutInflater inflater;
     private final ServiceListener listener;
+    private RecyclerView recyclerView;
 
 
-    public ServiceAdapter(Context context, List<Service> services, ServiceListener listener) {
+    public ServiceAdapter(Context context, List<Service> services, ServiceListener listener, RecyclerView recyclerView) {
         this.services = services;
         //this.inflater = LayoutInflater.from(context);
         this.listener = listener;
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -43,7 +45,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onServiceItemCLick(services.get(position));
+                listener.onServiceItemCLick(services.get(position), recyclerView, position);
             }
         });
     }

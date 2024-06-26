@@ -12,7 +12,7 @@ import edu.poly.nhtr.models.Service;
 public interface ServiceListener {
     void onServiceClicked(Service service);
     void openPopup(View view, Service service, ItemServiceBinding binding);
-    void onServiceItemCLick(Service service);
+    void onServiceItemCLick(Service service, RecyclerView recyclerView, int position);
     void onImageItemClick(ImageView imageView, Bitmap bitmap);
     void customPosition(RecyclerView recyclerView, int spanCount);
     void deleteService(Service service);
@@ -23,4 +23,6 @@ public interface ServiceListener {
     void CloseDialog();
 
     void showResultUpdateStatusApply(Service service);
+
+    void showResultUpdateService(Service service, RecyclerView recyclerView, int position);
 }
