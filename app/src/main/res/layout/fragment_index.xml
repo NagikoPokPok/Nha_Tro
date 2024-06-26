@@ -189,12 +189,39 @@
                     android:padding="8dp"
                     android:text="Phòng"
                     android:textSize="14sp"
-                    />
+                    android:fontFamily="@font/inter_medium"/>
 
                 <ImageButton
+                    android:id="@+id/img_two_arrows_name_room"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/ic_up_down" />
+                    android:background="@drawable/ic_two_arrows"
+                    android:rotation="90"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginStart="-7dp"
+                    android:layout_gravity="center_vertical"/>
+
+                <ImageButton
+                    android:id="@+id/img_arrow_up_name_room"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_arrow_right"
+                    android:rotation="270"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginStart="-7dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"/>
+
+                <ImageButton
+                    android:id="@+id/img_arrow_down_name_room"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_arrow_right"
+                    android:rotation="90"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginStart="-7dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
             <LinearLayout
@@ -210,9 +237,9 @@
                     android:id="@+id/layout_electricity_index_old"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="7dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:layout_marginStart="15dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -221,12 +248,40 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Chỉ số điện cũ"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_medium"/>
 
                     <ImageButton
+                        android:id="@+id/img_two_arrows_electricity_index_old"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/ic_up_down" />
+                        android:background="@drawable/ic_two_arrows"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_up_electricity_index_old"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="270"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_electricity_index_old"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
                 </LinearLayout>
 
                 <!-- Column 4: Payment -->
@@ -244,12 +299,40 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Chỉ số điện mới"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_medium"/>
 
                     <ImageButton
+                        android:id="@+id/img_two_arrows_electricity_index_new"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/ic_up_down" />
+                        android:background="@drawable/ic_two_arrows"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_up_electricity_index_new"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="270"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_electricity_index_new"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
                 </LinearLayout>
 
                 <!-- Column 5: Birth Date (initially hidden) -->
@@ -260,7 +343,8 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    android:layout_marginStart="15dp">
 
                     <TextView
                         android:id="@+id/column_water_index_old"
@@ -268,12 +352,40 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Chỉ số nước cũ"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_medium"/>
 
                     <ImageButton
+                        android:id="@+id/img_two_arrows_water_index_old"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/ic_up_down" />
+                        android:background="@drawable/ic_two_arrows"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_up_water_index_old"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="270"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_water_index_old"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
                 </LinearLayout>
 
                 <!-- Column 6: Address (initially hidden) -->
@@ -284,8 +396,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:layout_marginStart="5dp">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/column_water_index_new"
@@ -293,12 +404,40 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Chỉ số nước mới"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_medium"/>
 
                     <ImageButton
+                        android:id="@+id/img_two_arrows_water_index_new"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/ic_up_down" />
+                        android:background="@drawable/ic_two_arrows"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_up_water_index_new"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="270"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_water_index_new"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -308,7 +447,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="0dp"
                 android:background="@drawable/ic_prev"
                 android:backgroundTint="@color/colorGray" />
 
@@ -346,7 +485,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/btn_previous_page"

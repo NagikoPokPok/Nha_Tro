@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -16,6 +15,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +31,7 @@ import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.presenters.IndexPresenter;
+import edu.poly.nhtr.utilities.Constants;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -45,13 +46,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 public class IndexFragment extends Fragment implements IndexInterface {
@@ -95,14 +100,19 @@ public class IndexFragment extends Fragment implements IndexInterface {
         assert home != null;
         homeID = home.getIdHome();
         indexPresenter = new IndexPresenter(this, homeID);
+
+
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
         // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
         indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
-            indexPresenter.fetchIndexesAndStoreInList(homeID);
+            indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth+1, currentYear);
         });
 
         setupLayout();
         setupRecyclerView();
-        setupPagination();
+        //setupPagination();
         setupDeleteRows();
         setupMonthPicker();
 
@@ -192,12 +202,14 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         dialog.setCancelable(true);
         dialog.show();
+
         binding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         binding.btnSaveIndex.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,11 +221,36 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 final String waterIndexOld = Objects.requireNonNull(binding.edtWaterIndexOld.getText()).toString();
                 final String waterIndexNew = Objects.requireNonNull(binding.edtWaterIndexNew.getText()).toString();
 
-                Index indexNew = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew);
+                // Lấy tháng và năm
+                int month = index.getMonth(); // Tháng trong Java Calendar bắt đầu từ 0, cần cộng thêm 1
+                int year = index.getYear();
 
-                indexPresenter.saveIndex(indexNew);
+
+                // Thực hiện truy vấn để lấy roomID từ tên phòng
+                db.collection(Constants.KEY_COLLECTION_ROOMS)
+                        .whereEqualTo(Constants.KEY_NAME_ROOM, nameRoom)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                QuerySnapshot querySnapshot = task.getResult();
+                                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                    DocumentSnapshot roomDoc = querySnapshot.getDocuments().get(0); // Giả sử chỉ có một phòng có tên như vậy
+                                    String roomID = roomDoc.getId();
+
+                                    Index indexNew = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year);
+                                    indexNew.setRoomID(roomID);
+
+                                    indexPresenter.saveIndex(indexNew);
+                                } else {
+                                    Log.w("Firestore", "No room found with name: " + nameRoom);
+                                }
+                            } else {
+                                Log.w("Firestore", "Error getting documents: ", task.getException());
+                            }
+                        });
             }
         });
+
 
     }
 
@@ -405,18 +442,59 @@ public class IndexFragment extends Fragment implements IndexInterface {
             }
         });
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         binding.txtDeleteIndexHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<Index> selectedIndexes = adapter.getSelectedIndexes();
-                indexPresenter.deleteSelectedIndexes(selectedIndexes);
+                List<Index> indexTemp = new ArrayList<>();
+
+                if (selectedIndexes.isEmpty()) {
+                    showToast("No indexes selected");
+                    return;
+                }
+
+                AtomicInteger completedCount = new AtomicInteger(0);
+                int totalQueries = selectedIndexes.size();
+
+                for (Index index : selectedIndexes) {
+                    // Thực hiện truy vấn để lấy roomID từ tên phòng
+                    db.collection(Constants.KEY_COLLECTION_ROOMS)
+                            .whereEqualTo(Constants.KEY_NAME_ROOM, index.getNameRoom())
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                        DocumentSnapshot roomDoc = querySnapshot.getDocuments().get(0); // Giả sử chỉ có một phòng có tên như vậy
+                                        String roomID = roomDoc.getId();
+
+                                        Index indexNew = new Index(homeID, index.getIndexID(), index.getNameRoom(), index.getElectricityIndexOld()
+                                                , index.getElectricityIndexNew(), index.getWaterIndexOld(), index.getWaterIndexNew()
+                                                , index.getMonth(), index.getYear());
+                                        indexNew.setRoomID(roomID);
+                                        indexTemp.add(indexNew);
+                                    } else {
+                                        Log.w("Firestore", "No room found with name: " + index.getNameRoom());
+                                    }
+                                } else {
+                                    Log.w("Firestore", "Error getting documents: ", task.getException());
+                                }
+
+                                if (completedCount.incrementAndGet() == totalQueries) {
+                                    // Tất cả các truy vấn đã hoàn thành
+                                    indexPresenter.deleteSelectedIndexes(indexTemp);
+                                }
+                            });
+                }
             }
         });
     }
 
-    private void setupMonthPicker() {
-        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        private void setupMonthPicker() {
+
 
         binding.imgCalendar.setOnClickListener(v -> {
             visible = true;
@@ -435,6 +513,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
                         date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
                         visible = false;
                         binding.txtDateTime.setText(date);
+                        indexPresenter.fetchIndexesByMonthAndYear(homeID, month, year);
                         currentMonth = month - 1; // Cập nhật currentMonth, have to minus 1
                         currentYear = year; // Cập nhật year
                     }
@@ -554,6 +633,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         binding.txtConfirmDelete.append(index.getNameRoom()+" ?");
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         binding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -563,12 +644,59 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding.btnConfirmDeleteIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                indexPresenter.deleteIndex(index);
+                final String indexID = index.getIndexID();
+                final String nameRoom = index.getNameRoom();
+                final String electricityIndexOld = index.getElectricityIndexOld();
+                final String electricityIndexNew = index.getElectricityIndexNew();
+                final String waterIndexOld = index.getWaterIndexOld();
+                final String waterIndexNew = index.getWaterIndexNew();
+
+                // Lấy tháng và năm
+                int month = index.getMonth(); // Tháng trong Java Calendar bắt đầu từ 0, cần cộng thêm 1
+                int year = index.getYear();
+
+
+                // Thực hiện truy vấn để lấy roomID từ tên phòng
+                db.collection(Constants.KEY_COLLECTION_ROOMS)
+                        .whereEqualTo(Constants.KEY_NAME_ROOM, nameRoom)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                QuerySnapshot querySnapshot = task.getResult();
+                                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                    DocumentSnapshot roomDoc = querySnapshot.getDocuments().get(0); // Giả sử chỉ có một phòng có tên như vậy
+                                    String roomID = roomDoc.getId();
+
+                                    Index indexNew = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year);
+                                    indexNew.setRoomID(roomID);
+
+                                    indexPresenter.deleteIndex(indexNew);
+                                } else {
+                                    Log.w("Firestore", "No room found with name: " + nameRoom);
+                                }
+                            } else {
+                                Log.w("Firestore", "Error getting documents: ", task.getException());
+                            }
+                        });
+
+
             }
         });
         setUpDialogConfirmation();
 
 
+    }
+
+    @Override
+    public void closeLayoutDeleteManyRows() {
+        adapter.isDeleteClicked(false);
+
+        binding.checkboxSelectAll.setChecked(false);
+        adapter.isCheckBoxClicked(false);
+        binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
+        binding.txtDelete.setTextColor(getResources().getColorStateList(R.color.colorGray));
+        binding.layoutDelete.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        binding.layoutDeleteManyRows.setVisibility(View.GONE);
     }
 
     private void setUpDialogConfirmation()

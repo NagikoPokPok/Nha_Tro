@@ -4,16 +4,24 @@ import java.util.Date;
 
 public class Index {
     String nameRoom, indexID;
-    String homeID;
+    String homeID, roomID;
     String electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew;
-    String month, year;
+    int month, year;
     Date dateObject;
+
+    public String getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(String roomID) {
+        this.roomID = roomID;
+    }
 
     public void setDateObject(Date dateObject) {
         this.dateObject = dateObject;
     }
 
-    public Index(String homeID, String indexID, String nameRoom, String electricityIndexOld, String electricityIndexNew, String waterIndexOld, String waterIndexNew) {
+    public Index(String homeID, String indexID, String nameRoom, String electricityIndexOld, String electricityIndexNew, String waterIndexOld, String waterIndexNew, int month, int year) {
         this.homeID = homeID;
         this.indexID = indexID;
         this.nameRoom = nameRoom;
@@ -21,6 +29,8 @@ public class Index {
         this.electricityIndexNew = electricityIndexNew;
         this.waterIndexOld = waterIndexOld;
         this.waterIndexNew = waterIndexNew;
+        this.month = month;
+        this.year = year;
         //this.dateObject = dateObject;
 
     }
@@ -57,19 +67,19 @@ public class Index {
         return waterIndexNew;
     }
 
-    public String getMonth() {
+    public int getMonth() {
         return month;
     }
 
-    public void setMonth(String month) {
+    public void setMonth(int month) {
         this.month = month;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 

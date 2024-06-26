@@ -63,6 +63,7 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull IndexAdapter.ViewHolder holder, int position) {
         Index indexModel = index_list.get(position);
+
         holder.binding.txtNameRoomIndex.setText(indexModel.getNameRoom());
 
         if (!isNextClicked) {
@@ -138,7 +139,6 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
             super(binding.getRoot());
             this.binding = binding;
 
-            //binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex());
         }
     }
 

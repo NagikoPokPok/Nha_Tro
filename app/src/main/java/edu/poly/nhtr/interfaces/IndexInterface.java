@@ -14,4 +14,5 @@ public interface IndexInterface {
     void showButtonLoading(int id);
     void hideButtonLoading(int id);
     void showDialogConfirmDeleteIndex(Index index);
+    void closeLayoutDeleteManyRows();
 }
