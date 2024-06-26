@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -65,6 +66,10 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private TextInputEditText edtNgayHetHan;
     private TextInputEditText edtNgayTraTien;
     private GuestAddContractPresenter presenter;
+    private ImageButton imgButtonLichNgaySinh;
+    private ImageButton imgButtonLichNgayTao;
+    private ImageButton imgButtonLichNgayHetHan;
+    private ImageButton imgButtonLichNgayTraTien;
 
     public String encodedCCCDFrontImage;
     public String encodedCCCDBackImage;
@@ -167,10 +172,10 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtNgaySinh = binding.edtNgaySinh;
         edtGioiTinh = binding.edtGioiTinh;
         edtTotalMembers = binding.edtTotalMembers;
-        tilNgayTao = binding.tilNgayTao;
+        tilNgayTao = binding.tilNgayTaoHopDong;
         tilNgayHetHan = binding.tilNgayHetHanHopDong;
         tilNgayTraTien = binding.tilNgayTraTienPhong;
-        edtNgayTao = binding.edtNgayTao;
+        edtNgayTao = binding.edtNgayTaoHopDong;
         edtNgayHetHan = binding.edtNgayHetHanHopDong;
         edtNgayTraTien = binding.edtNgayTraTienPhong;
         edtHanThanhToan = binding.edtHanThanhToan;
@@ -182,15 +187,19 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         imgAddContractBack = binding.imgAddContractBack;
         imgContractFront = binding.imgContractFront;
         imgContractBack = binding.imgContractBack;
+        imgButtonLichNgaySinh = binding.imgButtonCalendarNgaySinh;
+        imgButtonLichNgayTao = binding.imgButtonCalendarTao;
+        imgButtonLichNgayHetHan = binding.imgButtonCalendarHetHan;
+        imgButtonLichNgayTraTien = binding.imgButtonCalendarNgayTraTienPhong;
     }
 
     private void setListeners() {
         presenter.setUpDropDownMenuGender();
         presenter.setUpDropDownMenuTotalMembers();
-        presenter.setUpDateField(tilNgaySinh, edtNgaySinh, getString(R.string.dd_mm_yyyy));
-        presenter.setUpDateField(tilNgayTao, edtNgayTao, getString(R.string.dd_mm_yyyy));
-        presenter.setUpDateField(tilNgayHetHan, edtNgayHetHan, getString(R.string.dd_mm_yyyy));
-        presenter.setUpDateField(tilNgayTraTien, edtNgayTraTien, getString(R.string.dd_mm_yyyy));
+        presenter.setUpDateField(tilNgaySinh, edtNgaySinh, imgButtonLichNgaySinh, getString(R.string.dd_mm_yyyy));
+        presenter.setUpDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao, getString(R.string.dd_mm_yyyy));
+        presenter.setUpDateField(tilNgayHetHan, edtNgayHetHan, imgButtonLichNgayHetHan, getString(R.string.dd_mm_yyyy));
+        presenter.setUpDateField(tilNgayTraTien, edtNgayTraTien, imgButtonLichNgayTraTien, getString(R.string.dd_mm_yyyy));
 
         imgAddCCCDFront.setOnClickListener(v -> {
             currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;

@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -51,13 +52,13 @@ public class GuestAddContractPresenter {
         mainGuestListener.setUpDropDownMenuTotalMembers();
     }
 
-    public void setUpDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, String hint) {
+    public void setUpDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        textInputEditText.setOnClickListener(v -> {
+        imgButtonCalendar.setOnClickListener(v -> {
             // Tạo DatePickerDialog
             DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
                 String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
