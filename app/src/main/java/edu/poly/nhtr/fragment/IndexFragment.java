@@ -38,6 +38,7 @@ import android.graphics.Color;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -79,6 +80,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private Dialog dialog;
     private View view;
     private List<Index> filteredIndexList = new ArrayList<>();
+    private boolean isElectricityIndexOldAscending = false;
+    private  boolean isElectricityIndexNewAscending = false;
+    private  boolean isWaterIndexOldAscending = false;
+    private  boolean isWaterIndexNewAscending = false;
+    private boolean isNameRoomAscending = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +113,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
         indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
-            indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth+1, currentYear);
+            indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth+1, currentYear, "init");
         });
 
         setupLayout();
@@ -115,12 +121,126 @@ public class IndexFragment extends Fragment implements IndexInterface {
         //setupPagination();
         setupDeleteRows();
         setupMonthPicker();
+        setupSortIndexes();
 
         setupSearchEditText(binding.edtSearchIndex);
 
 
 
         return binding.getRoot();
+    }
+
+    private void setDefaultBackground(ImageButton img)
+    {
+        img.setBackground(getResources().getDrawable(R.drawable.ic_two_arrows));
+        img.setRotation(90);
+        img.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
+    }
+
+    private void setAscendingBackground(ImageButton img)
+    {
+        img.setBackground(getResources().getDrawable(R.drawable.ic_arrow_right));
+        img.setRotation(270);
+        img.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+    }
+
+    private void setDescendingBackground(ImageButton img)
+    {
+        img.setBackground(getResources().getDrawable(R.drawable.ic_arrow_right));
+        img.setRotation(90);
+        img.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+    }
+
+    private void setupSortIndexes() {
+        binding.imgTwoArrowsElectricityIndexOld.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllIcons();
+                toggleSorting(binding.imgTwoArrowsElectricityIndexOld, "electricityIndexOld");
+            }
+        });
+
+        binding.imgTwoArrowsElectricityIndexNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllIcons();
+                toggleSorting(binding.imgTwoArrowsElectricityIndexNew, "electricityIndexNew");
+            }
+        });
+
+        binding.imgTwoArrowsWaterIndexOld.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllIcons();
+                toggleSorting(binding.imgTwoArrowsWaterIndexOld, "waterIndexOld");
+            }
+        });
+
+        binding.imgTwoArrowsWaterIndexNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllIcons();
+                toggleSorting(binding.imgTwoArrowsWaterIndexNew, "waterIndexNew");
+            }
+        });
+
+        binding.imgTwoArrowsNameRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllIcons();
+                toggleSorting(binding.imgTwoArrowsNameRoom, "nameRoom");
+            }
+        });
+    }
+
+    private void resetAllIcons() {
+        setDefaultBackground(binding.imgTwoArrowsElectricityIndexOld);
+        setDefaultBackground(binding.imgTwoArrowsElectricityIndexNew);
+        setDefaultBackground(binding.imgTwoArrowsWaterIndexOld);
+        setDefaultBackground(binding.imgTwoArrowsWaterIndexNew);
+        setDefaultBackground(binding.imgTwoArrowsNameRoom);
+    }
+
+    private void toggleSorting(ImageButton img, String indexType) {
+        boolean isAscending;
+        switch (indexType) {
+            case "electricityIndexOld":
+                isElectricityIndexOldAscending = !isElectricityIndexOldAscending;
+                isAscending = isElectricityIndexOldAscending;
+                break;
+            case "electricityIndexNew":
+                isElectricityIndexNewAscending = !isElectricityIndexNewAscending;
+                isAscending = isElectricityIndexNewAscending;
+                break;
+            case "waterIndexOld":
+                isWaterIndexOldAscending = !isWaterIndexOldAscending;
+                isAscending = isWaterIndexOldAscending;
+                break;
+            case "waterIndexNew":
+                isWaterIndexNewAscending = !isWaterIndexNewAscending;
+                isAscending = isWaterIndexNewAscending;
+                break;
+            case "nameRoom":
+                isNameRoomAscending = !isNameRoomAscending;
+                isAscending = isNameRoomAscending;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown index type");
+        }
+
+        if (isAscending) {
+            setAscendingBackground(img);
+        } else {
+            setDescendingBackground(img);
+        }
+
+        String dateNow = binding.txtDateTime.getText().toString();
+        String[] parts = dateNow.split("/");
+        String month = parts[0];
+        String year = parts[1];
+
+        indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year),
+                indexType + (isAscending ? "Ascending" : "Descending"));
     }
 
     public List<Index> getList_index() {
@@ -513,7 +633,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
                         date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
                         visible = false;
                         binding.txtDateTime.setText(date);
-                        indexPresenter.fetchIndexesByMonthAndYear(homeID, month, year);
+                        indexPresenter.fetchIndexesByMonthAndYear(homeID, month, year, "init");
                         currentMonth = month - 1; // Cập nhật currentMonth, have to minus 1
                         currentYear = year; // Cập nhật year
                     }

@@ -197,7 +197,7 @@
                     android:layout_height="20dp"
                     android:background="@drawable/ic_two_arrows"
                     android:rotation="90"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:backgroundTint="@color/colorGray"
                     android:layout_marginStart="-7dp"
                     android:layout_gravity="center_vertical"/>
 
@@ -257,7 +257,7 @@
                         android:layout_height="20dp"
                         android:background="@drawable/ic_two_arrows"
                         android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
+                        android:backgroundTint="@color/colorGray"
                         android:layout_marginStart="-7dp"
                         android:layout_gravity="center_vertical"/>
 
@@ -273,7 +273,7 @@
                         android:layout_gravity="center_vertical"/>
 
                     <ImageButton
-                        android:id="@+id/img_arrow_electricity_index_old"
+                        android:id="@+id/img_arrow_down_electricity_index_old"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:background="@drawable/ic_arrow_right"
@@ -308,7 +308,7 @@
                         android:layout_height="20dp"
                         android:background="@drawable/ic_two_arrows"
                         android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
+                        android:backgroundTint="@color/colorGray"
                         android:layout_marginStart="-7dp"
                         android:layout_gravity="center_vertical"/>
 
@@ -324,7 +324,7 @@
                         android:layout_gravity="center_vertical"/>
 
                     <ImageButton
-                        android:id="@+id/img_arrow_electricity_index_new"
+                        android:id="@+id/img_arrow_down_electricity_index_new"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:background="@drawable/ic_arrow_right"
@@ -361,7 +361,7 @@
                         android:layout_height="20dp"
                         android:background="@drawable/ic_two_arrows"
                         android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
+                        android:backgroundTint="@color/colorGray"
                         android:layout_marginStart="-7dp"
                         android:layout_gravity="center_vertical"/>
 
@@ -377,7 +377,7 @@
                         android:layout_gravity="center_vertical"/>
 
                     <ImageButton
-                        android:id="@+id/img_arrow_water_index_old"
+                        android:id="@+id/img_arrow_down_water_index_old"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:background="@drawable/ic_arrow_right"
@@ -413,7 +413,7 @@
                         android:layout_height="20dp"
                         android:background="@drawable/ic_two_arrows"
                         android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
+                        android:backgroundTint="@color/colorGray"
                         android:layout_marginStart="-7dp"
                         android:layout_gravity="center_vertical"/>
 
@@ -429,7 +429,7 @@
                         android:layout_gravity="center_vertical"/>
 
                     <ImageButton
-                        android:id="@+id/img_arrow_water_index_new"
+                        android:id="@+id/img_arrow_down_water_index_new"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:background="@drawable/ic_arrow_right"

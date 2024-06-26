@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.poly.nhtr.R;
@@ -51,7 +52,7 @@ public class IndexPresenter {
                                 String roomName = roomDoc.getString(Constants.KEY_NAME_ROOM);
                                 Date dateCreateRoom = roomDoc.getDate(Constants.KEY_TIMESTAMP);
                                 // Thêm index cho room này
-                                checkAndAddIndexToRoom(homeId, roomId, roomName, dateCreateRoom,() -> {
+                                checkAndAddIndexToRoom(homeId, roomId, roomName, dateCreateRoom, () -> {
                                     // Giảm biến đếm và kiểm tra nếu tất cả các tác vụ đã hoàn thành
                                     pendingTasks[0]--;
                                     if (pendingTasks[0] == 0) {
@@ -70,7 +71,7 @@ public class IndexPresenter {
                 });
     }
 
-    private void checkAndAddIndexToRoom(String homeId, String roomId, String roomName,Date dateRoom, Runnable onComplete) {
+    private void checkAndAddIndexToRoom(String homeId, String roomId, String roomName, Date dateRoom, Runnable onComplete) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
@@ -82,7 +83,7 @@ public class IndexPresenter {
                     if (task.isSuccessful()) {
                         DocumentSnapshot documentSnapshot = task.getResult();
                         if (documentSnapshot != null && !documentSnapshot.exists()) {
-                            addIndexToRoom(homeId, roomId, roomName, indexID, year, month, dateRoom,onComplete);
+                            addIndexToRoom(homeId, roomId, roomName, indexID, year, month, dateRoom, onComplete);
                         } else {
                             Log.d("Firestore", "Index already exists for room: " + roomId);
                             onComplete.run();
@@ -158,7 +159,6 @@ public class IndexPresenter {
                     }
                 });
     }
-
 
 
     public void fetchIndexesAndStoreInList(String homeId) {
@@ -254,7 +254,7 @@ public class IndexPresenter {
 
                     // Kiểm tra và cập nhật chỉ số của tháng tiếp theo
                     updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month);
-                    fetchIndexesByMonthAndYear(index.getHomeID(), month, year );
+                    fetchIndexesByMonthAndYear(index.getHomeID(), month, year, "init");
 
                     indexInterface.closeDialog();
                 })
@@ -264,7 +264,7 @@ public class IndexPresenter {
                 });
     }
 
-    private void updateNextMonthOldIndex(String homeId, String roomId,String nameRoom,  int currentYear, int currentMonth) {
+    private void updateNextMonthOldIndex(String homeId, String roomId, String nameRoom, int currentYear, int currentMonth) {
         int nextYear = currentMonth == 12 ? currentYear + 1 : currentYear;
         int nextMonth = currentMonth == 12 ? 1 : currentMonth + 1;
         String nextIndexID = roomId + "_" + nextYear + "_" + nextMonth;
@@ -301,7 +301,6 @@ public class IndexPresenter {
     }
 
 
-
     public void deleteIndex(Index index) {
         indexInterface.showButtonLoading(R.id.btn_confirm_delete_index);
         HashMap<String, Object> updateInfo = new HashMap<>();
@@ -321,7 +320,7 @@ public class IndexPresenter {
 
                     // Kiểm tra và cập nhật chỉ số của tháng tiếp theo
                     updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month);
-                    fetchIndexesByMonthAndYear(index.getHomeID(), month, year );
+                    fetchIndexesByMonthAndYear(index.getHomeID(), month, year, "init");
 
                     indexInterface.closeDialog();
                 })
@@ -361,7 +360,7 @@ public class IndexPresenter {
 
                         if (completedCount.incrementAndGet() == totalIndexes) {
                             // Tất cả các truy vấn đã hoàn thành
-                            fetchIndexesByMonthAndYear(homeID, month, year);
+                            fetchIndexesByMonthAndYear(homeID, month, year, "init");
                             indexInterface.closeDialog();
                             indexInterface.closeLayoutDeleteManyRows();
                         }
@@ -370,7 +369,7 @@ public class IndexPresenter {
                         Log.w("Firestore", "Error saving index", e);
                         if (completedCount.incrementAndGet() == totalIndexes) {
                             // Tất cả các truy vấn đã hoàn thành
-                            fetchIndexesByMonthAndYear(homeID, month, year);
+                            fetchIndexesByMonthAndYear(homeID, month, year, "init");
                             indexInterface.closeDialog();
                         }
                     });
@@ -378,7 +377,7 @@ public class IndexPresenter {
     }
 
 
-    public void fetchIndexesByMonthAndYear(String homeId, int month, int year) {
+    public void fetchIndexesByMonthAndYear(String homeId, int month, int year, String action) {
         indexInterface.showLoading();
         List<Index> indexList = new ArrayList<>();
 
@@ -435,8 +434,41 @@ public class IndexPresenter {
 
                                             // Kiểm tra và cập nhật giao diện khi đã xử lý hết các chỉ số
                                             if (count.get() == querySnapshot.size()) {
-                                                indexList.sort(Comparator.comparing(Index::getDateObject)); // Sắp xếp danh sách chỉ số theo thời gian
-                                                indexInterface.setIndexList(indexList);
+                                                if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
+                                                    indexList.sort(Comparator.comparing(Index::getDateObject)); // Sắp xếp danh sách chỉ số theo thời gian
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "electricityIndexOldAscending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getElectricityIndexOld));
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "electricityIndexOldDescending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getElectricityIndexOld).reversed());
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "electricityIndexNewAscending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getElectricityIndexNew));
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "electricityIndexNewDescending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getElectricityIndexNew).reversed());
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "waterIndexOldAscending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getWaterIndexOld));
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "waterIndexOldDescending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getWaterIndexOld).reversed());
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "waterIndexNewAscending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getWaterIndexNew));
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "waterIndexNewDescending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getWaterIndexNew).reversed());
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "nameRoomAscending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getNameRoom));
+                                                    indexInterface.setIndexList(indexList);
+                                                } else if (Objects.equals(action, "nameRoomDescending")) {
+                                                    indexList.sort(Comparator.comparing(Index::getWaterIndexNew).reversed());
+                                                    indexInterface.setIndexList(indexList);
+                                                }
+
                                             }
                                         });
                             }

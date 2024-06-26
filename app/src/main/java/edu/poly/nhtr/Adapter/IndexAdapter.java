@@ -154,7 +154,6 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
 
     public void setIndexList(List<Index> indexList) {
         this.index_list = indexList;
-        indexList.sort(Comparator.comparing(Index::getDateObject));
         notifyDataSetChanged();
         indexInterface.hideLoading();
     }
