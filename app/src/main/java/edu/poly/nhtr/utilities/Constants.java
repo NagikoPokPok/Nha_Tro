@@ -60,4 +60,27 @@ public class Constants {
     public static final String KEY_YEAR = "year";
 
 
+    // Contract
+    public static final String KEY_COLLECTION_CONTRACTS = "contracts";
+    public static final String KEY_CONTRACT_ID = "contractId";
+    public static final String KEY_CONTRACT_PARENT_HOME_ID = "contractParentHomeId";
+    public static final String KEY_CONTRACT_PARENT_ROOM_ID = "contractParentRoomId";
+    public static final String KEY_CONTRACT_PARENT_USER_ID = "contractParentUserId";
+    public static final String KEY_CONTRACT_PARENT_SERVICE_ID = "contractParentServiceId";
+    public static final String KEY_ROOM_TOTAl_MEMBERS = "roomTotalMembers";
+    public static final String KEY_GUEST_NAME = "guestName";
+    public static final String KEY_GUEST_PHONE = "guestPhone";
+    public static final String KEY_GUEST_CCCD = "guestCCCD";
+    public static final String KEY_GUEST_DATE_OF_BIRTH = "guestDateOfBirth";
+    public static final String KEY_GUEST_GENDER = "guestGender";
+    public static final String KEY_CONTRACT_CREATED_DATE = "contractCreatedDate";
+    public static final String KEY_CONTRACT_EXPIRATION_DATE = "contractExpirationDate";
+    public static final String KEY_CONTRACT_ROOM_PRICE = "contractRoomPrice";
+    public static final String KEY_CONTRACT_PAY_DATE = "contractPayDate";
+    public static final String KEY_CONTRACT_DAYS_UNTIL_DUE_DATE = "contractDaysUntilDueDate";
+    public static final String KEY_GUEST_CONTRACT_IMAGE_FRONT = "guestContractImageFront";
+    public static final String KEY_GUEST_CONTRACT_IMAGE_BACK = "guestContractImageBack";
+    public static final String KEY_GUEST_CCCD_IMAGE_FRONT = "guestCCCDImageFront";
+    public static final String KEY_GUEST_CCCD_IMAGE_BACK = "guestCCCDImageBack";
+    public static final String KEY_CONTRACT_STATUS = "contractStatus";
 }

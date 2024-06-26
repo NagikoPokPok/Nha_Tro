@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,19 +24,26 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentReference;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
-import edu.poly.nhtr.interfaces.GuestAddContractInterface;
+import edu.poly.nhtr.listeners.MainGuestListener;
+import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.presenters.GuestAddContractPresenter;
+import edu.poly.nhtr.utilities.Constants;
+import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class GuestAddContractFragment extends Fragment implements GuestAddContractInterface {
+public class GuestAddContractFragment extends Fragment implements MainGuestListener {
+
+    private PreferenceManager preferenceManager;
 
     private FragmentGuestAddContractBinding binding;
     private TextInputEditText edtHoTen;
@@ -45,7 +53,7 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
     private TextInputEditText edtSoCCCD;
     private TextInputLayout tilSoCCCD;
     private TextInputEditText edtTienPhong;
-    private TextInputEditText edtHanThanhToan;
+    private EditText edtHanThanhToan;
     private TextInputLayout tilNgaySinh;
     private TextInputEditText edtNgaySinh;
     private AutoCompleteTextView edtGioiTinh;
@@ -120,6 +128,7 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
                 }
             });
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -133,6 +142,13 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
         presenter = new GuestAddContractPresenter(this, requireContext());
         initializeViews();
         setListeners();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
+
     }
 
     @Override
@@ -157,6 +173,7 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
         edtNgayTao = binding.edtNgayTao;
         edtNgayHetHan = binding.edtNgayHetHanHopDong;
         edtNgayTraTien = binding.edtNgayTraTienPhong;
+        edtHanThanhToan = binding.edtHanThanhToan;
         imgAddCCCDFront = binding.imgAddCccdFront;
         imgAddCCCDBack = binding.imgAddCccdBack;
         imgCCCDFront = binding.imgCccdFront;
@@ -208,7 +225,71 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
             currentImageSelection = IMAGE_SELECTION_CONTRACT_BACK;
             pickImage.launch(presenter.prepareImageSelection());
         });
+
+        presenter.setUpNameField(edtHoTen, tilHoTen);
+
+        saveContract();
     }
+
+    @Override
+    public void showToast(String message) {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public String getInfoHomeFromGoogleAccount() {
+        return preferenceManager.getString(Constants.KEY_HOME_ID);
+    }
+
+    @Override
+    public String getInfoRoomFromGoogleAccount() {
+        return preferenceManager.getString(Constants.KEY_ROOM_ID);
+    }
+
+    @Override
+    public void getListMainGuest(List<MainGuest> listContracts) {
+
+    }
+
+    @Override
+    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String homeId, String roomId, DocumentReference documentReference) {
+        preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
+        preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
+        preferenceManager.putString(Constants.KEY_GUEST_CCCD, cccdNumber);
+        preferenceManager.putString(Constants.KEY_GUEST_DATE_OF_BIRTH, dateOfBirth);
+        preferenceManager.putString(Constants.KEY_GUEST_GENDER, gender);
+        preferenceManager.putString(Constants.KEY_ROOM_TOTAl_MEMBERS, totalMembers + "");
+        preferenceManager.putString(Constants.KEY_CONTRACT_CREATED_DATE, createDate);
+        preferenceManager.putString(Constants.KEY_CONTRACT_ROOM_PRICE, roomPrice + "");
+        preferenceManager.putString(Constants.KEY_CONTRACT_EXPIRATION_DATE, expirationDate);
+        preferenceManager.putString(Constants.KEY_CONTRACT_PAY_DATE, payDate);
+        preferenceManager.putString(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE, daysUntilDueDate + "");
+        preferenceManager.putString(Constants.KEY_GUEST_CCCD_IMAGE_FRONT, cccdImageFront);
+        preferenceManager.putString(Constants.KEY_GUEST_CCCD_IMAGE_BACK, cccdImageBack);
+        preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_FRONT, contractImageFront);
+        preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_BACK, contractImageBack);
+        preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
+        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
+        preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+    }
+
+
+
+    @Override
+    public void onMainGuestsLoaded(List<MainGuest> mainGuests, String action) {
+
+    }
+
+    @Override
+    public void onMainGuestsLoadFailed() {
+
+    }
+
 
     @Override
     public void setUpDropDownMenuGender() {
@@ -233,6 +314,14 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
     @Override
     public void showErrorMessage(String message) {
         Toast.makeText(requireContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void checkName() {
+        presenter.setUpNameField(edtHoTen, tilHoTen);
+    }
+
+    public void checkPhoneNumber() {
+        presenter.setUpNameField(edtSoDienThoai, tilSoDienThoai);
     }
 
     @Override
@@ -263,5 +352,17 @@ public class GuestAddContractFragment extends Fragment implements GuestAddContra
     @Override
     public void setCCCDNumberlErrorEnabled(Boolean isEmpty) {
         tilSoCCCD.setErrorEnabled(isEmpty);
+    }
+
+    @Override
+    public void saveContract() {
+        binding.btnAddContract.setOnClickListener(v -> {
+            presenter.addContractToFirestore(new MainGuest());
+        });
+
+    }
+
+    public boolean isAdded2() {
+        return isAdded();
     }
 }

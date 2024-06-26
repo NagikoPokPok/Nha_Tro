@@ -1,23 +1,27 @@
 package edu.poly.nhtr.models;
 
-import java.util.Date;
-
 public class MainGuest extends Guest {
+    private int totalMembers;
     private String cccdNumber;
-    private Date dateOfBirth;
+    private String dateOfBirth; // Change to String to match input format
     private String gender;
-    private Date createDate;
+    private String createDate; // Change to String to match input format
     private double roomPrice;
-    private Date expirationDate;
-    private Date payDate;
+    private String expirationDate; // Change to String to match input format
+    private String payDate; // Change to String to match input format
     private int daysUntilDueDate;
     private String cccdImageFront;
     private String cccdImageBack;
     private String contractImageFront;
     private String contractImageBack;
 
-    public MainGuest(String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, Date dateIn, String cccdNumber, Date dateOfBirth, String gender, Date createDate, double roomPrice, Date expirationDate, Date payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack) {
-        super(idGuest, nameGuest, phoneGuest, fileStatus, dateIn);
+
+    public MainGuest(int totalMembers, String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, // Change dateIn to String
+                     String cccdNumber, String dateOfBirth, String gender, String createDate, double roomPrice,
+                     String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack,
+                     String contractImageFront, String contractImageBack) {
+        super(idGuest, nameGuest, phoneGuest, fileStatus);
+        this.totalMembers = totalMembers;
         this.cccdNumber = cccdNumber;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
@@ -32,6 +36,18 @@ public class MainGuest extends Guest {
         this.contractImageBack = contractImageBack;
     }
 
+    public MainGuest() {
+        super();
+    }
+
+    public int getTotalMembers() {
+        return totalMembers;
+    }
+
+    public void setTotalMembers(int totalMembers) {
+        this.totalMembers = totalMembers;
+    }
+
     public String getCccdNumber() {
         return cccdNumber;
     }
@@ -40,11 +56,11 @@ public class MainGuest extends Guest {
         this.cccdNumber = cccdNumber;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -56,11 +72,11 @@ public class MainGuest extends Guest {
         this.gender = gender;
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
@@ -72,19 +88,19 @@ public class MainGuest extends Guest {
         this.roomPrice = roomPrice;
     }
 
-    public Date getExpirationDate() {
+    public String getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(String expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    public Date getPayDate() {
+    public String getPayDate() {
         return payDate;
     }
 
-    public void setPayDate(Date payDate) {
+    public void setPayDate(String payDate) {
         this.payDate = payDate;
     }
 
