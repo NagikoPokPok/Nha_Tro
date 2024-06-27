@@ -19,6 +19,7 @@ import java.util.List;
 import edu.poly.nhtr.databinding.LayoutItemRowIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Index;
+import edu.poly.nhtr.presenters.IndexPresenter;
 
 public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> {
 
@@ -31,11 +32,13 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     private List<Index> selectedIndexes = new ArrayList<>();
 
     private final IndexInterface indexInterface;
+    private IndexPresenter indexPresenter;
 
-    public IndexAdapter(Context context, List<Index> index_list, IndexInterface indexInterface) {
+    public IndexAdapter(Context context, List<Index> index_list, IndexInterface indexInterface, IndexPresenter indexPresenter) {
         this.context = context;
         this.index_list = index_list;
         this.indexInterface = indexInterface;
+        this.indexPresenter = indexPresenter;
     }
 
     public void setNextClicked(boolean nextClicked) {
@@ -65,6 +68,17 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         Index indexModel = index_list.get(position);
 
         holder.binding.txtNameRoomIndex.setText(indexModel.getNameRoom());
+
+        // Kiểm tra dữ liệu và cập nhật biểu tượng
+        indexPresenter.checkIndexes(indexModel.getRoomID(), indexModel.getMonth(), indexModel.getYear(), (isElectricityNewFilled, isWaterNewFilled) -> {
+            if (isElectricityNewFilled && isWaterNewFilled) {
+                holder.binding.imgIsFilled.setVisibility(View.VISIBLE);
+                holder.binding.imgIsNotFilled.setVisibility(View.GONE);
+            } else {
+                holder.binding.imgIsNotFilled.setVisibility(View.VISIBLE);
+                holder.binding.imgIsFilled.setVisibility(View.GONE);
+            }
+        });
 
         if (!isNextClicked) {
             holder.binding.txtElectricityIndexOld.setVisibility(View.VISIBLE);
@@ -125,6 +139,8 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
                 selectedIndexes.remove(indexModel);
             }
         });
+
+
     }
 
     @Override
@@ -154,7 +170,12 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
 
     public void setIndexList(List<Index> indexList) {
         this.index_list = indexList;
-        notifyDataSetChanged();
+        if (this.index_list.isEmpty()) {
+            indexInterface.showLayoutNoData();
+        } else {
+            indexInterface.hideLayoutNoData();
+            notifyDataSetChanged();
+        }
         indexInterface.hideLoading();
     }
 }

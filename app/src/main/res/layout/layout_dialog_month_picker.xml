@@ -59,21 +59,20 @@
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="Cancel"
+            android:text="Huỷ"
             android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter_bold"
             android:background="@android:color/transparent"/>
 
         <Button
             android:id="@+id/ok_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"
+            android:text="Chọn"
             android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="normal"
+            android:textSize="18sp"
+            android:fontFamily="@font/inter_medium"
             android:background="@drawable/background_btn_oke_picker_month_index"
             app:backgroundTint="@null"
             />

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="310dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:background="@drawable/bg_white_corner_16"
+    android:elevation="10dp"
+    android:orientation="vertical"
+    android:paddingBottom="15dp">
+
+
+    <TextView
+        android:id="@+id/txt_title_dialog"
+        style="@style/TEXT_MED_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_yellow_corner_16_top"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/bo_loc"
+        android:textSize="20sp" />
+
+    <TextView
+        style="@style/TEXT_MED_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chỉ số điện: "
+        android:textSize="17sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_0_to_150_kWh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 0 - 150 kWh"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_150_to_250_kWh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 150 - 250 kWh"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_250_to_more_kWh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 250 kWh trở lên"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <TextView
+        style="@style/TEXT_MED_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chỉ số nước: "
+        android:textSize="17sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_0_to_4_m3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 0 - 4 Khối"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_4_to_8_m3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 4 - 8 Khối"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_from_8_to_more_m3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Từ 8 Khối trở lên"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/TEXT_MED_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/custom_button_cancel"
+            android:text="@string/huy"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm_apply"
+            style="@style/TEXT_MED_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/custom_button_clicked"
+            android:text="@string/ap_dung"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="-70dp"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -42,31 +42,80 @@
 
 
 
-        <LinearLayout
-            android:id="@+id/layout_delete"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/background_delete_index_normal"
-            android:gravity="center"
-            android:orientation="horizontal">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/layout_delete"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginStart="5dp"-->
+<!--            android:background="@drawable/background_delete_index_normal"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="horizontal">-->
 
-            <TextView
-                android:id="@+id/txt_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Delete" />
+<!--            <TextView-->
+<!--                android:id="@+id/txt_delete"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:text="Delete" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn_delete"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_marginStart="2dp"-->
+<!--                android:background="@drawable/ic_delete"-->
+<!--                android:backgroundTint="@color/colorGray" />-->
+
+<!--        </LinearLayout>-->
+
+        <FrameLayout
+            android:id="@+id/layout_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/frame_round_delete_index"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/background_delete_index_normal"
+                android:scaleType="fitXY"
+                app:riv_oval="true" />
 
             <ImageButton
                 android:id="@+id/btn_delete"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="2dp"
-                android:background="@drawable/ic_delete"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_delete_outline"
                 android:backgroundTint="@color/colorGray" />
 
-        </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_filter_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/background_delete_index_normal"
+                android:scaleType="fitXY"
+                app:riv_oval="true" />
+
+            <ImageButton
+                android:id="@+id/btn_filter_index"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_filter_index"
+                android:backgroundTint="@color/colorGray" />
+
+        </FrameLayout>
 
 
         <LinearLayout
@@ -146,12 +195,43 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_type_of_filter_index"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="5dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_below="@id/layout_delete_many_rows">
+
+        <TextView
+            android:id="@+id/txt_title_filter_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            android:text="Lọc theo:  "
+            android:textSize="15sp"
+            android:fontFamily="@font/inter_medium"
+            android:textColor="@color/colorTextBlack"/>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/list_type_of_filter_index"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flexWrap="wrap"
+            android:orientation="horizontal">
+        </com.google.android.flexbox.FlexboxLayout>
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_delete_many_rows"
+        android:layout_below="@id/layout_type_of_filter_index"
         android:layout_marginTop="5dp"
         android:stretchColumns="1"
         android:background="#140054FF">
@@ -160,17 +240,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
-
-            <!-- Column 1: Checkbox -->
-            <!--            <CheckBox-->
-            <!--                android:id="@+id/checkBox"-->
-            <!--                android:layout_width="20dp"-->
-            <!--                android:layout_height="20dp"-->
-            <!--                android:layout_gravity="center_vertical"-->
-            <!--                android:background="@drawable/checkbox_selector"-->
-            <!--                android:button="@null"-->
-            <!--                app:buttonTint="@null"-->
-            <!--                />-->
 
             <!-- Column 2: ID -->
             <LinearLayout
@@ -461,6 +530,41 @@
         </TableRow>
     </TableLayout>
 
+
+
+    <LinearLayout
+        android:id="@+id/layout_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_below="@id/tableLayout"
+        android:layout_above="@id/button_layout">
+
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/img_no_data" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Không có dữ liệu !"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
@@ -468,6 +572,7 @@
         android:layout_below="@id/tableLayout"
         android:layout_above="@id/button_layout"
         android:layout_marginBottom="10dp"/>
+
 
     <ProgressBar
         android:id="@+id/progressBar"

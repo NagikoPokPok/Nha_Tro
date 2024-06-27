@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -25,13 +26,16 @@ import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentIndexBinding;
+import edu.poly.nhtr.databinding.LayoutDialogDeleteHomeSuccessBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDeleteIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
+import edu.poly.nhtr.databinding.LayoutDialogFilterIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.presenters.IndexPresenter;
 import edu.poly.nhtr.utilities.Constants;
+import edu.poly.nhtr.utilities.PreferenceManager;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -39,12 +43,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -62,8 +69,10 @@ import java.util.function.BiConsumer;
 
 public class IndexFragment extends Fragment implements IndexInterface {
     private IndexPresenter indexPresenter;
+    private PreferenceManager preferenceManager;
     private FragmentIndexBinding binding;
     private List<Index> list_index;
+    private List<Index> currentListIndexes = new ArrayList<>();
 
     private boolean isNextClicked = false; // Track if Next button has been clicked
     private boolean isCheckBoxClicked = false;
@@ -81,9 +90,9 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private View view;
     private List<Index> filteredIndexList = new ArrayList<>();
     private boolean isElectricityIndexOldAscending = false;
-    private  boolean isElectricityIndexNewAscending = false;
-    private  boolean isWaterIndexOldAscending = false;
-    private  boolean isWaterIndexNewAscending = false;
+    private boolean isElectricityIndexNewAscending = false;
+    private boolean isWaterIndexOldAscending = false;
+    private boolean isWaterIndexNewAscending = false;
     private boolean isNameRoomAscending = false;
 
     @Override
@@ -91,15 +100,13 @@ public class IndexFragment extends Fragment implements IndexInterface {
         super.onCreate(savedInstanceState);
         binding = FragmentIndexBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
-
-
-
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_index, container, false);
+        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
 
         assert getArguments() != null;
         Home home = (Home) getArguments().getSerializable("home");
@@ -113,8 +120,10 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
         indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
-            indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth+1, currentYear, "init");
+            indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth + 1, currentYear, "init");
         });
+
+        removeStatusOfCheckBoxFilterHome();
 
         setupLayout();
         setupRecyclerView();
@@ -122,30 +131,283 @@ public class IndexFragment extends Fragment implements IndexInterface {
         setupDeleteRows();
         setupMonthPicker();
         setupSortIndexes();
+        setupFilterIndexes();
 
         setupSearchEditText(binding.edtSearchIndex);
-
 
 
         return binding.getRoot();
     }
 
-    private void setDefaultBackground(ImageButton img)
-    {
+    public List<Index> getCurrentListIndexes() {
+        return currentListIndexes;
+    }
+
+    public void setCurrentListIndexes(List<Index> currentListIndexes) {
+        this.currentListIndexes = currentListIndexes;
+    }
+
+    private void setupFilterIndexes() {
+        binding.btnFilterIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilterIndexDialog();
+            }
+        });
+    }
+
+    private void openFilterIndexDialog() {
+        String dateNow = binding.txtDateTime.getText().toString();
+        String[] parts = dateNow.split("/");
+        String month = parts[0];
+        String year = parts[1];
+
+        LayoutDialogFilterIndexBinding binding1 = LayoutDialogFilterIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding1.getRoot());
+        setupDialogWindow(binding1.getRoot().getLayoutParams());
+        dialog.setCancelable(true);
+        dialog.show();
+
+        indexPresenter.getCurrentListIndex(homeID, Integer.parseInt(month), Integer.parseInt(year));
+
+
+        AppCompatCheckBox cbxByRevenue1 = dialog.findViewById(R.id.cbx_from_0_to_3_millions);
+        AppCompatCheckBox cbxByRevenue2 = dialog.findViewById(R.id.cbx_from_3_to_7_millions);
+        AppCompatCheckBox cbxByRevenue3 = dialog.findViewById(R.id.cbx_from_7_to_more_millions);
+
+
+        binding1.cbxFrom0To150KWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex1"));
+        binding1.cbxFrom150To250KWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex2"));
+        binding1.cbxFrom250ToMoreKWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex3"));
+
+        // Add CheckBoxes to a list
+        List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add(binding1.cbxFrom0To150KWh);
+        checkBoxList.add(binding1.cbxFrom150To250KWh);
+        checkBoxList.add(binding1.cbxFrom250ToMoreKWh);
+
+        customizeButtonApplyInDialogHaveCheckBox(binding1.btnConfirmApply, checkBoxList);
+
+        // Create a method to check the state of all checkboxes
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customizeButtonApplyInDialogHaveCheckBox(binding1.btnConfirmApply, checkBoxList);
+            }
+        };
+
+        // Set the listener to all checkboxes
+        binding1.cbxFrom0To150KWh.setOnClickListener(checkBoxListener);
+        binding1.cbxFrom150To250KWh.setOnClickListener(checkBoxListener);
+        binding1.cbxFrom250ToMoreKWh.setOnClickListener(checkBoxListener);
+
+        binding1.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        binding1.btnConfirmApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.layoutTypeOfFilterIndex.setVisibility(View.VISIBLE);
+                List<String> selectedOptions = new ArrayList<>();
+
+                // Check which CheckBoxes are selected and save their state
+                boolean filterByIndex1 = binding1.cbxFrom0To150KWh.isChecked();
+                boolean filterByIndex2 = binding1.cbxFrom150To250KWh.isChecked();
+                boolean filterByIndex3 = binding1.cbxFrom250ToMoreKWh.isChecked();
+
+                if (filterByIndex1) {
+                    selectedOptions.add(binding1.cbxFrom0To150KWh.getText().toString());
+                    preferenceManager.putBoolean("cbxByElectricityIndex1", true);
+                } else {
+                    preferenceManager.putBoolean("cbxByElectricityIndex1", false);
+                    removeFromListAndSave(binding1.cbxFrom0To150KWh.getText().toString());
+                }
+                if (filterByIndex2) {
+                    selectedOptions.add(binding1.cbxFrom150To250KWh.getText().toString());
+                    preferenceManager.putBoolean("cbxByElectricityIndex2", true);
+                } else {
+                    preferenceManager.putBoolean("cbxByElectricityIndex2", false);
+                    removeFromListAndSave(binding1.cbxFrom150To250KWh.getText().toString());
+                }
+                if (filterByIndex3) {
+                    selectedOptions.add(binding1.cbxFrom250ToMoreKWh.getText().toString());
+                    preferenceManager.putBoolean("cbxByElectricityIndex3", true);
+                } else {
+                    preferenceManager.putBoolean("cbxByElectricityIndex3", false);
+                    removeFromListAndSave(binding1.cbxFrom250ToMoreKWh.getText().toString());
+                }
+
+                // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
+                if (!filterByIndex1 && !filterByIndex2 && !filterByIndex3) {
+                    binding.layoutNoData.setVisibility(View.GONE);
+                    binding.layoutTypeOfFilterIndex.setVisibility(View.GONE);
+                    binding.recyclerView.setVisibility(View.VISIBLE);
+                    indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
+                } else {
+                    filterListHomes(); // After put status of checkboxes in preferences, check and add them into the list
+                }
+
+                // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
+                for (String option : selectedOptions) {
+                    // Check if the checkbox is already in the listTypeOfFilterHome
+                    boolean alreadyExists = false;
+                    for (int i = 0; i < binding.listTypeOfFilterIndex.getChildCount(); i++) {
+                        View view = binding.listTypeOfFilterIndex.getChildAt(i);
+                        if (view instanceof LinearLayout) {
+                            TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                            if (textView.getText().toString().equals(option)) {
+                                alreadyExists = true;
+                                break;
+                            }
+                        }
+                    }
+
+
+                    // If the checkbox does not exist, add it to the listTypeOfFilterHome
+                    if (!alreadyExists) {
+
+                        // Inflate the layout containing the TextView and ImageView
+                        LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
+
+                        // Get references to the TextView and ImageView
+                        TextView txtTypeOfFilterHome = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
+                        ImageView iconCancel = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
+
+                        // Set the text for the TextView
+                        txtTypeOfFilterHome.setText(option);
+
+                        // Optionally set an OnClickListener for the ImageView to remove the filter
+                        iconCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Remove the filter
+                                binding.listTypeOfFilterIndex.removeView(filterItemLayout);
+
+                                // Update SharedPreferences to uncheck the checkbox in the dialog
+                                if (option.equals(binding1.cbxFrom0To150KWh.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxByElectricityIndex1", false);
+                                    binding1.cbxFrom0To150KWh.setChecked(false);
+                                } else if (option.equals(binding1.cbxFrom150To250KWh.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxByElectricityIndex2", false);
+                                    binding1.cbxFrom150To250KWh.setChecked(false);
+                                } else if (option.equals(binding1.cbxFrom250ToMoreKWh.getText().toString())) {
+                                    preferenceManager.putBoolean("cbxByElectricityIndex3", false);
+                                    binding1.cbxFrom250ToMoreKWh.setChecked(false);
+                                }
+
+                                if (binding.listTypeOfFilterIndex.getChildCount() == 0) {
+                                    // If no filter left in the list -> Set GONE
+                                    binding.layoutTypeOfFilterIndex.setVisibility(View.GONE);
+                                    binding.layoutNoData.setVisibility(View.GONE);
+                                    // And update list homes as initial
+                                    //binding.recyclerView.setVisibility(View.VISIBLE);
+                                    indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
+                                } else {
+                                    // Update list homes after deleting some check boxes
+                                    filterListHomes();
+                                }
+
+                            }
+                        });
+
+                        // Set layout parameters for filterItemLayout
+                        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+                                FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                                (int) getResources().getDimension(R.dimen.filter_item_height) // Assuming filter_item_height is 40dp
+                        );
+                        int margin = (int) getResources().getDimension(R.dimen.filter_item_margin);
+                        params.setMargins(0, margin, margin, 0);
+                        filterItemLayout.setLayoutParams(params);
+
+
+                        // Add the inflated layout to the main LinearLayout
+                        binding.listTypeOfFilterIndex.addView(filterItemLayout);
+                    }
+                }
+                //dialog.dismiss();
+            }
+        });
+
+
+    }
+
+    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
+        boolean isAnyChecked = false;
+        for (AppCompatCheckBox checkBox : checkBoxList) {
+            if (checkBox.isChecked()) {
+                isAnyChecked = true;
+                break;
+            }
+        }
+        if (isAnyChecked) {
+            btnApply.setEnabled(true);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+        } else {
+            btnApply.setEnabled(false);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+        }
+    }
+
+    private void removeFromListAndSave(String option) { // Remove from listType
+        for (int i = 0; i < binding.listTypeOfFilterIndex.getChildCount(); i++) {
+            View view = binding.listTypeOfFilterIndex.getChildAt(i);
+            if (view instanceof LinearLayout) {
+                TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                if (textView.getText().toString().equals(option)) {
+                    binding.listTypeOfFilterIndex.removeView(view);
+                    preferenceManager.removePreference(option);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void filterListHomes() {
+        showButtonLoading(R.id.btn_confirm_apply);
+        boolean filterByRoom1 = preferenceManager.getBoolean("cbxByElectricityIndex1");
+        boolean filterByRoom2 = preferenceManager.getBoolean("cbxByElectricityIndex2");
+        boolean filterByRoom3 = preferenceManager.getBoolean("cbxByElectricityIndex3");
+
+        List<Index> filteredIndexes = new ArrayList<>();
+        for (Index index : currentListIndexes) {
+            String indexElectricityOld = index.getElectricityIndexOld();
+            String indexElectricityNew = index.getElectricityIndexNew();
+
+            int electricityIndexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
+            showToast(electricityIndexUsed+"");
+
+
+            if (filterByRoom1 && electricityIndexUsed>= 0 && electricityIndexUsed <= 150) {
+                filteredIndexes.add(index);
+            } else if (filterByRoom2 && electricityIndexUsed > 150 && electricityIndexUsed <= 250) {
+                filteredIndexes.add(index);
+            } else if (filterByRoom3 && electricityIndexUsed > 250) {
+                filteredIndexes.add(index);
+            }
+        }
+
+        indexPresenter.filterIndexes(filteredIndexes);
+
+        //setIndexList(filteredIndexes);
+    }
+
+    private void setDefaultBackground(ImageButton img) {
         img.setBackground(getResources().getDrawable(R.drawable.ic_two_arrows));
         img.setRotation(90);
         img.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
     }
 
-    private void setAscendingBackground(ImageButton img)
-    {
+    private void setAscendingBackground(ImageButton img) {
         img.setBackground(getResources().getDrawable(R.drawable.ic_arrow_right));
         img.setRotation(270);
         img.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
     }
 
-    private void setDescendingBackground(ImageButton img)
-    {
+    private void setDescendingBackground(ImageButton img) {
         img.setBackground(getResources().getDrawable(R.drawable.ic_arrow_right));
         img.setRotation(90);
         img.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
@@ -256,10 +518,9 @@ public class IndexFragment extends Fragment implements IndexInterface {
         edtSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus)
-                {
+                if (hasFocus) {
                     binding.layoutSearchIndex.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }else{
+                } else {
                     binding.layoutSearchIndex.setBoxStrokeColor(getResources().getColor(R.color.colorGray));
                 }
             }
@@ -297,8 +558,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
 
-
-
     private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text
     {
         Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
@@ -307,6 +566,35 @@ public class IndexFragment extends Fragment implements IndexInterface {
         text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text1;
     }
+
+    public void showErrorMessage(String message, int id) {
+        TextInputLayout layout_name_home = dialog.findViewById(id);
+        layout_name_home.setError(message);
+
+    }
+
+    private void addTextWatcher(TextInputEditText editText, TextInputLayout layout) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String index = Objects.requireNonNull(editText.getText()).toString().trim();
+                if (!index.isEmpty()) {
+
+                    layout.setErrorEnabled(false);
+                    layout.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
 
     private void setupDialog(Index index) {
         LayoutDialogDetailedIndexBinding binding = LayoutDialogDetailedIndexBinding.inflate(getLayoutInflater());
@@ -322,6 +610,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         dialog.setCancelable(true);
         dialog.show();
+
+        addTextWatcher(binding.edtElectricityIndexOld, binding.layoutEdtElectricityIndexOld);
+        addTextWatcher(binding.edtElectricityIndexNew, binding.layoutEdtElectricityIndexNew);
+        addTextWatcher(binding.edtWaterIndexOld, binding.layoutEdtWaterIndexOld);
+        addTextWatcher(binding.edtWaterIndexNew, binding.layoutEdtWaterIndexNew);
 
         binding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,6 +633,24 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 final String electricityIndexNew = Objects.requireNonNull(binding.edtElectricityIndexNew.getText()).toString();
                 final String waterIndexOld = Objects.requireNonNull(binding.edtWaterIndexOld.getText()).toString();
                 final String waterIndexNew = Objects.requireNonNull(binding.edtWaterIndexNew.getText()).toString();
+
+                if(electricityIndexOld.length() != 6)
+                {
+                    showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_electricity_index_old);
+                }else if(electricityIndexNew.length() != 6){
+                    showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_electricity_index_new);
+                }else if(waterIndexOld.length() != 6){
+                    showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_water_index_old);
+                }else if(waterIndexNew.length() != 6){
+                    showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_water_index_new);
+                }
+
+                // Kiểm tra các trường phải có đủ 6 số
+                if (electricityIndexOld.length() != 6 || electricityIndexNew.length() != 6 || waterIndexOld.length() != 6 || waterIndexNew.length() != 6) {
+                    // Hiển thị thông báo lỗi cho người dùng
+                    Toast.makeText(getContext(), "Vui lòng nhập đủ 6 số cho tất cả các trường.", Toast.LENGTH_SHORT).show();
+                    return; // Ngăn việc tiếp tục lưu
+                }
 
                 // Lấy tháng và năm
                 int month = index.getMonth(); // Tháng trong Java Calendar bắt đầu từ 0, cần cộng thêm 1
@@ -384,15 +695,19 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private void updateWaterIndexCalculation(LayoutDialogDetailedIndexBinding binding) {
         String indexWaterOld = Objects.requireNonNull(binding.edtWaterIndexOld.getText()).toString().trim();
         String indexWaterNew = Objects.requireNonNull(binding.edtWaterIndexNew.getText()).toString().trim();
-        int indexUsed = Integer.parseInt(indexWaterNew) - Integer.parseInt(indexWaterOld);
-        binding.edtWaterIndexCalculated.setText(String.valueOf(indexUsed));
+        if (!indexWaterOld.isEmpty() && !indexWaterNew.isEmpty()) {
+            int indexUsed = Integer.parseInt(indexWaterNew) - Integer.parseInt(indexWaterOld);
+            binding.edtWaterIndexCalculated.setText(String.valueOf(indexUsed));
+        }
     }
 
     private void updateElectricityIndexCalculation(LayoutDialogDetailedIndexBinding binding) {
         String indexElectricityOld = Objects.requireNonNull(binding.edtElectricityIndexOld.getText()).toString().trim();
         String indexElectricityNew = Objects.requireNonNull(binding.edtElectricityIndexNew.getText()).toString().trim();
-        int indexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
-        binding.edtElectricityIndexCalculated.setText(String.valueOf(indexUsed));
+        if (!indexElectricityOld.isEmpty() && !indexElectricityNew.isEmpty()) {
+            int indexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
+            binding.edtElectricityIndexCalculated.setText(String.valueOf(indexUsed));
+        }
     }
 
     private void addIndexTextWatchers(LayoutDialogDetailedIndexBinding binding) {
@@ -405,19 +720,30 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private void addTextWatcher(TextInputEditText editText, TextInputEditText otherEditText, Runnable calculationMethod) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculationMethod.run();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Check if the length is less than 6 and not completely empty
+                if (s.length() < 6 && s.length() > 0) {
+                    calculationMethod.run();
+                } else if (s.length() == 6) {
+                    calculationMethod.run();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Check if the length is less than 6 and not completely empty
+                if (s.length() == 0) {
+                    // If the length is 0, set it back to the previous value
+                    editText.setText("0"); // or any other default value you want
+                    editText.setSelection(editText.getText().length());
+                }
+            }
         });
     }
-
-
 
 
     private void setupDialogWindow(ViewGroup.LayoutParams params) {
@@ -466,7 +792,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
 
-
     private void setupLayout() {
         binding.btnPrevious.setEnabled(false); // Disable previous button initially
         binding.btnNext.setEnabled(true);
@@ -499,7 +824,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private void setupRecyclerView() {
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        adapter = new IndexAdapter(requireActivity(), new ArrayList<>(), this);
+        adapter = new IndexAdapter(requireActivity(), new ArrayList<>(), this, indexPresenter);
         binding.recyclerView.setAdapter(adapter);
     }
 
@@ -542,10 +867,9 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
     private void setupDeleteRows() {
-        binding.layoutDelete.setOnClickListener(v -> {
+        binding.btnDelete.setOnClickListener(v -> {
             binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-            binding.txtDelete.setTextColor(getResources().getColorStateList(R.color.colorPrimary));
-            binding.layoutDelete.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
+            binding.frameRoundDeleteIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
             binding.layoutDeleteManyRows.setVisibility(View.VISIBLE);
             adapter.isDeleteClicked(true);
         });
@@ -562,9 +886,29 @@ public class IndexFragment extends Fragment implements IndexInterface {
             }
         });
 
+        binding.txtDeleteIndexHere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogConfirmDeleteManyIndexes();
+            }
+        });
+    }
+
+    private void showDialogConfirmDeleteManyIndexes() {
+        LayoutDialogDeleteIndexBinding binding = LayoutDialogDeleteIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
+
+        binding.txtConfirmDelete.setText("Bạn chắc chắn muốn xoá dữ liệu chỉ số của các phòng này?");
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        binding.txtDeleteIndexHere.setOnClickListener(new View.OnClickListener() {
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        binding.btnConfirmDeleteIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<Index> selectedIndexes = adapter.getSelectedIndexes();
@@ -608,12 +952,14 @@ public class IndexFragment extends Fragment implements IndexInterface {
                                 }
                             });
                 }
+
             }
         });
+        setUpDialogConfirmation();
     }
 
 
-        private void setupMonthPicker() {
+    private void setupMonthPicker() {
 
 
         binding.imgCalendar.setOnClickListener(v -> {
@@ -725,6 +1071,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     @Override
     public void showLoading() {
         binding.progressBar.setVisibility(View.VISIBLE);
+        binding.layoutNoData.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.INVISIBLE);
     }
 
@@ -751,7 +1098,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         LayoutDialogDeleteIndexBinding binding = LayoutDialogDeleteIndexBinding.inflate(getLayoutInflater());
         dialog.setContentView(binding.getRoot());
 
-        binding.txtConfirmDelete.append(index.getNameRoom()+" ?");
+        binding.txtConfirmDelete.append(index.getNameRoom() + " ?");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -814,13 +1161,45 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding.checkboxSelectAll.setChecked(false);
         adapter.isCheckBoxClicked(false);
         binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
-        binding.txtDelete.setTextColor(getResources().getColorStateList(R.color.colorGray));
-        binding.layoutDelete.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        binding.frameRoundDeleteIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
         binding.layoutDeleteManyRows.setVisibility(View.GONE);
     }
 
-    private void setUpDialogConfirmation()
-    {
+    @Override
+    public void showDialogActionSuccess(String textSuccess) {
+        LayoutDialogDeleteHomeSuccessBinding binding = LayoutDialogDeleteHomeSuccessBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
+
+        binding.txtDeleteHomeSuccess.setText(textSuccess);
+
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        setUpDialogConfirmation();
+    }
+
+    @Override
+    public void showLayoutNoData() {
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.layoutNoData.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLayoutNoData() {
+        binding.recyclerView.setVisibility(View.VISIBLE);
+        binding.layoutNoData.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void getListIndexes(List<Index> indexList) {
+        setCurrentListIndexes(indexList);
+    }
+
+    private void setUpDialogConfirmation() {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
@@ -833,5 +1212,9 @@ public class IndexFragment extends Fragment implements IndexInterface {
         dialog.show();
     }
 
-
+    public void removeStatusOfCheckBoxFilterHome() {
+        preferenceManager.removePreference("cbxByElectricityIndex1");
+        preferenceManager.removePreference("cbxByElectricityIndex2");
+        preferenceManager.removePreference("cbxByElectricityIndex3");
+    }
 }

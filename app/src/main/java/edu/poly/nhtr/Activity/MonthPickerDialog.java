@@ -44,7 +44,7 @@ public class MonthPickerDialog extends Dialog {
         this.selectedMonthPosition = currentMonth;
         this.selectedYear = currentYear;
         this.months = context.getResources().getStringArray(R.array.months);
-        setContentView(R.layout.dialog_month_picker);
+        setContentView(R.layout.layout_dialog_month_picker);
         setupUI();
     }
 
