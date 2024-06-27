@@ -44,8 +44,16 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class GuestAddContractFragment extends Fragment implements MainGuestListener {
 
+    private static final int IMAGE_SELECTION_NONE = 0;
+    private static final int IMAGE_SELECTION_CCCD_FRONT = 1;
+    private static final int IMAGE_SELECTION_CCCD_BACK = 2;
+    private static final int IMAGE_SELECTION_CONTRACT_FRONT = 3;
+    private static final int IMAGE_SELECTION_CONTRACT_BACK = 4;
+    public String encodedCCCDFrontImage;
+    public String encodedCCCDBackImage;
+    public String encodedContractFrontImage;
+    public String encodedContractBackImage;
     private PreferenceManager preferenceManager;
-
     private FragmentGuestAddContractBinding binding;
     private TextInputEditText edtHoTen;
     private TextInputLayout tilHoTen;
@@ -70,28 +78,15 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private ImageButton imgButtonLichNgayTao;
     private ImageButton imgButtonLichNgayHetHan;
     private ImageButton imgButtonLichNgayTraTien;
-
-    public String encodedCCCDFrontImage;
-    public String encodedCCCDBackImage;
     private RoundedImageView imgCCCDFront;
     private RoundedImageView imgCCCDBack;
     private ImageView imgAddCCCDFront;
     private ImageView imgAddCCCDBack;
-
-    public String encodedContractFrontImage;
-    public String encodedContractBackImage;
     private RoundedImageView imgContractFront;
     private RoundedImageView imgContractBack;
     private ImageView imgAddContractFront;
     private ImageView imgAddContractBack;
-
     private int currentImageSelection;
-    private static final int IMAGE_SELECTION_NONE = 0;
-    private static final int IMAGE_SELECTION_CCCD_FRONT = 1;
-    private static final int IMAGE_SELECTION_CCCD_BACK = 2;
-    private static final int IMAGE_SELECTION_CONTRACT_FRONT = 3;
-    private static final int IMAGE_SELECTION_CONTRACT_BACK = 4;
-
     // Hàm truy cập thư viện để lấy ảnh
     public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -176,6 +171,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         tilNgayHetHan = binding.tilNgayHetHanHopDong;
         tilNgayTraTien = binding.tilNgayTraTienPhong;
         edtNgayTao = binding.edtNgayTaoHopDong;
+        edtTienPhong = binding.edtGiaPhong;
         edtNgayHetHan = binding.edtNgayHetHanHopDong;
         edtNgayTraTien = binding.edtNgayTraTienPhong;
         edtHanThanhToan = binding.edtHanThanhToan;
@@ -237,7 +233,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         presenter.setUpNameField(edtHoTen, tilHoTen);
 
-        saveContract();
+        binding.btnAddContract.setOnClickListener(v -> {
+            saveContract();
+        });
     }
 
     @Override
@@ -286,7 +284,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
     }
-
 
 
     @Override
@@ -365,10 +362,88 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
     @Override
     public void saveContract() {
-        binding.btnAddContract.setOnClickListener(v -> {
-            presenter.addContractToFirestore(new MainGuest());
-        });
+        String nameGuest = getStringFromEditText(edtHoTen);
+        String phoneGuest = getStringFromEditText(edtSoDienThoai);
+        String cccdNumber = getStringFromEditText(edtSoCCCD);
+        String dateOfBirth = getStringFromEditText(edtNgaySinh);
+        String gender = getStringFromAutoCompleteTextView(edtGioiTinh);
+        String totalMembers = getStringFromAutoCompleteTextView(edtTotalMembers);
+        String createDate = getStringFromEditText(edtNgayTao);
+        String expirationDate = getStringFromEditText(edtNgayHetHan);
+        String payDate = getStringFromEditText(edtNgayTraTien);
+        String roomPrice = getStringFromEditText(edtTienPhong);
+        String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
 
+        // Debug logs to print out values
+        System.out.println("Name Guest: " + nameGuest);
+        System.out.println("Phone Guest: " + phoneGuest);
+        System.out.println("CCCD Number: " + cccdNumber);
+        System.out.println("Date of Birth: " + dateOfBirth);
+        System.out.println("Gender: " + gender);
+        System.out.println("Total Members: " + totalMembers);
+        System.out.println("Create Date: " + createDate);
+        System.out.println("Expiration Date: " + expirationDate);
+        System.out.println("Pay Date: " + payDate);
+        System.out.println("Room Price: " + roomPrice);
+        System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
+
+        // Check if any required fields are empty and handle the error
+        if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
+                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || expirationDate.isEmpty() ||
+                payDate.isEmpty() || roomPrice.isEmpty() || daysUntilDueDateStr.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int daysUntilDueDate;
+        try {
+            daysUntilDueDate = Integer.parseInt(daysUntilDueDateStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(requireContext(), "Invalid number format for days until due date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        MainGuest mainGuest = new MainGuest();
+        mainGuest.setNameGuest(nameGuest);
+        mainGuest.setPhoneGuest(phoneGuest);
+        mainGuest.setCccdNumber(cccdNumber);
+        mainGuest.setDateOfBirth(dateOfBirth);
+        mainGuest.setGender(gender);
+        mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
+        mainGuest.setCreateDate(createDate);
+        mainGuest.setExpirationDate(expirationDate);
+        mainGuest.setPayDate(payDate);
+        mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
+        mainGuest.setDaysUntilDueDate(daysUntilDueDate);
+        mainGuest.setCccdImageFront(encodedCCCDFrontImage);
+        mainGuest.setCccdImageBack(encodedCCCDBackImage);
+        mainGuest.setContractImageFront(encodedContractFrontImage);
+        mainGuest.setContractImageBack(encodedContractBackImage);
+        mainGuest.setFileStatus(true);
+
+        presenter.addContractToFirestore(mainGuest);
+    }
+
+
+    private String getStringFromEditText(TextInputEditText editText) {
+        if (editText == null || editText.getText() == null) {
+            return "";
+        }
+        return editText.getText().toString().trim();
+    }
+
+    private String getStringFromEditText(EditText editText) {
+        if (editText == null || editText.getText() == null) {
+            return "";
+        }
+        return editText.getText().toString().trim();
+    }
+
+    private String getStringFromAutoCompleteTextView(AutoCompleteTextView autoCompleteTextView) {
+        if (autoCompleteTextView == null || autoCompleteTextView.getText() == null) {
+            return "";
+        }
+        return autoCompleteTextView.getText().toString().trim();
     }
 
     public boolean isAdded2() {
