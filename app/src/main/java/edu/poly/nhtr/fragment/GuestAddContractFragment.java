@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -102,6 +104,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
     private AppCompatButton btnAddContract;
     private AppCompatButton btnCancel;
+
+    private Dialog dialog;
+
     // Hàm truy cập thư viện để lấy ảnh
     public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -155,6 +160,8 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter = new GuestAddContractPresenter(this, requireContext());
+        dialog = new Dialog(requireActivity());
+
         initializeViews();
         setListeners();
     }
@@ -443,21 +450,30 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         MaterialButton btnCancel = dialog.findViewById(R.id.btn_cancel_save_contract);
         MaterialButton btnSave = dialog.findViewById(R.id.btn_confirm_save_contract);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
 
         btnSave.setOnClickListener(v -> {
-            boolean saveContractSuccessfully = saveContract();
-            if (saveContractSuccessfully) {
-                dialog.dismiss();
-                RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            } else {
-                dialog.dismiss();
-                Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
-            }
+            progressBar.setVisibility(View.VISIBLE);
+            btnSave.setVisibility(View.INVISIBLE);
+
+            new Handler().postDelayed(() -> {
+                boolean saveContractSuccessfully = saveContract();
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+                if (saveContractSuccessfully) {
+                    dialog.dismiss();
+                    RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+                } else {
+                    dialog.dismiss();
+                    Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }, 2000);
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -549,12 +565,19 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         MaterialButton btnNo = dialog.findViewById(R.id.btn_no_delete_contract);
         MaterialButton btnYes = dialog.findViewById(R.id.btn_yes_delete_contract);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
 
         btnNo.setOnClickListener(v -> dialog.dismiss());
         btnYes.setOnClickListener(v -> {
-            clearInputFields(); // Clear all the input fields
-            dialog.dismiss();
-            requireActivity().getSupportFragmentManager().popBackStack(); // Navigate back to the previous fragment
+            progressBar.setVisibility(View.VISIBLE);
+            btnYes.setVisibility(View.INVISIBLE);
+            new Handler().postDelayed(() -> {
+                clearInputFields();
+                dialog.dismiss();
+                progressBar.setVisibility(View.INVISIBLE);
+
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }, 1000);
         });
 
         dialog.show();
@@ -588,5 +611,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         encodedContractFrontImage = null;
         encodedContractBackImage = null;
     }
+
 
 }
