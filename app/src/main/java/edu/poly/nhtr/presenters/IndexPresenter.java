@@ -490,42 +490,48 @@ public class IndexPresenter {
                 });
     }
 
-    public void checkIndexes(String roomId, int month, int year, IndexCheckCallback callback) {
-        // Thay thế với logic fetch dữ liệu từ Firestore
+    public void checkIndexes(String indexID, int month, int year, IndexCheckCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_INDEX)
-                .whereEqualTo(Constants.KEY_HOME_ID, homeID)
-                .whereEqualTo(Constants.KEY_MONTH, month)
-                .whereEqualTo(Constants.KEY_YEAR, year)
+                .document(indexID) // Đổi thành document(indexID) để truy vấn theo ID
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    boolean isElectricityNewFilled = false;
-                    boolean isWaterNewFilled = false;
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        boolean isElectricityNewFilled = false;
+                        boolean isWaterNewFilled = false;
+                        DocumentSnapshot document = task.getResult();
 
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        String electricityIndexNew = document.getString(Constants.KEY_ELECTRICITY_INDEX_NEW);
-                        String waterIndexNew = document.getString(Constants.KEY_WATER_INDEX_NEW);
+                        if (document.exists()) {
+                            String electricityIndexNew = document.getString(Constants.KEY_ELECTRICITY_INDEX_NEW);
+                            String waterIndexNew = document.getString(Constants.KEY_WATER_INDEX_NEW);
 
-                        if (electricityIndexNew != null && !electricityIndexNew.equals("000000")) {
-                            isElectricityNewFilled = true;
+                            if (electricityIndexNew != null && !electricityIndexNew.equals("000000")) {
+                                isElectricityNewFilled = true;
+                            }
+                            if (waterIndexNew != null && !waterIndexNew.equals("000000")) {
+                                isWaterNewFilled = true;
+                            }
+                        } else {
+                            indexInterface.showToast("Document not found");
                         }
 
-                        if (waterIndexNew != null && !waterIndexNew.equals("000000")) {
-                            isWaterNewFilled = true;
-                        }
+                        callback.onCheckCompleted(isElectricityNewFilled, isWaterNewFilled);
+                    } else {
+                        indexInterface.showToast("Error getting document: " + task.getException());
+                        // Xử lý lỗi nếu cần thiết
+                        callback.onCheckCompleted(false, false);
                     }
-
-                    callback.onCheckCompleted(isElectricityNewFilled, isWaterNewFilled);
-                })
-                .addOnFailureListener(e -> {
-                    // Xử lý lỗi nếu cần thiết
-                    callback.onCheckCompleted(false, false);
                 });
     }
+
+
+
 
     public interface IndexCheckCallback {
         void onCheckCompleted(boolean isElectricityNewFilled, boolean isWaterNewFilled);
     }
+
+
 
 
     public void getCurrentListIndex(String homeId, int month, int year) {

@@ -63,6 +63,8 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         return new ViewHolder(binding);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull IndexAdapter.ViewHolder holder, int position) {
         Index indexModel = index_list.get(position);
@@ -70,13 +72,16 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         holder.binding.txtNameRoomIndex.setText(indexModel.getNameRoom());
 
         // Kiểm tra dữ liệu và cập nhật biểu tượng
-        indexPresenter.checkIndexes(indexModel.getRoomID(), indexModel.getMonth(), indexModel.getYear(), (isElectricityNewFilled, isWaterNewFilled) -> {
-            if (isElectricityNewFilled && isWaterNewFilled) {
-                holder.binding.imgIsFilled.setVisibility(View.VISIBLE);
-                holder.binding.imgIsNotFilled.setVisibility(View.GONE);
-            } else {
-                holder.binding.imgIsNotFilled.setVisibility(View.VISIBLE);
-                holder.binding.imgIsFilled.setVisibility(View.GONE);
+        indexPresenter.checkIndexes(indexModel.getIndexID(), indexModel.getMonth(), indexModel.getYear(), (isElectricityNewFilled, isWaterNewFilled) -> {
+            // Kiểm tra lại vị trí của ViewHolder để tránh cập nhật nhầm
+            if (holder.getAdapterPosition() == position) {
+                if (isElectricityNewFilled && isWaterNewFilled) {
+                    holder.binding.imgIsFilled.setVisibility(View.VISIBLE);
+                    holder.binding.imgIsNotFilled.setVisibility(View.GONE);
+                } else {
+                    holder.binding.imgIsNotFilled.setVisibility(View.VISIBLE);
+                    holder.binding.imgIsFilled.setVisibility(View.GONE);
+                }
             }
         });
 

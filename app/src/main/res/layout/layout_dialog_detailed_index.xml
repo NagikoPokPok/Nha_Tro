@@ -83,7 +83,9 @@
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp">
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="6">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_electricity_index_old"
@@ -126,7 +128,9 @@
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp">
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="6">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_electricity_index_new"
@@ -155,7 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Đã sử dụng: "
-                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/inter_medium"
                 android:textColor="@color/colorTextBlack"/>
@@ -171,10 +175,10 @@
 <!--                android:textAlignment="center"/>-->
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="120dp"
-                android:layout_height="50dp"
+                android:id="@+id/layout_electricity_index_calculated"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
                 app:hintEnabled="false"
-
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="20dp"
                 app:boxCornerRadiusBottomStart="20dp"
@@ -182,12 +186,15 @@
                 app:boxCornerRadiusTopStart="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
-                app:boxStrokeColor="@color/colorPrimary">
+                app:boxStrokeColor="@color/colorPrimary"
+                app:errorIconDrawable="@null"
+                app:errorEnabled="true"
+               >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_electricity_index_calculated"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
                     android:inputType="none"
                     android:focusable="false"
                     android:cursorVisible="false"
@@ -204,8 +211,8 @@
                 android:background="@drawable/background_index_unit"
                 android:padding="7dp"
                 android:textColor="@color/colorPrimary"
-                android:layout_marginStart="-49dp"
-                android:layout_gravity="center_vertical"/>
+                android:layout_marginStart="-89dp"
+                android:layout_marginTop="10dp"/>
 
 
 
@@ -213,10 +220,11 @@
 
 
         <View
+            android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="0.75dp"
             android:layout_weight="1"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="7dp"
             android:layout_marginBottom="15dp"
             android:background="@color/colorGray" />
 
@@ -247,6 +255,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_index_water"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
@@ -280,7 +289,9 @@
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp">
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="6">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_water_index_old"
@@ -323,7 +334,9 @@
                     app:boxCornerRadiusBottomEnd="20dp"
                     app:boxCornerRadiusBottomStart="20dp"
                     app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp">
+                    app:boxCornerRadiusTopStart="20dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="6">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_water_index_new"
@@ -334,15 +347,12 @@
                         android:maxLines="1"
                         android:maxLength="6"/>
                 </com.google.android.material.textfield.TextInputLayout>
-
-
             </LinearLayout>
-
-
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_water_index_used"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -352,14 +362,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Đã sử dụng: "
-                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/inter_medium"
                 android:textColor="@color/colorTextBlack"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="120dp"
-                android:layout_height="50dp"
+                android:id="@+id/layout_water_index_calculated"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:boxStrokeColor="@color/colorPrimary"
                 app:boxBackgroundMode="outline"
@@ -368,11 +379,14 @@
                 app:boxCornerRadiusTopEnd="20dp"
                 app:boxCornerRadiusTopStart="20dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="5dp">
+                android:layout_marginStart="5dp"
+                app:errorIconDrawable="@null"
+                app:errorEnabled="true"
+                app:backgroundTint="@null">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_water_index_calculated"
-                    android:layout_width="match_parent"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     android:focusable="false"
@@ -390,8 +404,8 @@
                 android:background="@drawable/background_index_unit"
                 android:padding="7dp"
                 android:textColor="@color/colorPrimary"
-                android:layout_marginStart="-49dp"
-                android:layout_gravity="center_vertical"/>
+                android:layout_marginStart="-89dp"
+                android:layout_marginTop="10dp"/>
 
 
 

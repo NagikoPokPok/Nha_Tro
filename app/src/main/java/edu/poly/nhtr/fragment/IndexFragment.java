@@ -122,39 +122,86 @@ public class IndexFragment extends Fragment implements IndexInterface {
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-        // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
-        indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
-            indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth + 1, currentYear, "init");
-        });
+        checkWaterIsIndexOrNot();
 
-        removeStatusOfCheckBoxFilterHome();
 
-        setupLayout();
-        setupRecyclerView();
-        //setupPagination();
-        setupDeleteRows();
-        setupMonthPicker();
-        setupSortIndexes();
-        setupFilterIndexes();
-        setupSearchEditText(binding.edtSearchIndex);
 
-        indexPresenter.checkWaterIsIndexOrNot(new IndexPresenter.OnCheckWaterIsIndexCompleteListener() {
-            @Override
-            public void onComplete(boolean isWaterIndex) {
-                if (isWaterIndex) {
-                    showToast("water is index");
-                    setWaterIsIndex(true);
-                } else {
-                    setWaterIsIndex(false);
-                    showToast("water is not index");
-                }
-            }
-        });
+
 
 
 
         return binding.getRoot();
     }
+
+    public void checkWaterIsIndexOrNot() {
+        indexPresenter.checkWaterIsIndexOrNot(new IndexPresenter.OnCheckWaterIsIndexCompleteListener() {
+            @Override
+            public void onComplete(boolean isWaterIndex) {
+                waterIsIndex = isWaterIndex;
+
+                // Gọi hàm fetchRoomsAndAddIndex và chờ hoàn tất trước khi gọi fetchIndexesAndStoreInList
+                indexPresenter.fetchRoomsAndAddIndex(homeID, task -> {
+                    indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth + 1, currentYear, "init");
+                });
+
+                removeStatusOfCheckBoxFilterHome();
+                setupRecyclerView();
+                setupLayout();
+
+                //setupPagination();
+                setupDeleteRows();
+                setupMonthPicker();
+                setupSortIndexes();
+                setupFilterIndexes();
+                setupSearchEditText(binding.edtSearchIndex);
+            }
+        });
+    }
+
+    private void setupLayout() {
+        if(waterIsIndex) {
+            binding.btnPrevious.setEnabled(false); // Disable previous button initially
+            binding.btnNext.setEnabled(true);
+
+            binding.btnNext.setOnClickListener(v -> {
+                if (!isNextClicked) {
+                    binding.layoutElectricityIndexOld.setVisibility(View.GONE);
+                    binding.layoutElectricityIndexNew.setVisibility(View.GONE);
+                    binding.layoutWaterIndexOld.setVisibility(View.VISIBLE);
+                    binding.layoutWaterIndexNew.setVisibility(View.VISIBLE);
+                    isNextClicked = true;
+                    adapter.setNextClicked(true);
+                    updateButtonsState();
+                }
+            });
+
+            binding.btnPrevious.setOnClickListener(v -> {
+                if (isNextClicked) {
+                    binding.layoutWaterIndexOld.setVisibility(View.GONE);
+                    binding.layoutWaterIndexNew.setVisibility(View.GONE);
+                    binding.layoutElectricityIndexOld.setVisibility(View.VISIBLE);
+                    binding.layoutElectricityIndexNew.setVisibility(View.VISIBLE);
+                    isNextClicked = false;
+                    adapter.setNextClicked(false);
+                    updateButtonsState();
+                }
+            });
+        }else{
+            binding.btnPrevious.setEnabled(false);
+            binding.btnNext.setEnabled(false);
+            binding.btnNext.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+
+            binding.layoutElectricityIndexOld.setVisibility(View.VISIBLE);
+            binding.layoutElectricityIndexNew.setVisibility(View.VISIBLE);
+            binding.layoutWaterIndexOld.setVisibility(View.GONE);
+            binding.layoutWaterIndexNew.setVisibility(View.GONE);
+            isNextClicked = false;
+            adapter.setNextClicked(false);
+
+        }
+    }
+
+
 
 
 
@@ -589,7 +636,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
     public void showErrorMessage(String message, int id) {
         TextInputLayout layout_name_home = dialog.findViewById(id);
         layout_name_home.setError(message);
-
     }
 
     private void addTextWatcher(TextInputEditText editText, TextInputLayout layout) {
@@ -622,13 +668,24 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         binding.txtTitleDialog.append(index.getNameRoom());
 
+        if(waterIsIndex){
+            binding.line.setVisibility(View.VISIBLE);
+            binding.titleWaterIndex.setVisibility(View.VISIBLE);
+            binding.layoutIndexWater.setVisibility(View.VISIBLE);
+            binding.layoutWaterIndexUsed.setVisibility(View.VISIBLE);
+        }else{
+            binding.line.setVisibility(View.GONE);
+            binding.titleWaterIndex.setVisibility(View.GONE);
+            binding.layoutIndexWater.setVisibility(View.GONE);
+            binding.layoutWaterIndexUsed.setVisibility(View.GONE);
+        }
+
         setupTextViews(binding);
         setupEditTexts(binding, index);
 
         setupIndexCalculations(binding, index);
 
-        dialog.setCancelable(true);
-        dialog.show();
+
 
         addTextWatcher(binding.edtElectricityIndexOld, binding.layoutEdtElectricityIndexOld);
         addTextWatcher(binding.edtElectricityIndexNew, binding.layoutEdtElectricityIndexNew);
@@ -646,35 +703,43 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding.btnSaveIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 final String indexID = index.getIndexID();
                 final String nameRoom = index.getNameRoom();
                 final String electricityIndexOld = Objects.requireNonNull(binding.edtElectricityIndexOld.getText()).toString();
                 final String electricityIndexNew = Objects.requireNonNull(binding.edtElectricityIndexNew.getText()).toString();
                 final String waterIndexOld = Objects.requireNonNull(binding.edtWaterIndexOld.getText()).toString();
                 final String waterIndexNew = Objects.requireNonNull(binding.edtWaterIndexNew.getText()).toString();
+                String electricityIndexUsed = Objects.requireNonNull(binding.edtElectricityIndexCalculated.getText()).toString();
+                String waterIndexUsed = Objects.requireNonNull(binding.edtWaterIndexCalculated.getText()).toString();
 
-                if(electricityIndexOld.length() != 6)
-                {
+                if(electricityIndexOld.length() != 6) {
                     showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_electricity_index_old);
-                }else if(electricityIndexNew.length() != 6){
+                    return;
+                } else if(electricityIndexNew.length() != 6) {
                     showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_electricity_index_new);
-                }else if(waterIndexOld.length() != 6){
+                    return;
+                } else if(waterIndexOld.length() != 6) {
                     showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_water_index_old);
-                }else if(waterIndexNew.length() != 6){
+                    return;
+                } else if(waterIndexNew.length() != 6) {
                     showErrorMessage("Hãy nhập đủ 6 chữ số", R.id.layout_edt_water_index_new);
+                    return;
                 }
 
-                // Kiểm tra các trường phải có đủ 6 số
-                if (electricityIndexOld.length() != 6 || electricityIndexNew.length() != 6 || waterIndexOld.length() != 6 || waterIndexNew.length() != 6) {
-                    // Hiển thị thông báo lỗi cho người dùng
-                    Toast.makeText(getContext(), "Vui lòng nhập đủ 6 số cho tất cả các trường.", Toast.LENGTH_SHORT).show();
-                    return; // Ngăn việc tiếp tục lưu
+                if(Integer.parseInt(electricityIndexUsed) <= 0) {
+                    showErrorMessage("Giá trị không được âm", R.id.layout_electricity_index_calculated);
+                    return;
+                }
+
+                if(Integer.parseInt(waterIndexUsed) <= 0) {
+                    showErrorMessage("Giá trị không được âm", R.id.layout_water_index_calculated);
+                    return;
                 }
 
                 // Lấy tháng và năm
                 int month = index.getMonth(); // Tháng trong Java Calendar bắt đầu từ 0, cần cộng thêm 1
                 int year = index.getYear();
-
 
                 // Thực hiện truy vấn để lấy roomID từ tên phòng
                 db.collection(Constants.KEY_COLLECTION_ROOMS)
@@ -702,6 +767,12 @@ public class IndexFragment extends Fragment implements IndexInterface {
         });
 
 
+
+
+        dialog.setCancelable(true);
+        dialog.show();
+
+
     }
 
     private void setupIndexCalculations(LayoutDialogDetailedIndexBinding binding, Index index) {
@@ -717,6 +788,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
         if (!indexWaterOld.isEmpty() && !indexWaterNew.isEmpty()) {
             int indexUsed = Integer.parseInt(indexWaterNew) - Integer.parseInt(indexWaterOld);
             binding.edtWaterIndexCalculated.setText(String.valueOf(indexUsed));
+            if (indexUsed <= 0) {
+                binding.layoutWaterIndexCalculated.setError("Giá trị không được âm");
+            } else {
+                binding.layoutWaterIndexCalculated.setErrorEnabled(false);
+            }
         }
     }
 
@@ -726,6 +802,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
         if (!indexElectricityOld.isEmpty() && !indexElectricityNew.isEmpty()) {
             int indexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
             binding.edtElectricityIndexCalculated.setText(String.valueOf(indexUsed));
+            if (indexUsed <= 0) {
+                binding.layoutElectricityIndexCalculated.setError("Giá trị không được âm");
+            } else {
+                binding.layoutElectricityIndexCalculated.setErrorEnabled(false);
+            }
         }
     }
 
@@ -811,34 +892,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
 
-    private void setupLayout() {
-        binding.btnPrevious.setEnabled(false); // Disable previous button initially
-        binding.btnNext.setEnabled(true);
 
-        binding.btnNext.setOnClickListener(v -> {
-            if (!isNextClicked) {
-                binding.layoutElectricityIndexOld.setVisibility(View.GONE);
-                binding.layoutElectricityIndexNew.setVisibility(View.GONE);
-                binding.layoutWaterIndexOld.setVisibility(View.VISIBLE);
-                binding.layoutWaterIndexNew.setVisibility(View.VISIBLE);
-                isNextClicked = true;
-                adapter.setNextClicked(isNextClicked);
-                updateButtonsState();
-            }
-        });
-
-        binding.btnPrevious.setOnClickListener(v -> {
-            if (isNextClicked) {
-                binding.layoutWaterIndexOld.setVisibility(View.GONE);
-                binding.layoutWaterIndexNew.setVisibility(View.GONE);
-                binding.layoutElectricityIndexOld.setVisibility(View.VISIBLE);
-                binding.layoutElectricityIndexNew.setVisibility(View.VISIBLE);
-                isNextClicked = false;
-                adapter.setNextClicked(isNextClicked);
-                updateButtonsState();
-            }
-        });
-    }
 
     private void setupRecyclerView() {
         binding.recyclerView.setHasFixedSize(true);
