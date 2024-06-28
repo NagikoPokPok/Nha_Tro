@@ -5,6 +5,7 @@ package edu.poly.nhtr.Class;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.Collator;
 import android.util.Base64;
 import android.util.Log;
 
@@ -14,8 +15,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -153,6 +156,7 @@ public class ServiceUtils {
                             Log.e("idService",service.getIdService() + " " + service.getIdHomeParent());
                             services.add(service);
                         }
+                        services.sort(Comparator.comparing(Service::getName, Collator.getInstance(new Locale("vi", "VN"))));
 
                     }
                     Log.e("ServicesCountInUtils", String.valueOf((long) services.size()));

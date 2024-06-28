@@ -6,6 +6,8 @@ import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.models.Service;
 

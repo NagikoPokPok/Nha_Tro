@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,9 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputType;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,8 +36,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import edu.poly.nhtr.Adapter.CustomListCheckBoxAdapter;
 import edu.poly.nhtr.Adapter.CustomSpinnerAdapter;
 import edu.poly.nhtr.Adapter.LibraryImageAdapter;
 import edu.poly.nhtr.Adapter.ServiceAdapter;
@@ -45,6 +50,7 @@ import edu.poly.nhtr.databinding.FragmentServiceBinding;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.listeners.ServiceListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.presenters.ServicePresenter;
 import edu.poly.nhtr.utilities.Constants;
@@ -61,6 +67,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     private Dialog dialogChild;
     private Dialog dialogConfirm;
     private List<Service> services;
+    private List<Room> listRoom;
 
 
 
@@ -80,6 +87,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         dialog = new Dialog(requireActivity());
         dialogChild = new Dialog(requireActivity());
         dialogConfirm = new Dialog(requireActivity());
+
+        listRoom = presenter.getListRoom(preferenceManager.getString(Constants.KEY_HOME_ID));
 
         setListener();
 
@@ -238,6 +247,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
         Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
         EditText edt_unit = dialog.findViewById(R.id.edt_unit);
+        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
         RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
@@ -256,6 +266,15 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
         spinner.setAdapter(adapter);
 
+        String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+        txt_feeBase.setText(titleOfFee);
+
+            //RecyclerView Apply for room
+        List<Boolean> checkedStates = presenter.getCheckedStates(listRoom);
+        CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+        recycler_applyFor.setAdapter(checkBoxAdapter);
+        recycler_applyFor.setVisibility(View.VISIBLE);
+
         //Xử lí button cho dialog
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,7 +290,10 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                     int price = Integer.parseInt(edt_fee.getText().toString());
                     String idHomeParent = preferenceManager.getString(Constants.KEY_HOME_ID);
                     Service service = new Service(idHomeParent, name.toString(), encodeImage.toString(), price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), true, true);
-                    presenter.saveToFirebase(service);
+                    presenter.saveToFirebase(service, listRoom, checkedStates);
+
+//                    presenter.ApplyServiceForRoom(name, listRoom, checkedStates);
+//                    presenter.applyServiceOfRoom(service, listRoom, checkedStates);
 
                 }
             }
@@ -283,33 +305,9 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 adapter.setSelectedPosition(position);
-                setFeedbackForUnit(position);
-            }
-
-            private void setFeedbackForUnit(int position) {
-                if(position==0){
-                    edt_unit.setText("Chỉ số");
-                    edt_unit.setInputType(InputType.TYPE_NULL);
-                    edt_unit.setFocusable(false);
-                    edt_unit.setCursorVisible(false);
-                } else if (position == 1) {
-                    edt_unit.setText("Phòng");
-                    edt_unit.setInputType(InputType.TYPE_NULL);
-                    edt_unit.setFocusable(false);
-                    edt_unit.setCursorVisible(false);
-                } else if (position == 2) {
-                    edt_unit.setText("Người");
-                    edt_unit.setInputType(InputType.TYPE_NULL);
-                    edt_unit.setFocusable(false);
-                    edt_unit.setCursorVisible(false);
-                }else {
-                    edt_unit.setText("");
-                    edt_unit.setHint("Ví dụ: Xe, cái,...");
-                    edt_unit.setInputType(InputType.TYPE_CLASS_TEXT);
-                    edt_unit.setFocusable(true);
-                    edt_unit.setCursorVisible(true);
-                    edt_unit.setFocusableInTouchMode(true);
-                }
+                setFeedbackForUnit(edt_unit, position);
+                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+                txt_feeBase.setText(titleOfFee);
             }
 
             @Override
@@ -380,134 +378,6 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_service, container, false);
-        // Kiểm tra xem Bundle có tồn tại hay không
-        if (getArguments() != null) {
-            // Nhận dữ liệu từ Bundle
-            Home home = (Home) getArguments().getSerializable("home");
-
-            // Sử dụng dữ liệu 'home' như mong muốn
-            // ...
-        }
-
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onServiceClicked(Service service) {
-
-    }
-
-    @Override
-    public void openPopup(View view, Service service, ItemServiceBinding binding) {
-
-    }
-
-    @Override
-    public void onServiceItemCLick(Service service, RecyclerView recyclerView, int position) {
-        //button apply service
-        Button use_service;
-
-        if(service.getApply()) setupDialog(dialog, R.layout.service_dialog_detail_service_used, Gravity.CENTER);
-        else setupDialog(dialog, R.layout.service_dialog_detail_service_unused, Gravity.CENTER);
-
-
-        //Ánh xạ id
-        ImageView exit = dialog.findViewById(R.id.img_exit);
-        ImageView image = dialog.findViewById(R.id.img_service);
-        TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
-        Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
-        EditText edt_unit = dialog.findViewById(R.id.edt_unit);
-        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
-        EditText edt_note = dialog.findViewById(R.id.edt_note);
-        RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
-        Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
-        Button btn_update = dialog.findViewById(R.id.btn_update_service);
-
-        // Set data for dialog
-        //Đổ dữ liệu cho dialog
-        txt_name.setText(service.getName());
-        image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
-
-        //Spinner
-        String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
-        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(service.getFee_base());
-        spinner.setEnabled(false);
-
-        edt_unit.setText(service.getUnit());
-
-        edt_fee.setText(""+service.getPrice());
-        edt_fee.setInputType(InputType.TYPE_NULL);
-        edt_fee.setFocusable(false);
-        edt_fee.setCursorVisible(false);
-
-        edt_note.setText(service.getNote());
-        edt_note.setHint("");
-        edt_note.setInputType(InputType.TYPE_NULL);
-        edt_note.setFocusable(false);
-        edt_note.setCursorVisible(false);
-
-        //Xử lí button cho dialog
-        exit.setVisibility(View.VISIBLE);
-        if(service.getApply()){
-            //Nút bỏ sử dụng
-            btn_delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    service.setApply(false);
-                    presenter.updateStatusOfApplyToFirebase(service);
-                    dialog.cancel();
-                    setRecyclerViewData();
-                }
-            });
-        }else{
-            //Ánh xạ id cho nút sử dụng và hiện nó lên
-            use_service = dialog.findViewById(R.id.btn_use_service);
-            use_service.setVisibility(View.VISIBLE);
-            // Set listener
-            use_service.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    service.setApply(true);
-                    presenter.updateStatusOfApplyToFirebase(service);
-                    dialog.cancel();
-                    setRecyclerViewData();
-                }
-            });
-            btn_delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openConfirmDeleteDialog(service);
-                }
-            });
-        }
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                openUpdateServiceDialog(service, recyclerView, position);
-            }
-
-        });
-
-
-    }
-
     private void openUpdateServiceDialog(Service service, RecyclerView recyclerView, int position) {
         setupDialog(dialog, R.layout.service_dialog_update_service, Gravity.CENTER);
 
@@ -518,6 +388,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
         EditText edt_unit = dialog.findViewById(R.id.edt_unit);
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
+        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
         RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
@@ -538,8 +409,22 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         spinner.setSelection(service.getFee_base());
 
         if(service.getFee_base()==3) edt_unit.setText(service.getUnit());
+        String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+        txt_feeBase.setText(titleOfFee);
         edt_fee.setText(""+service.getPrice());
         edt_note.setText(service.getNote());
+
+        List<Boolean> checkedStates = new ArrayList<>();
+        presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+            @Override
+            public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
+                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+                recycler_applyFor.setAdapter(checkBoxAdapter);
+                recycler_applyFor.setVisibility(View.VISIBLE);
+            }
+        });
+
+//        presenter.setRecyclerViewOfApplyFor(recycler_applyFor, requireActivity().getApplicationContext(), listRoom, service);
 
         //Xử lí button cho dialog
         exit.setVisibility(View.VISIBLE);
@@ -575,7 +460,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                     service.setPrice(price);
                     service.setNote(edt_note.getText().toString());
 
-                    presenter.updateService(service, recyclerView, position);
+                    presenter.updateService(service, recyclerView, position, listRoom, checkedStates);
 
                 }
             }
@@ -588,6 +473,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 adapter.setSelectedPosition(position);
                 setFeedbackForUnit(edt_unit, position);
+                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+                txt_feeBase.setText(titleOfFee);
             }
 
 
@@ -666,6 +553,176 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_service, container, false);
+        // Kiểm tra xem Bundle có tồn tại hay không
+        if (getArguments() != null) {
+            // Nhận dữ liệu từ Bundle
+            Home home = (Home) getArguments().getSerializable("home");
+
+            // Sử dụng dữ liệu 'home' như mong muốn
+            // ...
+        }
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onServiceClicked(Service service) {
+
+    }
+
+    @Override
+    public void openPopup(View view, Service service, ItemServiceBinding binding) {
+
+    }
+
+    @Override
+    public void onServiceItemCLick(Service service, RecyclerView recyclerView, int position) {
+        //button apply service
+        Button use_service;
+
+        if(service.getApply()) setupDialog(dialog, R.layout.service_dialog_detail_service_used, Gravity.CENTER);
+        else setupDialog(dialog, R.layout.service_dialog_detail_service_unused, Gravity.CENTER);
+
+
+        //Ánh xạ id
+        ImageView exit = dialog.findViewById(R.id.img_exit);
+        ImageView image = dialog.findViewById(R.id.img_service);
+        TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
+        Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
+        EditText edt_unit = dialog.findViewById(R.id.edt_unit);
+        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
+        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
+        EditText edt_note = dialog.findViewById(R.id.edt_note);
+        RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+        Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
+        Button btn_update = dialog.findViewById(R.id.btn_update_service);
+
+        // Set data for dialog
+        //Đổ dữ liệu cho dialog
+        txt_name.setText(service.getName());
+        image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
+
+        //Spinner
+        String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(service.getFee_base());
+        spinner.setEnabled(false);
+
+        edt_unit.setText(service.getUnit());
+
+        String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+        txt_feeBase.setText(titleOfFee);
+
+        edt_fee.setText(""+service.getPrice());
+        edt_fee.setInputType(InputType.TYPE_NULL);
+        edt_fee.setFocusable(false);
+        edt_fee.setCursorVisible(false);
+
+        edt_note.setText(service.getNote());
+        edt_note.setHint("");
+        edt_note.setInputType(InputType.TYPE_NULL);
+        edt_note.setFocusable(false);
+        edt_note.setCursorVisible(false);
+
+        List<Boolean> checkedStates = new ArrayList<>();
+        presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+            @Override
+            public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
+                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+                recycler_applyFor.setAdapter(checkBoxAdapter);
+                recycler_applyFor.setVisibility(View.VISIBLE);
+                recycler_applyFor.setClickable(false);
+                // Vô hiệu hóa sự kiện touch trên RecyclerView
+                recycler_applyFor.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                    @Override
+                    public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                        // Chặn tất cả các sự kiện touch
+                        return true;
+                    }
+
+                    @Override
+                    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                        // Không làm gì cả
+                    }
+
+                    @Override
+                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+                        // Không làm gì cả
+                    }
+                });
+            }
+        });
+
+        //Xử lí button cho dialog
+        exit.setVisibility(View.VISIBLE);
+        //Nút bỏ sử dụng
+        if(service.getApply()){
+            if(service.isElectricOrWater()){
+                btn_delete.setEnabled(false);
+//                btn_delete.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+                btn_delete.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1B1B1")));
+            }
+            else {
+                btn_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        service.setApply(false);
+                        presenter.updateStatusOfApplyToFirebase(service);
+                        dialog.cancel();
+                        setRecyclerViewData();
+                    }
+                });
+            }
+
+
+        }else{
+            //Ánh xạ id cho nút sử dụng và hiện nó lên
+            use_service = dialog.findViewById(R.id.btn_use_service);
+            use_service.setVisibility(View.VISIBLE);
+            // Set listener
+            use_service.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    service.setApply(true);
+                    presenter.updateStatusOfApplyToFirebase(service);
+                    dialog.cancel();
+                    setRecyclerViewData();
+                }
+            });
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openConfirmDeleteDialog(service);
+                }
+            });
+        }
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                openUpdateServiceDialog(service, recyclerView, position);
+            }
+
+        });
+
+
+    }
+
+    @Override
     public void onImageItemClick(ImageView imageView, Bitmap bitmap) {
         imageView.setImageBitmap(bitmap);
         dialogChild.dismiss();
@@ -720,7 +777,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     public void showResultUpdateService(Service service, RecyclerView recyclerView, int position) {
         ShowToast("Cập nhật thông tin thành công");
         setRecyclerViewData();
-        dialog.dismiss();
+        dialog.cancel();
 
         // Mô phỏng sự kiện click vào phần tử tại vị trí position
         recyclerView.post(() -> {

@@ -123,4 +123,9 @@ public class Service {
     public void setIdHomeParent(String idHomeParent) {
         this.idHomeParent = idHomeParent;
     }
+
+    public boolean isElectricOrWater() {
+        if (getName().equals("Điện")||getName().equals("Nước")) return true;
+        return false;
+    }
 }

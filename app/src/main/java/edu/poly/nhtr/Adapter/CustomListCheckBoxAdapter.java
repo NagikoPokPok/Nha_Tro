@@ -12,18 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.fragment.ServiceFragment;
+import edu.poly.nhtr.models.Room;
 
 public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCheckBoxAdapter.ViewHolder> {
 
-    private List<String> items;
-    private List<Boolean> checkedStates;
-    private LayoutInflater inflater;
+    private final List<Room> rooms;
+    private final List<Boolean> checkedStates;
+    private final LayoutInflater inflater;
+    private Boolean isClickable;
 
-    public CustomListCheckBoxAdapter(Context context, List<String> items, List<Boolean> checkedStates) {
-        this.items = items;
+    public CustomListCheckBoxAdapter(Context context, List<Room> rooms, List<Boolean> checkedStates) {
+        this.rooms = rooms;
         this.checkedStates = checkedStates;
         this.inflater = LayoutInflater.from(context);
+        this.isClickable = true;
     }
 
 
@@ -38,7 +40,7 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
     @Override
     public void onBindViewHolder(@NonNull CustomListCheckBoxAdapter.ViewHolder holder, int position) {
         // Đặt dữ liệu cho CheckBox
-        holder.checkBox.setText(items.get(position));
+        holder.checkBox.setText("Phòng " + rooms.get(position).getNameRoom());
         holder.checkBox.setChecked(checkedStates.get(position));
 
         // Thiết lập listener cho CheckBox
@@ -49,13 +51,31 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
             int currentPosition = holder.getAdapterPosition();
             if (currentPosition != RecyclerView.NO_POSITION) {
                 checkedStates.set(currentPosition, isChecked);
+
             }
         });
+
+        // Kiểm tra điều kiện để quyết định có cho phép click hay không
+        if (!isClickable) {
+            holder.itemView.setClickable(false);
+            holder.itemView.setEnabled(false);
+            holder.checkBox.setClickable(false);
+            holder.checkBox.setEnabled(false);
+        } else {
+            holder.itemView.setClickable(true);
+            holder.itemView.setEnabled(true);
+            holder.checkBox.setClickable(true);
+            holder.checkBox.setEnabled(true);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return rooms.size();
+    }
+
+    public void setClickable(Boolean clickable) {
+        isClickable = clickable;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -63,6 +83,7 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.checkBox);
+
         }
     }
 }

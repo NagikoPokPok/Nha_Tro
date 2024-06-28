@@ -43,9 +43,14 @@ public class Constants {
     public static final String KEY_SERVICE_ISDELETABLE = "serviceIsDeletable";
     public static final String KEY_SERVICE_ISAPPLY = "serviceIsApply";
 
+    // Key Room Service Information
+    public static final String KEY_COLLECTION_ROOM_SERVICES_INFORMATION = "roomServicesInformation";
+
+
     // Key Room
     public static final String KEY_ROOM_ID = "roomId";
     public static final String KEY_STATUS_PAID = "statusPaid";
+    public static final String KEY_SERVICE_OF_ROOM = "serviceOfRoom";
 
 
 

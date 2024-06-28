@@ -3,6 +3,7 @@ package edu.poly.nhtr.models;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Room  implements Serializable {
     public String nameRoom;
@@ -36,6 +37,11 @@ public class Room  implements Serializable {
     }
 
     public Room(){}
+
+    public Room(String nameRoom, String roomId) {
+        this.nameRoom = nameRoom;
+        this.roomId = roomId;
+    }
 
     public String getNameRoom() {
         return nameRoom;
@@ -95,4 +101,5 @@ public class Room  implements Serializable {
     public void setExistingHomes(HashMap<String, String> existingHomes) {
         this.existingRooms = existingHomes;
     }
+
 }

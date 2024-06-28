@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/img_exit"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/icon_exit"
+        android:layout_gravity="end"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:visibility="visible"
+        android:layout_alignParentEnd="true"/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_apllyService"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:overScrollMode="ifContentScrolls"
+            android:visibility="visible"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+    </ScrollView>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp">
+
+        <Button
+            android:id="@+id/btn_cancel_addNewService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Huỷ"
+            android:textColor="@color/colorButton"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            android:background="@drawable/custom_button_cancel"
+            android:layout_marginEnd="18dp"
+            android:fontFamily="@font/inter_medium"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_continue_addNewService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Tiếp tục"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:layout_marginStart="18dp"
+            android:fontFamily="@font/inter_medium"
+            android:background="@drawable/custom_button_add"
+            app:backgroundTint="@null"
+            />
+
+    </LinearLayout>
+</LinearLayout>

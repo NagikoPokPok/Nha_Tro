@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/img_exit"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/icon_exit"
+        android:layout_gravity="end"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:visibility="visible"
+        android:layout_alignParentEnd="true"/>
+
+    <ImageView
+        android:id="@+id/image_service"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-9dp"
+        app:backgroundTint="@null"
+        app:background="@null"
+        android:src="@drawable/image_service"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            style="@style/TEXT_MED_2"
+            android:textSize="18dp"
+            android:text="Dịch vụ: "/>
+        <TextView
+            android:id="@+id/name_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            style="@style/TEXT_MED_2"
+            android:textSize="18dp"
+            android:text="Điện"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            style="@style/TEXT_MED_2"
+            android:textSize="18dp"
+            android:text="Giá: "/>
+        <TextView
+            android:id="@+id/fee_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorButton"
+            android:textSize="18dp"
+            android:text="3.500đ/KWh"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingEnd="6dp"
+            style="@style/TEXT_MED_2"
+            android:textSize="18dp"
+            android:text="Nhập chỉ số cũ: "/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_unit"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_edittext"
+                android:visibility="visible"
+                android:imeOptions="actionNext"
+                android:inputType="none"
+                android:focusable="false"
+                android:cursorVisible="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp">
+
+        <Button
+            android:id="@+id/btn_delete_service"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_gravity="left"
+            android:text="Bỏ sử dụng"
+            android:textColor="@color/white"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@color/colorButton"
+            android:layout_marginEnd="9dp"
+            android:fontFamily="@font/inter_medium"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_update_service"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_gravity="right"
+            android:text="Cập nhật"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/inter_medium"
+            android:background="@drawable/custom_button"
+            app:backgroundTint="@null"
+            />
+
+    </LinearLayout>
+</LinearLayout>

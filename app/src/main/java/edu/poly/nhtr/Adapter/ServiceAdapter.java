@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,15 @@ import edu.poly.nhtr.models.Service;
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHolder> {
     private final List<Service> services;
     private LayoutInflater inflater;
+    Context context;
     private final ServiceListener listener;
-    private RecyclerView recyclerView;
+    private final RecyclerView recyclerView;
 
 
     public ServiceAdapter(Context context, List<Service> services, ServiceListener listener, RecyclerView recyclerView) {
         this.services = services;
         //this.inflater = LayoutInflater.from(context);
+        this.context = context;
         this.listener = listener;
         this.recyclerView = recyclerView;
     }
@@ -45,7 +48,10 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onServiceItemCLick(services.get(position), recyclerView, position);
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onServiceItemCLick(services.get(adapterPosition), recyclerView, adapterPosition);
+                }
             }
         });
     }
@@ -63,6 +69,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         }
 
         public void setServiceData(Service service){
+            if(context.getClass().getSimpleName().equals("MainDetailedRoomActivity")) binding.status.setVisibility(View.VISIBLE);
             binding.nameService.setText(service.getName());
             binding.imageService.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
             binding.feeService.setText(""+service.getPrice());
