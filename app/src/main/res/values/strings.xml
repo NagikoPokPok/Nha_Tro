@@ -185,5 +185,7 @@
     <string name="tim_kiem_phong_troo">Tìm kiếm phòng trọ</string>
     <string name="tim_kiem_phong_tro">Tìm kiếm phòng trọ</string>
     <string name="ten_phong">Tên phòng</string>
+    <string name="khong">Không</string>
+    <string name="co">Có</string>
 
 </resources>

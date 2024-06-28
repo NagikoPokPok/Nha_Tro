@@ -96,7 +96,7 @@
                 android:id="@+id/til_ten_khach"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ten_khach"
                 app:layout_constraintTop_toTopOf="@id/txt_ten_khach"
                 app:boxBackgroundMode="none">
@@ -115,7 +115,7 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/so_dien_thoai"
                 android:textSize="18sp"
@@ -136,24 +136,39 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/txt_so_dien_thoai"
                 app:layout_constraintStart_toEndOf="@id/txt_so_dien_thoai" />
 
-            <!--            Khung điền số điện thoại-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_so_dien_thoai"
+            <!-- Khung điền số điện thoại -->
+            <RelativeLayout
+                android:id="@+id/layout_so_dien_thoai"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_dien_thoai"
-                app:layout_constraintTop_toTopOf="@id/txt_so_dien_thoai"
-                app:boxBackgroundMode="none">
+                app:layout_constraintTop_toTopOf="@id/txt_so_dien_thoai">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_so_dien_thoai"
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_so_dien_thoai"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bottom_outline"
-                    android:autofillHints=""
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_toEndOf="@id/ccp"
+                    app:boxBackgroundMode="none">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_so_dien_thoai"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bottom_outline"
+                        android:autofillHints=""
+                        android:inputType="phone" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
+
 
             <!-- Số CCCD/CMND -->
             <TextView
@@ -161,12 +176,12 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/cccd_cmnd"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@id/til_so_dien_thoai"
-                app:layout_constraintTop_toTopOf="@id/til_so_dien_thoai" />
+                app:layout_constraintStart_toStartOf="@id/layout_so_dien_thoai"
+                app:layout_constraintTop_toTopOf="@id/layout_so_dien_thoai" />
 
             <!-- Dấu "*" -->
             <TextView
@@ -181,12 +196,12 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/txt_so_cmnd_cccd"
                 app:layout_constraintStart_toEndOf="@id/txt_so_cmnd_cccd" />
 
-            <!--            Khung điền tên-->
+            <!--            Khung điền CCCD-->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_so_cccd_cmnd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_cmnd_cccd"
                 app:layout_constraintTop_toTopOf="@id/txt_so_cmnd_cccd"
                 app:boxBackgroundMode="none">
@@ -205,7 +220,7 @@
                 android:id="@+id/layout_ngay_sinh_gioi_tinh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="90dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="@id/til_so_cccd_cmnd"
                 app:layout_constraintTop_toTopOf="@id/til_so_cccd_cmnd">
@@ -251,7 +266,8 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            >
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_ngay_sinh"
                             android:layout_width="match_parent"
@@ -289,6 +305,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="10dp"
+                        android:layout_marginTop="6dp"
                         app:layout_constraintBaseline_toBaselineOf="@id/txt_tong_thanh_vien"
                         app:layout_constraintStart_toEndOf="@id/txt_tong_thanh_vien">
 
@@ -327,7 +344,7 @@
                 android:id="@+id/layout_ngay_tao_hop_dong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="15dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_tao"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_tao">
 
@@ -739,35 +756,37 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_end="30dp" />
 
-            <!-- Nút lưu -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_add_contract"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/luu"
-                style="@style/BUTTON"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@id/btn_cancel"
-                app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
-                app:layout_constraintTop_toBottomOf="@id/layout_anh_hop_dong"
-                app:layout_constraintBottom_toTopOf="@id/guideline_bottom"/>
-
             <!-- Nút hủy -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:text="@string/huy"
                 style="@style/BUTTON_2"
                 android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@id/btn_add_contract"
+                app:layout_constraintStart_toStartOf="@+id/guideline_vertical"
+                app:layout_constraintTop_toBottomOf="@id/layout_anh_hop_dong"
+                app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
+                />
+            <!-- Nút lưu -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_add_contract"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/luu"
+                style="@style/BUTTON"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btn_add_contract"
+                app:layout_constraintStart_toEndOf="@id/btn_cancel"
                 app:layout_constraintTop_toBottomOf="@id/layout_anh_hop_dong"
                 app:layout_constraintBottom_toTopOf="@id/guideline_bottom"/>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

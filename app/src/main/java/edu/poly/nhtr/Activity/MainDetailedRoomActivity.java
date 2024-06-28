@@ -14,7 +14,9 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.Objects;
 
 import edu.poly.nhtr.Adapter.TabLayoutAdapter;
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainDetailedRoomBinding;
+import edu.poly.nhtr.fragment.GuestAddContractFragment;
 import edu.poly.nhtr.fragment.RoomBillFragment;
 import edu.poly.nhtr.fragment.RoomContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestContractFragment;
@@ -108,9 +110,20 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (currentFragment instanceof GuestAddContractFragment) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                fragmentManager.popBackStack();
+            } else {
+                Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        } else {
+            super.onBackPressed();  // Handle other cases normally
+        }
     }
+
 }

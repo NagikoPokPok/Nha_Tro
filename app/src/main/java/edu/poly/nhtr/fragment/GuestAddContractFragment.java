@@ -2,15 +2,21 @@ package edu.poly.nhtr.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,11 +27,16 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
+import com.hbb20.CountryCodePicker;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -59,6 +70,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private TextInputLayout tilHoTen;
     private TextInputEditText edtSoDienThoai;
     private TextInputLayout tilSoDienThoai;
+    private CountryCodePicker countryCodePicker;
     private TextInputEditText edtSoCCCD;
     private TextInputLayout tilSoCCCD;
     private TextInputEditText edtTienPhong;
@@ -87,6 +99,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private ImageView imgAddContractFront;
     private ImageView imgAddContractBack;
     private int currentImageSelection;
+
+    private AppCompatButton btnAddContract;
+    private AppCompatButton btnCancel;
     // Hàm truy cập thư viện để lấy ảnh
     public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -149,6 +164,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
 
+
     }
 
     @Override
@@ -162,8 +178,11 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtHoTen = binding.edtTenKhach;
         tilHoTen = binding.tilTenKhach;
         edtSoDienThoai = binding.edtSoDienThoai;
+        countryCodePicker = binding.ccp;
+        tilSoDienThoai = binding.tilSoDienThoai;
         edtSoCCCD = binding.edtSoCccdCmnd;
         tilNgaySinh = binding.tilNgaySinh;
+        tilSoCCCD = binding.tilSoCccdCmnd;
         edtNgaySinh = binding.edtNgaySinh;
         edtGioiTinh = binding.edtGioiTinh;
         edtTotalMembers = binding.edtTotalMembers;
@@ -187,6 +206,8 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         imgButtonLichNgayTao = binding.imgButtonCalendarTao;
         imgButtonLichNgayHetHan = binding.imgButtonCalendarHetHan;
         imgButtonLichNgayTraTien = binding.imgButtonCalendarNgayTraTienPhong;
+        btnAddContract = binding.btnAddContract;
+        btnCancel = binding.btnCancel;
     }
 
     private void setListeners() {
@@ -231,12 +252,20 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             pickImage.launch(presenter.prepareImageSelection());
         });
 
-        presenter.setUpNameField(edtHoTen, tilHoTen);
+       checkName();
+       checkPhoneNumber();
+       checkCCCDNumber();
 
-        binding.btnAddContract.setOnClickListener(v -> {
-            saveContract();
+        btnAddContract.setOnClickListener(v -> {
+            openSaveDialog();
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            openCancelSaveDialog();
         });
     }
+
+
 
     @Override
     public void showToast(String message) {
@@ -327,7 +356,12 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     }
 
     public void checkPhoneNumber() {
-        presenter.setUpNameField(edtSoDienThoai, tilSoDienThoai);
+        presenter.setUpPhoneNumberField(edtSoDienThoai, tilSoDienThoai, countryCodePicker);
+    }
+
+
+    public void checkCCCDNumber() {
+        presenter.setUpCCCDField(edtSoCCCD, tilSoCCCD);
     }
 
     @Override
@@ -449,4 +483,100 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     public boolean isAdded2() {
         return isAdded();
     }
+
+    private void openSaveDialog() {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_confirm_save_contract);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
+
+        MaterialButton btnCancel = dialog.findViewById(R.id.btn_cancel_save_contract);
+        MaterialButton btnSave = dialog.findViewById(R.id.btn_confirm_save_contract);
+
+        btnSave.setOnClickListener(v -> {
+            saveContract();
+            dialog.dismiss();
+            RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment); // Use the correct container ID
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void openCancelSaveDialog() {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_confirm_cancel_save_contract);
+
+        Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
+
+        MaterialButton btnNo = dialog.findViewById(R.id.btn_no_delete_contract);
+        MaterialButton btnYes = dialog.findViewById(R.id.btn_yes_delete_contract);
+
+        btnNo.setOnClickListener(v -> dialog.dismiss());
+        btnYes.setOnClickListener(v -> {
+            clearInputFields(); // Clear all the input fields
+            dialog.dismiss();
+            requireActivity().getSupportFragmentManager().popBackStack(); // Navigate back to the previous fragment
+        });
+
+        dialog.show();
+    }
+
+    private void clearInputFields() {
+        edtHoTen.setText("");
+        edtSoDienThoai.setText("");
+        edtSoCCCD.setText("");
+        edtNgaySinh.setText("");
+        edtGioiTinh.setText("");
+        edtTotalMembers.setText("");
+        edtNgayTao.setText("");
+        edtTienPhong.setText("");
+        edtNgayHetHan.setText("");
+        edtNgayTraTien.setText("");
+        edtHanThanhToan.setText("");
+
+        imgCCCDFront.setImageDrawable(null);
+        imgCCCDBack.setImageDrawable(null);
+        imgContractFront.setImageDrawable(null);
+        imgContractBack.setImageDrawable(null);
+
+        imgAddCCCDFront.setVisibility(View.VISIBLE);
+        imgAddCCCDBack.setVisibility(View.VISIBLE);
+        imgAddContractFront.setVisibility(View.VISIBLE);
+        imgAddContractBack.setVisibility(View.VISIBLE);
+
+        encodedCCCDFrontImage = null;
+        encodedCCCDBackImage = null;
+        encodedContractFrontImage = null;
+        encodedContractBackImage = null;
+    }
+
 }

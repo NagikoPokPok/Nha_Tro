@@ -17,6 +17,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.hbb20.CountryCodePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -144,6 +145,27 @@ public class GuestAddContractPresenter {
         });
     }
 
+
+
+
+
+
+    public ArrayAdapter<String> getGenderAdapter() {
+        String[] genderOptions = context.getResources().getStringArray(R.array.gender_options);
+        return new ArrayAdapter<>(context, R.layout.dropdown_layout, genderOptions);
+    }
+
+    public ArrayAdapter<String> getTotalMembersAdapter() {
+        String[] totalMembersOptions = context.getResources().getStringArray(R.array.numbers);
+        return new ArrayAdapter<>(context, R.layout.dropdown_layout, totalMembersOptions);
+    }
+
+    public Intent prepareImageSelection() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return intent;
+    }
+
     public void setUpNameField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
         textInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -162,43 +184,6 @@ public class GuestAddContractPresenter {
             }
         });
     }
-
-    public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
-        textInputEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                handlePhoneNumberChanged(s.toString().trim(), textInputLayout);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Do nothing
-            }
-        });
-    }
-
-    public ArrayAdapter<String> getGenderAdapter() {
-        String[] genderOptions = context.getResources().getStringArray(R.array.gender_options);
-        return new ArrayAdapter<>(context, R.layout.dropdown_layout, genderOptions);
-    }
-
-    public ArrayAdapter<String> getTotalMembersAdapter() {
-        String[] totalMembersOptions = context.getResources().getStringArray(R.array.numbers);
-        return new ArrayAdapter<>(context, R.layout.dropdown_layout, totalMembersOptions);
-    }
-
-    public Intent prepareImageSelection() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        return intent;
-    }
-
-
     public void handleNameChanged(String name, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
             Log.e("GuestAddContractPresenter", "TextInputLayout for name is null");
@@ -211,24 +196,85 @@ public class GuestAddContractPresenter {
         }
     }
 
-    public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout) {
+    public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp) {
+        if (textInputEditText == null || textInputLayout == null || ccp == null) {
+            Log.e("GuestAddContractPresenter", "One or more components are null");
+            return;
+        }
+
+        // Register the EditText with the CountryCodePicker
+        ccp.registerCarrierNumberEditText(textInputEditText);
+
+        // Add a TextWatcher to the EditText
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                handlePhoneNumberChanged(s.toString().trim(), textInputLayout, ccp);
+            }
+        });
+    }
+
+
+    public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp) {
         if (textInputLayout == null) {
             Log.e("GuestAddContractPresenter", "TextInputLayout for phone number is null");
             return;
         }
+
         if (TextUtils.isEmpty(phoneNumber)) {
-            textInputLayout.setError("Không được bỏ trống");
-        } else if (!Patterns.PHONE.matcher(phoneNumber).matches()) {
+            textInputLayout.setError("Số điện thoại không được để trống");
+            return;
+        }
+
+        // Validate phone number with CountryCodePicker
+        if (!ccp.isValidFullNumber()) {
             textInputLayout.setError("Số điện thoại không hợp lệ");
+        } else {
+            textInputLayout.setError(null); // Clear the error if valid
+        }
+    }
+
+
+    public void setUpCCCDField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+            private final int CCCD_LENGTH = 12;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                handleCCCDNumberChanged(s.toString().trim(), textInputLayout);
+            }
+        });
+    }
+    public void handleCCCDNumberChanged(String cccd, TextInputLayout textInputLayout) {
+        if (textInputLayout == null) {
+            Log.e("GuestAddContractPresenter", "TextInputLayout for CCCD is null");
+            return;
+        }
+        if (TextUtils.isEmpty(cccd)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (cccd.length() != 12) {
+            textInputLayout.setError("CCCD phải có đúng 12 chữ số");
         } else {
             textInputLayout.setError(null);
         }
     }
 
-
-    public void handleCCCDNumberChanged(String cccd) {
-        mainGuestListener.setCCCDNumberlErrorEnabled(cccd == null || cccd.isEmpty());
-    }
 
     public void addContractToFirestore(MainGuest mainGuest) {
         HashMap<String, Object> contract = new HashMap<>();
