@@ -42,4 +42,5 @@ public interface MainGuestListener {
     void setCCCDNumberlErrorEnabled(Boolean isEmpty);
 
     boolean saveContract();
+
 }
