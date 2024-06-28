@@ -2,8 +2,11 @@ package edu.poly.nhtr.presenters;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -595,8 +598,7 @@ public class IndexPresenter {
     }
 
 
-    public void filterIndexes(List<Index> indexList)
-    {
+    public void filterIndexes(List<Index> indexList) {
         if (indexList.isEmpty()) {
             indexInterface.hideButtonLoading(R.id.btn_confirm_apply);
             indexInterface.closeDialog();
@@ -607,4 +609,31 @@ public class IndexPresenter {
             indexInterface.setIndexList(indexList);
         }
     }
+
+
+    public void checkWaterIsIndexOrNot(OnCheckWaterIsIndexCompleteListener listener) {
+        db.collection(Constants.KEY_COLLECTION_SERVICES)
+                .whereEqualTo(Constants.KEY_SERVICE_PARENT_HOME_ID, homeID)
+                .whereEqualTo(Constants.KEY_SERVICE_NAME, "Nước")
+                .whereEqualTo(Constants.KEY_SERVICE_FEE_BASE, 0)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        boolean isWaterIndex = false;
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                isWaterIndex = true;
+                            }
+                        }
+                        listener.onComplete(isWaterIndex);
+                    }
+                });
+    }
+
+    // Interface for the callback
+    public interface OnCheckWaterIsIndexCompleteListener {
+        void onComplete(boolean isWaterIndex);
+    }
+
 }

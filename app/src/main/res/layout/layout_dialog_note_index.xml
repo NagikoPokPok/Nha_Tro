@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="12dp"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+   >
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ghi chú"
+            android:fontFamily="@font/inter_bold"
+            android:textColor="@color/colorTextBlack"
+            android:layout_gravity="center"
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp">
+
+            <ImageView
+                android:id="@+id/img_isFilled"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_check_circle"
+                android:backgroundTint="@color/colorGreen"
+                android:visibility="visible"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã cập nhật tất cả chỉ số mới"
+                android:fontFamily="@font/inter_light"
+                android:textColor="@color/colorTextBlack"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_cancel_filled"
+                android:backgroundTint="@color/colorButton"
+                android:visibility="visible"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chưa cập nhật tất cả chỉ số mới"
+                android:fontFamily="@font/inter_light"
+                android:textColor="@color/colorTextBlack"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"/>
+
+
+        </LinearLayout>
+
+
+
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:text="Đóng"
+            android:textColor="@color/colorButton"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            android:background="@drawable/custom_button_cancel"
+            android:fontFamily="@font/inter_medium"/>
+
+    </LinearLayout>
+
+</LinearLayout>

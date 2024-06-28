@@ -30,6 +30,7 @@ import edu.poly.nhtr.databinding.LayoutDialogDeleteHomeSuccessBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDeleteIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogFilterIndexBinding;
+import edu.poly.nhtr.databinding.LayoutDialogNoteIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
@@ -72,6 +73,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private PreferenceManager preferenceManager;
     private FragmentIndexBinding binding;
     private List<Index> list_index;
+
     private List<Index> currentListIndexes = new ArrayList<>();
 
     private boolean isNextClicked = false; // Track if Next button has been clicked
@@ -94,6 +96,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private boolean isWaterIndexOldAscending = false;
     private boolean isWaterIndexNewAscending = false;
     private boolean isNameRoomAscending = false;
+
+    private boolean waterIsIndex = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,12 +136,27 @@ public class IndexFragment extends Fragment implements IndexInterface {
         setupMonthPicker();
         setupSortIndexes();
         setupFilterIndexes();
-
         setupSearchEditText(binding.edtSearchIndex);
+
+        indexPresenter.checkWaterIsIndexOrNot(new IndexPresenter.OnCheckWaterIsIndexCompleteListener() {
+            @Override
+            public void onComplete(boolean isWaterIndex) {
+                if (isWaterIndex) {
+                    showToast("water is index");
+                    setWaterIsIndex(true);
+                } else {
+                    setWaterIsIndex(false);
+                    showToast("water is not index");
+                }
+            }
+        });
+
 
 
         return binding.getRoot();
     }
+
+
 
     public List<Index> getCurrentListIndexes() {
         return currentListIndexes;
@@ -1199,6 +1218,33 @@ public class IndexFragment extends Fragment implements IndexInterface {
         setCurrentListIndexes(indexList);
     }
 
+    @Override
+    public void setWaterIndex(boolean isUsed) {
+        setWaterIsIndex(isUsed);
+    }
+
+    @Override
+    public void showDialogNoteIndexStatus() {
+        LayoutDialogNoteIndexBinding binding = LayoutDialogNoteIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
+        setUpDialogConfirmation();
+
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public boolean isWaterIsIndex() {
+        return waterIsIndex;
+    }
+
+    public void setWaterIsIndex(boolean waterIsIndex) {
+        this.waterIsIndex = waterIsIndex;
+    }
+
     private void setUpDialogConfirmation() {
         Window window = dialog.getWindow();
         if (window != null) {
@@ -1217,4 +1263,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
         preferenceManager.removePreference("cbxByElectricityIndex2");
         preferenceManager.removePreference("cbxByElectricityIndex3");
     }
+
+
 }

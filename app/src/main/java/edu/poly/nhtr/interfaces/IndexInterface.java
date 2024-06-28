@@ -19,4 +19,6 @@ public interface IndexInterface {
     void showLayoutNoData();
     void hideLayoutNoData();
     void getListIndexes(List<Index> indexList);
+    void setWaterIndex(boolean isUsed);
+    void showDialogNoteIndexStatus();
 }

@@ -119,6 +119,9 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         holder.binding.btnEditIndex.setOnClickListener(v -> indexInterface.showDialogDetailedIndex(indexModel));
         holder.binding.btnDeleteIndex.setOnClickListener(v -> indexInterface.showDialogConfirmDeleteIndex(indexModel));
 
+        holder.binding.imgIsFilled.setOnClickListener(v -> indexInterface.showDialogNoteIndexStatus());
+        holder.binding.imgIsNotFilled.setOnClickListener(v -> indexInterface.showDialogNoteIndexStatus());
+
         //Delete many indexes
         holder.itemView.setOnClickListener(v -> {
             if (multiSelectMode) {
