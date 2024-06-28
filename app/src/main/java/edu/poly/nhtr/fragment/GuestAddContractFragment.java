@@ -84,7 +84,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private TextInputLayout tilNgayTraTien;
     private TextInputEditText edtNgayTao;
     private TextInputEditText edtNgayHetHan;
-    private TextInputEditText edtNgayTraTien;
+    private AutoCompleteTextView edtNgayTraTien;
     private GuestAddContractPresenter presenter;
     private ImageButton imgButtonLichNgaySinh;
     private ImageButton imgButtonLichNgayTao;
@@ -205,7 +205,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         imgButtonLichNgaySinh = binding.imgButtonCalendarNgaySinh;
         imgButtonLichNgayTao = binding.imgButtonCalendarTao;
         imgButtonLichNgayHetHan = binding.imgButtonCalendarHetHan;
-        imgButtonLichNgayTraTien = binding.imgButtonCalendarNgayTraTienPhong;
         btnAddContract = binding.btnAddContract;
         btnCancel = binding.btnCancel;
     }
@@ -213,10 +212,10 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private void setListeners() {
         presenter.setUpDropDownMenuGender();
         presenter.setUpDropDownMenuTotalMembers();
-        presenter.setUpDateField(tilNgaySinh, edtNgaySinh, imgButtonLichNgaySinh, getString(R.string.dd_mm_yyyy));
+        presenter.setUpDropDownMenuDays();
+        presenter.setUpDateOfBirthField(tilNgaySinh, edtNgaySinh, imgButtonLichNgaySinh, getString(R.string.dd_mm_yyyy));
         presenter.setUpDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao, getString(R.string.dd_mm_yyyy));
         presenter.setUpDateField(tilNgayHetHan, edtNgayHetHan, imgButtonLichNgayHetHan, getString(R.string.dd_mm_yyyy));
-        presenter.setUpDateField(tilNgayTraTien, edtNgayTraTien, imgButtonLichNgayTraTien, getString(R.string.dd_mm_yyyy));
 
         imgAddCCCDFront.setOnClickListener(v -> {
             currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;
@@ -336,6 +335,11 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtTotalMembers.setAdapter(presenter.getTotalMembersAdapter());
     }
 
+    @Override
+    public void setUpDropDownMenuDays() {
+        edtNgayTraTien.setAdapter(presenter.getDaysAdapter());
+    }
+
     private String encodeImage(Bitmap bitmap) {
         int previewWidth = 250;
         int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
@@ -363,6 +367,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     public void checkCCCDNumber() {
         presenter.setUpCCCDField(edtSoCCCD, tilSoCCCD);
     }
+
 
     @Override
     public void setNameErrorMessage(String message) {
@@ -393,71 +398,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     public void setCCCDNumberlErrorEnabled(Boolean isEmpty) {
         tilSoCCCD.setErrorEnabled(isEmpty);
     }
-
-    @Override
-    public void saveContract() {
-        String nameGuest = getStringFromEditText(edtHoTen);
-        String phoneGuest = getStringFromEditText(edtSoDienThoai);
-        String cccdNumber = getStringFromEditText(edtSoCCCD);
-        String dateOfBirth = getStringFromEditText(edtNgaySinh);
-        String gender = getStringFromAutoCompleteTextView(edtGioiTinh);
-        String totalMembers = getStringFromAutoCompleteTextView(edtTotalMembers);
-        String createDate = getStringFromEditText(edtNgayTao);
-        String expirationDate = getStringFromEditText(edtNgayHetHan);
-        String payDate = getStringFromEditText(edtNgayTraTien);
-        String roomPrice = getStringFromEditText(edtTienPhong);
-        String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
-
-        // Debug logs to print out values
-        System.out.println("Name Guest: " + nameGuest);
-        System.out.println("Phone Guest: " + phoneGuest);
-        System.out.println("CCCD Number: " + cccdNumber);
-        System.out.println("Date of Birth: " + dateOfBirth);
-        System.out.println("Gender: " + gender);
-        System.out.println("Total Members: " + totalMembers);
-        System.out.println("Create Date: " + createDate);
-        System.out.println("Expiration Date: " + expirationDate);
-        System.out.println("Pay Date: " + payDate);
-        System.out.println("Room Price: " + roomPrice);
-        System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
-
-        // Check if any required fields are empty and handle the error
-        if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
-                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || expirationDate.isEmpty() ||
-                payDate.isEmpty() || roomPrice.isEmpty() || daysUntilDueDateStr.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int daysUntilDueDate;
-        try {
-            daysUntilDueDate = Integer.parseInt(daysUntilDueDateStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Invalid number format for days until due date", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        MainGuest mainGuest = new MainGuest();
-        mainGuest.setNameGuest(nameGuest);
-        mainGuest.setPhoneGuest(phoneGuest);
-        mainGuest.setCccdNumber(cccdNumber);
-        mainGuest.setDateOfBirth(dateOfBirth);
-        mainGuest.setGender(gender);
-        mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
-        mainGuest.setCreateDate(createDate);
-        mainGuest.setExpirationDate(expirationDate);
-        mainGuest.setPayDate(payDate);
-        mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
-        mainGuest.setDaysUntilDueDate(daysUntilDueDate);
-        mainGuest.setCccdImageFront(encodedCCCDFrontImage);
-        mainGuest.setCccdImageBack(encodedCCCDBackImage);
-        mainGuest.setContractImageFront(encodedContractFrontImage);
-        mainGuest.setContractImageBack(encodedContractBackImage);
-        mainGuest.setFileStatus(true);
-
-        presenter.addContractToFirestore(mainGuest);
-    }
-
 
     private String getStringFromEditText(TextInputEditText editText) {
         if (editText == null || editText.getText() == null) {
@@ -505,19 +445,89 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         MaterialButton btnSave = dialog.findViewById(R.id.btn_confirm_save_contract);
 
         btnSave.setOnClickListener(v -> {
-            saveContract();
-            dialog.dismiss();
-            RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment); // Use the correct container ID
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            boolean saveContractSuccessfully = saveContract();
+            if (saveContractSuccessfully) {
+                dialog.dismiss();
+                RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            } else {
+                dialog.dismiss();
+                Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
+    }
+
+    @Override
+    public boolean saveContract() {
+        String nameGuest = getStringFromEditText(edtHoTen);
+        String phoneGuest = getStringFromEditText(edtSoDienThoai);
+        String cccdNumber = getStringFromEditText(edtSoCCCD);
+        String dateOfBirth = getStringFromEditText(edtNgaySinh);
+        String gender = getStringFromAutoCompleteTextView(edtGioiTinh);
+        String totalMembers = getStringFromAutoCompleteTextView(edtTotalMembers);
+        String createDate = getStringFromEditText(edtNgayTao);
+        String expirationDate = getStringFromEditText(edtNgayHetHan);
+        String payDate = getStringFromEditText(edtNgayTraTien);
+        String roomPrice = getStringFromEditText(edtTienPhong);
+        String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
+
+        // Debug logs to print out values
+        System.out.println("Name Guest: " + nameGuest);
+        System.out.println("Phone Guest: " + phoneGuest);
+        System.out.println("CCCD Number: " + cccdNumber);
+        System.out.println("Date of Birth: " + dateOfBirth);
+        System.out.println("Gender: " + gender);
+        System.out.println("Total Members: " + totalMembers);
+        System.out.println("Create Date: " + createDate);
+        System.out.println("Expiration Date: " + expirationDate);
+        System.out.println("Pay Date: " + payDate);
+        System.out.println("Room Price: " + roomPrice);
+        System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
+
+        // Check if any required fields are empty and handle the error
+        if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
+                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || expirationDate.isEmpty() ||
+                payDate.isEmpty() || roomPrice.isEmpty() || daysUntilDueDateStr.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        int daysUntilDueDate;
+        try {
+            daysUntilDueDate = Integer.parseInt(daysUntilDueDateStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(requireContext(), "Invalid number format for days until due date", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        MainGuest mainGuest = new MainGuest();
+        mainGuest.setNameGuest(nameGuest);
+        mainGuest.setPhoneGuest(phoneGuest);
+        mainGuest.setCccdNumber(cccdNumber);
+        mainGuest.setDateOfBirth(dateOfBirth);
+        mainGuest.setGender(gender);
+        mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
+        mainGuest.setCreateDate(createDate);
+        mainGuest.setExpirationDate(expirationDate);
+        mainGuest.setPayDate(payDate);
+        mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
+        mainGuest.setDaysUntilDueDate(daysUntilDueDate);
+        mainGuest.setCccdImageFront(encodedCCCDFrontImage);
+        mainGuest.setCccdImageBack(encodedCCCDBackImage);
+        mainGuest.setContractImageFront(encodedContractFrontImage);
+        mainGuest.setContractImageBack(encodedContractBackImage);
+        mainGuest.setFileStatus(true);
+
+        presenter.addContractToFirestore(mainGuest);
+        return true;
     }
 
     private void openCancelSaveDialog() {

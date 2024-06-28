@@ -2,7 +2,6 @@ package edu.poly.nhtr.listeners;
 
 import com.google.firebase.firestore.DocumentReference;
 
-import java.util.HashMap;
 import java.util.List;
 
 import edu.poly.nhtr.models.MainGuest;
@@ -26,6 +25,8 @@ public interface MainGuestListener {
     void setUpDropDownMenuGender();
     void setUpDropDownMenuTotalMembers();
 
+    void setUpDropDownMenuDays();
+
     void showErrorMessage(String message);
 
     void setNameErrorMessage(String message);
@@ -40,5 +41,5 @@ public interface MainGuestListener {
 
     void setCCCDNumberlErrorEnabled(Boolean isEmpty);
 
-    void saveContract();
+    boolean saveContract();
 }

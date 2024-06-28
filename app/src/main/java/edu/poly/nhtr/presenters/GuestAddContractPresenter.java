@@ -9,7 +9,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Patterns;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
@@ -19,6 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.hbb20.CountryCodePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -53,101 +54,9 @@ public class GuestAddContractPresenter {
         mainGuestListener.setUpDropDownMenuTotalMembers();
     }
 
-    public void setUpDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        imgButtonCalendar.setOnClickListener(v -> {
-            // Tạo DatePickerDialog
-            DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
-                String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
-                textInputEditText.setText(selectedDate);
-            }, year, month, day);
-            datePickerDialog.show();
-        });
-
-        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                textInputLayout.setHint("");
-            } else {
-                if (Objects.requireNonNull(textInputEditText.getText()).toString().isEmpty()) {
-                    textInputLayout.setHint(hint);
-                }
-            }
-        });
-
-        textInputEditText.addTextChangedListener(new TextWatcher() {
-            private String current = "";
-            private final Calendar cal = Calendar.getInstance();
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().equals(current)) {
-                    String clean = s.toString().replaceAll("\\D", "");
-                    String cleanCurr = current.replaceAll("\\D", "");
-
-                    int c1 = clean.length();
-                    int sel = c1; // Selection position (Vị trí được chọn)
-
-                    // Chiều dài tối đa cho phần định dạng ngày mà không có dấu gạch chéo
-                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
-
-                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
-                        sel++;
-                    }
-
-                    if (clean.equals(cleanCurr)) sel--;
-
-                    if (clean.length() < REQUIRED_DATE_LENGTH) {
-                        String ddmmyyyy = "DDMMYYYY";
-                        clean = clean + ddmmyyyy.substring(clean.length());
-                    } else {
-                        int day = Integer.parseInt(clean.substring(0, 2));
-                        int month = Integer.parseInt(clean.substring(2, 4));
-                        int year = Integer.parseInt(clean.substring(4, 8));
-
-                        if (month > 12) month = 12;
-                        cal.set(Calendar.MONTH, month - 1);
-                        Calendar c = Calendar.getInstance();
-                        year = (year < 1900) ? 1900 : Math.min(year, c.get(Calendar.YEAR));
-                        cal.set(Calendar.YEAR, year);
-
-                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
-                        clean = String.format(Locale.getDefault(), "%02d%02d%02d", day, month, year);
-                    }
-
-                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
-                            clean.substring(2, 4),
-                            clean.substring(4, 8));
-
-                    sel = Math.max(sel, 0);
-                    current = clean;
-                    textInputEditText.setText(current);
-                    textInputEditText.setSelection(Math.min(sel, current.length()));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!s.toString().isEmpty()) {
-                    textInputLayout.setHint("");
-                } else {
-                    textInputLayout.setHint(hint);
-                }
-            }
-        });
+    public void setUpDropDownMenuDays() {
+        mainGuestListener.setUpDropDownMenuDays();
     }
-
-
-
-
 
 
     public ArrayAdapter<String> getGenderAdapter() {
@@ -158,6 +67,11 @@ public class GuestAddContractPresenter {
     public ArrayAdapter<String> getTotalMembersAdapter() {
         String[] totalMembersOptions = context.getResources().getStringArray(R.array.numbers);
         return new ArrayAdapter<>(context, R.layout.dropdown_layout, totalMembersOptions);
+    }
+
+    public ArrayAdapter<String> getDaysAdapter() {
+        String[] daysOptions = context.getResources().getStringArray(R.array.days);
+        return new ArrayAdapter<>(context, R.layout.dropdown_layout, daysOptions);
     }
 
     public Intent prepareImageSelection() {
@@ -243,8 +157,6 @@ public class GuestAddContractPresenter {
 
     public void setUpCCCDField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
         textInputEditText.addTextChangedListener(new TextWatcher() {
-            private String current = "";
-            private final int CCCD_LENGTH = 12;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -275,6 +187,224 @@ public class GuestAddContractPresenter {
         }
     }
 
+    public void setUpDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        imgButtonCalendar.setOnClickListener(v -> {
+            // Tạo DatePickerDialog
+            DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
+                String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
+                textInputEditText.setText(selectedDate);
+            }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                textInputLayout.setHint("");
+            } else {
+                if (Objects.requireNonNull(textInputEditText.getText()).toString().isEmpty()) {
+                    textInputLayout.setHint(hint);
+                } else {
+                    textInputLayout.setHint("");
+                }
+            }
+        });
+
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+            private final Calendar cal = Calendar.getInstance();
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1; // Selection position (Vị trí được chọn)
+
+                    // Chiều dài tối đa cho phần định dạng ngày mà không có dấu gạch chéo
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < REQUIRED_DATE_LENGTH) {
+                        String ddmmyyyy = "DDmmYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        Calendar c = Calendar.getInstance();
+                        year = (year < 1900) ? 1900 : Math.min(year, c.get(Calendar.YEAR));
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%02d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    textInputEditText.setText(current);
+                    textInputEditText.setSelection(Math.min(sel, current.length()));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    textInputLayout.setHint("");
+                } else {
+                    textInputLayout.setHint(hint);
+                }
+            }
+        });
+    }
+
+
+    public void handleDateOfBirthChanged(String dateOfBirth, TextInputLayout textInputLayout) {
+        if (textInputLayout == null) {
+            Log.e("GuestAddContractPresenter", "TextInputLayout for date of birth is null");
+            return;
+        }
+        if (TextUtils.isEmpty(dateOfBirth)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            simpleDateFormat.setLenient(false);
+            try {
+                Date dob = simpleDateFormat.parse(dateOfBirth); // Date of birth
+                Calendar calDob = Calendar.getInstance();
+                calDob.setTime(dob);
+                Calendar today = Calendar.getInstance();
+                int year = today.get(Calendar.YEAR) - calDob.get(Calendar.YEAR);
+                if (today.get(Calendar.DAY_OF_YEAR) < calDob.get(Calendar.DAY_OF_YEAR)) {
+                    year--;
+                }
+                if (year < 16) {
+                    textInputLayout.setError("Tuổi chủ phòng phải lớn hơn hoặc bằng 18");
+                } else {
+                    textInputLayout.setError(null);
+                }
+            } catch (ParseException e) {
+                textInputLayout.setError("Ngày sinh không hợp lệ");
+            }
+        }
+    }
+
+    public void setUpDateOfBirthField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        imgButtonCalendar.setOnClickListener(v -> {
+            // Create DatePickerDialog
+            DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
+                String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
+                textInputEditText.setText(selectedDate);
+                handleDateOfBirthChanged(selectedDate, textInputLayout); // Validate date of birth when date is selected
+            }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                textInputLayout.setHint("");
+            } else {
+                if (Objects.requireNonNull(textInputEditText.getText()).toString().isEmpty()) {
+                    textInputLayout.setHint(hint);
+                }
+            }
+        });
+
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+            private final Calendar cal = Calendar.getInstance();
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1; // Selection position (Vị trí được chọn)
+
+                    // Maximum length for day and month formatting without slashes
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < 8) {
+                        String ddmmyyyy = "DDmmYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        Calendar c = Calendar.getInstance();
+                        year = (year < 1900) ? 1900 : Math.min(year, c.get(Calendar.YEAR));
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%02d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    textInputEditText.setText(current);
+                    textInputEditText.setSelection(Math.min(sel, current.length()));
+                    handleDateOfBirthChanged(current, textInputLayout); // Validate date of birth as text changes
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    textInputLayout.setHint("");
+                } else {
+                    textInputLayout.setHint(hint);
+                }
+            }
+        });
+    }
 
     public void addContractToFirestore(MainGuest mainGuest) {
         HashMap<String, Object> contract = new HashMap<>();
@@ -326,9 +456,7 @@ public class GuestAddContractPresenter {
                     getMainGuest("add");
                     mainGuestListener.showToast("Thêm hợp đồng thành công");
                 })
-                .addOnFailureListener(e -> {
-                    mainGuestListener.showToast("Thêm hợp đồng thất bại");
-                });
+                .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
 
     }
 
