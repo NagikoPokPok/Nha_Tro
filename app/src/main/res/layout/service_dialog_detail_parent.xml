@@ -237,10 +237,10 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/inter_medium"
                 />
-            <androidx.recyclerview.widget.RecyclerView
+            <edu.poly.nhtr.Class.CustomRecyclerView
                 android:id="@+id/recycler_apllyFor"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:overScrollMode="never"

@@ -19,7 +19,7 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
     private final List<Room> rooms;
     private final List<Boolean> checkedStates;
     private final LayoutInflater inflater;
-    private Boolean isClickable;
+    private final Boolean isClickable;
 
     public CustomListCheckBoxAdapter(Context context, List<Room> rooms, List<Boolean> checkedStates) {
         this.rooms = rooms;
@@ -40,7 +40,8 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
     @Override
     public void onBindViewHolder(@NonNull CustomListCheckBoxAdapter.ViewHolder holder, int position) {
         // Đặt dữ liệu cho CheckBox
-        holder.checkBox.setText("Phòng " + rooms.get(position).getNameRoom());
+        String roomName = "Phòng " + rooms.get(position).getNameRoom();
+        holder.checkBox.setText(roomName);
         holder.checkBox.setChecked(checkedStates.get(position));
 
         // Thiết lập listener cho CheckBox
@@ -74,9 +75,9 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
         return rooms.size();
     }
 
-    public void setClickable(Boolean clickable) {
-        isClickable = clickable;
-    }
+//    public void setClickable(Boolean clickable) {
+//        isClickable = clickable;
+//    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         CheckBox checkBox;

@@ -25,7 +25,9 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,7 @@ import edu.poly.nhtr.Adapter.CustomListCheckBoxAdapter;
 import edu.poly.nhtr.Adapter.CustomSpinnerAdapter;
 import edu.poly.nhtr.Adapter.LibraryImageAdapter;
 import edu.poly.nhtr.Adapter.ServiceAdapter;
+import edu.poly.nhtr.Class.CustomRecyclerView;
 import edu.poly.nhtr.Class.ServiceUtils;
 import edu.poly.nhtr.Class.SpacesItemDecoration;
 import edu.poly.nhtr.R;
@@ -250,7 +253,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
-        RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+        CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_apply = dialog.findViewById(R.id.btn_apply_service);
         TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
@@ -272,8 +275,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             //RecyclerView Apply for room
         List<Boolean> checkedStates = presenter.getCheckedStates(listRoom);
         CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
-        recycler_applyFor.setAdapter(checkBoxAdapter);
-        recycler_applyFor.setVisibility(View.VISIBLE);
+        setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
 
         //Xử lí button cho dialog
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -390,7 +392,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
-        RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+        CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_update = dialog.findViewById(R.id.btn_update_service);
         TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
@@ -419,8 +421,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             @Override
             public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
                 CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
-                recycler_applyFor.setAdapter(checkBoxAdapter);
-                recycler_applyFor.setVisibility(View.VISIBLE);
+                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
             }
         });
 
@@ -502,30 +503,37 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             }
         });
     }
+
+    private void setRecyclerViewApplySpeedy(CustomRecyclerView recyclerApplyFor, CustomListCheckBoxAdapter checkBoxAdapter) {
+        recyclerApplyFor.setAdapter(checkBoxAdapter);
+        recyclerApplyFor.setVisibility(View.VISIBLE);
+        recyclerApplyFor.setScrollEnabled(false);
+
+        //
+        customPosition(recyclerApplyFor, 3);
+
+    }
+
     private void setFeedbackForUnit(EditText edt_unit, int position) {
+        String text;
+        edt_unit.setInputType(InputType.TYPE_NULL);
+        edt_unit.setFocusable(false);
+        edt_unit.setCursorVisible(false);
         if (position == 0) {
-            edt_unit.setText("Chỉ số");
-            edt_unit.setInputType(InputType.TYPE_NULL);
-            edt_unit.setFocusable(false);
-            edt_unit.setCursorVisible(false);
+            text = "Chỉ số";
         } else if (position == 1) {
-            edt_unit.setText("Phòng");
-            edt_unit.setInputType(InputType.TYPE_NULL);
-            edt_unit.setFocusable(false);
-            edt_unit.setCursorVisible(false);
+            text = "Phòng";
         } else if (position == 2) {
-            edt_unit.setText("Người");
-            edt_unit.setInputType(InputType.TYPE_NULL);
-            edt_unit.setFocusable(false);
-            edt_unit.setCursorVisible(false);
+            text = "Người";
         } else {
-            edt_unit.setText("");
+            text = "";
             edt_unit.setHint("Ví dụ: Xe, cái,...");
             edt_unit.setInputType(InputType.TYPE_CLASS_TEXT);
             edt_unit.setFocusable(true);
             edt_unit.setCursorVisible(true);
             edt_unit.setFocusableInTouchMode(true);
         }
+        edt_unit.setText(text);
     }
 
     private void openConfirmDeleteDialog(Service service) {
@@ -597,7 +605,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
-        RecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+        CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
         Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
         Button btn_update = dialog.findViewById(R.id.btn_update_service);
 
@@ -636,8 +644,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             @Override
             public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
                 CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
-                recycler_applyFor.setAdapter(checkBoxAdapter);
-                recycler_applyFor.setVisibility(View.VISIBLE);
+                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
                 recycler_applyFor.setClickable(false);
                 // Vô hiệu hóa sự kiện touch trên RecyclerView
                 recycler_applyFor.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
