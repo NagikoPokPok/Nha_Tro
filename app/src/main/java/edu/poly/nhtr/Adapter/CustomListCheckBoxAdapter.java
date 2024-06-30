@@ -40,7 +40,11 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
     @Override
     public void onBindViewHolder(@NonNull CustomListCheckBoxAdapter.ViewHolder holder, int position) {
         // Đặt dữ liệu cho CheckBox
-        String roomName = "Phòng " + rooms.get(position).getNameRoom();
+        String roomName;
+        if(rooms.get(position).getNameRoom().contains("Phòng")){
+            roomName = " " + rooms.get(position).getNameRoom();
+        }
+        else roomName = "Phòng " + rooms.get(position).getNameRoom();
         holder.checkBox.setText(roomName);
         holder.checkBox.setChecked(checkedStates.get(position));
 
