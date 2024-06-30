@@ -510,7 +510,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         recyclerApplyFor.setScrollEnabled(false);
 
         //
-        customPosition(recyclerApplyFor, 3);
+//        customPosition(recyclerApplyFor, 3);
 
     }
 

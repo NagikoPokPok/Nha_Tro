@@ -40,12 +40,29 @@ public class CustomRecyclerView extends RecyclerView {
     protected void onMeasure(int widthSpec, int heightSpec) {
         if (!isScrollEnabled) {
             int height = 0;
-            for (int i = 0; i < getAdapter().getItemCount()/3 + getAdapter().getItemCount()%3 +1; i++) {
-                ViewHolder holder = getAdapter().createViewHolder(this, getAdapter().getItemViewType(i));
-                getAdapter().onBindViewHolder(holder, i);
-                holder.itemView.measure(widthSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                height += holder.itemView.getMeasuredHeight();
+            RecyclerView.Adapter adapter = getAdapter();
+            int itemCount = adapter.getItemCount();
+
+            int spanCount = 3;  // Số cột
+            int rowCount = (int) Math.ceil((double) itemCount / spanCount);  // Số hàng
+
+            for (int i = 0; i < rowCount; i++) {
+                int maxHeightInRow = 0;
+                for (int j = 0; j < spanCount; j++) {
+                    int position = i * spanCount + j;
+                    if (position < itemCount) {
+                        ViewHolder holder = adapter.createViewHolder(this, adapter.getItemViewType(position));
+                        adapter.onBindViewHolder(holder, position);
+                        holder.itemView.measure(widthSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                        int itemHeight = holder.itemView.getMeasuredHeight();
+                        if (itemHeight > maxHeightInRow) {
+                            maxHeightInRow = itemHeight;
+                        }
+                    }
+                }
+                height += maxHeightInRow;
             }
+
             heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
         }
         super.onMeasure(widthSpec, heightSpec);
