@@ -8,6 +8,7 @@ public class Index {
     String electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew;
     int month, year;
     Date dateObject;
+    Boolean waterIsIndex;
 
     public String getRoomID() {
         return roomID;
@@ -21,7 +22,15 @@ public class Index {
         this.dateObject = dateObject;
     }
 
-    public Index(String homeID, String indexID, String nameRoom, String electricityIndexOld, String electricityIndexNew, String waterIndexOld, String waterIndexNew, int month, int year) {
+    public Boolean getWaterIsIndex() {
+        return waterIsIndex;
+    }
+
+    public void setWaterIsIndex(Boolean waterIsIndex) {
+        this.waterIsIndex = waterIsIndex;
+    }
+
+    public Index(String homeID, String indexID, String nameRoom, String electricityIndexOld, String electricityIndexNew, String waterIndexOld, String waterIndexNew, int month, int year, boolean waterIsIndex) {
         this.homeID = homeID;
         this.indexID = indexID;
         this.nameRoom = nameRoom;
@@ -31,6 +40,7 @@ public class Index {
         this.waterIndexNew = waterIndexNew;
         this.month = month;
         this.year = year;
+        this.waterIsIndex = waterIsIndex;
         //this.dateObject = dateObject;
 
     }

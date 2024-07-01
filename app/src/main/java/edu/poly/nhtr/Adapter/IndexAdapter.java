@@ -72,7 +72,7 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
         holder.binding.txtNameRoomIndex.setText(indexModel.getNameRoom());
 
         // Kiểm tra dữ liệu và cập nhật biểu tượng
-        indexPresenter.checkIndexes(indexModel.getIndexID(), indexModel.getMonth(), indexModel.getYear(), (isElectricityNewFilled, isWaterNewFilled) -> {
+        indexPresenter.checkIndexes(indexModel.getIndexID(), indexModel.getWaterIsIndex(), (isElectricityNewFilled, isWaterNewFilled) -> {
             // Kiểm tra lại vị trí của ViewHolder để tránh cập nhật nhầm
             if (holder.getAdapterPosition() == position) {
                 if (isElectricityNewFilled && isWaterNewFilled) {

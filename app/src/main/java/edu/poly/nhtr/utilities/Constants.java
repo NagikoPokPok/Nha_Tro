@@ -63,6 +63,10 @@ public class Constants {
     public static final String KEY_WATER_INDEX_NEW = "waterIndexNew";
     public static final String KEY_MONTH = "month";
     public static final String KEY_YEAR = "year";
+    public static final String KEY_WATER_IS_INDEX = "waterIsIndex";
+    public static final String KEY_CBX_BY_WATER_INDEX_1 = "cbxByWaterIndex1";
+    public static final String KEY_CBX_BY_WATER_INDEX_2 = "cbxByWaterIndex2";
+    public static final String KEY_CBX_BY_WATER_INDEX_3 = "cbxByWaterIndex3";
 
 
     // Contract

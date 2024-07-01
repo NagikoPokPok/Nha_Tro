@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,42 +42,46 @@ public class IndexPresenter {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public void fetchRoomsAndAddIndex(String homeId, OnCompleteListener<Void> onCompleteListener) {
+    public void fetchRoomsAndAddIndex(String homeId, boolean waterIsIndex, OnCompleteListener<Void> onCompleteListener) {
         indexInterface.showLoading();
+
         db.collection(Constants.KEY_COLLECTION_ROOMS)
                 .whereEqualTo(Constants.KEY_HOME_ID, homeId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                            List<DocumentSnapshot> rooms = querySnapshot.getDocuments();
-                            int[] pendingTasks = {rooms.size()}; // Biến đếm số tác vụ còn lại
-                            for (DocumentSnapshot roomDoc : rooms) {
-                                String roomId = roomDoc.getId();
-                                String roomName = roomDoc.getString(Constants.KEY_NAME_ROOM);
-                                Date dateCreateRoom = roomDoc.getDate(Constants.KEY_TIMESTAMP);
-                                // Thêm index cho room này
-                                checkAndAddIndexToRoom(homeId, roomId, roomName, dateCreateRoom, () -> {
-                                    // Giảm biến đếm và kiểm tra nếu tất cả các tác vụ đã hoàn thành
-                                    pendingTasks[0]--;
-                                    if (pendingTasks[0] == 0) {
-                                        onCompleteListener.onComplete(null);
-                                    }
-                                });
+                    if (indexInterface.isAdded2()) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                List<DocumentSnapshot> rooms = querySnapshot.getDocuments();
+                                int[] pendingTasks = {rooms.size()}; // Biến đếm số tác vụ còn lại
+                                for (DocumentSnapshot roomDoc : rooms) {
+                                    String roomId = roomDoc.getId();
+                                    String roomName = roomDoc.getString(Constants.KEY_NAME_ROOM);
+                                    Date dateCreateRoom = roomDoc.getDate(Constants.KEY_TIMESTAMP);
+                                    // Thêm index cho room này
+                                    checkAndAddIndexToRoom(homeId, roomId, roomName, waterIsIndex, dateCreateRoom, () -> {
+                                        // Giảm biến đếm và kiểm tra nếu tất cả các tác vụ đã hoàn thành
+                                        pendingTasks[0]--;
+                                        if (pendingTasks[0] == 0) {
+                                            onCompleteListener.onComplete(null);
+                                        }
+                                    });
+                                }
+                            } else {
+                                Log.w("Firestore", "No rooms found for the given homeId.");
+                                onCompleteListener.onComplete(null);
                             }
                         } else {
-                            Log.w("Firestore", "No rooms found for the given homeId.");
+                            Log.w("Firestore", "Error getting documents.", task.getException());
                             onCompleteListener.onComplete(null);
                         }
-                    } else {
-                        Log.w("Firestore", "Error getting documents.", task.getException());
-                        onCompleteListener.onComplete(null);
                     }
                 });
+
     }
 
-    private void checkAndAddIndexToRoom(String homeId, String roomId, String roomName, Date dateRoom, Runnable onComplete) {
+    private void checkAndAddIndexToRoom(String homeId, String roomId, String roomName, Boolean waterIsIndex, Date dateRoom, Runnable onComplete) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
@@ -88,7 +93,7 @@ public class IndexPresenter {
                     if (task.isSuccessful()) {
                         DocumentSnapshot documentSnapshot = task.getResult();
                         if (documentSnapshot != null && !documentSnapshot.exists()) {
-                            addIndexToRoom(homeId, roomId, roomName, indexID, year, month, dateRoom, onComplete);
+                            addIndexToRoom(homeId, roomId, roomName, indexID, year, month, dateRoom, waterIsIndex, onComplete);
                         } else {
                             Log.d("Firestore", "Index already exists for room: " + roomId);
                             onComplete.run();
@@ -100,7 +105,7 @@ public class IndexPresenter {
                 });
     }
 
-    public void addIndexToRoom(String homeId, String roomId, String roomName, String indexID, int year, int month, Date date, Runnable onComplete) {
+    public void addIndexToRoom(String homeId, String roomId, String roomName, String indexID, int year, int month, Date date, Boolean waterIsIndex, Runnable onComplete) {
         Map<String, Object> indexData = new HashMap<>();
         indexData.put(Constants.KEY_HOME_ID, homeId);
         indexData.put(Constants.KEY_ROOM_ID, roomId);
@@ -112,10 +117,11 @@ public class IndexPresenter {
         indexData.put(Constants.KEY_WATER_INDEX_OLD, "000000");
         indexData.put(Constants.KEY_WATER_INDEX_NEW, "000000");
         indexData.put(Constants.KEY_TIMESTAMP, date);
+        indexData.put(Constants.KEY_WATER_IS_INDEX, waterIsIndex);
 
         db.collection(Constants.KEY_COLLECTION_INDEX).document(indexID).set(indexData)
                 .addOnSuccessListener(aVoid -> {
-                    createNextMonthIndex(homeId, roomId, roomName, year, month);
+                    //createNextMonthIndex(homeId, roomId, roomName, year, month, waterIsIndex);
                     onComplete.run();
                 })
                 .addOnFailureListener(e -> {
@@ -124,7 +130,7 @@ public class IndexPresenter {
                 });
     }
 
-    private void createNextMonthIndex(String homeId, String roomId, String roomName, int currentYear, int currentMonth) {
+    private void createNextMonthIndex(String homeId, String roomId, String roomName, int currentYear, int currentMonth, boolean waterIsIndex) {
         int nextYear = (currentMonth == 12) ? currentYear + 1 : currentYear;
         int nextMonth = (currentMonth == 12) ? 1 : currentMonth + 1;
         String nextIndexID = roomId + "_" + nextYear + "_" + nextMonth;
@@ -153,6 +159,7 @@ public class IndexPresenter {
                         nextIndexData.put(Constants.KEY_WATER_INDEX_OLD, waterIndexNew != null ? waterIndexNew : "000000");
                         nextIndexData.put(Constants.KEY_WATER_INDEX_NEW, "000000");
                         nextIndexData.put(Constants.KEY_TIMESTAMP, date);
+                        nextIndexData.put(Constants.KEY_WATER_IS_INDEX, waterIsIndex);
 
                         db.collection(Constants.KEY_COLLECTION_INDEX).document(nextIndexID).set(nextIndexData)
                                 .addOnSuccessListener(aVoid -> {
@@ -166,79 +173,6 @@ public class IndexPresenter {
     }
 
 
-    public void fetchIndexesAndStoreInList(String homeId) {
-        indexInterface.showLoading();
-        List<Index> indexList = new ArrayList<>();
-
-        db.collection(Constants.KEY_COLLECTION_INDEX)
-                .whereEqualTo(Constants.KEY_HOME_ID, homeId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                            AtomicInteger count = new AtomicInteger(0); // Biến đếm số lượng chỉ số đã được xử lý
-
-                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                                String indexID = document.getId();
-                                String roomID = document.getString(Constants.KEY_ROOM_ID);
-                                String homeID = document.getString(Constants.KEY_HOME_ID);
-                                String nameRoom = document.getString(Constants.KEY_NAME_ROOM);
-                                String electricityIndexOld = document.getString(Constants.KEY_ELECTRICITY_INDEX_OLD);
-                                String electricityIndexNew = document.getString(Constants.KEY_ELECTRICITY_INDEX_NEW);
-                                String waterIndexOld = document.getString(Constants.KEY_WATER_INDEX_OLD);
-                                String waterIndexNew = document.getString(Constants.KEY_WATER_INDEX_NEW);
-
-                                int month = Integer.parseInt(document.getString(Constants.KEY_MONTH));
-                                int year = Integer.parseInt(document.getString(Constants.KEY_YEAR));
-                                Date date = document.getDate(Constants.KEY_TIMESTAMP);
-
-                                // Kiểm tra sự tồn tại của phòng
-                                db.collection(Constants.KEY_COLLECTION_ROOMS).document(roomID)
-                                        .get()
-                                        .addOnCompleteListener(roomTask -> {
-                                            if (roomTask.isSuccessful()) {
-                                                DocumentSnapshot roomDoc = roomTask.getResult();
-                                                if (roomDoc != null && roomDoc.exists()) {
-                                                    // Nếu phòng tồn tại, thêm chỉ số vào danh sách
-                                                    Index index = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year);
-                                                    index.setDateObject(date);
-                                                    indexList.add(index);
-                                                } else {
-                                                    // Nếu phòng không tồn tại, xóa chỉ số khỏi Firestore
-                                                    db.collection(Constants.KEY_COLLECTION_INDEX).document(indexID)
-                                                            .delete()
-                                                            .addOnSuccessListener(aVoid -> {
-                                                                Log.d("Firestore", "Index successfully deleted for non-existent room: " + roomID);
-                                                            })
-                                                            .addOnFailureListener(e -> {
-                                                                Log.w("Firestore", "Error deleting index for non-existent room: " + roomID, e);
-                                                            });
-                                                }
-                                            } else {
-                                                Log.w("Firestore", "Error checking room existence: " + roomID, roomTask.getException());
-                                            }
-
-                                            // Tăng biến đếm số lượng chỉ số đã được xử lý
-                                            count.incrementAndGet();
-
-                                            // Kiểm tra và cập nhật giao diện khi đã xử lý hết các chỉ số
-                                            if (count.get() == querySnapshot.size()) {
-                                                indexList.sort(Comparator.comparing(Index::getDateObject)); // Sắp xếp danh sách chỉ số theo thời gian
-                                                indexInterface.setIndexList(indexList);
-                                            }
-                                        });
-                            }
-                        } else {
-                            Log.w("Firestore", "No indexes found for the given homeId.");
-                            indexInterface.setIndexList(indexList); // Trả về danh sách trống
-                        }
-                    } else {
-                        Log.w("Firestore", "Error getting documents.", task.getException());
-                        indexInterface.setIndexList(indexList); // Trả về danh sách trống
-                    }
-                });
-    }
 
     public void saveIndex(Index index) {
         indexInterface.showButtonLoading(R.id.btn_save_index);
@@ -258,7 +192,8 @@ public class IndexPresenter {
                     int month = index.getMonth();
 
                     // Kiểm tra và cập nhật chỉ số của tháng tiếp theo
-                    updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month);
+                    updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month, index.getWaterIsIndex());
+                    //updateWaterIsIndexForNextMonth(index.getHomeID(), month, year, index.getWaterIsIndex());
                     fetchIndexesByMonthAndYear(index.getHomeID(), month, year, "init");
 
                     indexInterface.closeDialog();
@@ -270,7 +205,7 @@ public class IndexPresenter {
                 });
     }
 
-    private void updateNextMonthOldIndex(String homeId, String roomId, String nameRoom, int currentYear, int currentMonth) {
+    private void updateNextMonthOldIndex(String homeId, String roomId, String nameRoom, int currentYear, int currentMonth, Boolean waterIsIndex) {
         int nextYear = currentMonth == 12 ? currentYear + 1 : currentYear;
         int nextMonth = currentMonth == 12 ? 1 : currentMonth + 1;
         String nextIndexID = roomId + "_" + nextYear + "_" + nextMonth;
@@ -291,16 +226,20 @@ public class IndexPresenter {
                                         Map<String, Object> updateNextIndex = new HashMap<>();
                                         updateNextIndex.put(Constants.KEY_ELECTRICITY_INDEX_OLD, electricityIndexNew != null ? electricityIndexNew : "000000");
                                         updateNextIndex.put(Constants.KEY_WATER_INDEX_OLD, waterIndexNew != null ? waterIndexNew : "000000");
+                                        updateNextIndex.put(Constants.KEY_WATER_IS_INDEX, waterIsIndex);
 
                                         db.collection(Constants.KEY_COLLECTION_INDEX).document(nextIndexID)
                                                 .update(updateNextIndex)
-                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Updated next month's old index successfully"))
+                                                .addOnSuccessListener(aVoid -> {
+                                                    updateWaterIsIndexForNextMonth(homeID, currentMonth, currentYear, waterIsIndex);
+                                                    Log.d("Firestore", "Updated next month's old index successfully");
+                                                })
                                                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating next month's old index", e));
                                     }
                                 });
                     } else {
                         // Tạo chỉ số cho tháng tiếp theo nếu chưa tồn tại
-                        createNextMonthIndex(homeId, roomId, nameRoom, currentYear, currentMonth);
+                        createNextMonthIndex(homeId, roomId, nameRoom, currentYear, currentMonth, waterIsIndex);
                     }
                 });
     }
@@ -324,7 +263,7 @@ public class IndexPresenter {
                     int month = index.getMonth();
 
                     // Kiểm tra và cập nhật chỉ số của tháng tiếp theo
-                    updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month);
+                    updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month, index.getWaterIsIndex());
                     fetchIndexesByMonthAndYear(index.getHomeID(), month, year, "init");
 
                     indexInterface.closeDialog();
@@ -361,7 +300,7 @@ public class IndexPresenter {
                     .update(updateInfo)
                     .addOnSuccessListener(aVoid -> {
                         // Kiểm tra và cập nhật chỉ số của tháng tiếp theo
-                        updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month);
+                        updateNextMonthOldIndex(index.getHomeID(), index.getRoomID(), index.getNameRoom(), year, month, index.getWaterIsIndex());
 
                         if (completedCount.incrementAndGet() == totalIndexes) {
                             indexInterface.hideButtonLoading(R.id.btn_confirm_delete_index);
@@ -409,6 +348,7 @@ public class IndexPresenter {
                                 String waterIndexOld = document.getString(Constants.KEY_WATER_INDEX_OLD);
                                 String waterIndexNew = document.getString(Constants.KEY_WATER_INDEX_NEW);
                                 Date date = document.getDate(Constants.KEY_TIMESTAMP);
+                                Boolean waterIsIndex = document.getBoolean(Constants.KEY_WATER_IS_INDEX);
 
                                 // Kiểm tra sự tồn tại của phòng
                                 db.collection(Constants.KEY_COLLECTION_ROOMS).document(roomID)
@@ -418,7 +358,7 @@ public class IndexPresenter {
                                                 DocumentSnapshot roomDoc = roomTask.getResult();
                                                 if (roomDoc != null && roomDoc.exists()) {
                                                     // Nếu phòng tồn tại, thêm chỉ số vào danh sách
-                                                    Index index = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year);
+                                                    Index index = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year, waterIsIndex);
                                                     index.setDateObject(date);
                                                     indexList.add(index);
                                                 } else {
@@ -490,7 +430,7 @@ public class IndexPresenter {
                 });
     }
 
-    public void checkIndexes(String indexID, int month, int year, IndexCheckCallback callback) {
+    public void checkIndexes(String indexID, boolean waterIsIndex, IndexCheckCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_INDEX)
                 .document(indexID) // Đổi thành document(indexID) để truy vấn theo ID
@@ -508,7 +448,11 @@ public class IndexPresenter {
                             if (electricityIndexNew != null && !electricityIndexNew.equals("000000")) {
                                 isElectricityNewFilled = true;
                             }
-                            if (waterIndexNew != null && !waterIndexNew.equals("000000")) {
+                            if(waterIsIndex) {
+                                if (waterIndexNew != null && !waterIndexNew.equals("000000")) {
+                                    isWaterNewFilled = true;
+                                }
+                            }else{
                                 isWaterNewFilled = true;
                             }
                         } else {
@@ -530,8 +474,6 @@ public class IndexPresenter {
     public interface IndexCheckCallback {
         void onCheckCompleted(boolean isElectricityNewFilled, boolean isWaterNewFilled);
     }
-
-
 
 
     public void getCurrentListIndex(String homeId, int month, int year) {
@@ -558,6 +500,7 @@ public class IndexPresenter {
                                 String waterIndexOld = document.getString(Constants.KEY_WATER_INDEX_OLD);
                                 String waterIndexNew = document.getString(Constants.KEY_WATER_INDEX_NEW);
                                 Date date = document.getDate(Constants.KEY_TIMESTAMP);
+                                Boolean waterIsIndex = document.getBoolean(Constants.KEY_WATER_IS_INDEX);
 
                                 // Kiểm tra sự tồn tại của phòng
                                 db.collection(Constants.KEY_COLLECTION_ROOMS).document(roomID)
@@ -567,7 +510,7 @@ public class IndexPresenter {
                                                 DocumentSnapshot roomDoc = roomTask.getResult();
                                                 if (roomDoc != null && roomDoc.exists()) {
                                                     // Nếu phòng tồn tại, thêm chỉ số vào danh sách
-                                                    Index index = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year);
+                                                    Index index = new Index(homeID, indexID, nameRoom, electricityIndexOld, electricityIndexNew, waterIndexOld, waterIndexNew, month, year, waterIsIndex);
                                                     index.setDateObject(date);
                                                     indexList.add(index);
                                                 } else {
@@ -641,5 +584,119 @@ public class IndexPresenter {
     public interface OnCheckWaterIsIndexCompleteListener {
         void onComplete(boolean isWaterIndex);
     }
+
+    public void updateWaterIsIndex(String homeId, int month, int year, boolean waterIsIndex, OnCompleteListener<Void> onCompleteListener) {
+
+        db.collection(Constants.KEY_COLLECTION_INDEX)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeId)
+                .whereEqualTo(Constants.KEY_MONTH, month)
+                .whereEqualTo(Constants.KEY_YEAR, year)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            AtomicInteger count = new AtomicInteger(0); // Biến đếm số lượng chỉ số đã được xử lý
+                            int totalDocuments = querySnapshot.size(); // Tổng số tài liệu cần xử lý
+
+                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                DocumentReference docRef = document.getReference();
+                                docRef.update(Constants.KEY_WATER_IS_INDEX, waterIsIndex)
+                                        .addOnCompleteListener(updateTask -> {
+                                            if (updateTask.isSuccessful()) {
+                                                count.incrementAndGet();
+                                                // Kiểm tra xem tất cả các tài liệu đã được cập nhật chưa
+                                                if (count.get() == totalDocuments) {
+                                                    fetchIndexesByMonthAndYear(homeID, month, year, "init");
+                                                    onCompleteListener.onComplete(null);
+                                                }
+                                            } else {
+                                                Log.w("Firestore", "Error updating document.", updateTask.getException());
+                                            }
+                                        });
+                            }
+                        } else {
+                            fetchIndexesByMonthAndYear(homeID, month, year, "init"); // Return a empty list
+                            onCompleteListener.onComplete(null);
+                        }
+                    } else {
+                        fetchIndexesByMonthAndYear(homeID, month, year, "init");
+                        onCompleteListener.onComplete(null);
+                    }
+                });
+    }
+
+    private void updateWaterIsIndexForNextMonth(String homeId, int currentMonth, int currentYear, Boolean waterIsIndex) {
+        int nextYear = currentMonth == 12 ? currentYear + 1 : currentYear;
+        int nextMonth = currentMonth == 12 ? 1 : currentMonth + 1;
+
+        db.collection(Constants.KEY_COLLECTION_INDEX)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeId)
+                .whereEqualTo(Constants.KEY_MONTH, nextMonth)
+                .whereEqualTo(Constants.KEY_YEAR, nextYear)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            AtomicInteger count = new AtomicInteger(0); // Biến đếm số lượng chỉ số đã được xử lý
+                            int totalDocuments = querySnapshot.size(); // Tổng số tài liệu cần xử lý
+
+                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                DocumentReference docRef = document.getReference();
+                                docRef.update(Constants.KEY_WATER_IS_INDEX, waterIsIndex)
+                                        .addOnCompleteListener(updateTask -> {
+                                            if (updateTask.isSuccessful()) {
+                                                count.incrementAndGet();
+                                                // Kiểm tra xem tất cả các tài liệu đã được cập nhật chưa
+                                                if (count.get() == totalDocuments) {
+
+                                                }
+                                            } else {
+                                                Log.w("Firestore", "Error updating document.", updateTask.getException());
+
+                                            }
+                                        });
+                            }
+                        } else {
+                            Log.w("Firestore", "No indexes found for the given homeId.");
+
+                        }
+                    } else {
+
+                    }
+                });
+    }
+
+
+    public void checkWaterIsIndexByMonthYearOrNot(String homeID, int month, int year, OnCheckWaterIsIndexByMonthYearCompleteListener listener) {
+        db.collection(Constants.KEY_COLLECTION_INDEX)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeID)
+                .whereEqualTo(Constants.KEY_MONTH, month)
+                .whereEqualTo(Constants.KEY_YEAR, year)
+                .whereEqualTo(Constants.KEY_WATER_IS_INDEX, true)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        boolean isWaterIndex = false;
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                isWaterIndex = true;
+                            }
+                        }
+                        listener.onComplete(isWaterIndex);
+                    }
+                });
+    }
+
+    // Interface for the callback
+    public interface OnCheckWaterIsIndexByMonthYearCompleteListener {
+        void onComplete(boolean isWaterIndex);
+    }
+
+
+
+
 
 }

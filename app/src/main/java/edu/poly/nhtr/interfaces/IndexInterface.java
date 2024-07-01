@@ -21,4 +21,6 @@ public interface IndexInterface {
     void getListIndexes(List<Index> indexList);
     void setWaterIndex(boolean isUsed);
     void showDialogNoteIndexStatus();
+    boolean isAdded2();
+    void setupLayoutForNextMonth(String homeID, int month, int year);
 }
