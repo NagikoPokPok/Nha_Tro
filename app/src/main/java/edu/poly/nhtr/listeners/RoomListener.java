@@ -1,5 +1,6 @@
 package edu.poly.nhtr.listeners;
 
+import android.view.ActionMode;
 import android.view.View;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -38,4 +39,7 @@ public interface RoomListener {
 
     void getListRooms(List<Room> listRoom);
     void noRoomData();
+    void setDelectAllUI();
+    void openDeleteListDialog(List<Room> listRoom);
+    void dialogAndModeClose(ActionMode mode);
 }

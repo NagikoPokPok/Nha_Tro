@@ -22,11 +22,13 @@ import java.util.List;
 
 import edu.poly.nhtr.Activity.MainViewModel;
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.databinding.FragmentRoomBinding;
 import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.databinding.ItemContainerRoomBinding;
 import edu.poly.nhtr.fragment.RoomFragment;
 import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Room;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder>  {
@@ -36,9 +38,19 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private final RoomListener roomListener;
     Fragment fragment;
     MainViewModel mainViewModel;
+    private boolean isCheckBoxClicked = false;
+    private boolean isDeleteClicked = false;
     boolean isEnabled = false;
     boolean isSelectAll = false;
-    ArrayList<Room> selectList = new ArrayList<>();
+    public List<Room> selectList = new ArrayList<>();
+    public List<Room> getSelectList() {
+        return selectList;
+    }
+
+    public void setSelectList(List<Room> selectList) {
+        this.selectList = selectList;
+    }
+
     boolean[] isVisible;
 
     public RoomAdapter(List<Room> rooms, RoomListener roomListener, RoomFragment roomFragment) {
@@ -57,6 +69,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 false);
         mainViewModel = ViewModelProviders.of(fragment)
                 .get(MainViewModel.class);
+        //roomListener.deleteListAll(selectList);
+        //updateList();
         return new RoomViewHolder(itemContainerRoomBinding);
     }
 
@@ -67,86 +81,58 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(!isEnabled)
-                {
-                    roomListener.hideFrameTop();
-                    // Hiển thị menu delete lên
-                    ActionMode.Callback callback = new ActionMode.Callback() {
-                        @Override
-                        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                            MenuInflater menuInflater = mode.getMenuInflater();
-                            menuInflater.inflate(R.menu.menu_delete_homes, menu);
-                            return true;
-                        }
-
-                        @Override
-                        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                            isEnabled = true;
-                            ClickItem(holder);
-                            toggleAllCheckboxes(true);
-                            notifyDataSetChanged(); // Câu lệnh dùng để yêu cầu cập nhật lại giao diện của toàn bộ danh sách.
-
-                            mainViewModel.getText().observe(fragment, new Observer<String>() {
-                                @Override
-                                public void onChanged(String s) {
-                                    mode.setTitle(String.format("Đã chọn %s nhà", s));
-                                }
-                            });
-                            return true;
-                        }
-
-                        @Override
-                        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                            int id = item.getItemId();
-                            if (id == R.id.menu_delete) {
-                                if(selectList.isEmpty())
-                                {
-                                    roomListener.showToast("Please select home to delete");
-                                }
-//                                else{
-//                                    roomListener.openDeleteListHomeDialog(selectList, mode);
-//                                }
-                                // Không gọi mode.finish() ở đây để giữ ActionMode hoạt động.
-//                            } else if (id == R.id.menu_select_all) {
-//                                if (selectList.size() == homes.size()) {
-//                                    isSelectAll = false;
-//                                    selectList.clear();
-//                                } else {
-//                                    isSelectAll = true;
-//                                    selectList.clear();
-//                                    selectList.addAll(homes);
-//                                }
-//                                mainViewModel.setText(String.valueOf(selectList.size()));
-//                                notifyDataSetChanged();
-                               }
-                            return true;
-                        }
-
-                        @Override
-                        public void onDestroyActionMode(ActionMode mode) {
-                            isEnabled = false;
-                            isSelectAll = false;
-                            selectList.clear();
-                            toggleAllCheckboxes(false);
-                            roomListener.showFrameTop();
-                            notifyDataSetChanged();
-
-                        }
-                    };
-                    ((AppCompatActivity) v.getContext()).startActionMode(callback);
-                }else{
-                    ClickItem(holder);
-                }
-                return true;
+                roomListener.setDelectAllUI();
+                holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
+                holder.binding.frmImage.setVisibility(View.GONE);
+                ClickItem(holder);
+                toggleAllCheckboxes(true);
+                updateList();
+                return false;
             }
         });
+            performCheckBoxes(holder, position);
+    }
+
+    public void performCheckBoxes(RoomAdapter.RoomViewHolder holder, int position) {
+        holder.binding.ivCheckBox.setOnClickListener(v -> {
+            if (holder.binding.ivCheckBox.isChecked()) {
+                // Item nào được setChecked laf true thì add vào list
+                selectList.add(rooms.get(holder.getAdapterPosition()));
+            } else {
+                selectList.remove(rooms.get(holder.getAdapterPosition()));
+            }
+            roomListener.showToast(selectList.size()+"");
+        });
+
+
+
+//        holder.itemView.setOnClickListener(v -> {
+//            if (isEnabled) { // Nếu thanh actionMode vẫn còn hiện
+//                ClickItem(holder);
+//            } else {
+//                roomListener.onRoomClicked(rooms.get(holder.getAdapterPosition()));
+//            }
+//        });
+
+        if (isSelectAll || isVisible[position]) {
+            // an nut 3 cham
+            holder.binding.frmImage.setVisibility(View.INVISIBLE);
+            // Lệnh này hiển thị check box lên cho toàn bộ item
+            holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
+            // Lệnh dưới này kiểm tra: Item nào có trong selectList thì sẽ được setChecked là true, ko có thì false
+            holder.binding.ivCheckBox.setChecked(selectList.contains(rooms.get(position))); // Hàm contains sẽ trả về kiểu false/true
+        } else { // Khi isVisible = false (khi gọi hàm onDestroyActionMode) thì cho toàn bộ ivCheckBox về false
+            holder.binding.ivCheckBox.setChecked(false);
+            holder.binding.ivCheckBox.setVisibility(View.GONE);
+            holder.binding.frmImage.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public int getItemCount() {
         return rooms.size();
     }
-    private void ClickItem(RoomAdapter.RoomViewHolder holder) {
+    public void ClickItem(RoomAdapter.RoomViewHolder holder) {
         // Item được click vào sẽ hiện check box true và được add vào trong selectList (cái này quan trọng)
         Room s = rooms.get(holder.getAdapterPosition());
         if(!holder.binding.ivCheckBox.isChecked())
@@ -157,14 +143,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             holder.binding.ivCheckBox.setChecked(false);
             selectList.remove(s);
         }
-        mainViewModel.setText(String.valueOf(selectList.size()));
+
     }
 
     private void toggleAllCheckboxes(boolean show) {
         Arrays.fill(isVisible, show);
-        // for (int i = 0; i < isVisible.length; i++) {
-        //            isVisible[i] = show;
-        //        }
+
     }
 
     public class RoomViewHolder extends RecyclerView.ViewHolder{
@@ -232,5 +216,19 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     }
     public int getLastActionPosition() {
         return lastActionPosition;
+    }
+
+
+    public void isDeleteClicked(boolean isClicked) {
+        isDeleteClicked = isClicked;
+        notifyDataSetChanged();
+    }
+    public void isCheckBoxClicked(boolean isClicked) {
+        isCheckBoxClicked = isClicked;
+        notifyDataSetChanged();
+    }
+    public void updateList() {
+        notifyDataSetChanged();
+
     }
 }

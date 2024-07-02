@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.TypefaceSpan;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,13 +66,20 @@ public class RoomFragment extends Fragment implements RoomListener {
     private FragmentRoomBinding binding;
     private Dialog dialog;
     private RoomPresenter roomPresenter;
+    private RoomAdapter roomAdapter;
     private List<Room> currentListRooms = new ArrayList<>();
+
+    public RoomFragment() {
+    }
+
     public List<Room> getCurrentListRooms() {
         return currentListRooms ;
     }
+    private boolean isCheckBoxClicked = false;
 
     public void setCurrentListRooms(List<Room> currentListRooms) {
         this.currentListRooms = currentListRooms;
+
     }
 
 
@@ -95,9 +104,14 @@ public class RoomFragment extends Fragment implements RoomListener {
 
 
         editFonts();
-
+        getCurrentListRooms();
+        //roomPresenter.getListRooms();
+        //showToast(getCurrentListRooms().size()+"");
         //Set preference
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
+
+        //roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
+
 
         // Set up RecyclerView layout manager
         binding.roomsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
@@ -112,7 +126,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         binding.btnAddRoom.setOnClickListener(view -> {
             openAddRoomDialog(Gravity.CENTER);
         });
-
+        deleteListAll();
         customizeLayoutSearch();
         setListenersForTools(); // Set listeners for sort and filter
     }
@@ -197,6 +211,8 @@ public class RoomFragment extends Fragment implements RoomListener {
             // Sử dụng dữ liệu 'home' như mong muốn
             // ...
         }
+        roomPresenter.getListRooms();
+        roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
 
         return binding.getRoot();
     }
@@ -702,6 +718,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void getListRooms(List<Room> listRoom) {
+
         setCurrentListRooms(listRoom);
     }
 
@@ -709,6 +726,75 @@ public class RoomFragment extends Fragment implements RoomListener {
     public void noRoomData() {
         binding.roomsRecyclerView.setVisibility(View.INVISIBLE);
         binding.layoutNoRoom.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setDelectAllUI() {
+        binding.layoutDeleteAll.setVisibility(View.VISIBLE);
+        binding.btnAddRoom.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void openDeleteListDialog(List<Room> listRoom) {
+        dialog.setContentView(R.layout.layout_dialog_delete_room);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_delete_room = dialog.findViewById(R.id.btn_delete_room);
+
+
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
+        btn_delete_room.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    roomPresenter.deleteListRooms(listRoom);
+
+            }
+        });
+
+        }
+
+    public void deleteListAll() {
+        getCurrentListRooms();
+        showToast(getCurrentListRooms().size()+"");
+        roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
+
+        binding.txtDeleteHere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDeleteListDialog(roomAdapter.getSelectList());
+                //showToast(getCurrentListRooms().size()+"");
+            }
+        });
+        binding.checkboxSelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isCheckBoxClicked) {
+                    binding.checkboxSelectAll.setChecked(false);
+                    roomAdapter.isCheckBoxClicked(false);
+                    isCheckBoxClicked = false;
+                } else {
+                    binding.checkboxSelectAll.setChecked(true);
+                    roomAdapter.isCheckBoxClicked(true);
+                    isCheckBoxClicked = true;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void dialogAndModeClose(ActionMode mode) {
+        dialog.dismiss();
+        mode.finish();
     }
 
 
@@ -1093,5 +1179,26 @@ public class RoomFragment extends Fragment implements RoomListener {
         });
 
     }
+//    private void setupDeleteRows() {
+//        binding.layoutDelete.setOnClickListener(v -> {
+//            binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+//            binding.txtDelete.setTextColor(getResources().getColorStateList(R.color.colorPrimary));
+//            binding.layoutDelete.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
+//            binding.layoutDeleteManyRows.setVisibility(View.VISIBLE);
+//            adapter.isDeleteClicked(true);
+//        });
+//
+//        binding.checkboxSelectAll.setOnClickListener(v -> {
+//            if (isCheckBoxClicked) {
+//                binding.checkboxSelectAll.setChecked(false);
+//                adapter.isCheckBoxClicked(false);
+//                isCheckBoxClicked = false;
+//            } else {
+//                binding.checkboxSelectAll.setChecked(true);
+//                adapter.isCheckBoxClicked(true);
+//                isCheckBoxClicked = true;
+//            }
+//        });
+//    }
 
 }

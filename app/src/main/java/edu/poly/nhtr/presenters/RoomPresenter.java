@@ -1,12 +1,15 @@
 package edu.poly.nhtr.presenters;
 
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -462,6 +465,39 @@ public class RoomPresenter {
 
 
     }
+    public void deleteListRooms(List<Room> roomsToDelete) {
+        if(roomsToDelete.isEmpty()){
+            roomListener.showToast("123456");
+        }
+        else{
+            roomListener.showToast("qwerty");
+        roomListener.showLoadingOfFunctions(R.id.btn_delete_room);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        // Bắt đầu một batch mới
+        WriteBatch batch = database.batch();
+
+        // Duyệt qua danh sách các home cần xóa và thêm thao tác xóa vào batch
+        for (Room room : roomsToDelete) {
+            DocumentReference roomRef = database.collection(Constants.KEY_COLLECTION_ROOMS).document(room.getRoomId());
+            batch.delete(roomRef); // Thêm thao tác xóa vào batch
+        }
+
+        // Commit batch
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+
+                    //homeListener.showToast("Xóa thành công " + homesToDelete.size() + " homes.");
+                    getRooms("init");
+                    roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                    //roomListener.dialogAndModeClose(mode);
+                    roomListener.openDialogSuccess(R.layout.layout_dialog_delete_room_success);
+                })
+                .addOnFailureListener(e -> {
+                    roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                    roomListener.showToast("Xóa phòng thất bại: " + e.getMessage());
+                });
+    }}
     public void filterRoom(List<Room> rooms) {
         if (rooms.isEmpty()) {
             roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);

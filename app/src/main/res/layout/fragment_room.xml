@@ -12,7 +12,7 @@
         android:id="@+id/frm_menu_tools"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:foregroundGravity="center"
         android:padding="10dp"
         android:visibility="visible"
@@ -172,6 +172,56 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_delete_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/roomsRecyclerView"
+        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
+            android:id="@+id/layout_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <CheckBox
+                android:id="@+id/checkbox_select_all"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/checkbox_selector_index"
+                android:button="@null"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Select All"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/txt_delete_here"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Click here to delete !"
+            android:textColor="@color/colorOrange"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/layout_type_of_filter_room"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -294,7 +344,8 @@
         app:layout_constraintBottom_toTopOf="@id/btn_add_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_type_of_filter_room"/>
+        app:layout_constraintTop_toBottomOf="@id/layout_type_of_sort_room"
+        />
 
     <ProgressBar
         android:id="@+id/progressBar"
