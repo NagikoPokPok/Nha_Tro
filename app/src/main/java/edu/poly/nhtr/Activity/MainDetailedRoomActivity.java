@@ -68,6 +68,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         setArgumentsForFragment(new RoomContractFragment(), bundle);
         setArgumentsForFragment(new RoomServiceFragment(), bundle);
         setArgumentsForFragment(new RoomGuestContractFragment(), bundle);
+        setArgumentsForFragment(new GuestAddContractFragment(), bundle);
     }
 
     private void setArgumentsForFragment(Fragment fragment, Bundle bundle) {

@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
+import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.Adapter.RoomAdapter;
 import edu.poly.nhtr.R;
@@ -213,9 +214,6 @@ public class RoomFragment extends Fragment implements RoomListener {
         if (getArguments() != null) {
             // Nhận dữ liệu từ Bundle
             Home home = (Home) getArguments().getSerializable("home");
-
-            // Sử dụng dữ liệu 'home' như mong muốn
-            // ...
         }
         roomPresenter.getListRooms(task -> {
             roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, this);
@@ -383,10 +381,6 @@ public class RoomFragment extends Fragment implements RoomListener {
     }
 
 
-    @Override
-    public void onRoomClicked(Room room) {
-
-    }
 
     @Override
     public void openPopup(View view, Room room, ItemContainerRoomBinding binding) {
@@ -437,7 +431,6 @@ public class RoomFragment extends Fragment implements RoomListener {
     public void addRoom(List<Room> rooms, String action) {
         RoomAdapter roomAdapter = new RoomAdapter(requireContext(), rooms, this, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
-
 
 
         if (Objects.equals(action, "init") || Objects.equals(action, "search")) {

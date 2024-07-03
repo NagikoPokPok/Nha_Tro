@@ -5,9 +5,9 @@ import java.util.Date;
 public class Guest {
     public String nameGuest, phoneGuest, idGuest, idRoom, idHome;
     public boolean fileStatus;
-    public Date dateIn;
+    public String dateIn;
 
-    public Guest(String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, Date dateIn) {
+    public Guest(String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, String dateIn) {
         this.idGuest = idGuest;
         this.nameGuest = nameGuest;
         this.phoneGuest = phoneGuest;
@@ -83,11 +83,11 @@ public class Guest {
         this.fileStatus = fileStatus;
     }
 
-    public Date getDateIn() {
+    public String getDateIn() {
         return dateIn;
     }
 
-    public void setDateIn(Date dateIn) {
+    public void setDateIn(String dateIn) {
         this.dateIn = dateIn;
     }
 
