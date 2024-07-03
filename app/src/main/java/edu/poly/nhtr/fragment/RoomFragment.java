@@ -122,7 +122,6 @@ public class RoomFragment extends Fragment implements RoomListener {
 
         roomPresenter.getListRooms(task -> {
             roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, this);
-            deleteListAll();
         });
 
 
@@ -770,12 +769,11 @@ public class RoomFragment extends Fragment implements RoomListener {
 
         }
 
-    public void deleteListAll() {
+    public void deleteListAll(List<Room> list) {
 
         binding.txtDeleteHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<Room> list = roomAdapter.getSelectList();
                 openDeleteListDialog(list);
             }
         });
