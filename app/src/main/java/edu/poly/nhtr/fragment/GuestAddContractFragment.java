@@ -51,13 +51,13 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
 import edu.poly.nhtr.listeners.MainGuestListener;
 import edu.poly.nhtr.models.MainGuest;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.GuestAddContractPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class GuestAddContractFragment extends Fragment implements MainGuestListener {
 
-    private static final int IMAGE_SELECTION_NONE = 0;
     private static final int IMAGE_SELECTION_CCCD_FRONT = 1;
     private static final int IMAGE_SELECTION_CCCD_BACK = 2;
     private static final int IMAGE_SELECTION_CONTRACT_FRONT = 3;
@@ -101,12 +101,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private ImageView imgAddContractFront;
     private ImageView imgAddContractBack;
     private int currentImageSelection;
-
-    private AppCompatButton btnAddContract;
-    private AppCompatButton btnCancel;
-
-    private Dialog dialog;
-
     // Hàm truy cập thư viện để lấy ảnh
     public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -147,7 +141,22 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
                     }
                 }
             });
+    private AppCompatButton btnAddContract;
+    private AppCompatButton btnCancel;
+    private Dialog dialog;
+    private Room room;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+
+        if (getArguments() != null) {
+            room = (Room) getArguments().getSerializable("room");
+            String roomId = Objects.requireNonNull(room).getRoomId();
+            preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -164,15 +173,36 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         initializeViews();
         setListeners();
+
+        if (room != null) {
+            Toast.makeText(requireContext(), "Room ID: " + room.getRoomId(), Toast.LENGTH_SHORT).show();
+            // Use room object to set up views or perform other operations
+        } else {
+            room = getRoomFromPreference();
+            if (room != null) {
+                Toast.makeText(requireContext(), "Room ID from preferences: " + room.getRoomId(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "No room data available", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
 
+    private Room getRoomFromPreference() {
+        String roomId = preferenceManager.getString(Constants.KEY_ROOM_ID);
+        // Example: Retrieve other fields if needed
+        // String roomName = preferenceManager.getString(Constants.KEY_ROOM_NAME);
 
+        if (roomId != null && !roomId.isEmpty()) {
+            Room room = new Room();
+            room.setRoomId(roomId);
+            // Set other fields if needed
+            return room;
+        } else {
+            return null;
+        }
     }
+
 
     @Override
     public void onDestroyView() {
@@ -258,9 +288,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             pickImage.launch(presenter.prepareImageSelection());
         });
 
-       checkName();
-       checkPhoneNumber();
-       checkCCCDNumber();
+        checkName();
+        checkPhoneNumber();
+        checkCCCDNumber();
 
         btnAddContract.setOnClickListener(v -> {
             openSaveDialog();
@@ -270,8 +300,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             openCancelSaveDialog();
         });
     }
-
-
 
     @Override
     public void showToast(String message) {
@@ -283,10 +311,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
     }
 
-    @Override
-    public String getInfoHomeFromGoogleAccount() {
-        return preferenceManager.getString(Constants.KEY_HOME_ID);
-    }
 
     @Override
     public String getInfoRoomFromGoogleAccount() {
@@ -299,7 +323,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     }
 
     @Override
-    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String homeId, String roomId, DocumentReference documentReference) {
+    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
         preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
         preferenceManager.putString(Constants.KEY_GUEST_CCCD, cccdNumber);
@@ -316,7 +340,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_FRONT, contractImageFront);
         preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_BACK, contractImageBack);
         preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
-        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
     }
 
@@ -464,7 +487,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
                 if (saveContractSuccessfully) {
                     dialog.dismiss();
                     RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
-                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment);
                     fragmentTransaction.addToBackStack(null);

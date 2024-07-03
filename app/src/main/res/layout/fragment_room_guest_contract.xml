@@ -9,7 +9,7 @@
     tools:context=".fragment.RoomGuestContractFragment">
 
     <LinearLayout
-        android:id="@+id/layout_no_room"
+        android:id="@+id/layout_no_guest"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

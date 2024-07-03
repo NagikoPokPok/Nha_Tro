@@ -15,17 +15,13 @@ import android.widget.ImageButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.hbb20.CountryCodePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -35,9 +31,9 @@ import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.utilities.Constants;
 
 public class GuestAddContractPresenter {
+    private static final int REQUIRED_DATE_LENGTH = 8;
     private final MainGuestListener mainGuestListener;
     private final Context context;
-    private static final int REQUIRED_DATE_LENGTH = 8;
 
 
     public GuestAddContractPresenter(MainGuestListener mainGuestListener, Context context) {
@@ -98,6 +94,7 @@ public class GuestAddContractPresenter {
             }
         });
     }
+
     public void handleNameChanged(String name, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
             Log.e("GuestAddContractPresenter", "TextInputLayout for name is null");
@@ -122,10 +119,12 @@ public class GuestAddContractPresenter {
         // Add a TextWatcher to the EditText
         textInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -173,6 +172,7 @@ public class GuestAddContractPresenter {
             }
         });
     }
+
     public void handleCCCDNumberChanged(String cccd, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
             Log.e("GuestAddContractPresenter", "TextInputLayout for CCCD is null");
@@ -215,8 +215,8 @@ public class GuestAddContractPresenter {
         });
 
         textInputEditText.addTextChangedListener(new TextWatcher() {
-            private String current = "";
             private final Calendar cal = Calendar.getInstance();
+            private String current = "";
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -339,8 +339,8 @@ public class GuestAddContractPresenter {
         });
 
         textInputEditText.addTextChangedListener(new TextWatcher() {
-            private String current = "";
             private final Calendar cal = Calendar.getInstance();
+            private String current = "";
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -425,7 +425,6 @@ public class GuestAddContractPresenter {
         contract.put(Constants.KEY_GUEST_CONTRACT_IMAGE_BACK, mainGuest.getContractImageBack());
         contract.put(Constants.KEY_CONTRACT_STATUS, mainGuest.getFileStatus());
         contract.put(Constants.KEY_TIMESTAMP, new Date());
-        contract.put(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount());
         contract.put(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount());
 
         // Add contract to Firebase
@@ -449,69 +448,14 @@ public class GuestAddContractPresenter {
                             mainGuest.getContractImageFront(),
                             mainGuest.getContractImageBack(),
                             mainGuest.getFileStatus(),
-                            mainGuestListener.getInfoHomeFromGoogleAccount(),
                             mainGuestListener.getInfoRoomFromGoogleAccount(),
                             documentReference
                     );
-                    getMainGuest("add");
                     mainGuestListener.showToast("Thêm hợp đồng thành công");
                 })
                 .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
 
     }
 
-    public void getMainGuest(String action) {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-
-        // Query homes collection to get main guest IDs
-        database.collection(Constants.KEY_COLLECTION_HOMES)
-                .whereEqualTo(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount())
-                .whereEqualTo(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        List<String> mainGuestIDs = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            mainGuestIDs.add(document.getId());
-                        }
-
-                        // Check if there are main guests associated with the user
-                        if (!mainGuestIDs.isEmpty()) {
-                            // Query rooms collection using main guest IDs
-                            database.collection(Constants.KEY_COLLECTION_ROOMS)
-                                    .whereIn(Constants.KEY_CONTRACT_ID, mainGuestIDs)
-                                    .get()
-                                    .addOnCompleteListener(roomTask -> {
-                                        if (roomTask.isSuccessful() && roomTask.getResult() != null) {
-                                            List<MainGuest> mainGuests = new ArrayList<>();
-
-                                            // Iterate through room documents to build main guest list
-                                            for (QueryDocumentSnapshot roomDocument : roomTask.getResult()) {
-                                                MainGuest mainGuest = roomDocument.toObject(MainGuest.class);
-                                                mainGuests.add(mainGuest);
-                                            }
-
-                                            // Sort main guests by some criteria if needed
-                                            mainGuests.sort(Comparator.comparing(MainGuest::getCreateDate));
-
-                                            // Notify listener with main guest data
-                                            mainGuestListener.onMainGuestsLoaded(mainGuests, action);
-                                        } else {
-                                            // Handle failure to fetch rooms
-                                            Log.e("GuestAddContractPresenter", "Error fetching rooms: ", roomTask.getException());
-                                            mainGuestListener.onMainGuestsLoadFailed();
-                                        }
-                                    });
-                        } else {
-                            // No main guests found for the user
-                            mainGuestListener.onMainGuestsLoadFailed();
-                        }
-                    } else {
-                        // Handle failure to fetch homes
-                        Log.e("GuestAddContractPresenter", "Error fetching homes: ", task.getException());
-                        mainGuestListener.onMainGuestsLoadFailed();
-                    }
-                });
-    }
 
 }
