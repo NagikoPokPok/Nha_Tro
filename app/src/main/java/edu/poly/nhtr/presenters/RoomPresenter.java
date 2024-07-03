@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -431,7 +432,7 @@ public class RoomPresenter {
         });
         return rooms;
     }
-    public void getListRooms() {
+    public void getListRooms(OnCompleteListener<Void> onCompleteListener) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String homeId = roomListener.getInfoHomeFromGoogleAccount();
         database.collection(Constants.KEY_COLLECTION_ROOMS)
@@ -456,6 +457,7 @@ public class RoomPresenter {
                             }
 
                             roomListener.getListRooms(rooms);
+                            onCompleteListener.onComplete(null);
 
                         } else {
                             roomListener.addRoomFailed();

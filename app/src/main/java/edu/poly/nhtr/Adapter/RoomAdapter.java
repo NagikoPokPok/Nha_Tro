@@ -1,5 +1,6 @@
 package edu.poly.nhtr.Adapter;
 
+import android.content.Context;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Room;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder>  {
+    Context context;
     private final List<Room> rooms;
     private int lastActionPosition = 0;
 
@@ -42,21 +44,15 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private boolean isDeleteClicked = false;
     boolean isEnabled = false;
     boolean isSelectAll = false;
-    public List<Room> selectList = new ArrayList<>();
-    public List<Room> getSelectList() {
-        return selectList;
-    }
-
-    public void setSelectList(List<Room> selectList) {
-        this.selectList = selectList;
-    }
+    private List<Room> selectList = new ArrayList<>();
 
     boolean[] isVisible;
 
-    public RoomAdapter(List<Room> rooms, RoomListener roomListener, RoomFragment roomFragment) {
+    public RoomAdapter(Context context, List<Room> rooms, RoomListener roomListener, RoomFragment roomFragment) {
+        this.context = context;
         this.rooms = rooms;
         this.roomListener = roomListener;
-        this.fragment =roomFragment;
+        this.fragment = roomFragment;
         isVisible = new boolean[rooms.size()];
     }
 
@@ -77,6 +73,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     @Override
     public void onBindViewHolder(@NonNull RoomAdapter.RoomViewHolder holder, int position) {
         holder.setRoomData(rooms.get(position), position);
+        Room room = rooms.get(position);
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -90,7 +87,18 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 return false;
             }
         });
-            performCheckBoxes(holder, position);
+
+        performCheckBoxes(holder, position);
+
+    }
+
+    public List<Room> getSelectList() {
+        roomListener.showToast(selectList.size()+"");
+        return selectList;
+    }
+
+    public void setSelectList(List<Room> selectList) {
+        this.selectList = selectList;
     }
 
     public void performCheckBoxes(RoomAdapter.RoomViewHolder holder, int position) {
@@ -101,27 +109,15 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             } else {
                 selectList.remove(rooms.get(holder.getAdapterPosition()));
             }
-            roomListener.showToast(selectList.size()+"");
+
+            roomListener.showToast(getSelectList().size() + "");
         });
 
-
-
-//        holder.itemView.setOnClickListener(v -> {
-//            if (isEnabled) { // Nếu thanh actionMode vẫn còn hiện
-//                ClickItem(holder);
-//            } else {
-//                roomListener.onRoomClicked(rooms.get(holder.getAdapterPosition()));
-//            }
-//        });
-
         if (isSelectAll || isVisible[position]) {
-            // an nut 3 cham
             holder.binding.frmImage.setVisibility(View.INVISIBLE);
-            // Lệnh này hiển thị check box lên cho toàn bộ item
             holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
-            // Lệnh dưới này kiểm tra: Item nào có trong selectList thì sẽ được setChecked là true, ko có thì false
-            holder.binding.ivCheckBox.setChecked(selectList.contains(rooms.get(position))); // Hàm contains sẽ trả về kiểu false/true
-        } else { // Khi isVisible = false (khi gọi hàm onDestroyActionMode) thì cho toàn bộ ivCheckBox về false
+            holder.binding.ivCheckBox.setChecked(selectList.contains(rooms.get(position)));
+        } else {
             holder.binding.ivCheckBox.setChecked(false);
             holder.binding.ivCheckBox.setVisibility(View.GONE);
             holder.binding.frmImage.setVisibility(View.VISIBLE);
@@ -133,13 +129,13 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         return rooms.size();
     }
     public void ClickItem(RoomAdapter.RoomViewHolder holder) {
-        // Item được click vào sẽ hiện check box true và được add vào trong selectList (cái này quan trọng)
         Room s = rooms.get(holder.getAdapterPosition());
-        if(!holder.binding.ivCheckBox.isChecked())
-        {
+        if (!holder.binding.ivCheckBox.isChecked()) {
             holder.binding.ivCheckBox.setChecked(true);
-            selectList.add(s);
-        }else{
+            if (!selectList.contains(s)) {
+                selectList.add(s);
+            }
+        } else {
             holder.binding.ivCheckBox.setChecked(false);
             selectList.remove(s);
         }
@@ -230,5 +226,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     public void updateList() {
         notifyDataSetChanged();
 
+    }
+
+    public List<Room> checkList()
+    {
+        notifyDataSetChanged();
+        return  selectList;
     }
 }

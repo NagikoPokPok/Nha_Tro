@@ -103,14 +103,14 @@ public class RoomFragment extends Fragment implements RoomListener {
         });
 
 
+
+
         editFonts();
-        getCurrentListRooms();
-        //roomPresenter.getListRooms();
-        //showToast(getCurrentListRooms().size()+"");
+
         //Set preference
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
 
-        //roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
+
 
 
         // Set up RecyclerView layout manager
@@ -120,13 +120,19 @@ public class RoomFragment extends Fragment implements RoomListener {
         // Load room information
         roomPresenter.getRooms("init");
 
+        roomPresenter.getListRooms(task -> {
+            roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, this);
+            deleteListAll();
+        });
+
 
         // Xử lý Dialog Thêm phòng trọ
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         binding.btnAddRoom.setOnClickListener(view -> {
             openAddRoomDialog(Gravity.CENTER);
         });
-        deleteListAll();
+
+
         customizeLayoutSearch();
         setListenersForTools(); // Set listeners for sort and filter
     }
@@ -211,8 +217,10 @@ public class RoomFragment extends Fragment implements RoomListener {
             // Sử dụng dữ liệu 'home' như mong muốn
             // ...
         }
-        roomPresenter.getListRooms();
-        roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
+        roomPresenter.getListRooms(task -> {
+            roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, this);
+        });
+
 
         return binding.getRoot();
     }
@@ -427,7 +435,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void addRoom(List<Room> rooms, String action) {
-        RoomAdapter roomAdapter = new RoomAdapter(rooms, this, this);
+        RoomAdapter roomAdapter = new RoomAdapter(requireContext(), rooms, this, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
 
 
@@ -718,7 +726,6 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void getListRooms(List<Room> listRoom) {
-
         setCurrentListRooms(listRoom);
     }
 
@@ -764,15 +771,12 @@ public class RoomFragment extends Fragment implements RoomListener {
         }
 
     public void deleteListAll() {
-        getCurrentListRooms();
-        showToast(getCurrentListRooms().size()+"");
-        roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
 
         binding.txtDeleteHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDeleteListDialog(roomAdapter.getSelectList());
-                //showToast(getCurrentListRooms().size()+"");
+                List<Room> list = roomAdapter.getSelectList();
+                openDeleteListDialog(list);
             }
         });
         binding.checkboxSelectAll.setOnClickListener(new View.OnClickListener() {
@@ -819,6 +823,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         // Disable btnApply and set background color to gray initially
         btnApply.setEnabled(false);
         btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+
 
         // Listen for changes in the RadioGroup
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -920,7 +925,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
 
         setupDialog(R.layout.layout_dialog_filter_room, Gravity.CENTER);
-        roomPresenter.getListRooms();
+        //roomPresenter.getListRooms();
 
         AppCompatCheckBox cbxByRoom1 = dialog.findViewById(R.id.cbx_paid);
         AppCompatCheckBox cbxByRoom2 = dialog.findViewById(R.id.cbx_waiting_for_paid);
