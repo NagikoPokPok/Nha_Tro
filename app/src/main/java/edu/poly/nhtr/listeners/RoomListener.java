@@ -13,7 +13,6 @@ import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.User;
 
 public interface RoomListener {
-    void onRoomClicked (Room room);
     void openPopup(View view, Room room, ItemContainerRoomBinding binding);
     void showErrorMessage(String message, int id);
     void showToast(String message);

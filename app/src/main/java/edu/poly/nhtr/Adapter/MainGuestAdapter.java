@@ -15,7 +15,7 @@ import edu.poly.nhtr.models.MainGuest;
 
 public class MainGuestAdapter extends RecyclerView.Adapter<MainGuestAdapter.MainGuestViewHolder> {
 
-    private List<MainGuest> mainGuests;
+    private final List<MainGuest> mainGuests;
 
     public MainGuestAdapter(List<MainGuest> mainGuests) {
         this.mainGuests = mainGuests;
@@ -38,8 +38,6 @@ public class MainGuestAdapter extends RecyclerView.Adapter<MainGuestAdapter.Main
         holder.txtProfileStatus.setText(mainGuest.getFileStatus() ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
         holder.txtEntryDate.setText(mainGuest.getCreateDate());
 
-        // Set other views as needed
-        // Example: holder.txtEntryDate.setText(mainGuest.getEntryDate());
     }
 
     @Override
