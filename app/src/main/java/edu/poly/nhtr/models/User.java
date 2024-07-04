@@ -10,7 +10,8 @@ import edu.poly.nhtr.utilities.Constants;
 
 public class User {
 
-    public String name, email, password, confirmPassword;
+    public String name, email, password, confirmPassword, fcmToken;
+
 
     public User(String name, String email, String password, String confirmPassword) {
         this.name = name;

@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -45,6 +47,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +56,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -65,6 +69,8 @@ import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentHomeBinding;
 import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
+import edu.poly.nhtr.firebase.AccessToken;
+import edu.poly.nhtr.firebase.FcmNotificationSender;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.presenters.HomePresenter;
@@ -135,6 +141,8 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Load user's information
         loadUserDetails();
 
+        getToken();
+
 
         setListeners();
 
@@ -152,6 +160,42 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         setListenersForTools(); // Set listeners for sort and filter
 
+
+        //mainLogic();
+
+    }
+
+    private void mainLogic() {
+
+        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
+                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
+                "This is the notification title", "This is the notification body", requireContext()
+        );
+
+        fcmNotificationSender.SendNotifications();
+
+
+    }
+
+    private void getToken()
+    {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
+    }
+
+
+    private void updateToken(String token)
+    {
+        preferenceManager.putString(Constants.KEY_FCM_TOKEN,token);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
+                .document(preferenceManager.getString(Constants.KEY_USER_ID));
+        documentReference.update(Constants.KEY_FCM_TOKEN, token)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        showToast("Unable to update token");
+                    }
+                });
     }
 
     private void setListenersForTools() {

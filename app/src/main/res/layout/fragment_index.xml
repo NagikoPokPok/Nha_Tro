@@ -584,6 +584,9 @@
         android:visibility="gone"
         />
 
+
+
+
     <LinearLayout
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
@@ -591,44 +594,61 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:padding="5dp"
-        android:visibility="invisible">
+        android:visibility="visible">
 
-        <TextView
-            android:id="@+id/btn_previous_page"
-            android:layout_width="0dp"
+<!--        <TextView-->
+<!--            android:id="@+id/btn_previous_page"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="start|center_vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Previous" />-->
+
+<!--        <HorizontalScrollView-->
+<!--            android:id="@+id/scroll"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_weight="3"-->
+<!--            android:fillViewport="true"-->
+<!--            android:scrollbars="none">-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/linear_scroll"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="35dp"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
+
+<!--            </LinearLayout>-->
+<!--        </HorizontalScrollView>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/btn_next_page"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Next" />-->
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/setExact"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center_vertical"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Previous" />
+            android:text="Set Exact"
+            style="@style/BUTTON"
+            app:backgroundTint="@null"/>
 
-        <HorizontalScrollView
-            android:id="@+id/scroll"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="3"
-            android:fillViewport="true"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/linear_scroll"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/btn_next_page"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/setRepetitive"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Next" />
+            android:text="Set Repetitive Exact"
+            style="@style/BUTTON"
+            app:backgroundTint="@null"/>
     </LinearLayout>
 
 

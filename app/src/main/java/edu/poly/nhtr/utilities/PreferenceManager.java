@@ -53,4 +53,5 @@ public class PreferenceManager {
             editor.remove(keyUserId);
             editor.apply();
     }
+
 }

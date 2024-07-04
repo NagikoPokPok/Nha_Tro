@@ -1,6 +1,8 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.view.ViewGroup;
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDeleteHomeSuccessBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDeleteIndexBinding;
@@ -100,6 +103,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     private boolean waterIsIndex = false;
 
+    private AlarmService alarmService;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +123,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
         assert home != null;
         homeID = home.getIdHome();
         indexPresenter = new IndexPresenter(this, homeID);
+
+        alarmService = new AlarmService(requireContext());
 
 
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -156,8 +163,50 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 setupSortIndexes();
                 setupFilterIndexes();
                 setupSearchEditText(binding.edtSearchIndex);
+                setupAlarmService();
             }
         });
+    }
+
+    private void setupAlarmService() {
+        binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm));
+        binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm));
+    }
+
+    private void setAlarm(AlarmCallback callback) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        new DatePickerDialog(
+                requireContext(),
+                0,
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                    new TimePickerDialog(
+                            requireContext(),
+                            0,
+                            (view1, hourOfDay, minute) -> {
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
+                                callback.onAlarmSet(calendar.getTimeInMillis());
+                            },
+                            calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE),
+                            false
+                    ).show();
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        ).show();
+    }
+
+    private interface AlarmCallback {
+        void onAlarmSet(long timeInMillis);
     }
 
     private void showRowInTable(boolean waterIsIndex) {
@@ -989,41 +1038,41 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
     private void setupPagination() {
-        binding.btnNextPage.setOnClickListener(v -> {
-            if (currentPage < totalPages - 1) {
-                currentPage++;
-                updateButtonPageState();
-                scrollToSelectedButton(binding.linearScroll.getChildAt(currentPage));
-            }
-        });
+//        binding.btnNextPage.setOnClickListener(v -> {
+//            if (currentPage < totalPages - 1) {
+//                currentPage++;
+//                updateButtonPageState();
+//                scrollToSelectedButton(binding.linearScroll.getChildAt(currentPage));
+//            }
+//        });
+//
+//        binding.btnPreviousPage.setOnClickListener(v -> {
+//            if (currentPage > 0) {
+//                currentPage--;
+//                updateButtonPageState();
+//                scrollToSelectedButton(binding.linearScroll.getChildAt(currentPage));
+//            }
+//        });
 
-        binding.btnPreviousPage.setOnClickListener(v -> {
-            if (currentPage > 0) {
-                currentPage--;
-                updateButtonPageState();
-                scrollToSelectedButton(binding.linearScroll.getChildAt(currentPage));
-            }
-        });
-
-        for (int j = 0; j < totalPages; j++) {
-            final int k = j;
-            final Button btnPage = new Button(requireContext());
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(10, 0, 10, 0);
-            btnPage.setTextColor(Color.WHITE);
-            btnPage.setTextSize(13.0f);
-            btnPage.setId(j);
-            btnPage.setText(String.valueOf(j + 1));
-            btnPage.setBackground(getResources().getDrawable(R.drawable.background_page_number_index));
-
-            binding.linearScroll.addView(btnPage, lp);
-            btnPage.setOnClickListener(v -> {
-                currentPage = k;
-                updateButtonPageState();
-                scrollToSelectedButton(btnPage);
-            });
-        }
-        updateButtonPageState();
+//        for (int j = 0; j < totalPages; j++) {
+//            final int k = j;
+//            final Button btnPage = new Button(requireContext());
+//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
+//            lp.setMargins(10, 0, 10, 0);
+//            btnPage.setTextColor(Color.WHITE);
+//            btnPage.setTextSize(13.0f);
+//            btnPage.setId(j);
+//            btnPage.setText(String.valueOf(j + 1));
+//            btnPage.setBackground(getResources().getDrawable(R.drawable.background_page_number_index));
+//
+//            binding.linearScroll.addView(btnPage, lp);
+//            btnPage.setOnClickListener(v -> {
+//                currentPage = k;
+//                updateButtonPageState();
+//                scrollToSelectedButton(btnPage);
+//            });
+//        }
+        //updateButtonPageState();
     }
 
     private void setupDeleteRows() {
@@ -1156,31 +1205,31 @@ public class IndexFragment extends Fragment implements IndexInterface {
         monthPickerDialog.show();
     }
 
-    private void updateButtonPageState() {
-        binding.btnPreviousPage.setEnabled(currentPage > 0);
-        binding.btnNextPage.setEnabled(currentPage < totalPages - 1);
+//    private void updateButtonPageState() {
+//        binding.btnPreviousPage.setEnabled(currentPage > 0);
+//        binding.btnNextPage.setEnabled(currentPage < totalPages - 1);
+//
+//        binding.btnPreviousPage.setTextColor(getResources().getColor(
+//                binding.btnPreviousPage.isEnabled() ? R.color.colorButton : R.color.colorGray));
+//        binding.btnNextPage.setTextColor(getResources().getColor(
+//                binding.btnNextPage.isEnabled() ? R.color.colorButton : R.color.colorGray));
+//
+//        for (int i = 0; i < binding.linearScroll.getChildCount(); i++) {
+//            Button btnPage = (Button) binding.linearScroll.getChildAt(i);
+//            if (i == currentPage) {
+//                btnPage.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+//            } else {
+//                btnPage.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
+//            }
+//        }
+//    }
 
-        binding.btnPreviousPage.setTextColor(getResources().getColor(
-                binding.btnPreviousPage.isEnabled() ? R.color.colorButton : R.color.colorGray));
-        binding.btnNextPage.setTextColor(getResources().getColor(
-                binding.btnNextPage.isEnabled() ? R.color.colorButton : R.color.colorGray));
-
-        for (int i = 0; i < binding.linearScroll.getChildCount(); i++) {
-            Button btnPage = (Button) binding.linearScroll.getChildAt(i);
-            if (i == currentPage) {
-                btnPage.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-            } else {
-                btnPage.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
-            }
-        }
-    }
-
-    private void scrollToSelectedButton(View button) {
-        binding.scroll.post(() -> {
-            int scrollX = button.getLeft() - (binding.scroll.getWidth() - button.getWidth()) / 2;
-            binding.scroll.smoothScrollTo(scrollX, 0);
-        });
-    }
+//    private void scrollToSelectedButton(View button) {
+//        binding.scroll.post(() -> {
+//            int scrollX = button.getLeft() - (binding.scroll.getWidth() - button.getWidth()) / 2;
+//            binding.scroll.smoothScrollTo(scrollX, 0);
+//        });
+//    }
 
 
     private void updateButtonsState() {

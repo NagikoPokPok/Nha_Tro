@@ -17,9 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.util.HashMap;
 
 import edu.poly.nhtr.Activity.ChangeProfileActivity;
 import edu.poly.nhtr.Activity.MainActivity;
@@ -142,12 +148,38 @@ public class SettingFragment extends Fragment implements SettingsInterface {
             editor.apply();
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-            Intent intent = new Intent(requireContext(), SignInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            requireActivity().finish();
+            FirebaseFirestore database = FirebaseFirestore.getInstance();
+            DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
+                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
+            HashMap<String, Object> updates = new HashMap<>();
+            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
+            documentReference.update(updates)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            preferenceManager.clear();
+                            Intent intent = new Intent(requireContext(), SignInActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            requireActivity().finish();
+                            loading(false);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            showToast("Unable to sign out");
+                        }
+                    });
 
-            loading(false);
+
+
+//            Intent intent = new Intent(requireContext(), SignInActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            requireActivity().finish();
+
+
         }, 1000);
     }
 

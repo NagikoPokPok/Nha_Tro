@@ -11,6 +11,7 @@ public class Constants {
     public static final String KEY_USER_ID = "userId";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_ADDRESS = "address";
+    public static final String KEY_FCM_TOKEN = "fcmToken";
     public static final String KEY_USER = "user";
     public static final String KEY_COLLECTION_HOMES = "homes";
     public static final String KEY_NAME_HOME= "nameHome";
@@ -93,4 +94,11 @@ public class Constants {
     public static final String KEY_GUEST_CCCD_IMAGE_FRONT = "guestCCCDImageFront";
     public static final String KEY_GUEST_CCCD_IMAGE_BACK = "guestCCCDImageBack";
     public static final String KEY_CONTRACT_STATUS = "contractStatus";
+
+
+    //AlarmManager
+    public static final String EXTRA_EXACT_ALARM_TIME = "EXTRA_EXACT_ALARM_TIME";
+
+    public static final String ACTION_SET_EXACT = "ACTION_SET_EXTRA";
+    public static final String ACTION_SET_REPETITIVE_EXACT = "ACTION_SET_REPETITIVE_EXACT";
 }
