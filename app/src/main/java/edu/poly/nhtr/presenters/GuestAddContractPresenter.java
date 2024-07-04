@@ -113,6 +113,8 @@ public class GuestAddContractPresenter {
             return;
         }
 
+        ccp.setDefaultCountryUsingNameCode("VN");
+        ccp.resetToDefaultCountry();
         // Register the EditText with the CountryCodePicker
         ccp.registerCarrierNumberEditText(textInputEditText);
 

@@ -31,11 +31,10 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     private FragmentRoomGuestBinding binding;
     private RecyclerView recyclerView;
     private MainGuestAdapter adapter;
-    private Room room; // Store Room object directly
+    private Room room;
     private PreferenceManager preferenceManager;
 
     public RoomGuestFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -76,7 +75,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         recyclerView = binding.guestsRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new MainGuestAdapter(mainGuestsList); // Use GuestAdapter
+        adapter = new MainGuestAdapter(mainGuestsList);
         recyclerView.setAdapter(adapter);
     }
 
