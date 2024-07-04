@@ -1,12 +1,12 @@
 package edu.poly.nhtr.fragment;
 
-import android.app.Dialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.TypefaceSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import edu.poly.nhtr.databinding.FragmentRoomGuestContractBinding;
@@ -27,7 +26,6 @@ public class RoomGuestContractFragment extends Fragment {
 
     private FragmentRoomGuestContractBinding binding;
     private PreferenceManager preferenceManager;
-    private String roomId;
     private Room room;
 
     @Override
@@ -45,11 +43,18 @@ public class RoomGuestContractFragment extends Fragment {
 
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
+            if (room != null) {
+                Log.d("RoomGuestContractFragment", "Room ID: " + room.getRoomId());
+                setListener();
+            } else {
+                Log.e("RoomGuestContractFragment", "Room object is null");
+            }
+        } else {
+            Log.e("RoomGuestContractFragment", "Arguments are null");
         }
 
         editFonts();
         addGuestFailed();
-        setListener();
     }
 
     // Utility method to show a toast message
@@ -86,6 +91,9 @@ public class RoomGuestContractFragment extends Fragment {
     private void setListener() {
         binding.btnAddContract.setOnClickListener(v -> {
             GuestAddContractFragment guestAddContractFragment = new GuestAddContractFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("room", room);
+            guestAddContractFragment.setArguments(args);
             FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(binding.getRoot().getId(), guestAddContractFragment);
             fragmentTransaction.addToBackStack(null);
@@ -93,4 +101,3 @@ public class RoomGuestContractFragment extends Fragment {
         });
     }
 }
-

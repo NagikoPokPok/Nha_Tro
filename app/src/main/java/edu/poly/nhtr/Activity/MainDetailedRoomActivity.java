@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 
-
 import java.util.Objects;
 
 import edu.poly.nhtr.Adapter.TabLayoutAdapter;
@@ -30,6 +29,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
     private ActivityMainDetailedRoomBinding binding;
     private PreferenceManager preferenceManager;
+    private Room room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +44,25 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     }
 
     private void setupView() {
-        Room room = (Room) getIntent().getSerializableExtra("room");
-        String roomId = Objects.requireNonNull(room).getRoomId();
-        String roomTitle = room.getNameRoom();
-        preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
-        preferenceManager.putString(Constants.KEY_NAME_ROOM, roomTitle);
+        room = (Room) getIntent().getSerializableExtra("room");
+        if (room != null) {
+            String roomId = room.getRoomId();
+            String roomTitle = room.getNameRoom();
+            preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+            preferenceManager.putString(Constants.KEY_NAME_ROOM, roomTitle);
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("room", room);
-
-        if (checkRoomHasGuest()) {
-            showTabLayout();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("room", room);
+            setFragmentArguments(bundle);
+            if (checkRoomHasGuest()) {
+                showTabLayout();
+            } else {
+                showRoomContractFragment();
+            }
         } else {
-            showRoomContractFragment();
+            // Handle case when room is null
+            finish();
         }
-
-        setFragmentArguments(bundle);
     }
 
     private void setFragmentArguments(Bundle bundle) {
@@ -98,7 +101,9 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     private void showRoomContractFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(edu.poly.nhtr.R.id.fragment_container, new RoomGuestContractFragment());
+        RoomGuestContractFragment fragment = new RoomGuestContractFragment();
+        fragment.setArguments(getIntent().getExtras());  // Pass the arguments to the fragment
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
         binding.fragmentContainer.setVisibility(View.VISIBLE);
         binding.viewPager.setVisibility(View.GONE);
@@ -106,6 +111,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     }
 
     private boolean checkRoomHasGuest() {
+        // Implement your logic to check if the room has a guest
         return false;
     }
 
@@ -126,5 +132,4 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
             super.onBackPressed();  // Handle other cases normally
         }
     }
-
 }

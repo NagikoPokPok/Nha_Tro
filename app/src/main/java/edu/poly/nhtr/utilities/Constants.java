@@ -29,6 +29,7 @@ public class Constants {
 
     public static final String KEY_MODE = "nightMode";
     public static final String KEY_SELECTED_RADIO_BUTTON = "selectedRadioButtonId";
+    public static final String PREF_KEY_ROOM_ID = "prefRoomId";
 
     // Key Service
     public static final String KEY_COLLECTION_SERVICES = "services";

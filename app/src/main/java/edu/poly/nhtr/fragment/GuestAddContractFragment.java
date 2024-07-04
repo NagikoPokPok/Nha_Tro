@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -151,11 +152,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
 
-        if (getArguments() != null) {
-            room = (Room) getArguments().getSerializable("room");
-            String roomId = Objects.requireNonNull(room).getRoomId();
-            preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
-        }
     }
 
     @Override
@@ -172,20 +168,20 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         dialog = new Dialog(requireActivity());
 
         initializeViews();
-        setListeners();
 
-        if (room != null) {
-            Toast.makeText(requireContext(), "Room ID: " + room.getRoomId(), Toast.LENGTH_SHORT).show();
-            // Use room object to set up views or perform other operations
-        } else {
-            room = getRoomFromPreference();
+        if (getArguments() != null) {
+            room = (Room) getArguments().getSerializable("room");
             if (room != null) {
-                Toast.makeText(requireContext(), "Room ID from preferences: " + room.getRoomId(), Toast.LENGTH_SHORT).show();
+                Log.d("GuestAddContractFragment", "Room ID: " + room.getRoomId());
+                setListeners();
             } else {
-                Toast.makeText(requireContext(), "No room data available", Toast.LENGTH_SHORT).show();
+                Log.e("GuestAddContractFragment", "Room object is null");
             }
+        } else {
+            Log.e("GuestAddContractFragment", "Arguments are null");
         }
     }
+
 
 
     private Room getRoomFromPreference() {
@@ -487,6 +483,12 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
                 if (saveContractSuccessfully) {
                     dialog.dismiss();
                     RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+
+                    // Pass the Room object to RoomGuestFragment
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("room", room); // Ensure 'room' is the Room object
+                    roomGuestFragment.setArguments(bundle);
+
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment);
@@ -503,6 +505,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         dialog.show();
     }
+
 
     @Override
     public boolean saveContract() {

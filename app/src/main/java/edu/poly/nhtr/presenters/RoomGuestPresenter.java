@@ -23,13 +23,12 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
 
     @Override
     public void getMainGuests(String roomId) {
-        Log.d("RoomGuestFragment", "roomId from bundle: " + roomId);
-        Log.d("RoomGuestFragment", "Constants.KEY_ROOM_ID: " + Constants.KEY_ROOM_ID);
+        Log.d("RoomGuestPresenter", "Fetching guests for roomId: " + roomId);
+        Log.d("RoomGuestPresenter", "Fetching guests for Constant: " + Constants.KEY_ROOM_ID);
         database.collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    Log.d("RoomGuestPresenter", "Document data: " + queryDocumentSnapshots.getMetadata());
                     if (!queryDocumentSnapshots.isEmpty()) {
                         List<MainGuest> mainGuestList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {

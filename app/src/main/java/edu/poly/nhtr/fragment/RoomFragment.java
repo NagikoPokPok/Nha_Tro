@@ -711,7 +711,7 @@ public class RoomFragment extends Fragment implements RoomListener {
     @Override
     public void onRoomClick(Room room) {
         binding.edtSearchRoom.clearFocus();
-        Intent intent = new Intent(requireContext(), MainDetailedRoomActivity.class);
+        Intent intent = new Intent(getContext(), MainDetailedRoomActivity.class);
         intent.putExtra("room", room);
         startActivity(intent);
     }

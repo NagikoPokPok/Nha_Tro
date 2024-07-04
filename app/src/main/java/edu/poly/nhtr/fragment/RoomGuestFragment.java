@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import edu.poly.nhtr.Adapter.MainGuestAdapter;
 import edu.poly.nhtr.databinding.FragmentRoomGuestBinding;
@@ -46,6 +46,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -54,8 +59,18 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
-            String roomId = Objects.requireNonNull(room).getRoomId();
-            preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+            if (room != null) {
+                String roomId = room.getRoomId();
+                preferenceManager.putString(Constants.PREF_KEY_ROOM_ID, roomId);
+                Log.d("RoomGuestFragment", "Room ID: " + roomId);
+                presenter.getMainGuests(roomId);
+            } else {
+                Log.e("RoomGuestFragment", "Room object is null");
+                showError("Room data is not available");
+            }
+        } else {
+            Log.e("RoomGuestFragment", "Arguments are null");
+            showError("Room data is not available");
         }
 
         recyclerView = binding.guestsRecyclerView;
@@ -63,12 +78,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         adapter = new MainGuestAdapter(mainGuestList);
         recyclerView.setAdapter(adapter);
-
-        if (room != null) {
-            presenter.getMainGuests(room.getRoomId());
-        } else {
-            showError("Room data is not available");
-        }
     }
 
     @Override
