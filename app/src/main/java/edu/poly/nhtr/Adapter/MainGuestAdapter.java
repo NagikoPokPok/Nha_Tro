@@ -1,61 +1,58 @@
 package edu.poly.nhtr.Adapter;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import edu.poly.nhtr.R;
+import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.MainGuest;
 
 public class MainGuestAdapter extends RecyclerView.Adapter<MainGuestAdapter.MainGuestViewHolder> {
 
-    private final List<MainGuest> mainGuests;
+    private final List<MainGuest> mainGuestList;
 
-    public MainGuestAdapter(List<MainGuest> mainGuests) {
-        this.mainGuests = mainGuests;
+    public MainGuestAdapter(List<MainGuest> mainGuestList) {
+        this.mainGuestList = mainGuestList;
     }
 
     @NonNull
     @Override
-    public MainGuestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_container_guest, parent, false);
-        return new MainGuestViewHolder(itemView);
+    public MainGuestAdapter.MainGuestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemContainerGuestBinding itemContainerGuestBinding = ItemContainerGuestBinding.inflate(
+                LayoutInflater.from(parent.getContext()),
+                parent,
+                false);
+        return new MainGuestViewHolder(itemContainerGuestBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainGuestViewHolder holder, int position) {
-        MainGuest mainGuest = mainGuests.get(position);
-
-        // Bind data to views in your MaterialCardView
-        holder.txtNameGuest.setText(mainGuest.getNameGuest());
-        holder.txtPhoneNumber.setText(mainGuest.getPhoneGuest());
-        holder.txtProfileStatus.setText(mainGuest.getFileStatus() ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
-        holder.txtEntryDate.setText(mainGuest.getCreateDate());
+    public void onBindViewHolder(@NonNull MainGuestAdapter.MainGuestViewHolder holder, int position) {
+        holder.setMainGuestData(mainGuestList.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return mainGuests.size();
+        return mainGuestList.size();
     }
 
     public static class MainGuestViewHolder extends RecyclerView.ViewHolder {
-        TextView txtNameGuest, txtPhoneNumber, txtProfileStatus, txtEntryDate;
+        ItemContainerGuestBinding binding;
 
-        public MainGuestViewHolder(@NonNull View itemView) {
-            super(itemView);
-            txtNameGuest = itemView.findViewById(R.id.txt_name_guest);
-            txtPhoneNumber = itemView.findViewById(R.id.txt_phone_number);
-            txtProfileStatus = itemView.findViewById(R.id.txt_profile_status);
-            txtEntryDate = itemView.findViewById(R.id.txt_entry_date);
+        MainGuestViewHolder(@NonNull ItemContainerGuestBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
 
+        void setMainGuestData(MainGuest mainGuest) {
+            binding.txtNameGuest.setText(mainGuest.getNameGuest());
+            binding.txtPhoneNumber.setText(mainGuest.getPhoneGuest());
+            binding.txtEntryDate.setText(mainGuest.getDateIn());
+            binding.txtProfileStatus.setText(mainGuest.getFileStatus() ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
         }
     }
 }
-

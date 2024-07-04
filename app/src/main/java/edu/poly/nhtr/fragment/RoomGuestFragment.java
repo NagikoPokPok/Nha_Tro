@@ -27,7 +27,7 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View {
 
-    private final List<MainGuest> mainGuestList = new ArrayList<>();
+    private final List<MainGuest> mainGuestsList = new ArrayList<>();
     private FragmentRoomGuestBinding binding;
     private RecyclerView recyclerView;
     private MainGuestAdapter adapter;
@@ -76,14 +76,14 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         recyclerView = binding.guestsRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new MainGuestAdapter(mainGuestList);
+        adapter = new MainGuestAdapter(mainGuestsList); // Use GuestAdapter
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void showMainGuest(List<MainGuest> mainGuests) {
-        mainGuestList.clear();
-        mainGuestList.addAll(mainGuests);
+        mainGuestsList.clear();
+        mainGuestsList.addAll(mainGuests);
         adapter.notifyDataSetChanged();
 
         // Hide loading indicator and show RecyclerView
