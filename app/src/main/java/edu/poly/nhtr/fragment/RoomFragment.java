@@ -762,15 +762,14 @@ public class RoomFragment extends Fragment implements RoomListener {
 
         }
 
+        @Override
     public void deleteListAll(List<Room> list) {
         binding.checkboxSelectAll.setOnClickListener(v -> {
             if (isCheckBoxClicked) {
-                showToast("true");
                 binding.checkboxSelectAll.setChecked(false);
                 roomAdapter.isCheckBoxClicked(false);
                 isCheckBoxClicked = false;
             } else {
-                showToast("false");
                 binding.checkboxSelectAll.setChecked(true);
                 roomAdapter.isCheckBoxClicked(true);
                 isCheckBoxClicked = true;

@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainViewModel;
 import edu.poly.nhtr.R;
@@ -71,16 +73,25 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RoomAdapter.RoomViewHolder holder, int position) {
-        if (isCheckBoxClicked==true) {
-            roomListener.showToast("true");
-            holder.binding.ivCheckBox.setChecked(true);
-            selectList.clear();
-            selectList.addAll(rooms);
-        } else {
-            roomListener.showToast("false");
-            holder.binding.ivCheckBox.setChecked(false);
-            selectList.clear();
-        }
+        //roomListener.showToast("Call ");
+        CheckBox checkBoxSelectAll = fragment.requireView().findViewById(R.id.checkbox_select_all);
+
+        checkBoxSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                roomListener.showToast("Click");
+                holder.binding.ivCheckBox.setChecked(true);
+                selectList.clear();
+                selectList.addAll(rooms);
+                updateList();
+                // Thực hiện các hành động khác khi checkbox được chọn
+            } else {
+                holder.binding.ivCheckBox.setChecked(false);
+                selectList.clear();
+                updateList();
+                // Thực hiện các hành động khi checkbox không được chọn
+            }
+        });
+
 
         roomListener.deleteListAll(selectList);
 
@@ -230,8 +241,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         notifyDataSetChanged();
     }
     public void isCheckBoxClicked(boolean isClicked) {
+        notifyDataSetChanged();
         isCheckBoxClicked = isClicked;
-        updateList();
+        //notifyDataSetChanged();
     }
     public void updateList() {
         notifyDataSetChanged();
