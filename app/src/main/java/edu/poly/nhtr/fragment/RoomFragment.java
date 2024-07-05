@@ -763,27 +763,26 @@ public class RoomFragment extends Fragment implements RoomListener {
         }
 
     public void deleteListAll(List<Room> list) {
-
+        binding.checkboxSelectAll.setOnClickListener(v -> {
+            if (isCheckBoxClicked) {
+                showToast("true");
+                binding.checkboxSelectAll.setChecked(false);
+                roomAdapter.isCheckBoxClicked(false);
+                isCheckBoxClicked = false;
+            } else {
+                showToast("false");
+                binding.checkboxSelectAll.setChecked(true);
+                roomAdapter.isCheckBoxClicked(true);
+                isCheckBoxClicked = true;
+            }
+        });
         binding.txtDeleteHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDeleteListDialog(list);
             }
         });
-        binding.checkboxSelectAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isCheckBoxClicked) {
-                    binding.checkboxSelectAll.setChecked(false);
-                    roomAdapter.isCheckBoxClicked(false);
-                    isCheckBoxClicked = false;
-                } else {
-                    binding.checkboxSelectAll.setChecked(true);
-                    roomAdapter.isCheckBoxClicked(true);
-                    isCheckBoxClicked = true;
-                }
-            }
-        });
+
     }
 
     @Override

@@ -34,7 +34,7 @@ import edu.poly.nhtr.models.Room;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder>  {
     Context context;
-    private final List<Room> rooms;
+    List<Room> rooms;
     private int lastActionPosition = 0;
 
     private final RoomListener roomListener;
@@ -65,28 +65,27 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 false);
         mainViewModel = ViewModelProviders.of(fragment)
                 .get(MainViewModel.class);
-        roomListener.deleteListAll(selectList);
-        //updateList();
+
         return new RoomViewHolder(itemContainerRoomBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RoomAdapter.RoomViewHolder holder, int position) {
-
-
-        holder.setRoomData(rooms.get(position), position);
-        Room room = rooms.get(position);
-        if (isCheckBoxClicked) {
-            roomListener.showToast("123");
+        if (isCheckBoxClicked==true) {
+            roomListener.showToast("true");
             holder.binding.ivCheckBox.setChecked(true);
             selectList.clear();
             selectList.addAll(rooms);
         } else {
-            roomListener.showToast("345");
+            roomListener.showToast("false");
             holder.binding.ivCheckBox.setChecked(false);
             selectList.clear();
         }
 
+        roomListener.deleteListAll(selectList);
+
+        holder.setRoomData(rooms.get(position), position);
+        Room room = rooms.get(position);
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -100,11 +99,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 return false;
             }
         });
-
         performCheckBoxes(holder, position);
-
-
-
     }
 
     public List<Room> getSelectList() {
@@ -128,7 +123,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             //roomListener.showToast(getSelectList().size() + "");
         });
 
-        if (isSelectAll || isVisible[position]) {
+        if ( isVisible[position]) {
             holder.binding.frmImage.setVisibility(View.INVISIBLE);
             holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
             holder.binding.ivCheckBox.setChecked(selectList.contains(rooms.get(position)));
@@ -236,7 +231,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     }
     public void isCheckBoxClicked(boolean isClicked) {
         isCheckBoxClicked = isClicked;
-        notifyDataSetChanged();
+        updateList();
     }
     public void updateList() {
         notifyDataSetChanged();
