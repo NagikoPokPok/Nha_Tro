@@ -78,7 +78,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
         checkBoxSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                roomListener.showToast("Click");
                 holder.binding.ivCheckBox.setChecked(true);
                 selectList.clear();
                 selectList.addAll(rooms);
