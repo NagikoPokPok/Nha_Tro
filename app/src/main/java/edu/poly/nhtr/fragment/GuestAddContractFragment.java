@@ -77,6 +77,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private TextInputEditText edtSoCCCD;
     private TextInputLayout tilSoCCCD;
     private TextInputEditText edtTienPhong;
+    private TextInputLayout tilTienPhong;
     private EditText edtHanThanhToan;
     private TextInputLayout tilNgaySinh;
     private TextInputEditText edtNgaySinh;
@@ -224,6 +225,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         tilNgayTraTien = binding.tilNgayTraTienPhong;
         edtNgayTao = binding.edtNgayTaoHopDong;
         edtTienPhong = binding.edtGiaPhong;
+        tilTienPhong = binding.tilGiaPhong;
         edtNgayHetHan = binding.edtNgayHetHanHopDong;
         edtNgayTraTien = binding.edtNgayTraTienPhong;
         edtHanThanhToan = binding.edtHanThanhToan;
@@ -287,6 +289,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         checkName();
         checkPhoneNumber();
         checkCCCDNumber();
+        checkRoomPrice();
 
         btnAddContract.setOnClickListener(v -> {
             openSaveDialog();
@@ -392,6 +395,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         presenter.setUpCCCDField(edtSoCCCD, tilSoCCCD);
     }
 
+    public void checkRoomPrice() {
+        presenter.setUpRoomPriceField(edtTienPhong, tilTienPhong);
+    }
 
     @Override
     public void setNameErrorMessage(String message) {

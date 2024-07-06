@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
@@ -17,6 +16,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,6 +34,7 @@ public class GuestAddContractPresenter {
     private static final int REQUIRED_DATE_LENGTH = 8;
     private final MainGuestListener mainGuestListener;
     private final Context context;
+    private static final int MAX_PRICE_LENGTH = 9; // Giá phòng tối đa không quá 9 chữ số
 
 
     public GuestAddContractPresenter(MainGuestListener mainGuestListener, Context context) {
@@ -115,6 +116,7 @@ public class GuestAddContractPresenter {
         return name.matches(regex);
     }
 
+    // Sự kiện cho trường số điện thoại
     public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp) {
         if (textInputEditText == null || textInputLayout == null || ccp == null) {
             return;
@@ -142,7 +144,7 @@ public class GuestAddContractPresenter {
         });
     }
 
-
+    // Xử lý sự kiện khi số điện thoại thay đổi
     public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp) {
         if (textInputLayout == null) {
             return;
@@ -161,7 +163,7 @@ public class GuestAddContractPresenter {
         }
     }
 
-
+    // Sự kiện cho trường CCCD
     public void setUpCCCDField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
         textInputEditText.addTextChangedListener(new TextWatcher() {
 
@@ -181,6 +183,7 @@ public class GuestAddContractPresenter {
         });
     }
 
+    // Xử lý sự kiện khi số CCCD thay đổi
     public void handleCCCDNumberChanged(String cccd, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
             return;
@@ -194,6 +197,7 @@ public class GuestAddContractPresenter {
         }
     }
 
+    // Sự kiện cho trường ngày
     public void setUpDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -288,35 +292,7 @@ public class GuestAddContractPresenter {
         });
     }
 
-    public void handleDateOfBirthChanged(String dateOfBirth, TextInputLayout textInputLayout) {
-        if (textInputLayout == null) {
-            return;
-        }
-        if (TextUtils.isEmpty(dateOfBirth)) {
-            textInputLayout.setError("Không được bỏ trống");
-        } else {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            simpleDateFormat.setLenient(false);
-            try {
-                Date dob = simpleDateFormat.parse(dateOfBirth); // Date of birth
-                Calendar calDob = Calendar.getInstance();
-                calDob.setTime(dob);
-                Calendar today = Calendar.getInstance();
-                int year = today.get(Calendar.YEAR) - calDob.get(Calendar.YEAR);
-                if (today.get(Calendar.DAY_OF_YEAR) < calDob.get(Calendar.DAY_OF_YEAR)) {
-                    year--;
-                }
-                if (year < 16) {
-                    textInputLayout.setError("Tuổi chủ phòng phải lớn hơn hoặc bằng 18");
-                } else {
-                    textInputLayout.setError(null);
-                }
-            } catch (ParseException e) {
-                textInputLayout.setError("Ngày sinh không hợp lệ");
-            }
-        }
-    }
-
+    // Sự kiện cho trường ngày sinh
     public void setUpDateOfBirthField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -410,6 +386,91 @@ public class GuestAddContractPresenter {
             }
         });
     }
+
+    // Xử lý sự kiện khi ngày sinh thay đổi
+    public void handleDateOfBirthChanged(String dateOfBirth, TextInputLayout textInputLayout) {
+        if (textInputLayout == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(dateOfBirth)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            simpleDateFormat.setLenient(false);
+            try {
+                Date dob = simpleDateFormat.parse(dateOfBirth); // Date of birth
+                Calendar calDob = Calendar.getInstance();
+                calDob.setTime(dob);
+                Calendar today = Calendar.getInstance();
+                int year = today.get(Calendar.YEAR) - calDob.get(Calendar.YEAR);
+                if (today.get(Calendar.DAY_OF_YEAR) < calDob.get(Calendar.DAY_OF_YEAR)) {
+                    year--;
+                }
+                if (year < 16) {
+                    textInputLayout.setError("Tuổi chủ phòng phải lớn hơn hoặc bằng 18");
+                } else {
+                    textInputLayout.setError(null);
+                }
+            } catch (ParseException e) {
+                textInputLayout.setError("Ngày sinh không hợp lệ");
+            }
+        }
+    }
+
+    public void setUpRoomPriceField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    textInputEditText.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("\\D", "");
+
+                    if (cleanString.length() > MAX_PRICE_LENGTH) {
+                        cleanString = cleanString.substring(0, MAX_PRICE_LENGTH);
+                    }
+
+                    if (!cleanString.isEmpty()) {
+                        double parsed = Double.parseDouble(cleanString);
+                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
+
+                        current = formatted;
+                        textInputEditText.setText(formatted);
+                        textInputEditText.setSelection(formatted.length());
+                    } else {
+                        current = "";
+                        textInputEditText.setText("");
+                    }
+
+                    textInputEditText.addTextChangedListener(this);
+                    handleRoomPriceChanged(cleanString, textInputLayout);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
+    }
+
+    private void handleRoomPriceChanged(String price, TextInputLayout textInputLayout) {
+        if (price.isEmpty()) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (price.length() > MAX_PRICE_LENGTH) {
+            textInputLayout.setError("Giá phòng không được vượt quá 9 chữ số");
+        } else {
+            textInputLayout.setError(null);
+        }
+    }
+
 
     public void addContractToFirestore(MainGuest mainGuest) {
         HashMap<String, Object> contract = new HashMap<>();
