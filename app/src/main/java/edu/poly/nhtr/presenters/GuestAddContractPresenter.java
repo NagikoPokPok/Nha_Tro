@@ -97,19 +97,26 @@ public class GuestAddContractPresenter {
 
     public void handleNameChanged(String name, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
-            Log.e("GuestAddContractPresenter", "TextInputLayout for name is null");
             return;
         }
+
         if (TextUtils.isEmpty(name)) {
             textInputLayout.setError("Không được bỏ trống");
+        } else if (!isValidName(name)) {
+            textInputLayout.setError("Tên không được chứa số hoặc ký tự đặc biệt");
         } else {
             textInputLayout.setError(null);
         }
     }
 
+    // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
+    private boolean isValidName(String name) {
+        String regex = "^[a-zA-Z\\s]+$";
+        return name.matches(regex);
+    }
+
     public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp) {
         if (textInputEditText == null || textInputLayout == null || ccp == null) {
-            Log.e("GuestAddContractPresenter", "One or more components are null");
             return;
         }
 
@@ -138,7 +145,6 @@ public class GuestAddContractPresenter {
 
     public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp) {
         if (textInputLayout == null) {
-            Log.e("GuestAddContractPresenter", "TextInputLayout for phone number is null");
             return;
         }
 
@@ -177,7 +183,6 @@ public class GuestAddContractPresenter {
 
     public void handleCCCDNumberChanged(String cccd, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
-            Log.e("GuestAddContractPresenter", "TextInputLayout for CCCD is null");
             return;
         }
         if (TextUtils.isEmpty(cccd)) {
@@ -283,10 +288,8 @@ public class GuestAddContractPresenter {
         });
     }
 
-
     public void handleDateOfBirthChanged(String dateOfBirth, TextInputLayout textInputLayout) {
         if (textInputLayout == null) {
-            Log.e("GuestAddContractPresenter", "TextInputLayout for date of birth is null");
             return;
         }
         if (TextUtils.isEmpty(dateOfBirth)) {
@@ -458,6 +461,4 @@ public class GuestAddContractPresenter {
                 .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
 
     }
-
-
 }

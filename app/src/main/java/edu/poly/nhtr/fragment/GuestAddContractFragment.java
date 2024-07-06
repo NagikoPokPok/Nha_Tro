@@ -350,7 +350,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
     }
 
-
     @Override
     public void setUpDropDownMenuGender() {
         edtGioiTinh.setAdapter(presenter.getGenderAdapter());
@@ -388,7 +387,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     public void checkPhoneNumber() {
         presenter.setUpPhoneNumberField(edtSoDienThoai, tilSoDienThoai, countryCodePicker);
     }
-
 
     public void checkCCCDNumber() {
         presenter.setUpCCCDField(edtSoCCCD, tilSoCCCD);

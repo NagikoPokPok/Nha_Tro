@@ -8,7 +8,6 @@
     style="@style/SCREEN_WHITE"
     tools:context=".fragment.RoomGuestFragment">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/guestsRecyclerView"
         android:layout_width="match_parent"
@@ -23,7 +22,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_add_guest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -34,7 +33,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_guest"
@@ -52,6 +50,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

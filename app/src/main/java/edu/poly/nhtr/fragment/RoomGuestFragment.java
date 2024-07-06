@@ -85,7 +85,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         mainGuestsList.addAll(mainGuests);
         adapter.notifyDataSetChanged();
 
-        // Hide loading indicator and show RecyclerView
         binding.progressBar.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
     }
@@ -93,14 +92,13 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     @Override
     public void showError(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        // Hide loading indicator
         binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showNoDataFound() {
         Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
-        // Hide loading indicator
         binding.progressBar.setVisibility(View.GONE);
     }
 }
+
