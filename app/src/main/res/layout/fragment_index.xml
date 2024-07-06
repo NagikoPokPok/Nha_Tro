@@ -570,7 +570,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tableLayout"
-        android:layout_above="@id/button_layout"
+        android:layout_above="@id/layout_setting_notification_index"
         android:layout_marginBottom="10dp"/>
 
 
@@ -579,10 +579,32 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_below="@id/tableLayout"
-        android:layout_above="@id/button_layout"
+        android:layout_above="@id/layout_setting_notification_index"
         android:layout_marginStart="200dp"
         android:visibility="gone"
         />
+
+
+
+    <LinearLayout
+        android:id="@+id/layout_setting_notification_index"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/background_date_time_index"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_above="@id/button_layout">
+
+
+        <ImageButton
+            android:id="@+id/btn_setting_notification_index"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/icon_settings"
+            android:contentDescription="Calendar"
+            android:backgroundTint="@color/colorPrimary" />
+    </LinearLayout>
 
 
 
@@ -594,7 +616,8 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:padding="5dp"
-        android:visibility="visible">
+        android:visibility="visible"
+        >
 
 <!--        <TextView-->
 <!--            android:id="@+id/btn_previous_page"-->

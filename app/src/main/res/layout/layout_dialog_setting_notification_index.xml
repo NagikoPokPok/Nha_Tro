@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+    android:layout_margin="28dp"
     android:background="@drawable/bg_white_corner_16"
     android:orientation="vertical">
 
@@ -38,7 +38,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
-                android:text="Bạn có muốn bật thông báo nhắc nhở nhập chỉ số hay không?"
+                android:text="Bạn có muốn bật thông báo nhắc nhở nhập chỉ số vào hằng tháng hay không?"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
@@ -51,6 +51,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_select_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -71,13 +72,15 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:hint="@string/dd_mm_yyyy"
+                app:hintEnabled="false"
                 app:boxBackgroundMode="outline">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_day"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bottom_outline"
-                    android:inputType="date"
+                    android:inputType="datetime"
                     android:padding="5dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -120,11 +123,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:background="@drawable/custom_button_clicked"
+                android:background="@drawable/custom_button_add"
                 android:fontFamily="@font/inter_medium"
                 android:textSize="16sp"
                 app:backgroundTint="@null"
-                app:iconGravity="textStart" />
+                app:iconGravity="textStart"
+                android:text="OK"/>
 
             <ProgressBar
                 android:id="@+id/progressBar"

@@ -101,4 +101,6 @@ public class Constants {
 
     public static final String ACTION_SET_EXACT = "ACTION_SET_EXTRA";
     public static final String ACTION_SET_REPETITIVE_EXACT = "ACTION_SET_REPETITIVE_EXACT";
+    public static final String SWITCH_ON_OFF_NOTIFICATION_INDEX = "SWITCH_ON_OFF";
+    public static final String KEY_DATE_PUSH_NOTIFICATION_INDEX = "datePushNotificationIndex";
 }

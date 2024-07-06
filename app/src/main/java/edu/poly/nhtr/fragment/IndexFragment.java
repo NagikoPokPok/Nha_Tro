@@ -34,6 +34,7 @@ import edu.poly.nhtr.databinding.LayoutDialogDeleteIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogFilterIndexBinding;
 import edu.poly.nhtr.databinding.LayoutDialogNoteIndexBinding;
+import edu.poly.nhtr.databinding.LayoutDialogSettingNotificationIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
@@ -46,6 +47,7 @@ import android.graphics.Color;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -164,16 +166,87 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 setupFilterIndexes();
                 setupSearchEditText(binding.edtSearchIndex);
                 setupAlarmService();
+
             }
         });
     }
 
     private void setupAlarmService() {
-        binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm));
-        binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm));
+        //binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm));
+        //binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm));
+        binding.btnSettingNotificationIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingNotificationDialog();
+            }
+        });
     }
 
-    private void setAlarm(AlarmCallback callback) {
+    private void openSettingNotificationDialog() {
+
+        LayoutDialogSettingNotificationIndexBinding binding1 = LayoutDialogSettingNotificationIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding1.getRoot());
+        setupDialogWindow(binding1.getRoot().getLayoutParams());
+
+        binding1.switchOnOffNotification.setChecked(preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX));
+        if(binding1.switchOnOffNotification.isChecked())
+        {
+            binding1.layoutSelectDay.setVisibility(View.VISIBLE);
+            binding1.edtDay.setText(preferenceManager.getString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX));
+        }else{
+            binding1.layoutSelectDay.setVisibility(View.GONE);
+        }
+
+
+        binding1.switchOnOffNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    setOnNotification(binding1);
+                } else {
+                    setOffNotification(binding1);
+                }
+            }
+        });
+
+        binding1.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        binding1.btnCalendarSelectDayNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAlarm(alarmService::setRepetitiveAlarm, binding1);
+            }
+        });
+
+
+        dialog.setCancelable(true);
+        dialog.show();
+
+    }
+
+    private void setOnNotification(LayoutDialogSettingNotificationIndexBinding binding1) {
+        binding1.layoutSelectDay.setVisibility(View.VISIBLE);
+    }
+
+    private void setOffNotification(LayoutDialogSettingNotificationIndexBinding binding1) {
+        binding1.layoutSelectDay.setVisibility(View.GONE);
+        binding1.btnAddHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, false);
+                alarmService.cancelRepetitiveAlarm();
+                dialog.dismiss();
+            }
+        });
+    }
+
+
+    private void setAlarm(AlarmCallback callback, LayoutDialogSettingNotificationIndexBinding binding1) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
@@ -186,24 +259,59 @@ public class IndexFragment extends Fragment implements IndexInterface {
                     calendar.set(Calendar.MONTH, month);
                     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
+                    // Định dạng ngày thành hai chữ số
+                    String formattedDay = String.format("%02d", dayOfMonth);
+                    String formattedMonth = String.format("%02d", month + 1);
+
+                    binding1.edtDay.setText(formattedDay + "/" + formattedMonth + " at ");
+
                     new TimePickerDialog(
                             requireContext(),
                             0,
                             (view1, hourOfDay, minute) -> {
                                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                 calendar.set(Calendar.MINUTE, minute);
-                                callback.onAlarmSet(calendar.getTimeInMillis());
+
+                                // Định dạng giờ và phút thành hai chữ số
+                                String formattedHour = String.format("%02d", hourOfDay);
+                                String formattedMinute = String.format("%02d", minute);
+
+                                String hourMinute = formattedHour + ":" + formattedMinute;
+                                binding1.edtDay.append(hourMinute);
+
+                                preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, Objects.requireNonNull(binding1.edtDay.getText()).toString().trim());
+
+                                pushAlarm(binding1, callback, calendar);
+
+                                // Gọi callback nếu cần thiết
+                                // callback.onAlarmSet(calendar.getTimeInMillis());
                             },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),
-                            false
+                            false // Đặt thành true để sử dụng định dạng 24 giờ
                     ).show();
+
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         ).show();
     }
+
+    private void pushAlarm(LayoutDialogSettingNotificationIndexBinding binding1, AlarmCallback callback, Calendar calendar)
+    {
+        binding1.btnAddHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, true);
+                callback.onAlarmSet(calendar.getTimeInMillis());
+                dialog.dismiss();
+            }
+        });
+
+    }
+
+
 
     private interface AlarmCallback {
         void onAlarmSet(long timeInMillis);
