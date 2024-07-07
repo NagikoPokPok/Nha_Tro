@@ -103,4 +103,11 @@ public class Constants {
     public static final String ACTION_SET_REPETITIVE_EXACT = "ACTION_SET_REPETITIVE_EXACT";
     public static final String SWITCH_ON_OFF_NOTIFICATION_INDEX = "SWITCH_ON_OFF";
     public static final String KEY_DATE_PUSH_NOTIFICATION_INDEX = "datePushNotificationIndex";
+
+
+    // Notification
+    public static final String KEY_COLLECTION_NOTIFICATION_INDEX = "notificationIndex";
+    public static final String KEY_NOTIFICATION_INDEX_ID = "notificationIndexID";
+    public static final String KEY_NOTIFICATION_INDEX_HEADER = "notificationIndexHeader";
+    public static final String KEY_NOTIFICATION_INDEX_BODY = "notificationIndexBody";
 }

@@ -23,4 +23,5 @@ public interface IndexInterface {
     void showDialogNoteIndexStatus();
     boolean isAdded2();
     void setupLayoutForNextMonth(String homeID, int month, int year);
+    String getHomeID();
 }

@@ -4,20 +4,19 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
-import edu.poly.nhtr.fragment.IndexFragment;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
-
 
 public class AlarmService {
     private final Context context;
     private final AlarmManager alarmManager;
-    private IndexFragment indexFragment;
+    private final Home home;
 
-    public AlarmService(Context context) {
+    public AlarmService(Context context, Home home) {
         this.context = context;
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        this.home = home;
     }
 
     public void setExactAlarm(long timeInMillis) {
@@ -26,17 +25,18 @@ public class AlarmService {
                 getPendingIntent(
                         getIntent().setAction(Constants.ACTION_SET_EXACT)
                                 .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
+                                .putExtra("home", home)
                 )
         );
     }
 
-    // 1 Week
     public void setRepetitiveAlarm(long timeInMillis) {
         setAlarm(
                 timeInMillis,
                 getPendingIntent(
                         getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT)
                                 .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
+                                .putExtra("home", home)
                 )
         );
     }
@@ -44,7 +44,7 @@ public class AlarmService {
     private PendingIntent getPendingIntent(Intent intent) {
         return PendingIntent.getBroadcast(
                 context,
-               0,
+                0,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
@@ -64,15 +64,11 @@ public class AlarmService {
         return new Intent(context, AlarmReceiver.class);
     }
 
-    private int getRandomRequestCode() {
-        return RandomUtil.getRandomInt();
-    }
-
     public void cancelRepetitiveAlarm() {
         Intent intent = getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
-                0, // Use the same request code if applicable
+                0,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
@@ -81,5 +77,3 @@ public class AlarmService {
         }
     }
 }
-
-

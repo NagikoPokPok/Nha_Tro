@@ -12,13 +12,6 @@ public class Home implements Serializable {
     public Date dateObject;
     public Boolean isHaveService;
 
-    public HashMap<String, String> getExistingHomes() {
-        return existingHomes;
-    }
-
-    public void setExistingHomes(HashMap<String, String> existingHomes) {
-        this.existingHomes = existingHomes;
-    }
 
     public Home()
     {

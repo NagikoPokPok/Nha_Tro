@@ -107,6 +107,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     private AlarmService alarmService;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,13 +122,14 @@ public class IndexFragment extends Fragment implements IndexInterface {
         view = inflater.inflate(R.layout.fragment_index, container, false);
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
 
+
         assert getArguments() != null;
         Home home = (Home) getArguments().getSerializable("home");
         assert home != null;
         homeID = home.getIdHome();
         indexPresenter = new IndexPresenter(this, homeID);
 
-        alarmService = new AlarmService(requireContext());
+        alarmService = new AlarmService(requireContext(), home);
 
 
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -172,8 +175,9 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
     private void setupAlarmService() {
-        //binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm));
-        //binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm));
+        LayoutDialogSettingNotificationIndexBinding binding1 = LayoutDialogSettingNotificationIndexBinding.inflate(getLayoutInflater());
+        binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm, binding1));
+        binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm, binding1));
         binding.btnSettingNotificationIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,10 +285,10 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
                                 preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, Objects.requireNonNull(binding1.edtDay.getText()).toString().trim());
 
-                                pushAlarm(binding1, callback, calendar);
+                                //pushAlarm(binding1, callback, calendar);
 
                                 // Gọi callback nếu cần thiết
-                                // callback.onAlarmSet(calendar.getTimeInMillis());
+                                callback.onAlarmSet(calendar.getTimeInMillis());
                             },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),
@@ -1547,6 +1551,10 @@ public class IndexFragment extends Fragment implements IndexInterface {
     public void setupLayoutForNextMonth(String homeID, int month, int year) {
         setupLayout(homeID, month, year);
         indexPresenter.fetchIndexesByMonthAndYear(homeID, month, year, "init");
+    }
+
+    public String getHomeID() {
+        return homeID;
     }
 
     public boolean isWaterIsIndex() {
