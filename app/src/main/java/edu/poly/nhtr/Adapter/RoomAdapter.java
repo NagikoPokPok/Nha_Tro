@@ -50,8 +50,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     boolean[] isVisible;
 
-    public RoomAdapter(Context context, List<Room> rooms, RoomListener roomListener, RoomFragment roomFragment) {
-        this.context = context;
+    public RoomAdapter( List<Room> rooms, RoomListener roomListener, RoomFragment roomFragment) {
+
         this.rooms = rooms;
         this.roomListener = roomListener;
         this.fragment = roomFragment;

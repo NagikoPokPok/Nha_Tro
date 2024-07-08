@@ -176,8 +176,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     private void setupAlarmService() {
         LayoutDialogSettingNotificationIndexBinding binding1 = LayoutDialogSettingNotificationIndexBinding.inflate(getLayoutInflater());
-        binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm, binding1));
-        binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm, binding1));
+        //binding.setExact.setOnClickListener(v -> setAlarm(alarmService::setExactAlarm, binding1));
+        //binding.setRepetitive.setOnClickListener(v -> setAlarm(alarmService::setRepetitiveAlarm, binding1));
         binding.btnSettingNotificationIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -267,7 +267,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
                     String formattedDay = String.format("%02d", dayOfMonth);
                     String formattedMonth = String.format("%02d", month + 1);
 
-                    binding1.edtDay.setText(formattedDay + "/" + formattedMonth + " at ");
+                    binding1.edtDay.setText("ngày "+  formattedDay  + " vào lúc ");
 
                     new TimePickerDialog(
                             requireContext(),
@@ -285,10 +285,10 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
                                 preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, Objects.requireNonNull(binding1.edtDay.getText()).toString().trim());
 
-                                //pushAlarm(binding1, callback, calendar);
+                                pushAlarm(binding1, callback, calendar);
 
                                 // Gọi callback nếu cần thiết
-                                callback.onAlarmSet(calendar.getTimeInMillis());
+                                //callback.onAlarmSet(calendar.getTimeInMillis());
                             },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),

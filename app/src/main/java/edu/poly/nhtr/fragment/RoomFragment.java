@@ -122,7 +122,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         roomPresenter.getRooms("init");
 
         roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, this);
+            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
         });
 
 
@@ -215,7 +215,7 @@ public class RoomFragment extends Fragment implements RoomListener {
             Home home = (Home) getArguments().getSerializable("home");
         }
         roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, this);
+            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
         });
 
 
@@ -428,7 +428,7 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void addRoom(List<Room> rooms, String action) {
-        RoomAdapter roomAdapter = new RoomAdapter(requireContext(), rooms, this, this);
+        RoomAdapter roomAdapter = new RoomAdapter( rooms, this, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
 
 

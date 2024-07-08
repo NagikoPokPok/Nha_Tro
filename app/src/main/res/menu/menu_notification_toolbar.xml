@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <item
+        android:title="FilterNotificationByHome"
+        android:id="@+id/Notification"
+        android:icon="@drawable/ic_filter_index"
+        app:actionViewClass="android.widget.TextView"
+        app:iconTintMode="@null"
+        app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:title="Xoá thông báo"
+        android:id="@+id/deleteNotifications"/>
+
+    <item
+        android:title="Đánh dấu tất cả đã đọc"
+        android:id="@+id/markAllNotificationsAreRead"/>
+
+
+
+</menu>

@@ -106,8 +106,9 @@ public class Constants {
 
 
     // Notification
-    public static final String KEY_COLLECTION_NOTIFICATION_INDEX = "notificationIndex";
-    public static final String KEY_NOTIFICATION_INDEX_ID = "notificationIndexID";
-    public static final String KEY_NOTIFICATION_INDEX_HEADER = "notificationIndexHeader";
-    public static final String KEY_NOTIFICATION_INDEX_BODY = "notificationIndexBody";
+    public static final String KEY_COLLECTION_NOTIFICATION = "notification";
+    public static final String KEY_NOTIFICATION_ID = "notificationID";
+    public static final String KEY_NOTIFICATION_HEADER = "notificationHeader";
+    public static final String KEY_NOTIFICATION_BODY = "notificationBody";
+    public static final String KEY_NOTIFICATION_OF_INDEX = "notificationOfIndex";
 }

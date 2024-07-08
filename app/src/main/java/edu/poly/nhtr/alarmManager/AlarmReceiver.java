@@ -34,15 +34,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import edu.poly.nhtr.Activity.MainActivity;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.firebase.FcmNotificationSender;
 import edu.poly.nhtr.firebase.MessagingService;
-import edu.poly.nhtr.fragment.IndexFragment;
-import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -56,19 +53,23 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Home home = (Home) intent.getSerializableExtra("home");
         PreferenceManager preferenceManager = new PreferenceManager(context);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> notificationIndex = new HashMap<>();
+        assert home != null;
+        String header = "Nhập chỉ số cho nhà trọ " + home.getNameHome();
+        String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
         long timeInMillis = intent.getLongExtra(Constants.EXTRA_EXACT_ALARM_TIME, 0L);
         switch (Objects.requireNonNull(intent.getAction())) {
             case Constants.ACTION_SET_EXACT:
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                Map<String, Object> notificationIndex = new HashMap<>();
-                notificationIndex.put(Constants.KEY_NOTIFICATION_INDEX_HEADER, "FCM");
-                notificationIndex.put(Constants.KEY_NOTIFICATION_INDEX_BODY, "This is try test of FCM Part 4");
+
+                notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
+                notificationIndex.put(Constants.KEY_NOTIFICATION_BODY, body);
                 notificationIndex.put(Constants.KEY_USER_ID, getInfoUserFromGoogleAccount(context, preferenceManager));
-                assert home != null;
                 notificationIndex.put(Constants.KEY_HOME_ID, home.getIdHome());
+                notificationIndex.put(Constants.KEY_NAME_HOME, home.getNameHome());
                 notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
 
-                db.collection(Constants.KEY_COLLECTION_NOTIFICATION_INDEX)
+                db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                         .add(notificationIndex)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
@@ -87,7 +88,31 @@ public class AlarmReceiver extends BroadcastReceiver {
                 break;
             case Constants.ACTION_SET_REPETITIVE_EXACT:
                 setRepetitiveAlarm(new AlarmService(context, home));
-                buildNotification(context);
+                //buildNotification(context);
+
+                notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
+                notificationIndex.put(Constants.KEY_NOTIFICATION_BODY, body);
+                notificationIndex.put(Constants.KEY_USER_ID, getInfoUserFromGoogleAccount(context, preferenceManager));
+                notificationIndex.put(Constants.KEY_HOME_ID, home.getIdHome());
+                notificationIndex.put(Constants.KEY_NAME_HOME, home.getNameHome());
+                notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
+                notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
+
+                db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                        .add(notificationIndex)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                getNotificationIndex(documentReference, context);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showToast(context, "failure");
+                            }
+                        });
+
                 break;
         }
     }
@@ -107,7 +132,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void getNotificationIndex(DocumentReference documentReference, Context context)
     {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(Constants.KEY_COLLECTION_NOTIFICATION_INDEX)
+        db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                 .document(documentReference.getId())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -115,8 +140,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            String header = document.getString(Constants.KEY_NOTIFICATION_INDEX_HEADER);
-                            String body = document.getString(Constants.KEY_NOTIFICATION_INDEX_BODY);
+                            String header = document.getString(Constants.KEY_NOTIFICATION_HEADER);
+                            String body = document.getString(Constants.KEY_NOTIFICATION_BODY);
 
                             // Register broadcast receiver to listen for notification data updates
                             LocalBroadcastManager.getInstance(context).registerReceiver(new BroadcastReceiver() {

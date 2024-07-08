@@ -207,6 +207,12 @@
 
     </style>
 
+    <style name="CustomToolbarTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/inter_bold</item> <!-- Nếu bạn có một font tùy chỉnh -->
+    </style>
+
 
     <string name="my_text">Bạn chưa có nhà trọ. \n<br />Hãy nhấn nút <b>+</b> để thêm nhà trọ.</string>
 
