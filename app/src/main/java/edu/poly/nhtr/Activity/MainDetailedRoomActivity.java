@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,6 +23,7 @@ import edu.poly.nhtr.fragment.RoomGuestContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestFragment;
 import edu.poly.nhtr.fragment.RoomServiceFragment;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
@@ -31,6 +33,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private Room room;
     private boolean hasMainGuest = false;
+    private RoomViewModel roomViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +42,14 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         preferenceManager = new PreferenceManager(getApplicationContext());
+        roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
+
 
         room = (Room) getIntent().getSerializableExtra("room");
         if (room != null) {
             setupRoomDetails();
             checkRoomHasMainGuest();
+            roomViewModel.setRoom(room);
         } else {
             finish();
         }
@@ -81,7 +87,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     }
 
     private void showTabLayout() {
-        binding.fragmentContainer.setVisibility(View.GONE);
         binding.tabLayout.setVisibility(View.VISIBLE);
         binding.viewPager.setVisibility(View.VISIBLE);
 
@@ -102,7 +107,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         fragment.setArguments(getIntent().getExtras());
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
-        binding.fragmentContainer.setVisibility(View.VISIBLE);
         binding.viewPager.setVisibility(View.GONE);
         binding.tabLayout.setVisibility(View.GONE);
     }

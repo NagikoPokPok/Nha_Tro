@@ -8,14 +8,17 @@ import java.util.List;
 
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.MainGuest;
+import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 
 public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
     private final RoomGuestInterface.View view;
+    private final RoomViewModel roomViewModel;
     private final FirebaseFirestore database;
 
-    public RoomGuestPresenter(RoomGuestInterface.View view) {
+    public RoomGuestPresenter(RoomGuestInterface.View view, RoomViewModel roomViewModel) {
         this.view = view;
+        this.roomViewModel = roomViewModel;
         this.database = FirebaseFirestore.getInstance();
     }
 
@@ -43,13 +46,16 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
 
                                 mainGuestList.add(mainGuest);
                             }
-                            view.showMainGuest(mainGuestList);
+                            roomViewModel.setMainGuests(mainGuestList); // Update ViewModel
                         } else {
+                            roomViewModel.setMainGuests(new ArrayList<>()); // Update ViewModel with empty list
                             view.showNoDataFound();
                         }
                     } else {
+                        roomViewModel.setMainGuests(new ArrayList<>()); // Update ViewModel with empty list
                         view.showError("Error getting data");
                     }
                 });
     }
 }
+
