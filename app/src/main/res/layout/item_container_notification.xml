@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <FrameLayout
+        android:id="@+id/layout_notification"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/background_date_time_index"
+        android:layout_gravity="center_vertical"
+        >
+        <ImageButton
+            android:id="@+id/img_notification"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/icon_notification"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="20dp"
+                android:background="@drawable/ic_fire"
+                android:scaleType="centerInside"/>
+
+            <TextView
+                android:id="@+id/txt_notification_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is notification header"
+                android:fontFamily="@font/inter_bold"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="16sp"/>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_notification_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is notification body"
+            android:textColor="@color/colorTextBlack"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/inter_medium"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/time_get_notification_until_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bây giờ"
+        android:fontFamily="@font/inter_light"
+        android:textStyle="italic"
+        android:layout_gravity="center_vertical"
+        android:textSize="14sp"
+        android:layout_marginStart="10dp"/>
+
+</LinearLayout>

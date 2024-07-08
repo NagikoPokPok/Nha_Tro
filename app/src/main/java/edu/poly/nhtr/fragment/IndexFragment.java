@@ -150,7 +150,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
 
                 indexPresenter.fetchRoomsAndAddIndex(homeID, isWaterIndex, task1 -> {
-                    //indexPresenter.fetchIndexesByMonthAndYear(homeID, currentMonth + 1, currentYear, "init");
                     indexPresenter.updateWaterIsIndex(homeID, currentMonth + 1, currentYear, isWaterIndex, task2 -> {
                         setupLayout(homeID, currentMonth + 1, currentYear);
                     });
