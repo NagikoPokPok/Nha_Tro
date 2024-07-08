@@ -56,6 +56,7 @@ import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.GuestAddContractPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
+import timber.log.Timber;
 
 public class GuestAddContractFragment extends Fragment implements MainGuestListener {
 
@@ -173,27 +174,23 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
             if (room != null) {
-                Log.d("GuestAddContractFragment", "Room ID: " + room.getRoomId());
+                Timber.tag("GuestAddContractFragment").d("Room ID: %s", room.getRoomId());
                 setListeners();
             } else {
-                Log.e("GuestAddContractFragment", "Room object is null");
+                Timber.tag("GuestAddContractFragment").e("Room object is null");
             }
         } else {
-            Log.e("GuestAddContractFragment", "Arguments are null");
+            Timber.tag("GuestAddContractFragment").e("Arguments are null");
         }
     }
 
 
-
     private Room getRoomFromPreference() {
         String roomId = preferenceManager.getString(Constants.KEY_ROOM_ID);
-        // Example: Retrieve other fields if needed
-        // String roomName = preferenceManager.getString(Constants.KEY_ROOM_NAME);
 
         if (roomId != null && !roomId.isEmpty()) {
             Room room = new Room();
             room.setRoomId(roomId);
-            // Set other fields if needed
             return room;
         } else {
             return null;
@@ -291,13 +288,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         checkCCCDNumber();
         checkRoomPrice();
 
-        btnAddContract.setOnClickListener(v -> {
-            openSaveDialog();
-        });
+        btnAddContract.setOnClickListener(v -> openSaveDialog());
 
-        btnCancel.setOnClickListener(v -> {
-            openCancelSaveDialog();
-        });
+        btnCancel.setOnClickListener(v -> openCancelSaveDialog());
     }
 
     @Override
@@ -510,7 +503,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         dialog.show();
     }
 
-
     @Override
     public boolean saveContract() {
         String nameGuest = getStringFromEditText(edtHoTen);
@@ -538,7 +530,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         System.out.println("Room Price: " + roomPrice);
         System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
 
-        // Check if any required fields are empty and handle the error
         if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
                 gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || expirationDate.isEmpty() ||
                 payDate.isEmpty() || roomPrice.isEmpty() || daysUntilDueDateStr.isEmpty()) {
@@ -554,6 +545,14 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             return false;
         }
 
+        double roomPriceValue;
+        try {
+            roomPriceValue = Double.parseDouble(roomPrice);
+        } catch (NumberFormatException e) {
+            Toast.makeText(requireContext(), "Invalid number format for room price", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         MainGuest mainGuest = new MainGuest();
         mainGuest.setNameGuest(nameGuest);
         mainGuest.setPhoneGuest(phoneGuest);
@@ -564,7 +563,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         mainGuest.setCreateDate(createDate);
         mainGuest.setExpirationDate(expirationDate);
         mainGuest.setPayDate(payDate);
-        mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
+        mainGuest.setRoomPrice(roomPriceValue);
         mainGuest.setDaysUntilDueDate(daysUntilDueDate);
         mainGuest.setCccdImageFront(encodedCCCDFrontImage);
         mainGuest.setCccdImageBack(encodedCCCDBackImage);

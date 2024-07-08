@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import edu.poly.nhtr.databinding.FragmentRoomGuestBinding;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.presenters.RoomGuestPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -31,8 +33,8 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     private FragmentRoomGuestBinding binding;
     private RecyclerView recyclerView;
     private MainGuestAdapter adapter;
-    private Room room;
     private PreferenceManager preferenceManager;
+    private RoomViewModel roomViewModel;
 
     public RoomGuestFragment() {
     }
@@ -45,19 +47,22 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RoomGuestInterface.Presenter presenter = new RoomGuestPresenter(this);
+        // Initialize ViewModel
+        roomViewModel = new ViewModelProvider(requireActivity()).get(RoomViewModel.class);
+        RoomGuestInterface.Presenter presenter = new RoomGuestPresenter(this, roomViewModel);
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
 
-        if (getArguments() != null) {
-            room = (Room) getArguments().getSerializable("room");
+        recyclerView = binding.guestsRecyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        adapter = new MainGuestAdapter(mainGuestsList);
+        recyclerView.setAdapter(adapter);
+
+        // Observe the room data from the ViewModel
+        roomViewModel.getRoom().observe(getViewLifecycleOwner(), room -> {
             if (room != null) {
                 String roomId = room.getRoomId();
                 preferenceManager.putString(Constants.PREF_KEY_ROOM_ID, roomId);
@@ -67,16 +72,22 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                 Log.e("RoomGuestFragment", "Room object is null");
                 showError("Room data is not available");
             }
-        } else {
-            Log.e("RoomGuestFragment", "Arguments are null");
-            showError("Room data is not available");
+        });
+
+        // Observe the main guests data from the ViewModel
+        roomViewModel.getMainGuests().observe(getViewLifecycleOwner(), mainGuests -> {
+            if (mainGuests != null && !mainGuests.isEmpty()) {
+                showMainGuest(mainGuests);
+            } else {
+                showNoDataFound();
+            }
+        });
+
+        // If arguments are provided, set the room in the ViewModel
+        if (getArguments() != null) {
+            Room room = (Room) getArguments().getSerializable("room");
+            roomViewModel.setRoom(room);
         }
-
-        recyclerView = binding.guestsRecyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        adapter = new MainGuestAdapter(mainGuestsList);
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -101,4 +112,3 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         binding.progressBar.setVisibility(View.GONE);
     }
 }
-
