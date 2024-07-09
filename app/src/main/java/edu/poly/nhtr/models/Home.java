@@ -1,5 +1,7 @@
 package edu.poly.nhtr.models;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +18,12 @@ public class Home implements Serializable {
     public Home()
     {
 
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return nameHome;
     }
 
     public Home(String nameHome, String addressHome) {

@@ -111,4 +111,5 @@ public class Constants {
     public static final String KEY_NOTIFICATION_HEADER = "notificationHeader";
     public static final String KEY_NOTIFICATION_BODY = "notificationBody";
     public static final String KEY_NOTIFICATION_OF_INDEX = "notificationOfIndex";
+    public static final String KEY_NOTIFICATION_IS_READ = "notificationIsRead";
 }

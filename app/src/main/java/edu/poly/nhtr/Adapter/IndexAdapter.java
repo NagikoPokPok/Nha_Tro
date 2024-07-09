@@ -167,6 +167,7 @@ public class IndexAdapter extends RecyclerView.Adapter<IndexAdapter.ViewHolder> 
     }
 
     public void isDeleteClicked(boolean isClicked) {
+        multiSelectMode = isClicked;
         isDeleteClicked = isClicked;
         notifyDataSetChanged();
     }
