@@ -4,10 +4,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.MainGuest;
 
@@ -52,7 +54,14 @@ public class MainGuestAdapter extends RecyclerView.Adapter<MainGuestAdapter.Main
             binding.txtNameGuest.setText(mainGuest.getNameGuest());
             binding.txtPhoneNumber.setText(mainGuest.getPhoneGuest());
             binding.txtEntryDate.setText(mainGuest.getDateIn());
+
+            boolean isProfileComplete = mainGuest.getFileStatus();
             binding.txtProfileStatus.setText(mainGuest.getFileStatus() ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
+
+            int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.greenText)
+                    : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
+            binding.txtProfileStatus.setTextColor(color);
+
         }
     }
 }

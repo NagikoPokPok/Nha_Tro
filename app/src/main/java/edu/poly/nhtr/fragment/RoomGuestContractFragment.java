@@ -19,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import edu.poly.nhtr.databinding.FragmentRoomGuestContractBinding;
 import edu.poly.nhtr.models.Room;
-import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class RoomGuestContractFragment extends Fragment {
