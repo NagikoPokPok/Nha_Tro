@@ -9,4 +9,7 @@ public interface NotificationListener {
     String getInfoUserFromGoogleAccount();
     boolean isAdded2();
     void showToast(String message);
+    void showLayoutNoData();
+    void hideLayoutNoData();
+    void setNotificationIsRead(int position);
 }

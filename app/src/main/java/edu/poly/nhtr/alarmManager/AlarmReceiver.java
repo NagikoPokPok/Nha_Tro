@@ -97,6 +97,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 notificationIndex.put(Constants.KEY_NAME_HOME, home.getNameHome());
                 notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
                 notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
+                notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
 
                 db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                         .add(notificationIndex)

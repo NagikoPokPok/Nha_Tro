@@ -8,9 +8,14 @@ public class Notification {
     public String userID, homeID, homeName;
     public Boolean notificationOfIndex, notificationOfBill;
     public Date dateObject;
+    public Boolean isRead;
 
     public Date getDateObject() {
         return dateObject;
+    }
+
+    public Boolean getRead() {
+        return isRead;
     }
 
     public String getHeader() {

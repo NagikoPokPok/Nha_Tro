@@ -19,13 +19,97 @@
         app:popupTheme="@style/Theme.AppCompat.Light"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/layout_functions"
+        android:layout_below="@id/toolbar">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/spinner"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Chọn nhà trọ"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:hintTextColor="@color/colorPrimary"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                android:id="@+id/auto_complete_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="50dp"
+            android:visibility="invisible">
+
+            <CheckBox
+                android:id="@+id/checkbox_select_all"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/checkbox_selector_index"
+                android:button="@null"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="Chọn tất cả"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
+        android:layout_below="@id/layout_functions"
         />
+
+    <LinearLayout
+        android:id="@+id/layout_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_below="@id/layout_functions">
+
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/img_no_data" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Không có thông báo !"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="16sp" />
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>
