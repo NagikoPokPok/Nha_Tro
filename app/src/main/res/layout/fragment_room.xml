@@ -203,10 +203,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Select All"
+                android:text="Chọn tất cả"
                 android:textSize="17sp" />
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/txt_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Hủy"
+            android:textColor="@color/colorOrange"
+            android:textSize="17sp" />
 
 
         <TextView
@@ -215,9 +224,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="Click here to delete !"
+            android:text="Nhấn ở đây để xóa !"
             android:textColor="@color/colorOrange"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
     </LinearLayout>
 

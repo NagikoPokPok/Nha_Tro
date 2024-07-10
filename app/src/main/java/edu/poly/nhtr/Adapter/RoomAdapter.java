@@ -1,38 +1,28 @@
 package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainViewModel;
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.databinding.FragmentRoomBinding;
-import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.databinding.ItemContainerRoomBinding;
 import edu.poly.nhtr.fragment.RoomFragment;
 import edu.poly.nhtr.listeners.RoomListener;
-import edu.poly.nhtr.models.Home;
-import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.presenters.RoomPresenter;
 
 public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder>  {
     Context context;
@@ -40,6 +30,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     private int lastActionPosition = 0;
 
     private final RoomListener roomListener;
+    private final RoomPresenter roomPresenter;
     Fragment fragment;
     MainViewModel mainViewModel;
     private boolean isCheckBoxClicked = false;
@@ -50,10 +41,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     boolean[] isVisible;
 
-    public RoomAdapter( List<Room> rooms, RoomListener roomListener, RoomFragment roomFragment) {
+    public RoomAdapter(List<Room> rooms, RoomListener roomListener, RoomPresenter roomPresenter, RoomFragment roomFragment) {
 
         this.rooms = rooms;
         this.roomListener = roomListener;
+        this.roomPresenter = roomPresenter;
         this.fragment = roomFragment;
         isVisible = new boolean[rooms.size()];
     }
@@ -100,6 +92,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                isEnabled=true;
                 roomListener.setDelectAllUI();
                 holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
                 holder.binding.frmImage.setVisibility(View.GONE);
@@ -133,6 +126,14 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             //roomListener.showToast(getSelectList().size() + "");
         });
 
+        holder.itemView.setOnClickListener(v -> {
+            if (isEnabled) { // Nếu thanh actionMode vẫn còn hiện
+                ClickItem(holder);
+            } else {
+                roomListener.onRoomClick(rooms.get(holder.getAdapterPosition()));
+            }
+        });
+
         if ( isVisible[position]) {
             holder.binding.frmImage.setVisibility(View.INVISIBLE);
             holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
@@ -141,6 +142,21 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             holder.binding.ivCheckBox.setChecked(false);
             holder.binding.ivCheckBox.setVisibility(View.GONE);
             holder.binding.frmImage.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void cancelDeleteAll(){
+        if(rooms.size() == 0){
+            roomListener.cancelDelectAll();
+            roomListener.noRoomData();
+        } else {
+            isEnabled = false;
+            isSelectAll = false;
+            selectList.clear();
+            toggleAllCheckboxes(false);
+            roomPresenter.getRooms("init");
+            roomListener.cancelDelectAll();
+            updateList();
         }
     }
 

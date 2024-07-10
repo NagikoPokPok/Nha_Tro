@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,8 +45,6 @@ import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
-import edu.poly.nhtr.Activity.MainRoomActivity;
-import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.Adapter.RoomAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomBinding;
@@ -122,7 +119,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         roomPresenter.getRooms("init");
 
         roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
+            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, roomPresenter, this);
         });
 
 
@@ -215,7 +212,7 @@ public class RoomFragment extends Fragment implements RoomListener {
             Home home = (Home) getArguments().getSerializable("home");
         }
         roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, this);
+            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, roomPresenter, this);
         });
 
 
@@ -428,10 +425,8 @@ public class RoomFragment extends Fragment implements RoomListener {
 
     @Override
     public void addRoom(List<Room> rooms, String action) {
-        RoomAdapter roomAdapter = new RoomAdapter( rooms, this, this);
+        RoomAdapter roomAdapter = new RoomAdapter( rooms, this, roomPresenter, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
-
-
         if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
             // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
             rooms.sort(Comparator.comparing(obj -> obj.dateObject));
@@ -734,6 +729,12 @@ public class RoomFragment extends Fragment implements RoomListener {
     }
 
     @Override
+    public void cancelDelectAll() {
+        binding.layoutDeleteAll.setVisibility(View.GONE);
+        binding.btnAddRoom.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void openDeleteListDialog(List<Room> listRoom) {
         dialog.setContentView(R.layout.layout_dialog_delete_room);
         Window window = dialog.getWindow();
@@ -764,21 +765,16 @@ public class RoomFragment extends Fragment implements RoomListener {
 
         @Override
     public void deleteListAll(List<Room> list) {
-        binding.checkboxSelectAll.setOnClickListener(v -> {
-            if (isCheckBoxClicked) {
-                binding.checkboxSelectAll.setChecked(false);
-                roomAdapter.isCheckBoxClicked(false);
-                isCheckBoxClicked = false;
-            } else {
-                binding.checkboxSelectAll.setChecked(true);
-                roomAdapter.isCheckBoxClicked(true);
-                isCheckBoxClicked = true;
-            }
-        });
         binding.txtDeleteHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDeleteListDialog(list);
+            }
+        });
+        binding.txtCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                roomAdapter.cancelDeleteAll();
             }
         });
 
