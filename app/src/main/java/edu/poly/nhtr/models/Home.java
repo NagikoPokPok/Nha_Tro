@@ -13,6 +13,7 @@ public class Home implements Serializable {
 
     public Date dateObject;
     public Boolean isHaveService;
+    public String userID;
 
 
     public Home()

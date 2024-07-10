@@ -110,6 +110,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 }
             }else{
                 notificationPresenter.updateNotificationIsRead(position,notification);
+                notificationListener.onNotificationClicked(notificationList.get(holder.getAdapterPosition()));
             }
         });
 
@@ -149,7 +150,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             notificationListener.hideLayoutNoData();
             notifyDataSetChanged();
         }
-        //indexInterface.hideLoading();
+        notificationListener.hideLoading();
     }
 
     public void isDeleteChecked(boolean isDeleteChecked)

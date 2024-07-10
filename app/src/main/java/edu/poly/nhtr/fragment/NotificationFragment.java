@@ -1,7 +1,10 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,12 +14,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +36,13 @@ import org.checkerframework.checker.units.qual.N;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeArrayAdapter;
 import edu.poly.nhtr.Adapter.NotificationAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentNotificationBinding;
+import edu.poly.nhtr.databinding.LayoutDialogDeleteHomeSuccessBinding;
+import edu.poly.nhtr.databinding.LayoutDialogDeleteIndexBinding;
 import edu.poly.nhtr.listeners.NotificationListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
@@ -200,29 +209,72 @@ public class NotificationFragment extends Fragment implements NotificationListen
             if (selectedNotifications.isEmpty()) {
                 showToast("Không có thông báo nào được chọn");
             }else{
-                notificationPresenter.deleteSelectedNotifications(selectedNotifications, new NotificationPresenter.OnSetNotificationListCompleteListener() {
-                    @Override
-                    public void onComplete() {
-                        //showToast("Delete successfully");
-                    }
-                }, homeList);
+                openDialogConfirmDelete(selectedNotifications);
+
             }
-
-
 
             // Logic cho hành động icon delete notifications
             return true;
         } else if (itemId == R.id.markAllNotificationsAreRead) {
-            // Logic cho hành động mark all notifications as read
+            notificationPresenter.getNotificationList(getInfoUserFromGoogleAccount(), new NotificationPresenter.OnReturnNotificationListCompleteListener() {
+                @Override
+                public void onComplete(List<Notification> notificationList) {
+                    notificationPresenter.updateListNotificationIsRead(notificationList, homeList, new NotificationPresenter.OnSetNotificationListCompleteListener() {
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+                }
+            });
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
+    private void openDialogConfirmDelete(List<Notification> selectedNotifications) {
+        LayoutDialogDeleteIndexBinding binding = LayoutDialogDeleteIndexBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
 
 
+        binding.txtConfirmDelete.setText("Bạn chắc chắn muốn xóa các thông báo này? ");
 
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        binding.btnConfirmDeleteIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notificationPresenter.deleteSelectedNotifications(selectedNotifications, new NotificationPresenter.OnSetNotificationListCompleteListener() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }, homeList);
+            }
+        });
+
+        setUpDialogConfirmation();
+    }
+
+
+    private void setUpDialogConfirmation() {
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+        }
+        dialog.setCancelable(true);
+        dialog.show();
+    }
 
 
     @Override
@@ -271,6 +323,78 @@ public class NotificationFragment extends Fragment implements NotificationListen
     @Override
     public void setNotificationIsRead(int position) {
         adapter.notificationIsRead(position);
+    }
+
+    @Override
+    public void closeDialog() {
+        dialog.dismiss();
+    }
+
+    @Override
+    public void showLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.layoutNoData.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        binding.progressBar.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showDialogActionSuccess(String message) {
+        LayoutDialogDeleteHomeSuccessBinding binding = LayoutDialogDeleteHomeSuccessBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
+
+        binding.txtDeleteHomeSuccess.setText(message);
+
+        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        setUpDialogConfirmation();
+    }
+
+    @Override
+    public void closeLayoutDeleteNotification() {
+        adapter.isDeleteChecked(false);
+    }
+
+    @Override
+    public void returnNotificationList(List<Notification> notificationList) {
+        this.notificationList = notificationList;
+    }
+
+    @Override
+    public void onNotificationClicked(Notification notification) {
+
+         notificationPresenter.getHomeByNotification(notification, new NotificationPresenter.OnGetHomeIDByNotificationListener() {
+             @Override
+             public void onComplete(List<Home> homeList) {
+                 Home home = homeList.get(0);
+                 Intent intent = new Intent(requireContext(), MainRoomActivity.class);
+                 intent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
+                 intent.putExtra("home", home);
+                 startActivity(intent);
+             }
+         });
+    }
+
+    @Override
+    public void showButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.INVISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
     }
 
 

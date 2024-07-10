@@ -4,9 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,7 +24,6 @@ import edu.poly.nhtr.Adapter.NotificationAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.NotificationListener;
 import edu.poly.nhtr.models.Home;
-import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.utilities.Constants;
 import timber.log.Timber;
@@ -44,6 +42,7 @@ public class NotificationPresenter {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public void getNotification(OnSetNotificationListCompleteListener listener, List<Home> homeList) {
+        notificationListener.showLoading();
         List<Notification> notificationList = new ArrayList<>();
         AtomicInteger count = new AtomicInteger(0); // Biến đếm số lượng chỉ số đã được xử lý
 
@@ -138,6 +137,7 @@ public class NotificationPresenter {
 
 
     public void getNotificationByHome(Home home) {
+        notificationListener.showLoading();
         List<Notification> notificationList = new ArrayList<>();
         // Truy vấn database để lấy danh sách các thông báo dựa trên homeID
         db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
@@ -186,6 +186,7 @@ public class NotificationPresenter {
 
 
     public void deleteSelectedNotifications(List<Notification> notificationsToDelete, OnSetNotificationListCompleteListener listener, List<Home> homeList) {
+        notificationListener.showButtonLoading(R.id.btn_confirm_delete_index);
         // Bắt đầu một batch mới
         WriteBatch batch = db.batch();
 
@@ -199,7 +200,11 @@ public class NotificationPresenter {
         // Commit batch
         batch.commit()
                 .addOnSuccessListener(aVoid -> {
+                    notificationListener.hideButtonLoading(R.id.btn_confirm_delete_index);
+                    notificationListener.closeDialog();
                     getNotification(listener, homeList);
+                    notificationListener.showDialogActionSuccess("Bạn đã xoá thông báo thành công");
+                    notificationListener.closeLayoutDeleteNotification();
                 })
                 .addOnFailureListener(e -> {
                     notificationListener.showToast("Xóa notifications thất bại: " + e.getMessage());
@@ -212,19 +217,144 @@ public class NotificationPresenter {
     {
         HashMap<String, Object> updateInfo = new HashMap<>();
         updateInfo.put(Constants.KEY_NOTIFICATION_IS_READ, true);
-
-
         db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                 .document(notification.getNotificationID())
                 .update(updateInfo)
                 .addOnSuccessListener(aVoid -> {
-
                     notificationListener.setNotificationIsRead(position);
                 })
                 .addOnFailureListener(e -> {
-
                     Log.w("Firestore", "Error saving index", e);
                 });
+    }
+
+    public void getNotificationList(String userID, OnReturnNotificationListCompleteListener listener)
+    {
+        List<Notification> notificationList = new ArrayList<>();
+        // Truy vấn database để lấy danh sách các thông báo dựa trên homeID
+        db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                .whereEqualTo(Constants.KEY_USER_ID, userID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            AtomicInteger count = new AtomicInteger(0);
+                            // Duyệt qua từng document trong querySnapshot
+                            for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                Notification notification = new Notification();
+                                notification.notificationID = document.getId();
+                                notification.userID = document.getString(Constants.KEY_USER_ID);
+                                notification.homeID = document.getString(Constants.KEY_HOME_ID);
+                                notification.homeName = document.getString(Constants.KEY_NAME_HOME);
+                                notification.header = document.getString(Constants.KEY_NOTIFICATION_HEADER);
+                                notification.body = document.getString(Constants.KEY_NOTIFICATION_BODY);
+                                notification.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                notification.notificationOfIndex = document.getBoolean(Constants.KEY_NOTIFICATION_OF_INDEX);
+                                notification.isRead = document.getBoolean(Constants.KEY_NOTIFICATION_IS_READ);
+                                notificationList.add(notification);
+                                // Tăng biến đếm sau mỗi lần truy vấn hoàn thành
+                                count.incrementAndGet();
+                            }
+                        }
+
+                        // Luôn cập nhật danh sách thông báo, ngay cả khi trống
+                        notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
+                        //notificationListener.returnNotificationList(notificationList);
+                        listener.onComplete(notificationList);
+                    } else {
+
+                        notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
+                        listener.onComplete(notificationList);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
+                    listener.onComplete(notificationList);
+                });
+    }
+
+
+    public void updateListNotificationIsRead(List<Notification> notificationList, List<Home> homeList, OnSetNotificationListCompleteListener listener)
+    {
+        notificationListener.showLoading();
+        HashMap<String, Object> updateInfo = new HashMap<>();
+        updateInfo.put(Constants.KEY_NOTIFICATION_IS_READ, true);
+        AtomicInteger count = new AtomicInteger(0);
+        for (Notification notification : notificationList) {
+            String notificationID = notification.getNotificationID(); // Lấy homeID từ đối tượng Home hiện tại
+
+            // Truy vấn database để lấy danh sách các thông báo dựa trên homeID
+            db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                    .document(notificationID)
+                    .update(updateInfo)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            // Tăng biến đếm sau mỗi lần truy vấn hoàn thành
+                            count.incrementAndGet();
+
+                            // Nếu đã duyệt qua hết tất cả các home trong homeList thì gọi onComplete
+                            if (count.get() == notificationList.size()) {
+                                notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
+                                getNotification(listener , homeList);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+        }
+    }
+
+
+    public void getHomeByNotification(Notification notification, OnGetHomeIDByNotificationListener listener) {
+        List<Home> homeList = new ArrayList<>();
+
+        // Truy vấn database để lấy danh sách các thông báo dựa trên homeID
+        db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                .document(notification.getNotificationID())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            String homeID = documentSnapshot.getString(Constants.KEY_HOME_ID);
+                            if (homeID != null) {
+                                db.collection(Constants.KEY_COLLECTION_HOMES)
+                                        .document(homeID)
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot homeDocumentSnapshot) {
+                                                if (homeDocumentSnapshot.exists()) {
+                                                    Home home = homeDocumentSnapshot.toObject(Home.class);
+                                                    if (home != null) {
+                                                        Long numberOfRooms = homeDocumentSnapshot.getLong(Constants.KEY_NUMBER_OF_ROOMS);
+                                                        home.idHome = homeDocumentSnapshot.getId();
+                                                        home.isHaveService = homeDocumentSnapshot.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE);
+                                                        home.numberOfRooms = numberOfRooms != null ? numberOfRooms.intValue() : 0;
+                                                        home.userID = homeDocumentSnapshot.getString(Constants.KEY_USER_ID);
+                                                        home.dateObject = homeDocumentSnapshot.getDate(Constants.KEY_TIMESTAMP);
+                                                        homeList.add(home);
+                                                    }
+                                                }
+                                                listener.onComplete(homeList);
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> listener.onComplete(homeList));
+                            } else {
+                                listener.onComplete(homeList);
+                            }
+                        } else {
+                            listener.onComplete(homeList);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> listener.onComplete(homeList));
     }
 
 
@@ -236,5 +366,15 @@ public class NotificationPresenter {
     // Interface for the callback
     public interface OnGetHomeListCompleteListener {
         void onComplete(List<Home> homeList);
+    }
+
+    // Interface for the callback
+    public interface OnGetHomeIDByNotificationListener {
+        void onComplete(List<Home> homeList);
+    }
+
+    // Interface for the callback
+    public interface OnReturnNotificationListCompleteListener {
+        void onComplete(List<Notification> notificationList);
     }
 }
