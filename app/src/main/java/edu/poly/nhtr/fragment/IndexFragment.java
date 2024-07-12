@@ -1264,6 +1264,13 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 showDialogConfirmDeleteManyIndexes();
             }
         });
+
+        binding.txtCancelDeleteIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeLayoutDeleteManyRows();
+            }
+        });
     }
 
     private void showDialogConfirmDeleteManyIndexes() {
