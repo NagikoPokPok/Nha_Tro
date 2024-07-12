@@ -489,7 +489,7 @@ public class GuestAddContractPresenter {
         contract.put(Constants.KEY_GUEST_CCCD_IMAGE_BACK, mainGuest.getCccdImageBack());
         contract.put(Constants.KEY_GUEST_CONTRACT_IMAGE_FRONT, mainGuest.getContractImageFront());
         contract.put(Constants.KEY_GUEST_CONTRACT_IMAGE_BACK, mainGuest.getContractImageBack());
-        contract.put(Constants.KEY_CONTRACT_STATUS, mainGuest.getFileStatus());
+        contract.put(Constants.KEY_CONTRACT_STATUS, mainGuest.isFileStatus());
         contract.put(Constants.KEY_TIMESTAMP, new Date());
         contract.put(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount());
 
@@ -513,7 +513,7 @@ public class GuestAddContractPresenter {
                             mainGuest.getCccdImageBack(),
                             mainGuest.getContractImageFront(),
                             mainGuest.getContractImageBack(),
-                            mainGuest.getFileStatus(),
+                            mainGuest.isFileStatus(),
                             mainGuestListener.getInfoRoomFromGoogleAccount(),
                             documentReference
                     );
@@ -521,5 +521,31 @@ public class GuestAddContractPresenter {
                 })
                 .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
 
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
+                .add(contract)
+                .addOnSuccessListener(documentReference -> {
+                    mainGuestListener.putContractInfoInPreferences(
+                            mainGuest.getNameGuest(),
+                            mainGuest.getPhoneGuest(),
+                            mainGuest.getCccdNumber(),
+                            mainGuest.getDateOfBirth(),
+                            mainGuest.getGender(),
+                            mainGuest.getTotalMembers(),
+                            mainGuest.getCreateDate(),
+                            mainGuest.getRoomPrice(),
+                            mainGuest.getExpirationDate(),
+                            mainGuest.getPayDate(),
+                            mainGuest.getDaysUntilDueDate(),
+                            mainGuest.getCccdImageFront(),
+                            mainGuest.getCccdImageBack(),
+                            mainGuest.getContractImageFront(),
+                            mainGuest.getContractImageBack(),
+                            mainGuest.isFileStatus(),
+                            mainGuestListener.getInfoRoomFromGoogleAccount(),
+                            documentReference
+                    );
+                    mainGuestListener.showToast("Thêm hợp đồng thành công");
+                })
+                .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
     }
 }

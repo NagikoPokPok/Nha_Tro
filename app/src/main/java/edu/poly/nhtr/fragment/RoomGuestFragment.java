@@ -37,13 +37,11 @@ import com.google.firebase.firestore.DocumentReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.poly.nhtr.Adapter.MainGuestAdapter;
+import edu.poly.nhtr.Adapter.GuestAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomGuestBinding;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
-import edu.poly.nhtr.models.MainGuest;
-import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.presenters.RoomGuestPresenter;
 import edu.poly.nhtr.utilities.Constants;
@@ -52,16 +50,13 @@ import timber.log.Timber;
 
 public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View {
 
-    private final List<MainGuest> mainGuestsList = new ArrayList<>();
     private FragmentRoomGuestBinding binding;
     private RecyclerView recyclerView;
-    private MainGuestAdapter adapter;
+    private GuestAdapter adapter;
     private PreferenceManager preferenceManager;
     private Dialog dialog;
     private RoomGuestInterface.Presenter presenter;
-
-    public RoomGuestFragment() {
-    }
+    private RoomViewModel roomViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -74,59 +69,47 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RoomViewModel roomViewModel = new ViewModelProvider(requireActivity()).get(RoomViewModel.class);
+        roomViewModel = new ViewModelProvider(requireActivity()).get(RoomViewModel.class);
         presenter = new RoomGuestPresenter(this, roomViewModel);
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
 
         recyclerView = binding.guestsRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new MainGuestAdapter(mainGuestsList);
+        // Initialize adapter with an empty list
+        adapter = new GuestAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         dialog = new Dialog(requireActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // Observe the room data from the ViewModel
+        // Observe changes in main guests
+        roomViewModel.getGuests().observe(getViewLifecycleOwner(), guests -> {
+            if (guests != null && !guests.isEmpty()) {
+                List<Object> items = new ArrayList<>(guests);
+                adapter.setGuestList(items); // Update the adapter with main guests
+                binding.progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                showNoDataFound();
+            }
+        });
+
+
+        // Fetch guests based on roomViewModel's room
         roomViewModel.getRoom().observe(getViewLifecycleOwner(), room -> {
             if (room != null) {
                 String roomId = room.getRoomId();
                 preferenceManager.putString(Constants.PREF_KEY_ROOM_ID, roomId);
                 Timber.tag("RoomGuestFragment").d("Room ID: %s", roomId);
-                presenter.getMainGuests(roomId);
+                presenter.getGuests(roomId);
             } else {
                 Timber.tag("RoomGuestFragment").e("Room object is null");
                 showError("Room data is not available");
             }
         });
 
-        // Observe the main guests data from the ViewModel
-        roomViewModel.getMainGuests().observe(getViewLifecycleOwner(), mainGuests -> {
-            if (mainGuests != null && !mainGuests.isEmpty()) {
-                showMainGuest(mainGuests);
-            } else {
-                showNoDataFound();
-            }
-        });
-
-        // If arguments are provided, set the room in the ViewModel
-        if (getArguments() != null) {
-            Room room = (Room) getArguments().getSerializable("room");
-            roomViewModel.setRoom(room);
-        }
-
-        // Xử lí dialog thêm khách
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setListeners();
-    }
-
-    @Override
-    public void showMainGuest(List<MainGuest> mainGuests) {
-        mainGuestsList.clear();
-        mainGuestsList.addAll(mainGuests);
-        adapter.notifyDataSetChanged();
-
-        binding.progressBar.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -186,14 +169,16 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         binding.btnAddGuest.setOnClickListener(v -> openAddGuestDialog());
     }
 
-    private Spannable customizeText()  // Hàm set màu và font chữ cho dấu *
+    // Hàm set mau va font chu cho Text
+    private Spannable customizeText(String s)
     {
         Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
-        Spannable text1 = new SpannableString("*");
+        Spannable text1 = new SpannableString(s);
         text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text1;
     }
+
 
     private void openAddGuestDialog() {
         setUpDialog(R.layout.layout_dialog_add_guest);
@@ -209,18 +194,19 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         TextInputLayout phoneGuestLayout = dialog.findViewById(R.id.layout_phone_number);
         TextInputLayout dateInLayout = dialog.findViewById(R.id.layout_date_in);
 
-        Button btnAddGuest = dialog.findViewById(R.id.btn_add_guest);
+        Button btnAddGuest = dialog.findViewById(R.id.btn_add_new_guest);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
-        // Set dấu * đỏ cho TextView
-        nameGuest.append(customizeText());
+        // Thêm dấu * đỏ cho TextView cần
+        nameGuest.append(customizeText("*"));
 
-        // Set hint cho các trường nhập
+        // Set hint cho các trường và nút
         edtNameGuest.setHint("Ví dụ: Nguyễn Văn A");
         edtPhoneGuest.setHint("Ví dụ: 0123456789");
         edtDateIn.setHint("Ví dụ: 01/01/2022");
+        btnAddGuest.setText("Thêm khách");
 
-        // Xử lý sự kiện khi thay đổi trường thông tin
+        // Handle input field changes
         edtNameGuest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -238,15 +224,15 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                // Do nothing
             }
         });
 
-        // Xử lý màu nút add guest
+        // Handle add guest button state
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                // Do nothing
             }
 
             @Override
@@ -256,20 +242,24 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                // Do nothing
             }
         };
 
-        // Thêm textWatcher cho các EditText
+        // Add textWatcher to input fields
         edtNameGuest.addTextChangedListener(textWatcher);
 
-        // Xử lý sự kiện khi click vào nút add guest
+        // Handle add guest button click
         btnAddGuest.setOnClickListener(v -> {
             String name = edtNameGuest.getText().toString().trim();
             String phone = edtPhoneGuest.getText().toString().trim();
             String dateIn = edtDateIn.getText().toString().trim();
-            Guest guest = new Guest();
+            Guest guest = new Guest(name, phone, false, dateIn);
             presenter.addGuestToFirebase(guest);
+            dialog.dismiss();
+
+            String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
+            presenter.getGuests(roomId);
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -289,7 +279,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         }
     }
 
-    // Cập nhật màu cho button
+    // Update button color based on input field state
     private void updateButtonState(EditText edtNameGuest, Button btnAdd) {
         String name = edtNameGuest.getText().toString().trim();
         if (name.isEmpty()) {

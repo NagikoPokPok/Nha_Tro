@@ -42,9 +42,7 @@ public class Guest {
         this.idGuest = idGuest;
     }
 
-    public boolean isFileStatus() {
-        return fileStatus;
-    }
+
 
     public String getGuestId() {
         return idGuest;
@@ -66,7 +64,7 @@ public class Guest {
         this.phoneGuest = phoneGuest;
     }
 
-    public boolean getFileStatus() {
+    public boolean isFileStatus() {
         return fileStatus;
     }
 
