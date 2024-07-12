@@ -8,6 +8,8 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
 
@@ -93,9 +95,12 @@ public class MessagingService extends FirebaseMessagingService {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // Convert drawable resource to Bitmap
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icon_home_for_app);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_notification)
+                .setLargeIcon(largeIcon)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setContentIntent(resultPendingIntent)
