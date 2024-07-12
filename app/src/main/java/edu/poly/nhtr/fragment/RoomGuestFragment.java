@@ -76,18 +76,18 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         recyclerView = binding.guestsRecyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Initialize adapter with an empty list
+        // Khởi tạo adapter và gán cho RecyclerView
         adapter = new GuestAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         dialog = new Dialog(requireActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        // Observe changes in main guests
+        // Lấy danh sách khách từ ViewModel và cập nhật RecyclerView
         roomViewModel.getGuests().observe(getViewLifecycleOwner(), guests -> {
             if (guests != null && !guests.isEmpty()) {
                 List<Object> items = new ArrayList<>(guests);
-                adapter.setGuestList(items); // Update the adapter with main guests
+                adapter.setGuestList(items);
                 binding.progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             } else {
@@ -96,7 +96,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         });
 
 
-        // Fetch guests based on roomViewModel's room
+        // Lấy ra Room ID từ ViewModel và lấy danh sách khách theo Room ID
         roomViewModel.getRoom().observe(getViewLifecycleOwner(), room -> {
             if (room != null) {
                 String roomId = room.getRoomId();

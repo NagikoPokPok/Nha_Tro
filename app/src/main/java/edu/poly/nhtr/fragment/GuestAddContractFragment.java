@@ -31,8 +31,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -47,6 +45,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
+import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
 import edu.poly.nhtr.listeners.MainGuestListener;
@@ -478,18 +477,10 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
                 if (saveContractSuccessfully) {
                     dialog.dismiss();
-                    RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
-
-                    // Pass the Room object to RoomGuestFragment
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("room", room); // Ensure 'room' is the Room object
-                    roomGuestFragment.setArguments(bundle);
-
-                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container, roomGuestFragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
+                    MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
+                    if (activity != null) {
+                        activity.showTabLayoutAndRoomGuestFragment();
+                    }
                 } else {
                     dialog.dismiss();
                     Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
@@ -516,7 +507,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         String roomPrice = getStringFromEditText(edtTienPhong);
         String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
 
-        // Debug logs to print out values
         System.out.println("Name Guest: " + nameGuest);
         System.out.println("Phone Guest: " + phoneGuest);
         System.out.println("CCCD Number: " + cccdNumber);

@@ -47,12 +47,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setGuestList(List<Object> guests) {
-        // Sort the list to ensure MainGuest appears first
+        // Sắp xếp danh sách để chắc chắn MainGuest luôn hiện đầu
         List<Object> sortedList = new ArrayList<>();
         List<MainGuest> mainGuests = new ArrayList<>();
         List<Guest> regularGuests = new ArrayList<>();
 
-        // Separate MainGuests and RegularGuests
         for (Object guest : guests) {
             if (guest instanceof MainGuest) {
                 mainGuests.add((MainGuest) guest);
@@ -61,7 +60,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         }
 
-        // Add MainGuests first
         sortedList.addAll(mainGuests);
         sortedList.addAll(regularGuests);
 
@@ -111,7 +109,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
             binding.txtProfileStatus.setTextColor(color);
 
-            // Additional fields specific to MainGuest can be set here
         }
     }
 }

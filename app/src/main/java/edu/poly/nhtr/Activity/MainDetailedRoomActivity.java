@@ -147,4 +147,17 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    public void showTabLayoutAndRoomGuestFragment() {
+        showTabLayout();
+
+        RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+        roomGuestFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, roomGuestFragment)
+                .commit();
+    }
 }
