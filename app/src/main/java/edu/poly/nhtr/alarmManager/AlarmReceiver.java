@@ -221,7 +221,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void setRepetitiveAlarm(AlarmService alarmService) {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MINUTE, 2);
+        cal.add(Calendar.MONTH, 1);
         Timber.d("Set alarm for next month same time - %s", convertDate(cal.getTimeInMillis()));
         alarmService.setRepetitiveAlarm(cal.getTimeInMillis());
     }
