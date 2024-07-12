@@ -13,7 +13,7 @@
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
     <string name="quan_ly_phong_tro">Quản Lý Phòng Trọ</string>
     <string name="dang_nhap_bang_gmail">Đăng nhập bằng Gmail</string>
-    <string name="app_name">QLTro</string>
+    <string name="app_name">HOMEMATE</string>
     <string name="title_activity_change_password">ChangePassword</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

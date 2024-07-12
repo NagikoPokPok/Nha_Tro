@@ -12,6 +12,7 @@
         android:id="@+id/layout_functions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp">
@@ -160,8 +161,9 @@
 
         <LinearLayout
             android:id="@+id/layout_select_all"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <CheckBox
@@ -177,19 +179,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Select All"
+                android:text="Chọn tất cả"
                 android:textSize="15sp" />
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txt_cancel_delete_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:text="Huỷ"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="15sp"
+            android:fontFamily="@font/inter_medium"
+            />
+
 
         <TextView
             android:id="@+id/txt_delete_index_here"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="Click here to delete !"
+            android:text="Nhấn ở đây để xoá !"
             android:textColor="@color/colorOrange"
             android:textSize="15sp" />
 

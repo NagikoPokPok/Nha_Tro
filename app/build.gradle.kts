@@ -93,4 +93,8 @@ dependencies {
     //Timber
     implementation("com.jakewharton.timber:timber:4.7.1")
 
+    //implementation ("com.google.android.gms:play-services-manager:17.0.0")
+    implementation ("com.google.android.gms:play-services-tagmanager:18.1.0")
+
+
 }

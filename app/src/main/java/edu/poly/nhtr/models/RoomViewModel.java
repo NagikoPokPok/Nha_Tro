@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RoomViewModel extends ViewModel {
     private final MutableLiveData<Room> room = new MutableLiveData<>();
-    private final MutableLiveData<List<MainGuest>> mainGuests = new MutableLiveData<>();
+    private final MutableLiveData<List<Object>> guests = new MutableLiveData<>();
 
     public LiveData<Room> getRoom() {
         return room;
@@ -18,11 +18,11 @@ public class RoomViewModel extends ViewModel {
         this.room.setValue(room);
     }
 
-    public LiveData<List<MainGuest>> getMainGuests() {
-        return mainGuests;
+    public LiveData<List<Object>> getGuests() {
+        return guests;
     }
 
-    public void setMainGuests(List<MainGuest> mainGuests) {
-        this.mainGuests.setValue(mainGuests);
+    public void setGuests(List<Object> guestsList) {
+        guests.setValue(guestsList);
     }
 }

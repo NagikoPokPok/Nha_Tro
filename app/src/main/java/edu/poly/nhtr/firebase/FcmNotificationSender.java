@@ -15,19 +15,23 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.poly.nhtr.models.Home;
+
 public class FcmNotificationSender {
 
     private final String userFcmToken;
     private final String title;
     private final String body;
     private final Context context;
+
     private final String postUrl = "https://fcm.googleapis.com/v1/projects/nha-tro-57e88/messages:send";
 
-    public FcmNotificationSender(String userFcmToken, String title, String body, Context context) {
+    public FcmNotificationSender(String userFcmToken, String title, String body, Context context, Home home, String notificationID) {
         this.userFcmToken = userFcmToken;
         this.title = title;
         this.body = body;
         this.context = context;
+
     }
 
     public void SendNotifications(){
@@ -36,18 +40,19 @@ public class FcmNotificationSender {
         try{
             JSONObject messageObject = new JSONObject();
 
-            JSONObject notificationObject = new JSONObject();
-            notificationObject.put("title", title);
-            notificationObject.put("body", body);
+            // Phần data payload
+            JSONObject dataObject = new JSONObject();
+            dataObject.put("title", title);
+            dataObject.put("body", body);
 
             messageObject.put("token", userFcmToken);
-            messageObject.put("notification", notificationObject);
+            messageObject.put("data", dataObject);  // Sử dụng phần data thay vì notification
 
             mainObj.put("message", messageObject);
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, postUrl, mainObj, response -> {
                 // Code run got response
-            }, volleyError ->{
+            }, volleyError -> {
                 // Code run error
             }) {
                 @NonNull
@@ -64,7 +69,7 @@ public class FcmNotificationSender {
 
             requestQueue.add(request);
 
-        }catch (JSONException e){
+        } catch (JSONException e){
             e.printStackTrace();
         }
     }

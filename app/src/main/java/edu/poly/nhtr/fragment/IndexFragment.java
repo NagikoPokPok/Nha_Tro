@@ -1,5 +1,7 @@
 package edu.poly.nhtr.fragment;
 
+import static android.content.Intent.getIntent;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -24,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
@@ -59,6 +62,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -114,6 +119,14 @@ public class IndexFragment extends Fragment implements IndexInterface {
         super.onCreate(savedInstanceState);
         binding = FragmentIndexBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
+
+        assert getArguments() != null;
+        Home home = (Home) getArguments().getSerializable("home");
+        assert home != null;
+        homeID = home.getIdHome();
+
+        alarmService = new AlarmService(requireContext(), home);
+
     }
 
     @Override
@@ -136,6 +149,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
         checkWaterIsIndexOrNot();
+
 
 
         return binding.getRoot();
@@ -191,15 +205,47 @@ public class IndexFragment extends Fragment implements IndexInterface {
         dialog.setContentView(binding1.getRoot());
         setupDialogWindow(binding1.getRoot().getLayoutParams());
 
-        binding1.switchOnOffNotification.setChecked(preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX));
+        binding1.switchOnOffNotification.setChecked(preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, homeID));
         if(binding1.switchOnOffNotification.isChecked())
         {
             binding1.layoutSelectDay.setVisibility(View.VISIBLE);
-            binding1.edtDay.setText(preferenceManager.getString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX));
+            binding1.edtDay.setText(preferenceManager.getString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, homeID));
         }else{
             binding1.layoutSelectDay.setVisibility(View.GONE);
         }
 
+        binding1.edtDay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isDateAndTimeSelected(s.toString())) {
+                    binding1.layoutDay.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        binding1.btnAddHome.setOnClickListener(v -> {
+            if(preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, homeID)) {
+                if (isDateAndTimeSelected(Objects.requireNonNull(binding1.edtDay.getText()).toString())) {
+                    preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, binding1.switchOnOffNotification.isChecked(), homeID);
+                    preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, binding1.edtDay.getText().toString(), homeID);
+                    dialog.dismiss();
+                } else {
+                    showErrorMessage("Hãy chọn đủ ngày và giờ", R.id.layout_day);
+                }
+            }else{
+                dialog.dismiss();
+            }
+        });
 
         binding1.switchOnOffNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -232,6 +278,11 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     }
 
+    private boolean isDateAndTimeSelected(String dateTime) {
+        // Basic check to ensure both date and time are present
+        return dateTime.matches(".*\\d{2}:\\d{2}$");
+    }
+
     private void setOnNotification(LayoutDialogSettingNotificationIndexBinding binding1) {
         binding1.layoutSelectDay.setVisibility(View.VISIBLE);
     }
@@ -241,7 +292,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding1.btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, false);
+                preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, false, homeID);
                 alarmService.cancelRepetitiveAlarm();
                 dialog.dismiss();
             }
@@ -282,7 +333,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
                                 String hourMinute = formattedHour + ":" + formattedMinute;
                                 binding1.edtDay.append(hourMinute);
 
-                                preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, Objects.requireNonNull(binding1.edtDay.getText()).toString().trim());
+                                preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, Objects.requireNonNull(binding1.edtDay.getText()).toString().trim()
+                                        , homeID);
 
                                 pushAlarm(binding1, callback, calendar);
 
@@ -306,7 +358,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding1.btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, true);
+                preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, true, homeID);
                 callback.onAlarmSet(calendar.getTimeInMillis());
                 dialog.dismiss();
             }
@@ -1210,6 +1262,13 @@ public class IndexFragment extends Fragment implements IndexInterface {
             @Override
             public void onClick(View v) {
                 showDialogConfirmDeleteManyIndexes();
+            }
+        });
+
+        binding.txtCancelDeleteIndex.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeLayoutDeleteManyRows();
             }
         });
     }

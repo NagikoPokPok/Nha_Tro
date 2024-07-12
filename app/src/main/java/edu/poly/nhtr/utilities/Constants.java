@@ -73,10 +73,6 @@ public class Constants {
 
     // Contract
     public static final String KEY_COLLECTION_CONTRACTS = "contracts";
-    public static final String KEY_CONTRACT_ID = "contractId";
-    public static final String KEY_CONTRACT_PARENT_HOME_ID = "contractParentHomeId";
-    public static final String KEY_CONTRACT_PARENT_ROOM_ID = "contractParentRoomId";
-    public static final String KEY_CONTRACT_PARENT_USER_ID = "contractParentUserId";
     public static final String KEY_CONTRACT_PARENT_SERVICE_ID = "contractParentServiceId";
     public static final String KEY_ROOM_TOTAl_MEMBERS = "roomTotalMembers";
     public static final String KEY_GUEST_NAME = "guestName";
@@ -95,6 +91,11 @@ public class Constants {
     public static final String KEY_GUEST_CCCD_IMAGE_BACK = "guestCCCDImageBack";
     public static final String KEY_CONTRACT_STATUS = "contractStatus";
 
+    // Guest
+    public static final String KEY_COLLECTION_GUESTS = "guests";
+    public static final String KEY_GUEST_DATE_IN = "guestDateIn";
+
+
 
     //AlarmManager
     public static final String EXTRA_EXACT_ALARM_TIME = "EXTRA_EXACT_ALARM_TIME";
@@ -112,4 +113,6 @@ public class Constants {
     public static final String KEY_NOTIFICATION_BODY = "notificationBody";
     public static final String KEY_NOTIFICATION_OF_INDEX = "notificationOfIndex";
     public static final String KEY_NOTIFICATION_IS_READ = "notificationIsRead";
+
+
 }

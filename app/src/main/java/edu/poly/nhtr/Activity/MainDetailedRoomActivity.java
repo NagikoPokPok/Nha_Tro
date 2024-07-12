@@ -33,7 +33,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private Room room;
     private boolean hasMainGuest = false;
-    private RoomViewModel roomViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         preferenceManager = new PreferenceManager(getApplicationContext());
-        roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
+        RoomViewModel roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
 
 
         room = (Room) getIntent().getSerializableExtra("room");
@@ -147,5 +146,18 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void showTabLayoutAndRoomGuestFragment() {
+        showTabLayout();
+
+        RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+        roomGuestFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, roomGuestFragment)
+                .commit();
     }
 }

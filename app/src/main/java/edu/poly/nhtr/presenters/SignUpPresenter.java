@@ -59,8 +59,9 @@ public class SignUpPresenter {
                             view.hideLoading();
                         } else {
                             String hashedPassword = PasswordHasher.hashPassword(user.getPassword());
-                            view.showSuccessMessage(user.getEmail(), user.getName(), hashedPassword);
                             view.hideLoading();
+                            view.showSuccessMessage(user.getEmail(), user.getName(), hashedPassword);
+
                         }
                     } else {
                         view.showErrorMessage("Lỗi truy vấn, vui lòng thử lại");

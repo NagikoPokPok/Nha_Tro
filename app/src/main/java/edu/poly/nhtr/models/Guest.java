@@ -1,6 +1,5 @@
 package edu.poly.nhtr.models;
 
-import java.util.Date;
 
 public class Guest {
     public String nameGuest, phoneGuest, idGuest, idRoom, idHome;
@@ -22,6 +21,14 @@ public class Guest {
         this.fileStatus = fileStatus;
     }
 
+    public Guest(String nameGuest, String phoneGuest, boolean fileStatus, String dateIn) {
+        this.nameGuest = nameGuest;
+        this.phoneGuest = phoneGuest;
+        this.fileStatus = fileStatus;
+        this.dateIn = dateIn;
+    }
+
+
     public Guest() {
 
     }
@@ -35,25 +42,7 @@ public class Guest {
         this.idGuest = idGuest;
     }
 
-    public String getIdRoom() {
-        return idRoom;
-    }
 
-    public void setIdRoom(String idRoom) {
-        this.idRoom = idRoom;
-    }
-
-    public String getIdHome() {
-        return idHome;
-    }
-
-    public void setIdHome(String idHome) {
-        this.idHome = idHome;
-    }
-
-    public boolean isFileStatus() {
-        return fileStatus;
-    }
 
     public String getGuestId() {
         return idGuest;
@@ -75,7 +64,7 @@ public class Guest {
         this.phoneGuest = phoneGuest;
     }
 
-    public boolean getFileStatus() {
+    public boolean isFileStatus() {
         return fileStatus;
     }
 
