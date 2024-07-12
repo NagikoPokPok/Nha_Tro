@@ -124,7 +124,7 @@ public class NotificationPresenter {
                                 home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
                                 homes.add(home);
                             }
-
+                            homes.sort(Comparator.comparing(Home::getDateObject));
                             listener.onComplete(homes);
 
                         } else {
@@ -281,6 +281,9 @@ public class NotificationPresenter {
         HashMap<String, Object> updateInfo = new HashMap<>();
         updateInfo.put(Constants.KEY_NOTIFICATION_IS_READ, true);
         AtomicInteger count = new AtomicInteger(0);
+        if(notificationList.isEmpty()){
+            getNotification(listener , homeList);
+        }
         for (Notification notification : notificationList) {
             String notificationID = notification.getNotificationID(); // Lấy homeID từ đối tượng Home hiện tại
 

@@ -35,7 +35,9 @@ import org.checkerframework.checker.units.qual.N;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import edu.poly.nhtr.Activity.MainActivity;
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeArrayAdapter;
 import edu.poly.nhtr.Adapter.NotificationAdapter;
@@ -61,6 +63,12 @@ public class NotificationFragment extends Fragment implements NotificationListen
     private String homeID;
     private PreferenceManager preferenceManager;
     private boolean isSelectAllChecked = false;
+    private MainActivity mainActivity;
+    private OnNotificationReadListener listener;
+
+    public interface OnNotificationReadListener {
+        void onNotificationsRead();
+    }
 
 
     @Override
@@ -68,6 +76,11 @@ public class NotificationFragment extends Fragment implements NotificationListen
         super.onCreate(savedInstanceState);
         binding = FragmentNotificationBinding.inflate(getLayoutInflater());
         dialog = new Dialog(requireActivity());
+
+        // Kiểm tra nếu activity có implement interface OnNotificationReadListener
+        if (getActivity() instanceof OnNotificationReadListener) {
+            listener = (OnNotificationReadListener) getActivity();
+        }
 
         // Set toolbar
         Toolbar toolbar = binding.toolbar;
@@ -92,6 +105,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         preferenceManager = new PreferenceManager(requireContext());
         adapter = new NotificationAdapter(requireActivity(), new ArrayList<>(), notificationPresenter, this);
         homeList = new ArrayList<>();
+        mainActivity = new MainActivity();
 
        notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
            @Override
@@ -222,7 +236,9 @@ public class NotificationFragment extends Fragment implements NotificationListen
                     notificationPresenter.updateListNotificationIsRead(notificationList, homeList, new NotificationPresenter.OnSetNotificationListCompleteListener() {
                         @Override
                         public void onComplete() {
-
+                            // Gửi broadcast để cập nhật badge
+                            Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+                            requireActivity().sendBroadcast(intent);
                         }
                     });
                 }

@@ -165,17 +165,6 @@ public class HomeFragment extends Fragment implements HomeListener {
 
     }
 
-    private void mainLogic() {
-
-        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
-                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
-                "This is the notification title", "This is the notification body", requireContext()
-        );
-
-        fcmNotificationSender.SendNotifications();
-
-
-    }
 
     private void getToken()
     {

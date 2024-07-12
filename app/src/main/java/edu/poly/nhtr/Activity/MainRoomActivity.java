@@ -9,6 +9,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
@@ -37,16 +41,42 @@ public class MainRoomActivity extends AppCompatActivity {
 
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        // Nhận dữ liệu từ Intent Home
-        Home home = (Home) getIntent().getSerializableExtra("home");
-        String homeId = Objects.requireNonNull(home).getIdHome();
-        String nameHome = home.getNameHome();
-        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
-        preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
 
-        // Tạo Bundle chứa dữ liệu Home
-        bundle = new Bundle();
-        bundle.putSerializable("home", home);
+        // Receive Home object from Intent
+        Home home = (Home) getIntent().getSerializableExtra("home");
+        if (home != null) {
+            String homeId = home.getIdHome();
+            String nameHome = home.getNameHome();
+            preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
+            preferenceManager.putString(Constants.KEY_NAME_HOME, nameHome);
+
+            // Create Bundle to pass Home object to fragments
+            bundle = new Bundle();
+            bundle.putSerializable("home", home);
+        }
+
+        // Kiểm tra xem có thông báo được truyền từ Intent không
+        String documentId = getIntent().getStringExtra("notification_document_id");
+        if (documentId != null) {
+            // Cập nhật trạng thái đã đọc của thông báo trong Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                    .document(documentId)
+                    .update(Constants.KEY_NOTIFICATION_IS_READ, true)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Xử lý thành công
+                            // Ví dụ: hiển thị thông báo hoặc cập nhật UI
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Xử lý khi thất bại
+                        }
+                    });
+        }
 
         if (savedInstanceState != null) {
             currentFragmentTag = savedInstanceState.getString(CURRENT_FRAGMENT_TAG);

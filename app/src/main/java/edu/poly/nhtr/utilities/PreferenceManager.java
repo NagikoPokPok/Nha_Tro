@@ -3,6 +3,10 @@ package edu.poly.nhtr.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
+import edu.poly.nhtr.models.Home;
+
 public class PreferenceManager {
     private final SharedPreferences sharedPreferences;
     public  PreferenceManager(Context context)
@@ -53,5 +57,47 @@ public class PreferenceManager {
             editor.remove(keyUserId);
             editor.apply();
     }
+
+
+
+    // Have key
+    public void putString(String key, String value, String homeId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key + "_" + homeId, value);
+        editor.apply();
+    }
+
+    public String getString(String key, String homeId) {
+        return sharedPreferences.getString(key + "_" + homeId, null);
+    }
+
+    public void putBoolean(String key, boolean value, String homeId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key + "_" + homeId, value);
+        editor.apply();
+    }
+
+    public boolean getBoolean(String key, String homeId) {
+        return sharedPreferences.getBoolean(key + "_" + homeId, false);
+    }
+
+    public void putHome(String key, Home home, String userID) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String homeJson = gson.toJson(home); // Convert Home object to JSON string
+        editor.putString(key + "_" + userID, homeJson);
+        editor.apply();
+    }
+
+    public Home getHome(String key, String userID) {
+        String homeJson = sharedPreferences.getString(key + "_" + userID, null);
+        if (homeJson != null) {
+            Gson gson = new Gson();
+            return gson.fromJson(homeJson, Home.class); // Convert JSON string back to Home object
+        }
+        return null; // Return null if no value found for the key
+    }
+
+
 
 }

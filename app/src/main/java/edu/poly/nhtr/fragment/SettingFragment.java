@@ -148,36 +148,36 @@ public class SettingFragment extends Fragment implements SettingsInterface {
             editor.apply();
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-            FirebaseFirestore database = FirebaseFirestore.getInstance();
-            DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
-                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
-            HashMap<String, Object> updates = new HashMap<>();
-            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
-            documentReference.update(updates)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            preferenceManager.clear();
-                            Intent intent = new Intent(requireContext(), SignInActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            requireActivity().finish();
-                            loading(false);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            showToast("Unable to sign out");
-                        }
-                    });
+//            FirebaseFirestore database = FirebaseFirestore.getInstance();
+//            DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
+//                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
+//            HashMap<String, Object> updates = new HashMap<>();
+//            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
+//            documentReference.update(updates)
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void unused) {
+//                            preferenceManager.clear();
+//                            Intent intent = new Intent(requireContext(), SignInActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            startActivity(intent);
+//                            requireActivity().finish();
+//                            loading(false);
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            showToast("Unable to sign out");
+//                        }
+//                    });
 
 
 
-//            Intent intent = new Intent(requireContext(), SignInActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            requireActivity().finish();
+            Intent intent = new Intent(requireContext(), SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            requireActivity().finish();
 
 
         }, 1000);

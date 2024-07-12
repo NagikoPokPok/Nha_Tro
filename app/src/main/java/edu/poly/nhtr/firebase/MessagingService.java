@@ -1,8 +1,6 @@
 package edu.poly.nhtr.firebase;
 
-
 import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,63 +9,118 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Vibrator;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
-import edu.poly.nhtr.Activity.MainActivity;
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.R;
-import edu.poly.nhtr.fragment.HomeFragment;
+import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class MessagingService extends FirebaseMessagingService {
     public static final String ACTION_NOTIFICATION_RECEIVED = "edu.poly.nhtr.ACTION_NOTIFICATION_RECEIVED";
+    private static final String CHANNEL_ID = "ALARM_MANAGER_CHANNEL";
+    private PreferenceManager preferenceManager;
 
-
-    private NotificationManager notificationManager;
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        //Log.d("FCM", "Token: "+token);
         updateNewToken(token);
     }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
-        //Log.d("FCM", "Token: "+ Objects.requireNonNull(message.getNotification()).getBody());
 
-        // Save notification data
-        saveNotificationToPreferences(Objects.requireNonNull(message.getNotification()).getTitle(), message.getNotification().getBody());
 
-        // Notify that the notification data has been saved
-        Intent intent = new Intent(ACTION_NOTIFICATION_RECEIVED);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        // Use this code when fcm using data structure
+        Map<String, String> data = message.getData();
+        String title = data.get("title");
+        String body = data.get("body");
+
+        // Use this code when fcm using notification structure
+        //String title = Objects.requireNonNull(message.getNotification()).getTitle();
+        //String body = message.getNotification().getBody();
+
+        preferenceManager = new PreferenceManager(this);
+        String notificationID = preferenceManager.getString(Constants.KEY_NOTIFICATION_ID, getInfoUserFromGoogleAccount(this, preferenceManager));
+        Home home = preferenceManager.getHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
+
+        buildNotification(title, body, notificationID, home);
+
 
     }
 
-
-    private void updateNewToken(String token)
-    {
-
+    public String getInfoUserFromGoogleAccount(Context context, PreferenceManager preferenceManager) {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+        String currentUserId = "";
+        if (account != null) {
+            currentUserId = account.getId();
+        } else {
+            currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+        }
+        return currentUserId;
     }
 
-    private void saveNotificationToPreferences(String title, String body) {
-        PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
-        preferenceManager.putString("notification_title", title);
-        preferenceManager.putString("notification_body", body);
+    private void updateNewToken(String token) {
+        // Handle the new token here
     }
+
+
+    private void buildNotification(String title, String body, String notificationID, Home home) {
+        createNotificationChannel(this);
+        Intent resultIntent = new Intent(this, MainRoomActivity.class);
+        resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
+        resultIntent.putExtra("home", home);
+        resultIntent.putExtra("notification_document_id", notificationID);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon_notification)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentIntent(resultPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+    }
+
+    private void createNotificationChannel(Context context) {
+        CharSequence name = "Alarm Manager Channel";
+        String description = "Channel for Alarm Manager notifications";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+
 }
