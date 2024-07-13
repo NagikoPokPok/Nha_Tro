@@ -25,6 +25,10 @@ public interface RoomGuestInterface {
         void showLoading();
 
         void hideLoading();
+
+        void disableAddGuestButton();
+
+        void enableAddGuestButton();
     }
 
     interface Presenter {

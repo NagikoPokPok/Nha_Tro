@@ -160,6 +160,18 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public void disableAddGuestButton() {
+        binding.btnAddGuest.setEnabled(false);
+        binding.btnAddGuest.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_clicked, null));
+    }
+
+    @Override
+    public void enableAddGuestButton() {
+        binding.btnAddGuest.setEnabled(true);
+        binding.btnAddGuest.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_add, null));
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;

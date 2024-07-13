@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
+import timber.log.Timber;
 
 public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
     private final RoomGuestInterface.View view;
@@ -60,7 +62,27 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                         roomViewModel.setGuests(guests); // Update ViewModel with all guests
                         if (guests.isEmpty()) {
                             view.showNoDataFound();
-                        }
+                        } else {
+                        // Check if the number of guests has reached the maximum allowed for the room
+                        database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                                .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                                .get()
+                                .addOnCompleteListener(contractTask -> {
+                                    if (contractTask.isSuccessful()) {
+                                        for (QueryDocumentSnapshot contractDoc : contractTask.getResult()) {
+                                            int totalMembers = Objects.requireNonNull(contractDoc.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)).intValue();
+                                            Timber.tag("RoomGuestPresenter").d("Max people in room: %s", totalMembers);
+                                            if (guests.size() >= totalMembers) {
+                                                view.disableAddGuestButton();
+                                            } else {
+                                                view.enableAddGuestButton();
+                                            }
+                                        }
+                                    } else {
+                                        view.showError("Error checking room capacity");
+                                    }
+                                });
+                    }
                     } else {
                         view.showError("Error getting guests");
                     }
