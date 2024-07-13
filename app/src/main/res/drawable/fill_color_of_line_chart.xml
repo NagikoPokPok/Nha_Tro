@@ -1,0 +1,4 @@
+<!-- res/drawable/transparent_blue.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#140054FF"/> <!-- Alpha 50% (128/255), Red 0, Green 0, Blue 255 -->
+</shape>
