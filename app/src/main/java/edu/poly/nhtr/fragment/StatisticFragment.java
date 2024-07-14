@@ -9,17 +9,24 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,12 +48,111 @@ public class StatisticFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        
+        
+        setupLineChart();
+        setupBarChart();
+        setListeners();
+        customizeTextViewUnderLine();
 
+
+        // Inflate the layout for this fragment
+        return binding.getRoot();
+    }
+
+    private void customizeTextViewUnderLine() {
+        String text = binding.txtViewDetailedValue.getText().toString();
+        SpannableString spannableString = new SpannableString(text);
+        spannableString.setSpan(new UnderlineSpan(), 0, text.length(), 0);
+        binding.txtViewDetailedValue.setText(spannableString);
+    }
+
+    private void setListeners() {
+        binding.btnViewDetailedRevenueOfMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setupBarChart();
+                setVisible(false);
+            }
+        });
+
+        binding.btnViewDetailedRevenueOfRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setupLineChart();
+                setVisible(true);
+            }
+        });
+    }
+
+    private void setVisible(boolean visible) {
+        if (visible) {
+            binding.btnViewDetailedRevenueOfMonth.setVisibility(View.VISIBLE);
+            binding.lineChart.setVisibility(View.VISIBLE);
+            binding.txtRevenueOfMonth.setVisibility(View.VISIBLE);
+
+            binding.btnViewDetailedRevenueOfRoom.setVisibility(View.GONE);
+            binding.barChart.setVisibility(View.GONE);
+            binding.txtRevenueOfRoom.setVisibility(View.GONE);
+        } else {
+            binding.btnViewDetailedRevenueOfMonth.setVisibility(View.GONE);
+            binding.lineChart.setVisibility(View.GONE);
+            binding.txtRevenueOfMonth.setVisibility(View.GONE);
+
+            binding.btnViewDetailedRevenueOfRoom.setVisibility(View.VISIBLE);
+            binding.barChart.setVisibility(View.VISIBLE);
+            binding.txtRevenueOfRoom.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    private void setupBarChart() {
+        List<String> xValues = Arrays.asList("P100", "P101", "P102", "P103", "P104", "P105", "P200", "P201", "P202", "P203");
+        binding.barChart.getAxisRight().setDrawLabels(false);
+
+        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+        entries.add(new BarEntry(0,1f));
+        entries.add(new BarEntry(1,1f));
+        entries.add(new BarEntry(2,1.5f));
+        entries.add(new BarEntry(3,2f));
+        entries.add(new BarEntry(4,2.2f));
+        entries.add(new BarEntry(5,2.5f));
+        entries.add(new BarEntry(6,2.8f));
+        entries.add(new BarEntry(7,1.7f));
+        entries.add(new BarEntry(8,2.2f));
+        entries.add(new BarEntry(9,1.5f));
+
+        YAxis yAxis = binding.barChart.getAxisLeft();
+        yAxis.setAxisMaximum(3f);
+        yAxis.setAxisMinimum(0f);
+        yAxis.setAxisLineWidth(0.5f);
+        yAxis.setAxisLineColor(Color.BLACK);
+        yAxis.setLabelCount(7,true); // Nếu muốn cố định có số 3(giá trị max) thì cho là true, nếu không thì bỏ true
+
+        BarDataSet dataSet = new BarDataSet(entries, "Phòng");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        BarData barData = new BarData(dataSet);
+        binding.barChart.setData(barData);
+        binding.barChart.animateY(1000);
+
+        binding.barChart.getDescription().setEnabled(false);
+        binding.barChart.invalidate();
+
+        binding.barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xValues));
+        binding.barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        binding.barChart.getXAxis().setGranularity(1f);
+        binding.barChart.getXAxis().setLabelCount(10);
+        binding.barChart.getXAxis().setGranularityEnabled(true);
+    }
+
+    private void setupLineChart() {
         Description description = new Description();
         description.setText("Doanh thu tháng");
         description.setPosition(160f, 15f);
         binding.lineChart.setDescription(description);
         binding.lineChart.getAxisRight().setDrawLabels(false);
+        binding.lineChart.animateY(1000);
 
         List<String> xValues = Arrays.asList("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12");
 
@@ -99,8 +205,5 @@ public class StatisticFragment extends Fragment {
         LineData lineData = new LineData(dataSet1);
         binding.lineChart.setData(lineData);
         binding.lineChart.invalidate();
-
-        // Inflate the layout for this fragment
-        return binding.getRoot();
     }
 }
