@@ -66,6 +66,32 @@
             android:layout_marginStart="10dp"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txt_back_to_line_chart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quay lại"
+        android:gravity="end"
+        android:layout_gravity="end"
+        android:textColor="@color/colorButton"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:textStyle="italic"
+        />
+
+    <TextView
+        android:id="@+id/txt_back_to_bar_chart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quay lại"
+        android:gravity="end"
+        android:layout_gravity="end"
+        android:textColor="@color/colorButton"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:textStyle="italic"
+        />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
         android:layout_width="match_parent"
@@ -74,6 +100,56 @@
         android:layout_marginTop="10dp"
         android:visibility="visible"
         />
+
+    <LinearLayout
+        android:id="@+id/table_layout_revenue_of_month"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:background="@drawable/background_table_revenue_color"
+            android:layout_marginTop="10dp"
+           >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tháng"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorGray"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Doanh thu (VNĐ)"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_table_revenue"/>
+
+    </LinearLayout>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/bar_chart"
@@ -84,6 +160,7 @@
         android:visibility="gone"/>
 
     <LinearLayout
+        android:id="@+id/layout_information_of_chart"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
@@ -91,6 +168,7 @@
        >
 
         <TextView
+            android:id="@+id/txt_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
