@@ -114,4 +114,25 @@ public class Constants {
     public static final String KEY_NOTIFICATION_IS_READ = "notificationIsRead";
 
 
+    //Bill:
+    public static final String KEY_COLLECTION_BILL = "bill";
+    public static final String KEY_BILL_ID = "billID";
+    public static final String KEY_DATE_MAKE_BILL = "dateMakeBill";
+    public static final String KEY_DATE_PAY_BILL = "datePayBill";
+    public static final String KEY_IS_NOT_PAY_BILL = "isNotPayBill";
+    public static final String KEY_IS_PAYED_BILL = "isPayedBill";
+    public static final String KEY_IS_DELAY_PAY_BILL = "isDelayBill";
+    public static final String KEY_IS_NOT_GIVE_BILL ="isNotGiveBill";
+    public static final String KEY_MONEY_OF_ROOM ="moneyOfRoom";
+    public static final String KEY_MONEY_OF_SERVICE ="moneyOfService";
+    public static final String KEY_MONEY_OF_ADD_OR_MINUS  ="moneyOfAddOrMinus";
+    public static final String KEY_IS_MONEY_OF_MINUS ="isMoneyOfMinus";
+    public static final String KEY_IS_MONEY_OF_ADD ="isMoneyOfAdd";
+    public static final String KEY_TOTAL_OF_MONEY ="totalOfMoney";
+    public static final String KEY_TOTAL_OF_MONEY_NEEDED_PAY ="totalOfMoneyNeededPay";
+    public static final String KEY_REASON_OF_ADD_OR_MINUS ="reasonOfAddOrMinus";
+    public static final String KEY_NUMBER_OF_DAYS_LIVED ="numberOfDaysLived";
+
+
+
 }
