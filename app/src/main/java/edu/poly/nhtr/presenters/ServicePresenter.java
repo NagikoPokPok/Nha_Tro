@@ -26,7 +26,10 @@ public class ServicePresenter {
         this.listener = listener;
     }
 
-    public void saveToFirebase(Service service, List<Room> listRoom, List<Boolean> checkedStates) {
+    public void saveToFirebase(Service service, List<Room> listRoom, List<Boolean> checkedStatesAfter) {
+        List<Boolean> checkedStatesPrevious;
+        checkedStatesPrevious = getCheckedStates(listRoom);
+
         HashMap<String, Object> serviceInfo = new HashMap<>();
         serviceInfo.put(Constants.KEY_SERVICE_PARENT_HOME_ID, service.getIdHomeParent());
         serviceInfo.put(Constants.KEY_SERVICE_NAME, service.getName());
@@ -45,15 +48,15 @@ public class ServicePresenter {
                     listener.ShowToast("Thêm dịch vụ thành công");
                     listener.CloseDialog();
                     listener.addServiceSuccess(service);
-                    setNewRoomServiceAndApply(service, listRoom, checkedStates, () -> {
+                    setNewRoomServiceAndApply(service, listRoom, checkedStatesPrevious, checkedStatesAfter, () -> {
 
                     });
-//                    applyServiceOfRoom(service, listRoom, checkedStates);
+//                    applyServiceOfRoom(service, listRoom, checkedStatesAfter);
                 })
                 .addOnFailureListener(e -> listener.ShowToast("Thêm dịch vụ thất bại"));
     }
 
-    private void setNewRoomServiceAndApply(Service service, List<Room> listRoom, List<Boolean> checkedStates, OnRoomServiceUpdatedListener callback) {
+    private void setNewRoomServiceAndApply(Service service, List<Room> listRoom, List<Boolean> checkedStatesPrevious, List<Boolean> checkedStatesAfter, OnRoomServiceUpdatedListener callback) {
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_SERVICES)
                 .whereEqualTo(Constants.KEY_SERVICE_NAME, service.getName())
                 .whereEqualTo(Constants.KEY_SERVICE_PARENT_HOME_ID, service.getIdHomeParent())
@@ -61,7 +64,7 @@ public class ServicePresenter {
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
                         service.setIdService(task.getResult().getDocuments().get(0).getId());
-                        updateApplyStatusServiceOfRoom(service, listRoom, checkedStates, callback);
+                        updateApplyStatusServiceOfRoom(service, listRoom, checkedStatesPrevious, checkedStatesAfter, callback);
                     }
                 });
     }
@@ -97,7 +100,7 @@ public class ServicePresenter {
                 });
     }
 
-    public void updateService(Service service, RecyclerView recyclerView, int position, List<Room> listRoom, List<Boolean> checkedStates) {
+    public void updateService(Service service, RecyclerView recyclerView, int position, List<Room> listRoom, List<Boolean> checkedStatesPrevious, List<Boolean> checkedStatesAfter) {
         HashMap<String, Object> newServiceInfo = new HashMap<>();
         newServiceInfo.put(Constants.KEY_SERVICE_FEE_BASE, service.getFee_base());
         newServiceInfo.put(Constants.KEY_SERVICE_FEE, service.getPrice());
@@ -109,7 +112,7 @@ public class ServicePresenter {
                 .update(newServiceInfo)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        setNewRoomServiceAndApply(service, listRoom, checkedStates, new OnRoomServiceUpdatedListener() {
+                        setNewRoomServiceAndApply(service, listRoom, checkedStatesPrevious, checkedStatesAfter, new OnRoomServiceUpdatedListener() {
                             @Override
                             public void onRoomServiceUpdated() {
                                 listener.showResultUpdateService(service, recyclerView, position);
@@ -151,9 +154,10 @@ public class ServicePresenter {
     }
 
 
-    public void updateApplyStatusServiceOfRoom(Service service, List<Room> listRoom, List<Boolean> checkedStates, OnRoomServiceUpdatedListener callback) {
+    public void updateApplyStatusServiceOfRoom(Service service, List<Room> listRoom, List<Boolean> checkedStatesPrevious, List<Boolean> checkedStatesAfter, OnRoomServiceUpdatedListener callback) {
         for (int i=0; i< listRoom.size(); i++){
-            if(checkedStates.get(i)){
+            if(!checkedStatesPrevious.get(i) && checkedStatesAfter.get(i)){
+                //Add new room service
                 HashMap<String, Object> data = new HashMap<>();
                 data.put(Constants.KEY_SERVICE_ID, service.getIdService());
                 data.put(Constants.KEY_ROOM_ID, listRoom.get(i).getRoomId());
@@ -177,7 +181,8 @@ public class ServicePresenter {
                             else Log.e("ApplyServiceNewCollection", "fail");
                         });
             }
-            else {
+            else if (checkedStatesPrevious.get(i) && !checkedStatesAfter.get(i)){
+                //Delete room service
                 FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION)
                         .whereEqualTo(Constants.KEY_SERVICE_ID, service.getIdService())
                         .whereEqualTo(Constants.KEY_ROOM_ID, listRoom.get(i).getRoomId())
@@ -197,7 +202,7 @@ public class ServicePresenter {
                                                 Log.e("ApplyServiceNewCollection", "delete fail");
                                         });
                         });
-            }
+            } else callback.onRoomServiceUpdated();
         }
     }
 

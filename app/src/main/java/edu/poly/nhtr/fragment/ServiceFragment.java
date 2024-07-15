@@ -95,7 +95,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
 
         setListener();
 
-        }
+    }
 
     private void loadData() {
         //set Preference of KEY_HOME_IS_HAVE_SERVICE
@@ -262,7 +262,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         //Đổ dữ liệu cho dialog
         image.setImageBitmap(ServiceUtils.getConversionImage(encodeImage));
         txt_name.setText(name);
-          //Spinner
+        //Spinner
         String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
         CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
         adapter.setDropDownViewResource(R.layout.spinner_item);
@@ -272,7 +272,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
         txt_feeBase.setText(titleOfFee);
 
-            //RecyclerView Apply for room
+        //RecyclerView Apply for room
         List<Boolean> checkedStates = presenter.getCheckedStates(listRoom);
         CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
         setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
@@ -418,12 +418,15 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         edt_fee.setText(""+service.getPrice());
         edt_note.setText(service.getNote());
 
-        List<Boolean> checkedStates = new ArrayList<>();
+        List<Boolean> checkedStatesPrevious = new ArrayList<>();
+        List<Boolean> checkedStatesAfter = new ArrayList<>();
         if(service.getApply()){
-            presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
                 @Override
                 public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+                    checkedStatesPrevious.clear();
+                    checkedStatesPrevious.addAll(checkedStates);
+                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
                     setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
                     if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")){
                         setNonListenerToRecycler(recycler_applyFor);
@@ -471,7 +474,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                     service.setPrice(price);
                     service.setNote(edt_note.getText().toString());
 
-                    if (service.getApply()) presenter.updateService(service, recyclerView, position, listRoom, checkedStates);
+                    if (service.getApply()) presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
 
                 }
             }
@@ -521,6 +524,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 // Chặn tất cả các sự kiện touch
+                Log.d("TouchIntercept", "Touch event intercepted: " + e.toString());
                 return true;
             }
 
@@ -533,6 +537,10 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
                 // Không làm gì cả
             }
+        });
+        recyclerApplyFor.setOnTouchListener((v, event) -> {
+            Log.d("TouchIntercept", "Touch event intercepted: " + event.toString());
+            return true; // Chặn tất cả các sự kiện touch
         });
     }
 
@@ -680,6 +688,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                 @Override
                 public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
                     CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+                    checkBoxAdapter.setIsClickable(false);
                     setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
                     setNonListenerToRecycler(recycler_applyFor);
                 }

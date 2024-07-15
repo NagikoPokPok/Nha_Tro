@@ -19,7 +19,7 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
     private final List<Room> rooms;
     private final List<Boolean> checkedStates;
     private final LayoutInflater inflater;
-    private final Boolean isClickable;
+    private Boolean isClickable;
 
     public CustomListCheckBoxAdapter(Context context, List<Room> rooms, List<Boolean> checkedStates) {
         this.rooms = rooms;
@@ -90,5 +90,10 @@ public class CustomListCheckBoxAdapter extends RecyclerView.Adapter<CustomListCh
             checkBox = itemView.findViewById(R.id.checkBox);
 
         }
+    }
+
+    public void setIsClickable(boolean isClickable){
+        this.isClickable = isClickable;
+        notifyDataSetChanged();
     }
 }
