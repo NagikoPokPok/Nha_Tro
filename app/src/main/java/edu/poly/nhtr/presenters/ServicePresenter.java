@@ -122,7 +122,6 @@ public class ServicePresenter {
 
 
     public List<Room> getListRoom(String homeId) {
-        List<String> serviceId = null;
         List<Room> listRoom = new ArrayList<>();
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOMS)
                 .whereEqualTo(Constants.KEY_HOME_ID, homeId)
@@ -151,21 +150,6 @@ public class ServicePresenter {
         return checkedStates;
     }
 
-//    public void ApplyServiceForRoom(String name, List<Room> listRoom, List<Boolean> checkedStates) {
-//        for(int i=0; i<listRoom.size(); i++){
-//            if(listRoom.get(i).getListServiceOfRoom()==null)
-//                listRoom.get(i).setListServiceOfRoom(new ArrayList<>());
-//            if(checkedStates.get(i)) listRoom.get(i).listServiceOfRoom.add(name);
-//            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOMS)
-//                    .document(listRoom.get(i).getRoomId())
-//                    .update(Constants.KEY_SERVICE_OF_ROOM, listRoom.get(i).getListServiceOfRoom())
-//                    .addOnCompleteListener(task -> {
-//                        if(task.isSuccessful()) Log.e("ApplyService", "successfully");
-//                        else Log.e("ApplyService", "fail");
-//                    });
-//
-//        }
-//    }
 
     public void updateApplyStatusServiceOfRoom(Service service, List<Room> listRoom, List<Boolean> checkedStates, OnRoomServiceUpdatedListener callback) {
         for (int i=0; i< listRoom.size(); i++){

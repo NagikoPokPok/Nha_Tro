@@ -50,7 +50,7 @@
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_service_used"
+                    android:id="@+id/recycler_service_of_room"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -82,7 +82,7 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add_home"
+        android:id="@+id/btn_add_service"
         style="@style/BUTTON"
         android:layout_width="150dp"
         android:layout_height="0dp"

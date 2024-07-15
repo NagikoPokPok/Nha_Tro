@@ -41,7 +41,7 @@
             android:textSize="18dp"
             android:text="Dịch vụ: "/>
         <TextView
-            android:id="@+id/name_service"
+            android:id="@+id/txt_name_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -63,7 +63,7 @@
             android:textSize="18dp"
             android:text="Giá: "/>
         <TextView
-            android:id="@+id/fee_service"
+            android:id="@+id/txt_fee_service"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -77,33 +77,32 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp">
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp">
 
         <TextView
+            android:id="@+id/txt_service_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingEnd="6dp"
             style="@style/TEXT_MED_2"
             android:textSize="18dp"
-            android:text="Nhập chỉ số cũ: "/>
+            android:text="Chỉ số cũ: "/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_unit"
+            android:id="@+id/layout_quantity"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            >
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_unit"
+                android:id="@+id/edt_quantity"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:padding="3dp"
                 android:background="@drawable/custom_edittext"
                 android:visibility="visible"
-                android:imeOptions="actionNext"
-                android:inputType="none"
-                android:focusable="false"
-                android:cursorVisible="false"/>
+                android:imeOptions="actionNext" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

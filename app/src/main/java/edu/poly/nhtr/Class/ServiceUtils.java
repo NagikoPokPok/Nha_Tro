@@ -9,9 +9,14 @@ import android.icu.text.Collator;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -23,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.utilities.Constants;
 
@@ -98,10 +104,31 @@ public class ServiceUtils {
                     .addOnSuccessListener(documentReference -> {
                         Log.e("service","add successful");
                         update_status_isHaveService(homeParentId);
+//                        if(service.getName().toLowerCase().equals("điện") || service.getName().toLowerCase().equals("nước")){
+//                            setApplySpeedyForRequiredSeviceOfRoom(service.getName(), homeParentId, listRoom);
+//                        }
                     })
                     .addOnFailureListener(e -> Log.e("service","add fail"));
         }
     }
+
+//    private static void setApplySpeedyForRequiredSeviceOfRoom(String serviceName, String homeParentId, List<Room> listRoom) {
+//        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_SERVICES)
+//                .whereEqualTo(Constants.KEY_SERVICE_PARENT_HOME_ID, homeParentId)
+//                .whereEqualTo(Constants.KEY_SERVICE_NAME, serviceName)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if(task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
+//                            String serviceId = task.getResult().getDocuments().get(0).getId();
+//                            for (Room room : listRoom){
+//
+//                            }
+//                        }
+//                    }
+//                })
+//    }
 
     private static void update_status_isHaveService(String homeParentId) {
         DocumentReference documentReference = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES).document(homeParentId);

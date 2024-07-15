@@ -1,5 +1,9 @@
 package edu.poly.nhtr.models;
 
+import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
 public class Service {
     private String idHomeParent;
     private String idService;
@@ -125,7 +129,19 @@ public class Service {
     }
 
     public boolean isElectricOrWater() {
-        if (getName().equals("Điện")||getName().equals("Nước")) return true;
-        return false;
+        return getName().equalsIgnoreCase("Điện") || getName().equalsIgnoreCase("Nước");
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Service service = (Service) obj;
+        return Objects.equals(idService, service.getIdService()) && Objects.equals(idHomeParent, service.getIdHomeParent()) && Objects.equals(name, service.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idService, idHomeParent, name);
     }
 }

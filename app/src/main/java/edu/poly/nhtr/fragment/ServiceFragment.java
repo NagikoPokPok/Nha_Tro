@@ -392,6 +392,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
+        View line = dialog.findViewById(R.id.view4);
+        TextView txt_title_apply_for = dialog.findViewById(R.id.txt_title_apply_for);
         CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_update = dialog.findViewById(R.id.btn_update_service);
@@ -417,13 +419,21 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         edt_note.setText(service.getNote());
 
         List<Boolean> checkedStates = new ArrayList<>();
-        presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
-            @Override
-            public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
-                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
-            }
-        });
+        if(service.getApply()){
+            presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+                @Override
+                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
+                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")){
+                        setNonListenerToRecycler(recycler_applyFor);
+                    }
+                }
+            });
+        }else {
+            line.setVisibility(View.GONE);
+            txt_title_apply_for.setVisibility(View.GONE);
+        }
 
 //        presenter.setRecyclerViewOfApplyFor(recycler_applyFor, requireActivity().getApplicationContext(), listRoom, service);
 
@@ -461,7 +471,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                     service.setPrice(price);
                     service.setNote(edt_note.getText().toString());
 
-                    presenter.updateService(service, recyclerView, position, listRoom, checkedStates);
+                    if (service.getApply()) presenter.updateService(service, recyclerView, position, listRoom, checkedStates);
 
                 }
             }
@@ -500,6 +510,28 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             public void onFocusChange(View v, boolean hasFocus) {
                 edt_note.setHint("");
                 if(!hasFocus && edt_note.getText().toString().isEmpty()) edt_note.setHint("Viết những lưu ý của bạn ta đây");
+            }
+        });
+    }
+
+    private void setNonListenerToRecycler(CustomRecyclerView recyclerApplyFor) {
+        recyclerApplyFor.setClickable(false);
+        // Vô hiệu hóa sự kiện touch trên RecyclerView
+        recyclerApplyFor.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                // Chặn tất cả các sự kiện touch
+                return true;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                // Không làm gì cả
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+                // Không làm gì cả
             }
         });
     }
@@ -605,6 +637,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
+        View line = dialog.findViewById(R.id.view4);
+        TextView txt_title_apply_for = dialog.findViewById(R.id.txt_title_apply_for);
         CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
         Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
         Button btn_update = dialog.findViewById(R.id.btn_update_service);
@@ -628,7 +662,8 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
         txt_feeBase.setText(titleOfFee);
 
-        edt_fee.setText(""+service.getPrice());
+        String price = ""+service.getPrice();
+        edt_fee.setText(price);
         edt_fee.setInputType(InputType.TYPE_NULL);
         edt_fee.setFocusable(false);
         edt_fee.setCursorVisible(false);
@@ -639,33 +674,20 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         edt_note.setFocusable(false);
         edt_note.setCursorVisible(false);
 
-        List<Boolean> checkedStates = new ArrayList<>();
-        presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
-            @Override
-            public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
-                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
-                recycler_applyFor.setClickable(false);
-                // Vô hiệu hóa sự kiện touch trên RecyclerView
-                recycler_applyFor.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                    @Override
-                    public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                        // Chặn tất cả các sự kiện touch
-                        return true;
-                    }
-
-                    @Override
-                    public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                        // Không làm gì cả
-                    }
-
-                    @Override
-                    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-                        // Không làm gì cả
-                    }
-                });
-            }
-        });
+        if(service.getApply()){
+            List<Boolean> checkedStates = new ArrayList<>();
+            presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+                @Override
+                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
+                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
+                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+                    setNonListenerToRecycler(recycler_applyFor);
+                }
+            });
+        }else {
+            line.setVisibility(View.GONE);
+            txt_title_apply_for.setVisibility(View.GONE);
+        }
 
         //Xử lí button cho dialog
         exit.setVisibility(View.VISIBLE);
@@ -673,18 +695,14 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         if(service.getApply()){
             if(service.isElectricOrWater()){
                 btn_delete.setEnabled(false);
-//                btn_delete.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
                 btn_delete.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1B1B1")));
             }
             else {
-                btn_delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        service.setApply(false);
-                        presenter.updateStatusOfApplyToFirebase(service);
-                        dialog.cancel();
-                        setRecyclerViewData();
-                    }
+                btn_delete.setOnClickListener(v -> {
+                    service.setApply(false);
+                    presenter.updateStatusOfApplyToFirebase(service);
+                    dialog.cancel();
+                    setRecyclerViewData();
                 });
             }
 
