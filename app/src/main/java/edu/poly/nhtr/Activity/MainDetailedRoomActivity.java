@@ -43,7 +43,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         RoomViewModel roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
 
-
         room = (Room) getIntent().getSerializableExtra("room");
         if (room != null) {
             setupRoomDetails();
@@ -61,23 +60,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         String roomTitle = room.getNameRoom();
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
         preferenceManager.putString(Constants.KEY_NAME_ROOM, roomTitle);
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("room", room);
-        setFragmentArguments(bundle);
-    }
-
-    private void setFragmentArguments(Bundle bundle) {
-        setArgumentsForFragment(new RoomGuestFragment(), bundle);
-        setArgumentsForFragment(new RoomBillFragment(), bundle);
-        setArgumentsForFragment(new RoomContractFragment(), bundle);
-        setArgumentsForFragment(new RoomServiceFragment(), bundle);
-        setArgumentsForFragment(new RoomGuestContractFragment(), bundle);
-        setArgumentsForFragment(new GuestAddContractFragment(), bundle);
-    }
-
-    private void setArgumentsForFragment(Fragment fragment, Bundle bundle) {
-        fragment.setArguments(bundle);
     }
 
     private void setListeners() {
@@ -90,10 +72,25 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         binding.viewPager.setVisibility(View.VISIBLE);
 
         TabLayoutAdapter tabLayoutAdapter = new TabLayoutAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        tabLayoutAdapter.addFragment(new RoomGuestFragment(), "Khách");
-        tabLayoutAdapter.addFragment(new RoomServiceFragment(), "Dịch vụ");
-        tabLayoutAdapter.addFragment(new RoomBillFragment(), "Hóa đơn");
-        tabLayoutAdapter.addFragment(new RoomContractFragment(), "Hợp đồng");
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+
+        // Create fragments and set arguments
+        Fragment roomGuestFragment = new RoomGuestFragment();
+        roomGuestFragment.setArguments(bundle);
+        Fragment roomServiceFragment = new RoomServiceFragment();
+        roomServiceFragment.setArguments(bundle);
+        Fragment roomBillFragment = new RoomBillFragment();
+        roomBillFragment.setArguments(bundle);
+        Fragment roomContractFragment = new RoomContractFragment();
+        roomContractFragment.setArguments(bundle);
+
+        // Add fragments to adapter
+        tabLayoutAdapter.addFragment(roomGuestFragment, "Khách");
+        tabLayoutAdapter.addFragment(roomServiceFragment, "Dịch vụ");
+        tabLayoutAdapter.addFragment(roomBillFragment, "Hóa đơn");
+        tabLayoutAdapter.addFragment(roomContractFragment, "Hợp đồng");
 
         binding.viewPager.setAdapter(tabLayoutAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
@@ -103,7 +100,9 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         RoomGuestContractFragment fragment = new RoomGuestContractFragment();
-        fragment.setArguments(getIntent().getExtras());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+        fragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
         binding.viewPager.setVisibility(View.GONE);
