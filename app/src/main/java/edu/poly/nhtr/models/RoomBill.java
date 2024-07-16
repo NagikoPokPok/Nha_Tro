@@ -1,6 +1,7 @@
 package edu.poly.nhtr.models;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 
 public class RoomBill {
@@ -9,7 +10,7 @@ public class RoomBill {
     public String getBillID() {
         return billID;
     }
-    public LocalDate dateCreateBill, datePayBill;
+    public Date dateCreateBill, datePayBill;
     public int month, year;
     public int numberOfDaysToPayBill;
     public boolean isNotPayBill, isPayedBill, isDelayPayBill;
@@ -33,11 +34,11 @@ public class RoomBill {
         return isMoneyOfMinus;
     }
 
-    public LocalDate getDateCreateBill() {
+    public Date getDateCreateBill() {
         return dateCreateBill;
     }
 
-    public LocalDate getDatePayBill() {
+    public Date getDatePayBill() {
         return datePayBill;
     }
 

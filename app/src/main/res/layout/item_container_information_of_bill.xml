@@ -127,6 +127,7 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/layout_status_of_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -151,6 +152,7 @@
 
 
                     <LinearLayout
+                        android:id="@+id/layout_status_of_give_bill"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -218,7 +220,7 @@
                 android:gravity="end"
                 android:text="0 đ"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
@@ -248,7 +250,7 @@
                 android:gravity="end"
                 android:text="0 đ"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
@@ -262,6 +264,7 @@
             android:paddingEnd="15dp">
 
             <TextView
+                android:id="@+id/txt_money_add_or_minus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_light"
@@ -278,7 +281,7 @@
                 android:gravity="end"
                 android:text="0 đ"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
@@ -317,7 +320,7 @@
                 android:gravity="end"
                 android:text="0 đ"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
 
         </LinearLayout>
@@ -347,7 +350,7 @@
                 android:gravity="end"
                 android:text="0 đ"
                 android:textColor="@color/colorGreen"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
 
         </LinearLayout>

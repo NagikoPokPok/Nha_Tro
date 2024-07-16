@@ -77,16 +77,17 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
 
         setupRecyclerView();
 
-        if (dayOfMonth == 16) {
+        if (dayOfMonth == 1) {
             roomBillPresenter.addBill(room);
-        }
+        }else {
 
-        roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
-            @Override
-            public void onComplete(List<RoomBill> billList) {
-                roomBillAdapter.setBillList(billList);
-            }
-        });
+            roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+                @Override
+                public void onComplete(List<RoomBill> billList) {
+                    roomBillAdapter.setBillList(billList);
+                }
+            });
+        }
 
 
 
