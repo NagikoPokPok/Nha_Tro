@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,6 +41,7 @@ import java.util.List;
 import edu.poly.nhtr.Adapter.GuestAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomGuestBinding;
+import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.RoomViewModel;
@@ -77,7 +79,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // Khởi tạo adapter và gán cho RecyclerView
-        adapter = new GuestAdapter(new ArrayList<>());
+        adapter = new GuestAdapter(new ArrayList<>(), this);
         recyclerView.setAdapter(adapter);
 
         dialog = new Dialog(requireActivity());
@@ -131,6 +133,12 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public void hideLoadingOfFunctions(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
     public String getInfoRoomFromGoogleAccount() {
         return preferenceManager.getString(Constants.KEY_ROOM_ID);
     }
@@ -148,6 +156,13 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     public void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void showErrorMessage(String message, int id) {
+        TextInputLayout layout_name_guest = dialog.findViewById(id);
+        layout_name_guest.setError(message);
+    }
+
 
     @Override
     public void showLoading() {
@@ -172,6 +187,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public void openPopup(View view, Guest guest, ItemContainerGuestBinding binding) {
+        openMenuForEachRoom(view, guest, binding);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
@@ -191,9 +211,35 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         return text1;
     }
 
+    private void setUpDialog(int layoutId) {
+        dialog.setContentView(layoutId);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
+    }
+
+    // Update button color based on input field state
+    private void updateButtonState(EditText edtNameGuest, EditText edtPhoneGuest, Button btnAdd) {
+        String name = edtNameGuest.getText().toString().trim();
+        String phone = edtPhoneGuest.getText().toString().trim();
+        if (name.isEmpty() || phone.isEmpty()) {
+            btnAdd.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_clicked, null));
+        } else {
+            btnAdd.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_add, null));
+        }
+    }
+
 
     private void openAddGuestDialog() {
         setUpDialog(R.layout.layout_dialog_add_guest);
+        TextView title = dialog.findViewById(R.id.txt_title_dialog_guest);
         TextView nameGuest = dialog.findViewById(R.id.txt_name_guest);
         TextView phoneGuest = dialog.findViewById(R.id.txt_phone_number);
         TextView dateInGuest = dialog.findViewById(R.id.txt_date_in);
@@ -213,6 +259,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         nameGuest.append(customizeText("*"));
 
         // Set hint cho các trường và nút
+        title.setText("Thêm khách mới");
         edtNameGuest.setHint("Ví dụ: Nguyễn Văn A");
         edtPhoneGuest.setHint("Ví dụ: 0123456789");
         edtDateIn.setHint("Ví dụ: 01/01/2022");
@@ -249,7 +296,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateButtonState(edtNameGuest, btnAddGuest);
+                updateButtonState(edtNameGuest, edtPhoneGuest, btnAddGuest);
             }
 
             @Override
@@ -277,27 +324,164 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
 
-    private void setUpDialog(int layoutId) {
-        dialog.setContentView(layoutId);
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            WindowManager.LayoutParams windowAttributes = window.getAttributes();
-            windowAttributes.gravity = Gravity.CENTER;
-            window.setAttributes(windowAttributes);
-            dialog.setCancelable(true);
-            dialog.show();
-        }
+    private void openUpdateGuestDialog(Guest guest) {
+
+        setUpDialog(R.layout.layout_dialog_update_guest);
+
+        // Ánh xạ ID
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnUpdateGuest = dialog.findViewById(R.id.btn_add_new_guest);
+        EditText edtNameGuest = dialog.findViewById(R.id.edt_name_guest);
+        EditText edtPhoneGuest = dialog.findViewById(R.id.edt_phone_number);
+        EditText edtDateIn = dialog.findViewById(R.id.edt_date_in);
+        TextView title = dialog.findViewById(R.id.txt_title_dialog_guest);
+        TextView txtNameGuest = dialog.findViewById(R.id.txt_name_guest);
+        TextView txtPhoneGuest = dialog.findViewById(R.id.txt_phone_number);
+        TextInputLayout layoutNameGuest = dialog.findViewById(R.id.layout_name_guest);
+        TextInputLayout layoutPhoneGuest = dialog.findViewById(R.id.layout_phone_number);
+
+
+        //Hiện thông tin lên edt
+        edtNameGuest.setText(guest.getNameGuest());
+        edtPhoneGuest.setText(guest.getPhoneGuest());
+        edtDateIn.setText(guest.getDateIn());
+        title.setText("Chỉnh sửa thông tin khách");
+        btnUpdateGuest.setText("Cập nhật");
+        txtNameGuest.append(customizeText(" *"));
+        txtPhoneGuest.append(customizeText(" *"));
+        btnUpdateGuest.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+
+        edtNameGuest.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String name = edtNameGuest.getText().toString().trim();
+                if (!name.isEmpty()) {
+                    layoutNameGuest.setErrorEnabled(false);
+                    layoutNameGuest.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edtPhoneGuest.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String address = edtPhoneGuest.getText().toString().trim();
+                if (!address.isEmpty()) {
+                    layoutPhoneGuest.setErrorEnabled(false);
+                    layoutPhoneGuest.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateButtonState(edtNameGuest, edtPhoneGuest, btnUpdateGuest);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+
+        // Thêm TextWatcher cho cả hai EditText
+        edtNameGuest.addTextChangedListener(textWatcher);
+        edtPhoneGuest.addTextChangedListener(textWatcher);
+
+        // Xử lý sự kiện cho Button
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnUpdateGuest.setOnClickListener(v -> {
+            // Lấy dữ liệu
+            String newNameGuest = edtNameGuest.getText().toString().trim();
+            String newPhoneGuest = edtPhoneGuest.getText().toString().trim();
+            String newDateIn = edtDateIn.getText().toString().trim();
+
+            Guest updatedGuest = new Guest();
+            updatedGuest.setNameGuest(newNameGuest);
+            updatedGuest.setPhoneGuest(newPhoneGuest);
+            updatedGuest.setDateIn(newDateIn);
+            updatedGuest.setFileStatus(guest.isFileStatus());
+
+            String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
+            presenter.updateGuestInFirebase(roomId, updatedGuest);
+            dialog.dismiss();
+        });
     }
 
-    // Update button color based on input field state
-    private void updateButtonState(EditText edtNameGuest, Button btnAdd) {
-        String name = edtNameGuest.getText().toString().trim();
-        if (name.isEmpty()) {
-            btnAdd.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_clicked, null));
-        } else {
-            btnAdd.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_add, null));
-        }
+    private void openDeleteRoomDialog(Guest guest) {
+
+        setUpDialog(R.layout.layout_dialog_delete_guest);
+
+        // Ánh xạ ID
+        TextView txtConfirmDeleteGuest = dialog.findViewById(R.id.txt_confirm_delete_guest);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel_delete_guest);
+        Button btnDeleteGuest = dialog.findViewById(R.id.btn_delete_guest);
+
+        // Hiệu chỉnh TextView
+        String text = " " + guest.getNameGuest() + " ?";
+        txtConfirmDeleteGuest.append(text);
+
+        // Xử lý sự kiện cho Button
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
+        btnDeleteGuest.setOnClickListener(v -> {
+            presenter.deleteGuest(roomId);
+            dialog.dismiss();
+        });
+
     }
+
+    private void openMenuForEachRoom(View view, Guest guest, ItemContainerGuestBinding binding) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.setForceShowIcon(true);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_edit_guest) {
+                // Thực hiện hành động cho mục chỉnh sửa
+                openUpdateGuestDialog(guest);
+                return true;
+            }
+            else if (itemId == R.id.menu_delete_guest) {
+                // Thực hiện hành động cho mục xóa
+                openDeleteRoomDialog(guest);
+                return true;
+            }
+            return false;
+        });
+
+        popupMenu.setOnDismissListener(menu -> {
+            binding.frmImage2.setVisibility(View.INVISIBLE);
+            binding.frmImage.setVisibility(View.VISIBLE);
+        });
+
+        popupMenu.inflate(R.menu.menu_edit_delete_guest);
+        popupMenu.show();
+    }
+
 }

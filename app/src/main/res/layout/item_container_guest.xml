@@ -1,174 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/itemHome"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="15dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:id="@+id/container_guest"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
     app:strokeWidth="1dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="0dp">
+
+    <FrameLayout
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="10dp">
 
         <!-- Ordinal number -->
         <TextView
             android:id="@+id/txt_ordinal_number"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/sonhatro"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:visibility="visible" />
+            android:visibility="visible"/>
+
         <!-- Star icon -->
         <ImageView
             android:id="@+id/img_star"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginTop="-30dp"
-            android:layout_marginStart="10dp"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:src="@drawable/icon_star"
-            android:visibility="visible"
-            />
+            android:visibility="visible"/>
+    </FrameLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-        <!-- Top part with star and name -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="-30dp">
+            android:layout_marginStart="55dp">
 
-            <!-- Guest name -->
             <TextView
                 android:id="@+id/txt_name_guest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="60dp"
                 android:ellipsize="end"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center"
                 android:maxLines="1"
                 android:text="Trần Quang Hiếu"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="18sp" />
 
-            <!-- Menu icon -->
-            <ImageView
-                android:id="@+id/img_menu"
+            <FrameLayout
+                android:id="@+id/frm_Image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:visibility="visible"
+                android:layout_margin="5dp">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/img_circle_menu"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_image"
+                    android:backgroundTint="@color/white"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
+
+                <ImageView
+                    android:id="@+id/img_menu"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_menu" />
+
+            </FrameLayout>
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/iv_check_box"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_menu" />
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="10dp"
+                android:theme="@style/MyCheckBoxStyle"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/frm_Image_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                android:layout_margin="5dp">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_image"
+                    android:backgroundTint="@color/colorGray"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_menu" />
+
+            </FrameLayout>
         </RelativeLayout>
 
-        <!-- Contract representative label -->
-<!--        <TextView-->
-<!--            android:id="@+id/txt_contract_representative"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="40dp"-->
-<!--            android:text="Người đại diện hợp đồng"-->
-<!--            android:textColor="@color/colorGreen"-->
-<!--            android:textSize="16sp"-->
-<!--            android:visibility="visible" />-->
-
-        <!-- Entry date -->
         <LinearLayout
+            android:id="@+id/layout_phone_number_of_guest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <TextView
-                style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="start"
                 android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/inter_light"
                 android:maxLines="1"
-                android:text="@string/ngay_vao_o_hai_cham"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/txt_entry_date"
-                style="@style/TEXT_LIGHT_2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="25/03/2024"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <!-- Phone number -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp">
-
-            <TextView
-                style="@style/TEXT_MED_2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/so_dien_thoai_hai_cham"
+                android:text="Số điện thoại :"
+                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/txt_phone_number"
-                style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="0799348542"
-                android:textSize="16sp" />
+                android:fontFamily="@font/inter_light"
+                android:text="0918300555"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15dp" />
+
         </LinearLayout>
 
-        <!-- Profile status -->
         <LinearLayout
+            android:id="@+id/layout_entry_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <TextView
-                style="@style/TEXT_MED_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_light"
+                android:maxLines="1"
+                android:text="Ngày vào ở :"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_entry_date"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:fontFamily="@font/inter_light"
+                android:text="25/03/2024"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_profile_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="1"
                 android:ellipsize="end"
+                android:fontFamily="@font/inter_light"
                 android:maxLines="1"
-                android:text="@string/tinh_trang_ho_so_hai_cham"
+                android:text="Tình trạng hồ sơ :"
+                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/txt_profile_status"
-                style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Đã cập nhật đầy đủ"
-                android:textColor="@color/colorGreen"
-                android:textSize="16sp" />
+                android:fontFamily="@font/inter_light"
+                android:text="Chưa cập nhật đầy đủ"
+                android:textColor="@color/colorRed"
+                android:textSize="15sp" />
+
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

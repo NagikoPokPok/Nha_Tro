@@ -1,9 +1,12 @@
 package edu.poly.nhtr.interfaces;
 
+import android.view.View;
+
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.List;
 
+import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
 
@@ -16,11 +19,15 @@ public interface RoomGuestInterface {
 
         void showLoadingOfFunctions(int id);
 
+        void hideLoadingOfFunctions(int id);
+
         String getInfoRoomFromGoogleAccount();
 
         void putGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, DocumentReference documentReference);
 
         void showToast(String message);
+
+        void showErrorMessage(String message, int id);
 
         void showLoading();
 
@@ -29,6 +36,8 @@ public interface RoomGuestInterface {
         void disableAddGuestButton();
 
         void enableAddGuestButton();
+
+        void openPopup(android.view.View view, Guest guest, ItemContainerGuestBinding binding);
     }
 
     interface Presenter {
@@ -37,5 +46,9 @@ public interface RoomGuestInterface {
         void addGuestToFirebase(Guest guest);
 
         void getGuests(String roomId);
+
+        void deleteGuest(String guestId);
+
+        void updateGuestInFirebase(String guestId, Guest guest);
     }
 }
