@@ -94,27 +94,39 @@
 
                     <TextView
                         android:id="@+id/date_pay_bill"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:fontFamily="@font/inter_light"
                         android:text="15/07/2024"
                         android:textColor="@color/colorTextBlack"
                         android:textSize="15sp"
                         android:layout_marginStart="5dp"/>
 
-                    <TextView
-                        android:id="@+id/txt_view_detailed_bill"
-                        android:layout_width="0dp"
+                    <FrameLayout
+                        android:id="@+id/frm_menu"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
-                        android:gravity="end"
-                        android:text="Chi tiết ->"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="15sp"
-                        android:textStyle="italic"
+                        android:visibility="visible"
+                        android:gravity="end">
 
-                        />
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/img_circle_menu"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="@drawable/background_image"
+                            android:backgroundTint="@color/white"
+                            android:scaleType="fitXY"
+                            app:riv_oval="true" />
+
+                        <ImageView
+                            android:id="@+id/img_menu"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_menu" />
+
+                    </FrameLayout>
 
 
                 </LinearLayout>

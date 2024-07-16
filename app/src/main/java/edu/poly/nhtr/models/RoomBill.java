@@ -1,10 +1,11 @@
 package edu.poly.nhtr.models;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 
 
-public class RoomBill {
+public class RoomBill implements Serializable {
     public String billID;
 
     public String getBillID() {

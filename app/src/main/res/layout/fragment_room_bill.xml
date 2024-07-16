@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.RoomBillFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/layout_main_of_room_bill">
+
 
     <LinearLayout
         android:id="@+id/layout_functions"

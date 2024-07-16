@@ -119,6 +119,14 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         String moneyLeftNeedToPay = numberFormat.format(bill.getTotalOfMoneyNeededPay()) + " VNĐ";
         holder.binding.moneyLeftNeedToPay.setText(moneyLeftNeedToPay);
 
+        //Click button
+        holder.binding.btnMakeBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                roomBillListener.makeBillClick(bill);
+            }
+        });
+
 
     }
 

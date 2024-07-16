@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,6 +30,7 @@ import edu.poly.nhtr.databinding.FragmentRoomMakeBillBinding;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.utilities.Constants;
 
@@ -40,6 +42,7 @@ public class RoomMakeBillFragment extends Fragment {
     private Room room;
     private MainGuest mainGuest;
     private List<RoomService> roomServiceList;
+    private RoomBill bill;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,12 +50,31 @@ public class RoomMakeBillFragment extends Fragment {
 
         binding = FragmentRoomMakeBillBinding.inflate(getLayoutInflater());
 
+        // Retrieve the room object from the arguments
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            bill = (RoomBill) arguments.getSerializable("bill");
+            if (bill != null) {
+                roomId = bill.getRoomID();
+                showToast(roomId);
+            } else {
+                showToast("Room object is null");
+            }
+        } else {
+            showToast("Arguments are null");
+        }
+
         getRoomFromFirebase(roomId);
         mainGuest = getMainGuest(roomId);
         getListRoomService(roomId);
 
         setData();
     }
+
+    private void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
 
     private void getListRoomService(String roomId) {
         List<RoomService> roomServices = new ArrayList<>();

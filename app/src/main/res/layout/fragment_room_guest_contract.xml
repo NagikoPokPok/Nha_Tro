@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/SCREEN_WHITE"
-    tools:context=".fragment.RoomGuestContractFragment">
+    tools:context=".fragment.RoomGuestContractFragment"
+    >
 
     <LinearLayout
         android:id="@+id/layout_no_guest"

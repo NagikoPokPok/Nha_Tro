@@ -17,12 +17,15 @@ import edu.poly.nhtr.Adapter.TabLayoutAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainDetailedRoomBinding;
 import edu.poly.nhtr.fragment.GuestAddContractFragment;
+import edu.poly.nhtr.fragment.RoomBillContainerFragment;
 import edu.poly.nhtr.fragment.RoomBillFragment;
 import edu.poly.nhtr.fragment.RoomContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestFragment;
+import edu.poly.nhtr.fragment.RoomMakeBillFragment;
 import edu.poly.nhtr.fragment.RoomServiceFragment;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -86,10 +89,15 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         Fragment roomContractFragment = new RoomContractFragment();
         roomContractFragment.setArguments(bundle);
 
+        Fragment roomBillContainerFragment = new RoomBillContainerFragment();
+        roomBillContainerFragment.setArguments(bundle);
+
+
         // Add fragments to adapter
         tabLayoutAdapter.addFragment(roomGuestFragment, "Khách");
         tabLayoutAdapter.addFragment(roomServiceFragment, "Dịch vụ");
-        tabLayoutAdapter.addFragment(roomBillFragment, "Hóa đơn");
+        //tabLayoutAdapter.addFragment(roomBillFragment, "Hóa đơn");
+        tabLayoutAdapter.addFragment(roomBillContainerFragment, "Hóa đơn");
         tabLayoutAdapter.addFragment(roomContractFragment, "Hợp đồng");
 
         binding.viewPager.setAdapter(tabLayoutAdapter);
@@ -107,6 +115,20 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         binding.viewPager.setVisibility(View.GONE);
         binding.tabLayout.setVisibility(View.GONE);
+    }
+
+    public void showRoomMakeBillFragment(RoomBill bill) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        RoomMakeBillFragment fragment = new RoomMakeBillFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("bill", bill);
+        fragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null); // Để quay lại Fragment trước đó khi cần
+        fragmentTransaction.commit();
+       binding.viewPager.setVisibility(View.GONE);
+       binding.tabLayout.setVisibility(View.GONE);
     }
 
     private void checkRoomHasMainGuest() {
@@ -159,4 +181,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, roomGuestFragment)
                 .commit();
     }
+
+
 }
