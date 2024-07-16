@@ -128,6 +128,16 @@
 
                     </FrameLayout>
 
+                    <CheckBox
+                        android:id="@+id/checkBox"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/checkbox_selector_index"
+                        android:button="@null"
+                        android:visibility="gone"
+                       />
+
 
                 </LinearLayout>
 

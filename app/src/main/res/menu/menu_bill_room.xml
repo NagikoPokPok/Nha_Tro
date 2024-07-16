@@ -21,7 +21,7 @@
         <item
             android:id="@+id/menu_delete_bill"
             android:icon="@drawable/ic_delete"
-            android:title="@string/xoa_phong" />
+            android:title="Xóa hoá đơn" />
 
     </group>
 

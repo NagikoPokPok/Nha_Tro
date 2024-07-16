@@ -157,7 +157,7 @@
         android:layout_below="@id/layout_functions"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/layout_select_all"

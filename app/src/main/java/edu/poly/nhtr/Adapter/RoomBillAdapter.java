@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +31,10 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
     List<RoomBill> billList;
     RoomBillPresenter roomBillPresenter;
     RoomBillListener roomBillListener;
+    private boolean isDeleteClicked = false;
+    private boolean isSelectAllClicked = false;
+    private final List<RoomBill> selectedBills = new ArrayList<>();
+    private boolean multiSelectMode = false;
 
     public RoomBillAdapter(Context context, List<RoomBill> billList, RoomBillPresenter roomBillPresenter, RoomBillListener roomBillListener) {
         this.context = context;
@@ -127,6 +132,48 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
             }
         });
 
+        holder.binding.frmMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.binding.imgCircleMenu.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorGray));
+                roomBillListener.openPopUp(v, bill, holder.binding);
+            }
+        });
+
+
+        //delete many bills
+        if(isDeleteClicked)
+        {
+            holder.binding.checkBox.setVisibility(View.VISIBLE);
+            holder.binding.frmMenu.setVisibility(View.GONE);
+        }else{
+            holder.binding.checkBox.setVisibility(View.GONE);
+            holder.binding.frmMenu.setVisibility(View.VISIBLE);
+        }
+
+        if(isSelectAllClicked)
+        {
+            holder.binding.checkBox.setChecked(true);
+            selectedBills.clear();
+            selectedBills.addAll(billList);
+        }else{
+            holder.binding.checkBox.setChecked(false);
+            selectedBills.clear();
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (multiSelectMode) {
+                if (holder.binding.checkBox.isChecked()) {
+                    holder.binding.checkBox.setChecked(false);
+                    selectedBills.remove(bill);
+                } else {
+                    holder.binding.checkBox.setChecked(true);
+                    selectedBills.add(bill);
+                }
+            }
+        });
+
+
 
     }
 
@@ -149,11 +196,24 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
     public void setBillList(List<RoomBill> billList) {
         this.billList = billList;
         if (this.billList.isEmpty()) {
-            //notificationListener.showLayoutNoData();
+            roomBillListener.showLayoutNoData();
         } else {
-            //notificationListener.hideLayoutNoData();
+            roomBillListener.hideLayoutNoData();
             notifyDataSetChanged();
         }
-        //notificationListener.hideLoading();
+        roomBillListener.hideLoading();
+    }
+
+    public void isDeleteChecked(boolean isDeleteChecked)
+    {
+        this.isDeleteClicked = isDeleteChecked;
+        this.multiSelectMode = isDeleteChecked;
+        notifyDataSetChanged();
+    }
+
+    public void isSelectAllChecked(boolean isSelectAllClicked)
+    {
+        this.isSelectAllClicked = isSelectAllClicked;
+        notifyDataSetChanged();
     }
 }
