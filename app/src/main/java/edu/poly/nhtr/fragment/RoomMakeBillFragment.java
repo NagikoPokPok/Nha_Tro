@@ -27,15 +27,17 @@ import java.util.Locale;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomMakeBillBinding;
+import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
+import edu.poly.nhtr.presenters.RoomMakeBillPresenter;
 import edu.poly.nhtr.utilities.Constants;
 
 
-public class RoomMakeBillFragment extends Fragment {
+public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListener {
 
     private String roomId;
     private FragmentRoomMakeBillBinding binding;
@@ -43,12 +45,14 @@ public class RoomMakeBillFragment extends Fragment {
     private MainGuest mainGuest;
     private List<RoomService> roomServiceList;
     private RoomBill bill;
+    private RoomMakeBillPresenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = FragmentRoomMakeBillBinding.inflate(getLayoutInflater());
+        presenter = new RoomMakeBillPresenter(this);
 
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
@@ -64,107 +68,40 @@ public class RoomMakeBillFragment extends Fragment {
             showToast("Arguments are null");
         }
 
-        getRoomFromFirebase(roomId);
-        mainGuest = getMainGuest(roomId);
-        getListRoomService(roomId);
+        roomId = bill.getRoomID();
 
-        setData();
+        room = presenter.getRoomFromFirebase(roomId);
+        presenter.getMainGuest(roomId, new RoomMakeBillPresenter.OnGetContractFromFirebaseListener() {
+
+            @Override
+            public void onGetContractFromFirebase(MainGuest mainGuest1) {
+                mainGuest = mainGuest1;
+                setDateTime();
+            }
+        });
+        presenter.getListRoomService(roomId, new RoomMakeBillPresenter.OnGetRoomServiceFromFirebaseListener() {
+            @Override
+            public void onGetRoomServiceFromFirebase(List<RoomService> roomServices) {
+                setData();
+            }
+        });
+
     }
 
-    private void showToast(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-    }
 
-
-    private void getListRoomService(String roomId) {
-        List<RoomService> roomServices = new ArrayList<>();
-        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION)
-                .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
-                            for (DocumentSnapshot document : task.getResult()){
-                                RoomService roomService = new RoomService(
-                                        document.getId(),
-                                        document.getString(Constants.KEY_ROOM_ID),
-                                        document.getString(Constants.KEY_SERVICE_ID),
-                                        Math.toIntExact(document.getLong(Constants.KEY_ROOM_SERVICE_QUANTITY))
-                                );
-
-
-
-                                roomServices.add(roomService);
-
-                            }
-
-                            roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
-
-                        }
-                    }
-                });
-    }
-
-    private MainGuest getMainGuest(String roomId) {
-        final MainGuest[] mainGuest1 = new MainGuest[1];
-        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_CONTRACTS)
-                .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
-                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
-//                            mainGuest1 = new MainGuest(
-//                                    Math.toIntExact(document.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)),
-//
-//                            );
-                            mainGuest1[0] = new MainGuest();
-                        }
-                    }
-                });
-        return mainGuest1[0];
-    }
-
-    private Room getRoomFromFirebase(String roomId) {
-        final Room[] room1 = new Room[1];
-        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOMS)
-                .document(roomId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            room1[0] = new Room(
-                                    document.getString(Constants.KEY_NAME_ROOM),
-                                    document.getString(Constants.KEY_PRICE),
-                                    document.getString(Constants.KEY_DESCRIBE)
-                                    );
-                        }
-                    }
-                });
-        return room1[0];
-    }
 
 
     private void setData() {
-        //Set date time
-        setDateTime();
-
         //Set price of room
-        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOMS)
-                .document(roomId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            binding.txtRoomPrice.setText(task.getResult().getString(Constants.KEY_PRICE));
-                        }
-                    }
-                });
+        String priceOfRoom = mainGuest.getRoomPrice()+"";
+        binding.txtRoomPrice.setText(priceOfRoom);
+
+        //Set into money of room
+        double intoMoneyOfRoom = mainGuest.getRoomPrice()*(Integer.parseInt(binding.txtMonthHire.getText().toString()) + (double) Integer.parseInt(binding.txtDayHire.getText().toString()) /30);
+        String intoMoneyRoom = intoMoneyOfRoom+"";
+        binding.txtIntoRoomMoney.setText(intoMoneyRoom);
+
+
     }
 
     private void setDateTime() {
@@ -190,5 +127,10 @@ public class RoomMakeBillFragment extends Fragment {
         inflater.inflate(R.layout.fragment_room_make_bill, container, false);
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this.requireActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

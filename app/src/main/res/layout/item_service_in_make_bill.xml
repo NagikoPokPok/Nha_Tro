@@ -27,6 +27,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/txt_service_name"
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -38,13 +39,13 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txt_so_phong_trong"
+                android:id="@+id/txt_title_quantity"
                 style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:layout_weight="1"
-                android:text="Số điện đã sử dụng"
+                android:text=""
                 android:textSize="18sp" />
 
 
@@ -58,6 +59,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/txt_service_fee"
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -69,7 +71,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/txt_so_phong_no_tien"
+                android:id="@+id/txt_quantity"
                 style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
