@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    android:elevation="10dp"
+    android:layout_gravity="center">
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <FrameLayout
+            android:id="@+id/frm_Image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/img_Profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/background_image"
+                android:backgroundTint="@color/colorGreen"
+                android:scaleType="fitXY"
+                app:riv_oval="true" />
+
+            <ImageView
+                android:id="@+id/txt_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_tick"
+                android:backgroundTint="@color/white"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/thao_tac_thanh_cong"
+            android:fontFamily="@font/inter_bold"
+            android:textSize="18sp"
+            android:textColor="@color/colorTextBlack"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/txt_confirm_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ban_da_cap_nhat_khach_thanh_cong"
+            android:fontFamily="@font/inter_medium"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:text="@string/Dong_close"
+            android:textColor="@color/colorButton"
+            app:iconGravity="textStart"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            android:background="@drawable/custom_button_cancel"
+            android:fontFamily="@font/inter_medium"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:layout_marginTop="-40dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

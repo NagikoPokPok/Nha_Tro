@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Adapter;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,15 +13,18 @@ import java.util.List;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
+import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
 
 public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Object> itemList; // List of either Guest or MainGuest
+    private List<Object> itemList;// Danh sách khách thuê phòng gồm MainGuest và Guest
+    private static RoomGuestInterface.View view;
 
-    public GuestAdapter(List<Object> itemList) {
+    public GuestAdapter(List<Object> itemList, RoomGuestInterface.View view) {
         this.itemList = itemList;
+        this.view = view;
     }
 
     @NonNull
@@ -86,6 +90,12 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.greenText)
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
             binding.txtProfileStatus.setTextColor(color);
+
+            binding.imgMenu.setOnClickListener(v -> {
+                binding.frmImage2.setVisibility(View.VISIBLE);
+                binding.frmImage.setVisibility(View.GONE);
+                view.openPopup(v, guest, binding);
+            });
         }
     }
 
@@ -109,6 +119,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
             binding.txtProfileStatus.setTextColor(color);
 
+            binding.imgMenu.setOnClickListener(v -> {
+                binding.frmImage2.setVisibility(View.VISIBLE);
+                binding.frmImage.setVisibility(View.GONE);
+                view.openPopup(v, mainGuest, binding);
+            });
         }
     }
 }

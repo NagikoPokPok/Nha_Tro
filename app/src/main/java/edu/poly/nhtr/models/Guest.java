@@ -33,19 +33,12 @@ public class Guest {
 
     }
 
-
-    public String getIdGuest() {
-        return idGuest;
-    }
-
-    public void setIdGuest(String idGuest) {
-        this.idGuest = idGuest;
-    }
-
-
-
     public String getGuestId() {
         return idGuest;
+    }
+
+    public void setGuestId(String idGuest) {
+        this.idGuest = idGuest;
     }
 
     public String getNameGuest() {

@@ -219,5 +219,13 @@
     <string name="khong">Không</string>
     <string name="co">Có</string>
     <string name="hang_thang">hàng tháng</string>
+    <string name="ban_co_muon_xoa_khach">Bạn có muốn xóa vị khách này không?</string>
+    <string name="xac_nhan_sua">Xác nhận sửa</string>
+    <string name="ban_co_muon_luu_thong_tin_khach">Bạn có muốn lưu thông tin khách ?</string>
+    <string name="ban_da_xoa_khach_thanh_cong">Bạn đã xóa khách thành công!</string>
+    <string name="thao_tac_thanh_cong">Thao tác thành công!</string>
+    <string name="Dong_close">Đóng</string>
+    <string name="ban_da_cap_nhat_khach_thanh_cong">Bạn đã cập nhật khách thành công!</string>
+    <string name="xoa_khach">Xóa khách</string>
 
 </resources>
