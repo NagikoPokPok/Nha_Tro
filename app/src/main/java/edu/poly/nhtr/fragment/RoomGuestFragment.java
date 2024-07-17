@@ -192,6 +192,20 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public void openDialogSuccess(int id) {
+        setUpDialog(id);
+
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
+    }
+
+    @Override
+    public void dialogClose() {
+        dialog.dismiss();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
@@ -307,6 +321,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         // Add textWatcher to input fields
         edtNameGuest.addTextChangedListener(textWatcher);
+        edtPhoneGuest.addTextChangedListener(textWatcher);
 
         // Handle add guest button click
         btnAddGuest.setOnClickListener(v -> {
@@ -315,7 +330,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             String dateIn = edtDateIn.getText().toString().trim();
             Guest guest = new Guest(name, phone, false, dateIn);
             presenter.addGuestToFirebase(guest);
-            dialog.dismiss();
 
             String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
             presenter.getGuests(roomId);
@@ -429,7 +443,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
             presenter.updateGuestInFirebase(roomId, updatedGuest);
-            dialog.dismiss();
         });
     }
 
@@ -451,7 +464,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
         btnDeleteGuest.setOnClickListener(v -> {
-            presenter.deleteGuest(roomId);
+            presenter.deleteGuest(guest);
             dialog.dismiss();
         });
 

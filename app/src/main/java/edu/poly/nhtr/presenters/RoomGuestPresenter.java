@@ -15,7 +15,6 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
-import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import timber.log.Timber;
@@ -55,6 +54,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                 mainGuest.setDateIn(document.getString(Constants.KEY_CONTRACT_CREATED_DATE));
                                 Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
                                 mainGuest.setFileStatus(status != null && status);
+                                mainGuest.setGuestId(document.getId());
                                 guests.add(mainGuest);
                             } else {
                                 // This document is a regular Guest
@@ -64,6 +64,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                 guest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
                                 Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
                                 guest.setFileStatus(status != null && status);
+                                guest.setGuestId(document.getId());
                                 guests.add(guest);
                             }
                         }
@@ -122,26 +123,71 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                             view.getInfoRoomFromGoogleAccount(),
                             documentReference
                     );
+                    view.dialogClose();
                     view.showToast("Thêm khách thành công");
                 })
                 .addOnFailureListener(e -> view.showToast("Thêm hợp đồng thất bại"));
     }
 
     @Override
-    public void deleteGuest(String guestId) {
-        view.showLoading();
-        database.collection(Constants.KEY_COLLECTION_GUESTS).document(guestId)
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    view.hideLoading();
-                    view.showToast("Xóa khách thành công");
-                    getGuests(view.getInfoRoomFromGoogleAccount()); // Refresh the guest list
-                })
-                .addOnFailureListener(e -> {
-                    view.hideLoading();
-                    view.showToast("Xóa khách thất bại");
-                });
-    }
+    public void deleteGuest(Guest guest) {
+        view.showLoadingOfFunctions(R.id.btn_delete_guest);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        database.collection(Constants.KEY_COLLECTION_GUESTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                            List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+
+                            documentSnapshots.sort((o1, o2) -> {
+                                Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
+                                Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
+                                if (timestamp1 != null && timestamp2 != null) {
+                                    return timestamp1.compareTo(timestamp2);
+                                }
+                                return 0;
+                            });
+
+                            position = 0;
+                            boolean found = false;
+
+                            for (DocumentSnapshot doc : documentSnapshots) {
+                                position++;
+                                String roomIdFromFirestore = doc.getId();
+
+                                // Kiểm tra nếu roomId khớp
+                                if (roomIdFromFirestore.equals(guest.getGuestId())) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (found) {
+                                database.collection(Constants.KEY_COLLECTION_GUESTS)
+                                        .document(guest.getGuestId())
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> {
+                                            getGuests(view.getInfoRoomFromGoogleAccount());
+                                            view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                                            view.dialogClose();
+                                            view.openDialogSuccess(R.layout.layout_dialog_delete_guest_success);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                                            view.showToast("Xoá khách thất bại");
+                                        });
+                            } else {
+                                view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                                view.showToast("Không tìm thấy homeId");
+                            }
+                        } else {
+                            view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                            view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
+                        }
+                        });
+                    }
 
     @Override
     public void updateGuestInFirebase(String guestId, Guest guest) {

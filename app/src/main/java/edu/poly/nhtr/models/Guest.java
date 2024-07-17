@@ -2,9 +2,9 @@ package edu.poly.nhtr.models;
 
 
 public class Guest {
-    public String nameGuest, phoneGuest, idGuest, idRoom, idHome;
-    public boolean fileStatus;
-    public String dateIn;
+    protected String nameGuest, phoneGuest, idGuest, idRoom, idHome;
+    protected boolean fileStatus;
+    protected String dateIn;
 
     public Guest(String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, String dateIn) {
         this.idGuest = idGuest;

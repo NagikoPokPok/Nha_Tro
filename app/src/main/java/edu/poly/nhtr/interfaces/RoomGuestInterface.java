@@ -38,6 +38,10 @@ public interface RoomGuestInterface {
         void enableAddGuestButton();
 
         void openPopup(android.view.View view, Guest guest, ItemContainerGuestBinding binding);
+
+        void openDialogSuccess(int id);
+
+        void dialogClose();
     }
 
     interface Presenter {
@@ -47,7 +51,9 @@ public interface RoomGuestInterface {
 
         void getGuests(String roomId);
 
-        void deleteGuest(String guestId);
+        // void deleteGuest(String guestId);
+
+        void deleteGuest(Guest guest);
 
         void updateGuestInFirebase(String guestId, Guest guest);
     }
