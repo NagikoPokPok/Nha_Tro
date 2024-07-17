@@ -69,6 +69,8 @@ public class RoomServicePresenter {
                                                             quantity[0] = quantityOfGuest;
                                                         }
                                                     });
+                                                } else if (roomService.getService().getFee_base() == 0) {
+                                                    quantity[0] = -1;
                                                 }
                                             }
                                         }

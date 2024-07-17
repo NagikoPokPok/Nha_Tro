@@ -59,12 +59,17 @@ public class RoomMakeBillPresenter {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
                             DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                            MainGuest mainGuest1 = new MainGuest(
-//                                    Math.toIntExact(document.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)),
-
+                            MainGuest mainGuest = new MainGuest(
+                                    document.getString(Constants.KEY_CONTRACT_CREATED_DATE),
+                                    document.getString(Constants.KEY_CONTRACT_EXPIRATION_DATE),
+                                    document.getString(Constants.KEY_CONTRACT_PAY_DATE),
+                                    Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)),
+                                    Math.toIntExact(document.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)),
+                                    Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_ROOM_PRICE)),
+                                    document.getString(Constants.KEY_GUEST_PHONE)
                             );
 
-                            callback.onGetContractFromFirebase(mainGuest1);
+                            callback.onGetContractFromFirebase(mainGuest);
                         }
                     }
                 });
@@ -83,21 +88,23 @@ public class RoomMakeBillPresenter {
                                 RoomService roomService = new RoomService(
                                         document.getId(),
                                         document.getString(Constants.KEY_ROOM_ID),
-                                        document.getString(Constants.KEY_SERVICE_ID),
-                                        Math.toIntExact(document.getLong(Constants.KEY_ROOM_SERVICE_QUANTITY))
+                                        document.getString(Constants.KEY_SERVICE_ID)
                                 );
-                                roomServices.add(roomService);
-                            }
-
-
-                            setObjectServiceForListRoom(roomServices, new OnGetServiceFromFirebaseListener() {
-                                @Override
-                                public void onGetServiceFromFirebase(List<RoomService> roomServices) {
-                                    roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
-                                    callback.onGetRoomServiceFromFirebase(roomServices);
+                                try {
+                                    roomService.setQuantity(Math.toIntExact(document.getLong(Constants.KEY_ROOM_SERVICE_QUANTITY)));
+                                }catch (Exception e){
+                                    listener.showToast("Hãy cập nhật đầy đủ thông tin cho dịch vụ phòng");
+                                    roomService.setQuantity(404);
                                 }
-                            });
+                                setObjectServiceForListRoom(roomService, new OnGetServiceFromFirebaseListener() {
+                                    @Override
+                                    public void onGetServiceFromFirebase(RoomService roomService) {
+                                        roomServices.add(roomService);
+                                        callback.onGetRoomServiceFromFirebase(roomServices);
+                                    }
+                                });
 
+                            }
 
 
                         }
@@ -105,8 +112,8 @@ public class RoomMakeBillPresenter {
                 });
     }
 
-    private void setObjectServiceForListRoom(List<RoomService> roomServices, OnGetServiceFromFirebaseListener callback) {
-        for (RoomService roomService : roomServices){
+    private void setObjectServiceForListRoom(RoomService roomService, OnGetServiceFromFirebaseListener callback) {
+
             FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_SERVICES)
                     .document(roomService.getServiceId())
                     .get()
@@ -127,12 +134,12 @@ public class RoomMakeBillPresenter {
                                         document.getBoolean(Constants.KEY_SERVICE_ISDELETABLE),
                                         document.getBoolean(Constants.KEY_SERVICE_ISAPPLY)
                                 );
-                                roomService.setService(service);
+                                callback.onGetServiceFromFirebase(roomService);
                             }
                         }
                     });
-        }
-        callback.onGetServiceFromFirebase(roomServices);
+
+
     }
 
 
@@ -146,6 +153,6 @@ public class RoomMakeBillPresenter {
         void onGetRoomServiceFromFirebase(List<RoomService> roomServices);
     }
     public interface OnGetServiceFromFirebaseListener{
-        void onGetServiceFromFirebase(List<RoomService> roomServices);
+        void onGetServiceFromFirebase(RoomService roomService);
     }
 }

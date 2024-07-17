@@ -40,6 +40,16 @@ public class MainGuest extends Guest {
         super();
     }
 
+    public MainGuest(String createDate, String expirationDate, String payDate, int daysUntilDueDate, int totalMembers, int roomPrice, String guestPhone) {
+        this.createDate = createDate;
+        this.expirationDate = expirationDate;
+        this.payDate = payDate;
+        this.daysUntilDueDate = daysUntilDueDate;
+        this.totalMembers = totalMembers;
+        this.roomPrice = roomPrice;
+        this.phoneGuest = guestPhone;
+    }
+
     public int getTotalMembers() {
         return totalMembers;
     }

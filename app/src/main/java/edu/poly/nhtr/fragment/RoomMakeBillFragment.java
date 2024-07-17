@@ -1,40 +1,26 @@
 package edu.poly.nhtr.fragment;
 
-import android.icu.text.Collator;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomMakeBillBinding;
 import edu.poly.nhtr.listeners.RoomMakeBillListener;
-import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.presenters.RoomMakeBillPresenter;
-import edu.poly.nhtr.utilities.Constants;
 
 
 public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListener {
@@ -76,13 +62,13 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             @Override
             public void onGetContractFromFirebase(MainGuest mainGuest1) {
                 mainGuest = mainGuest1;
-                setDateTime();
+                setDateTimeAndRoomPrice();
             }
         });
         presenter.getListRoomService(roomId, new RoomMakeBillPresenter.OnGetRoomServiceFromFirebaseListener() {
             @Override
             public void onGetRoomServiceFromFirebase(List<RoomService> roomServices) {
-                setData();
+                setOtherData();
             }
         });
 
@@ -91,20 +77,13 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
 
 
-    private void setData() {
-        //Set price of room
-        String priceOfRoom = mainGuest.getRoomPrice()+"";
-        binding.txtRoomPrice.setText(priceOfRoom);
+    private void setOtherData() {
 
-        //Set into money of room
-        double intoMoneyOfRoom = mainGuest.getRoomPrice()*(Integer.parseInt(binding.txtMonthHire.getText().toString()) + (double) Integer.parseInt(binding.txtDayHire.getText().toString()) /30);
-        String intoMoneyRoom = intoMoneyOfRoom+"";
-        binding.txtIntoRoomMoney.setText(intoMoneyRoom);
 
 
     }
 
-    private void setDateTime() {
+    private void setDateTimeAndRoomPrice() {
         // Lấy ngày hiện tại
         Date date = new Date();
 
@@ -118,6 +97,15 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         binding.txtCreateBillDate.setText(createBillDate);
         binding.txtPayDate.setText(datePay);
 
+
+        //Set price of room
+        String priceOfRoom = mainGuest.getRoomPrice()+"";
+        binding.txtRoomPrice.setText(priceOfRoom);
+
+        //Set into money of room
+        double intoMoneyOfRoom = mainGuest.getRoomPrice()*(Integer.parseInt(binding.txtMonthHire.getText().toString().split(" ")[0]) + (double) Integer.parseInt(binding.txtDayHire.getText().toString().split(" ")[1]) /30);
+        String intoMoneyRoom = intoMoneyOfRoom+"";
+        binding.txtIntoRoomMoney.setText(intoMoneyRoom);
     }
 
     @Override

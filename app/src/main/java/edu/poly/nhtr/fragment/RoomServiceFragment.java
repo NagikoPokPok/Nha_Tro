@@ -250,14 +250,26 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
         }else
             btn_delete.setOnClickListener(v -> openDialogConfirmDelete(service));
 
-        if(service.getFee_base() == 3) btn_update.setOnClickListener(v -> {
-            try {
-                int quantity = Integer.parseInt(edt_quantity.getText().toString());
-                presenter.updateServiceQuantity(quantity, roomService.getRoomServiceId());
-            }catch (Exception e){
-                layout_quantity.setError("Số lượng phải là số tự nhiên lớn hơn 0");
-            }
-        });
+        if(service.getFee_base() == 3) {
+            edt_quantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+
+                }
+            });
+
+            btn_update.setOnClickListener(v -> {
+                try {
+                    int quantity = Integer.parseInt(edt_quantity.getText().toString());
+                    if (quantity >= 0)
+                        presenter.updateServiceQuantity(quantity, roomService.getRoomServiceId());
+                    else
+                        layout_quantity.setError("Số lượng phải là số tự nhiên lớn hơn 0");
+                }catch (Exception e){
+                    layout_quantity.setError("Số lượng phải là số tự nhiên lớn hơn 0");
+                }
+            });
+        }
         else {
             btn_update.setEnabled(false);
             btn_update.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1B1B1")));
