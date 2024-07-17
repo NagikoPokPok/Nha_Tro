@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="310dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:background="@drawable/bg_white_corner_16"
+    android:elevation="10dp"
+    android:orientation="vertical"
+    android:layout_gravity="center">
+
+
+    <TextView
+        android:id="@+id/txt_title_dialog"
+        style="@style/TEXT_MED_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_yellow_corner_16_top"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/bo_loc"
+        android:textSize="20sp" />
+
+    <TextView
+        style="@style/TEXT_MED_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trạng thái hoá đơn "
+        android:textSize="17sp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_is_not_pay_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Chưa thanh toán"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_is_payed_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Đã thanh toán"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_is_delay_pay_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Quá hạn thanh toán"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        style="@style/TEXT_LIGHT_2"
+        android:id="@+id/cbx_is_not_give_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        android:text="Chưa gửi hoá đơn"
+        android:textSize="17sp"
+        android:theme="@style/MyCheckBoxStyle" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/TEXT_MED_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/custom_button_cancel"
+            android:text="@string/huy"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm_apply_bill"
+            style="@style/TEXT_MED_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/custom_button_clicked"
+            android:text="@string/ap_dung"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:iconGravity="textStart" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="-70dp"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

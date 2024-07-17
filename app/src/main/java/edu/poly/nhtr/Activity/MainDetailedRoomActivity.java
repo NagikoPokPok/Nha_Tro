@@ -84,8 +84,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         roomGuestFragment.setArguments(bundle);
         Fragment roomServiceFragment = new RoomServiceFragment();
         roomServiceFragment.setArguments(bundle);
-        Fragment roomBillFragment = new RoomBillFragment();
-        roomBillFragment.setArguments(bundle);
         Fragment roomContractFragment = new RoomContractFragment();
         roomContractFragment.setArguments(bundle);
 
@@ -96,7 +94,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         // Add fragments to adapter
         tabLayoutAdapter.addFragment(roomGuestFragment, "Khách");
         tabLayoutAdapter.addFragment(roomServiceFragment, "Dịch vụ");
-        //tabLayoutAdapter.addFragment(roomBillFragment, "Hóa đơn");
         tabLayoutAdapter.addFragment(roomBillContainerFragment, "Hóa đơn");
         tabLayoutAdapter.addFragment(roomContractFragment, "Hợp đồng");
 
@@ -117,19 +114,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         binding.tabLayout.setVisibility(View.GONE);
     }
 
-    public void showRoomMakeBillFragment(RoomBill bill) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        RoomMakeBillFragment fragment = new RoomMakeBillFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("bill", bill);
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(null); // Để quay lại Fragment trước đó khi cần
-        fragmentTransaction.commit();
-       binding.viewPager.setVisibility(View.GONE);
-       binding.tabLayout.setVisibility(View.GONE);
-    }
 
     private void checkRoomHasMainGuest() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
