@@ -16,4 +16,8 @@ public interface RoomBillListener {
     void hideLayoutNoData();
     void showLoading();
     void hideLoading();
+    void showDialog(int id);
+    void showButtonLoading(int id);
+    void hideButtonLoading(int id);
+    void closeDialog();
 }

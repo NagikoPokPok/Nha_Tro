@@ -1,9 +1,12 @@
 package edu.poly.nhtr.presenters;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
+
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,7 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomBillListener;
+import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.utilities.Constants;
@@ -63,7 +68,7 @@ public class RoomBillPresenter {
         billInfo.put(Constants.KEY_DATE_MAKE_BILL, dateMakeBill);
         billInfo.put(Constants.KEY_DATE_PAY_BILL, datePayBill);
         billInfo.put(Constants.KEY_IS_NOT_PAY_BILL, false);
-        billInfo.put(Constants.KEY_IS_PAYED_BILL, false);
+        billInfo.put(Constants.KEY_IS_PAYED_BILL, true);
         billInfo.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
         billInfo.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
         billInfo.put(Constants.KEY_IS_MONEY_OF_ADD, false);
@@ -157,18 +162,17 @@ public class RoomBillPresenter {
     }
 
     public void deleteBill(RoomBill bill, OnDeleteBillCompleteListener listener) {
-        if (bill.isNotPayBill || bill.isDelayPayBill) {
-            roomBillListener.showToast("Không thể xoá hoá đơn này.");
-            return;
-        }
+        roomBillListener.showToast("On");
+        roomBillListener.showButtonLoading(R.id.btn_confirm_delete_bill);
 
-        if (bill.isPayedBill) {
+        if (bill.isPayedBill()) {
             db.collection(Constants.KEY_COLLECTION_BILL)
                     .document(bill.billID)
                     .delete()
                     .addOnSuccessListener(aVoid ->
                     {
-                        roomBillListener.showToast("Xoá hoá đơn thành công.");
+                        roomBillListener.hideButtonLoading(R.id.btn_confirm_delete_bill);
+                        roomBillListener.closeDialog();
                         listener.onComplete();
 
                     })
@@ -179,4 +183,33 @@ public class RoomBillPresenter {
     public interface OnDeleteBillCompleteListener {
         void onComplete();
     }
+
+    public void deleteListBills(List<RoomBill> billList, OnDeleteBillCompleteListener listener) {
+        roomBillListener.showButtonLoading(R.id.btn_confirm_delete_bill);
+
+        // Bắt đầu một batch mới
+        WriteBatch batch = db.batch();
+
+        // Duyệt qua danh sách các home cần xóa và thêm thao tác xóa vào batch
+        for (RoomBill bill : billList) {
+            DocumentReference notificationRef = db.collection(Constants.KEY_COLLECTION_BILL).document(bill.getBillID());
+            batch.delete(notificationRef); // Thêm thao tác xóa vào batch
+        }
+
+        // Commit batch
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    roomBillListener.hideButtonLoading(R.id.btn_confirm_delete_bill);
+                    roomBillListener.closeDialog();
+                    //notificationListener.showDialogActionSuccess("Bạn đã xoá thông báo thành công");
+                    //notificationListener.closeLayoutDeleteNotification();
+                    listener.onComplete();
+                })
+                .addOnFailureListener(e -> {
+                    roomBillListener.showToast("Xóa notifications thất bại: " + e.getMessage());
+                    listener.onComplete();
+                });
+
+    }
+
 }

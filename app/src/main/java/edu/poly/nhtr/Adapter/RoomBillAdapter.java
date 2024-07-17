@@ -43,6 +43,10 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         this.roomBillListener = roomBillListener;
     }
 
+    public List<RoomBill> getSelectedBills() {
+        return selectedBills;
+    }
+
     @NonNull
     @Override
     public RoomBillAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -78,10 +82,10 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
 
         if(bill.isNotPayBill()){
             holder.binding.imgStatusOfPay.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorOrange));
-            holder.binding.txtStatusOfPay.setText("Đã thanh toán");
+            holder.binding.txtStatusOfPay.setText("Chưa thanh toán");
         }else if(bill.isPayedBill()){
             holder.binding.imgStatusOfPay.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorGreen));
-            holder.binding.txtStatusOfPay.setText("Chưa thanh toán");
+            holder.binding.txtStatusOfPay.setText("Đã thanh toán");
         }else if(bill.isDelayPayBill()){
             holder.binding.imgStatusOfPay.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorRed));
             holder.binding.txtStatusOfPay.setText("Quá hạn thanh toán");
@@ -170,6 +174,14 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
                     holder.binding.checkBox.setChecked(true);
                     selectedBills.add(bill);
                 }
+            }
+        });
+
+        holder.binding.checkBox.setOnClickListener(v -> {
+            if (holder.binding.checkBox.isChecked()) {
+                selectedBills.add(bill);
+            } else {
+                selectedBills.remove(bill);
             }
         });
 
