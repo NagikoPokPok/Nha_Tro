@@ -12,7 +12,7 @@ public interface MainGuestListener {
 
     String getInfoRoomFromGoogleAccount();
     void getListMainGuest(List<MainGuest> listContracts);
-    void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, DocumentReference documentReference);
+    void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, DocumentReference documentReference);
 
     void onMainGuestsLoaded(List<MainGuest> mainGuests, String action);
 
