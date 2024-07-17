@@ -155,4 +155,28 @@ public class RoomBillPresenter {
     public interface OnGetBillByMonthYearCompleteListener {
         void onComplete(List<RoomBill> billList);
     }
+
+    public void deleteBill(RoomBill bill, OnDeleteBillCompleteListener listener) {
+        if (bill.isNotPayBill || bill.isDelayPayBill) {
+            roomBillListener.showToast("Không thể xoá hoá đơn này.");
+            return;
+        }
+
+        if (bill.isPayedBill) {
+            db.collection(Constants.KEY_COLLECTION_BILL)
+                    .document(bill.billID)
+                    .delete()
+                    .addOnSuccessListener(aVoid ->
+                    {
+                        roomBillListener.showToast("Xoá hoá đơn thành công.");
+                        listener.onComplete();
+
+                    })
+                    .addOnFailureListener(e -> Timber.e(e, "Error deleting bill with ID: %s", bill.billID));
+        }
+    }
+
+    public interface OnDeleteBillCompleteListener {
+        void onComplete();
+    }
 }

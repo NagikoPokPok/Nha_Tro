@@ -161,7 +161,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     private void checkAndAddBillIfNeeded() {
         LocalDate localDate = LocalDate.now();
         int dayOfMonth = localDate.getDayOfMonth();
-        if (dayOfMonth == 1) {
+        if (dayOfMonth == 17) {
             roomBillPresenter.addBill(room);
         }else{
             roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
@@ -207,7 +207,17 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                 showToast("edit bill");
                 return true;
             }else if (itemId == R.id.menu_delete_bill) {
-                showToast("delete bill");
+                roomBillPresenter.deleteBill(bill, new RoomBillPresenter.OnDeleteBillCompleteListener() {
+                    @Override
+                    public void onComplete() {
+                        roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+                            @Override
+                            public void onComplete(List<RoomBill> billList) {
+                                roomBillAdapter.setBillList(billList);
+                            }
+                        });
+                    }
+                });
                 return true;
             }
             return false;
