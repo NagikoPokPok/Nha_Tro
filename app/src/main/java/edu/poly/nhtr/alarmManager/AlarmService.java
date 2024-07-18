@@ -15,11 +15,15 @@ public class AlarmService {
     private final Context context;
     private final AlarmManager alarmManager;
     private final Home home;
+    private final String header;
+    private final String body;
 
-    public AlarmService(Context context, Home home) {
+    public AlarmService(Context context, Home home, String header, String body) {
         this.context = context;
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.home = home;
+        this.header = header;
+        this.body = body;
     }
 
     public void setExactAlarm(long timeInMillis) {
@@ -30,6 +34,8 @@ public class AlarmService {
                             getIntent().setAction(Constants.ACTION_SET_EXACT)
                                     .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
                                     .putExtra("home", home)
+                                    .putExtra("header", header)
+                                    .putExtra("body", body)
                     )
             );
         } else {
@@ -45,6 +51,8 @@ public class AlarmService {
                             getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT)
                                     .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
                                     .putExtra("home", home)
+                                    .putExtra("header", header)
+                                    .putExtra("body", body)
                     )
             );
         } else {

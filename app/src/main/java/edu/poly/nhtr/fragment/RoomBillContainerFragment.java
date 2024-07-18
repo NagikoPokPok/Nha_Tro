@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.fragment.RoomBillFragment;
 import edu.poly.nhtr.fragment.RoomMakeBillFragment;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 
@@ -21,6 +22,7 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
 
     private RoomBillFragment roomBillFragment;
     private Room room;
+    private Home home;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,7 +32,8 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
         Bundle arguments = getArguments();
         if (arguments != null) {
             room = (Room) arguments.getSerializable("room");
-            if (room != null) {
+            home = (Home) arguments.getSerializable("home");
+            if (room != null && home!=null) {
                 showRoomBillFragment();
             } else {
                 showToast("Room object is null");
@@ -50,6 +53,7 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
         // Create and set bundle
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
         roomBillFragment.setArguments(bundle);
 
         getChildFragmentManager().beginTransaction()

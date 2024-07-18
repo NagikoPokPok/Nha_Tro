@@ -65,6 +65,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
     private boolean isSelectAllChecked = false;
     private MainActivity mainActivity;
     private OnNotificationReadListener listener;
+    private MenuItem deleteNotificationsItem;
 
     public interface OnNotificationReadListener {
         void onNotificationsRead();
@@ -115,6 +116,9 @@ public class NotificationFragment extends Fragment implements NotificationListen
                    @Override
                    public void onComplete() {
 
+                       // Gửi broadcast để cập nhật badge
+                       Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+                       requireActivity().sendBroadcast(intent);
 
                        setupDropDownMenu(homeList);
                        setupRecyclerView();
@@ -168,7 +172,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_notification_toolbar, menu);
 
-        MenuItem deleteNotificationsItem = menu.findItem(R.id.deleteNotifications);
+        deleteNotificationsItem = menu.findItem(R.id.deleteNotifications); // Lưu tham chiếu
         TextView textView = (TextView) deleteNotificationsItem.getActionView();
         if (textView != null) {
             textView.setText("Xoá nhà trọ");
@@ -196,13 +200,28 @@ public class NotificationFragment extends Fragment implements NotificationListen
             public boolean onMenuItemActionCollapse(@NonNull MenuItem item) {
                 // Khi thu gọn, hiện nút icon_delete_notifications
                 deleteIconItem.setVisible(false);
-                adapter.isDeleteChecked(false);
-                binding.layoutSelectAll.setVisibility(View.GONE);
+                handleCollapseAction();
                 return true;
             }
         });
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void handleCollapseAction() {
+        adapter.isDeleteChecked(false);
+        binding.layoutSelectAll.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void closeLayoutDeleteNotification() {
+        // Gửi broadcast để cập nhật badge
+        Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+        requireActivity().sendBroadcast(intent);
+        handleCollapseAction();
+        if (deleteNotificationsItem != null) {
+            deleteNotificationsItem.collapseActionView(); // Thu gọn action view
+        }
     }
 
     @Override
@@ -248,6 +267,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
             return super.onOptionsItemSelected(item);
         }
     }
+
 
     private void openDialogConfirmDelete(List<Notification> selectedNotifications) {
         LayoutDialogDeleteIndexBinding binding = LayoutDialogDeleteIndexBinding.inflate(getLayoutInflater());
@@ -376,10 +396,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         setUpDialogConfirmation();
     }
 
-    @Override
-    public void closeLayoutDeleteNotification() {
-        adapter.isDeleteChecked(false);
-    }
+
 
     @Override
     public void returnNotificationList(List<Notification> notificationList) {

@@ -1,5 +1,9 @@
 package edu.poly.nhtr.presenters;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Index;
+import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
@@ -27,8 +32,8 @@ import timber.log.Timber;
 
 public class RoomBillPresenter {
 
-    private RoomBillListener roomBillListener;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final RoomBillListener roomBillListener;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public RoomBillPresenter(RoomBillListener roomBillListener) {
         this.roomBillListener = roomBillListener;
@@ -225,6 +230,38 @@ public class RoomBillPresenter {
             roomBillListener.closeDialog();
             roomBillListener.setBillList(billList);
         }
+    }
+
+    public void getDayOfMakeBill(String roomID, OnGetDayOfMakeBillCompleteListener listener){
+
+        db.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+                                String contract = documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE);
+
+                                listener.onComplete(contract);
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+    }
+
+    public interface OnGetDayOfMakeBillCompleteListener {
+        void onComplete(String dayOfMakeBill);
     }
 
 }

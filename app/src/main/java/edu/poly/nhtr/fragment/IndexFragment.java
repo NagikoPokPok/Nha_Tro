@@ -111,6 +111,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     private boolean waterIsIndex = false;
 
     private AlarmService alarmService;
+    private String header, body;
 
 
 
@@ -125,7 +126,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         assert home != null;
         homeID = home.getIdHome();
 
-        alarmService = new AlarmService(requireContext(), home);
+        alarmService = new AlarmService(requireContext(), home, header, body);
 
     }
 
@@ -142,7 +143,10 @@ public class IndexFragment extends Fragment implements IndexInterface {
         homeID = home.getIdHome();
         indexPresenter = new IndexPresenter(this, homeID);
 
-        alarmService = new AlarmService(requireContext(), home);
+        String header = "Nhập chỉ số cho nhà trọ " + home.getNameHome();
+        String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
+
+        alarmService = new AlarmService(requireContext(), home, header, body);
 
 
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
@@ -326,6 +330,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
                                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                 calendar.set(Calendar.MINUTE, minute);
 
+
                                 // Định dạng giờ và phút thành hai chữ số
                                 String formattedHour = String.format("%02d", hourOfDay);
                                 String formattedMinute = String.format("%02d", minute);
@@ -365,8 +370,6 @@ public class IndexFragment extends Fragment implements IndexInterface {
         });
 
     }
-
-
 
     private interface AlarmCallback {
         void onAlarmSet(long timeInMillis);

@@ -66,6 +66,7 @@ public class RoomFragment extends Fragment implements RoomListener {
     private RoomPresenter roomPresenter;
     private RoomAdapter roomAdapter;
     private List<Room> currentListRooms = new ArrayList<>();
+    private Home home;
 
     public RoomFragment() {
     }
@@ -87,7 +88,9 @@ public class RoomFragment extends Fragment implements RoomListener {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         dialog = new Dialog(requireActivity());
-        Home home = (Home) getArguments().getSerializable("home");
+        assert getArguments() != null;
+        home = (Home) getArguments().getSerializable("home");
+        assert home != null;
         String homeId = home.getIdHome();
         String nameHome = home.getNameHome();
         preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
@@ -708,6 +711,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         binding.edtSearchRoom.clearFocus();
         Intent intent = new Intent(getContext(), MainDetailedRoomActivity.class);
         intent.putExtra("room", room);
+        intent.putExtra("home", home);
         startActivity(intent);
     }
 

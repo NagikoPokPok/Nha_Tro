@@ -1,6 +1,8 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -34,9 +36,12 @@ import java.util.Objects;
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.RoomBillAdapter;
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentRoomBillBinding;
 import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
+import edu.poly.nhtr.databinding.LayoutDialogSettingNotificationIndexBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.presenters.RoomBillPresenter;
@@ -53,11 +58,14 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     private OnMakeBillClickListener onMakeBillClickListener;
     private int currentMonth;
     private int currentYear;
+    private int currentDay;
     private boolean visible = true;
     private String date = "";
     private boolean isSelectAllChecked = false;
     private Dialog dialog;
     private PreferenceManager preferenceManager;
+    private AlarmService alarmService;
+    private Home home;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,11 +82,13 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         View view = binding.getRoot();
 
+
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
         if (arguments != null) {
             room = (Room) arguments.getSerializable("room");
-            if (room != null) {
+            home = (Home) arguments.getSerializable("home");
+            if (room != null && home != null) {
                 roomBillPresenter.getBill(room, billList -> roomBillAdapter.setBillList(billList));
             } else {
                 showToast("Room object is null");
@@ -86,6 +96,25 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         } else {
             showToast("Arguments are null");
         }
+
+        String header = "Sắp tới ngày chốt tiền cho phòng " + room.getNameRoom();
+        String body = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom();
+
+        roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
+            @Override
+            public void onComplete(String dayOfMakeBill) {
+                currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+
+                if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
+                    alarmService = new AlarmService(requireContext(), home, header, body);
+
+                    setAlarm(alarmService::setRepetitiveAlarm, currentDay);
+                }
+
+            }
+        });
 
         removeStatusOfCheckBoxFilterBill();
 
@@ -99,6 +128,37 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         setupFilterBills();
 
         return view;
+    }
+
+    private interface AlarmCallback {
+        void onAlarmSet(long timeInMillis);
+    }
+
+    private void setAlarm(AlarmCallback callback, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 42);
+
+        pushAlarm(callback, calendar);
+
+
+    }
+
+    private void pushAlarm(AlarmCallback callback, Calendar calendar) {
+        callback.onAlarmSet(calendar.getTimeInMillis());
+        dialog.dismiss();
     }
 
     private void setupFilterBills() {
@@ -270,7 +330,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                                 } else if (option.equals(cbx3.getText().toString())) {
                                     preferenceManager.putBoolean(Constants.KEY_CBX_IS_DELAY_PAY_BILL, false);
                                     cbx3.setChecked(false);
-                                }else if (option.equals(cbx4.getText().toString())) {
+                                } else if (option.equals(cbx4.getText().toString())) {
                                     preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_GIVE_BILL, false);
                                     cbx4.setChecked(false);
                                 }

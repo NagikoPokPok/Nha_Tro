@@ -24,6 +24,7 @@ import edu.poly.nhtr.fragment.RoomGuestContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestFragment;
 import edu.poly.nhtr.fragment.RoomMakeBillFragment;
 import edu.poly.nhtr.fragment.RoomServiceFragment;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomViewModel;
@@ -36,6 +37,8 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private Room room;
     private boolean hasMainGuest = false;
+    private Home home;
+    private int targetFragmentIndex = -1; // Default to no target
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,10 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         RoomViewModel roomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
 
         room = (Room) getIntent().getSerializableExtra("room");
-        if (room != null) {
+        home = (Home) getIntent().getSerializableExtra("home");
+        targetFragmentIndex = getIntent().getIntExtra("target_fragment_index", -1); // Get target fragment index
+
+        if (room != null && home != null) {
             setupRoomDetails();
             checkRoomHasMainGuest();
             roomViewModel.setRoom(room);
@@ -78,6 +84,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
 
         // Create fragments and set arguments
         Fragment roomGuestFragment = new RoomGuestFragment();
@@ -92,7 +99,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         Fragment roomBillContainerFragment = new RoomBillContainerFragment();
         roomBillContainerFragment.setArguments(bundle);
 
-
         // Add fragments to adapter
         tabLayoutAdapter.addFragment(roomGuestFragment, "Khách");
         tabLayoutAdapter.addFragment(roomServiceFragment, "Dịch vụ");
@@ -102,6 +108,10 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
         binding.viewPager.setAdapter(tabLayoutAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
+
+        if (targetFragmentIndex >= 0) {
+            binding.viewPager.setCurrentItem(targetFragmentIndex); // Set the target fragment
+        }
     }
 
     private void showRoomContractFragment() {
@@ -127,8 +137,8 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.addToBackStack(null); // Để quay lại Fragment trước đó khi cần
         fragmentTransaction.commit();
-       binding.viewPager.setVisibility(View.GONE);
-       binding.tabLayout.setVisibility(View.GONE);
+        binding.viewPager.setVisibility(View.GONE);
+        binding.tabLayout.setVisibility(View.GONE);
     }
 
     private void checkRoomHasMainGuest() {
@@ -181,6 +191,4 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, roomGuestFragment)
                 .commit();
     }
-
-
 }

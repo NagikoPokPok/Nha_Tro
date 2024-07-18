@@ -53,13 +53,15 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Home home = (Home) intent.getSerializableExtra("home");
+        String header = (String) intent.getSerializableExtra("header");
+        String body = (String) intent.getSerializableExtra("body");
         if (home == null) return;
 
         preferenceManager = new PreferenceManager(context);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> notificationIndex = new HashMap<>();
-        String header = "Nhập chỉ số cho nhà trọ " + home.getNameHome();
-        String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
+        //String header = "Nhập chỉ số cho nhà trọ " + home.getNameHome();
+        //String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
 
         switch (Objects.requireNonNull(intent.getAction())) {
             case Constants.ACTION_SET_EXACT:
@@ -72,7 +74,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
 
                 if (Constants.ACTION_SET_REPETITIVE_EXACT.equals(intent.getAction())) {
-                    setRepetitiveAlarm(new AlarmService(context, home));
+                    setRepetitiveAlarm(new AlarmService(context, home, header, body));
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
                 }
@@ -82,6 +84,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
+
                                 getNotificationIndex(documentReference, context, preferenceManager);
                             }
                         })
@@ -152,6 +155,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                                                                     header, body, context.getApplicationContext(), home, notificationID
                                                             );
                                                             fcmNotificationSender.SendNotifications();
+
+                                                            // Gửi broadcast để cập nhật badge
+                                                            Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+                                                            context.getApplicationContext().sendBroadcast(intent);
 
                                                         }
                                                     }
