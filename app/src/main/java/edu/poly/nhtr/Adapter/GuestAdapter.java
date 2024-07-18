@@ -110,7 +110,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void bind(MainGuest mainGuest) {
             binding.txtNameGuest.setText(mainGuest.getNameGuest());
             binding.txtPhoneNumber.setText(mainGuest.getPhoneGuest());
-            binding.txtEntryDate.setText(mainGuest.getDateIn());
+            binding.txtEntryDate.setText(mainGuest.getCreateDate());
 
             boolean isProfileComplete = mainGuest.isFileStatus();
             binding.txtProfileStatus.setText(isProfileComplete ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");

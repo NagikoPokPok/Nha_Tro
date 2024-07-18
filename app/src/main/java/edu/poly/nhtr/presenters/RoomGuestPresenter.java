@@ -51,7 +51,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                 MainGuest mainGuest = new MainGuest();
                                 mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
                                 mainGuest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
-                                mainGuest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
+                                mainGuest.setDateIn(document.getString(Constants.KEY_CONTRACT_CREATED_DATE));
                                 Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
                                 mainGuest.setFileStatus(status != null && status);
                                 mainGuest.setGuestId(document.getId());

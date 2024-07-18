@@ -375,56 +375,6 @@
                     android:padding="10dp"/>
             </RelativeLayout>
 
-
-            <!-- Ngày vào -->
-            <TextView
-                android:id="@+id/txt_ngay_vao"
-                style="@style/TEXT_MED_2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="90dp"
-                android:layout_weight="1"
-                android:text="@string/ngay_vao_o"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@id/layout_ngay_tao_hop_dong"
-                app:layout_constraintTop_toTopOf="@id/layout_ngay_tao_hop_dong" />
-
-            <!-- Khung điền ngày vào-->
-            <RelativeLayout
-                android:id="@+id/layout_ngay_vao_o"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                app:layout_constraintStart_toStartOf="@id/txt_ngay_vao"
-                app:layout_constraintTop_toTopOf="@id/txt_ngay_vao">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_ngay_vao_o"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:boxBackgroundMode="none">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_ngay_vao_o"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/dd_mm_yyyy"
-                        android:background="@drawable/bottom_outline"
-                        android:autofillHints=""
-                        android:inputType="date" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageButton
-                    android:id="@+id/img_button_calendar_ngay_vao"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icon_calendar"
-                    android:background="@null"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:padding="10dp"/>
-            </RelativeLayout>
-
             <!-- Giá phòng -->
             <TextView
                 android:id="@+id/txt_gia_phong"
@@ -435,8 +385,8 @@
                 android:layout_weight="1"
                 android:text="@string/gia_phong"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@id/layout_ngay_vao_o"
-                app:layout_constraintTop_toTopOf="@id/layout_ngay_vao_o" />
+                app:layout_constraintStart_toStartOf="@id/layout_ngay_tao_hop_dong"
+                app:layout_constraintTop_toTopOf="@id/layout_ngay_tao_hop_dong" />
 
             <!-- Khung điền giá phòng-->
 
