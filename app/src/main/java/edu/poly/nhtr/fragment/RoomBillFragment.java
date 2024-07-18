@@ -30,6 +30,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,6 +43,7 @@ import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
 import edu.poly.nhtr.databinding.LayoutDialogSettingNotificationIndexBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.presenters.RoomBillPresenter;
@@ -100,26 +102,57 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         String header = "Sắp tới ngày chốt tiền cho phòng " + room.getNameRoom();
         String body = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom();
 
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+
+
         roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
             public void onComplete(String dayOfMakeBill) {
                 currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+                roomBillPresenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomBillPresenter.OnGetNotificationCompleteListener() {
+                    @Override
+                    public void onComplete(List<Notification> notificationList) {
+                        if(notificationList.isEmpty()){
 
-                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+                            int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+                            if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
+                                alarmService = new AlarmService(requireContext(), home, room, header, body);
+                                setAlarm(alarmService::setRepetitiveAlarm, currentDay);
+                            }
+                        }else{
+                            Notification notification = notificationList.get(0);
+                            Date date = notification.getDateObject();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
 
-                if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
-                    alarmService = new AlarmService(requireContext(), home, header, body);
+                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+                            int month = calendar.get(Calendar.MONTH) ; // Tháng bắt đầu từ 0 nên cần +1
+                            int year = calendar.get(Calendar.YEAR);
 
-                    setAlarm(alarmService::setRepetitiveAlarm, currentDay);
-                }
+                            if(day == currentDay && month == currentMonth && year == currentYear)
+                            {
+                                return;
+                            }else{
+                                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+                                if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
+                                    alarmService = new AlarmService(requireContext(), home, room, header, body);
+                                    setAlarm(alarmService::setRepetitiveAlarm, currentDay);
+                                }
+                            }
+                        }
+                    }
+                });
+
 
             }
         });
 
+
+
         removeStatusOfCheckBoxFilterBill();
 
-        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
         setupRecyclerView();
         checkAndAddBillIfNeeded();
@@ -129,6 +162,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
 
         return view;
     }
+
+
 
     private interface AlarmCallback {
         void onAlarmSet(long timeInMillis);

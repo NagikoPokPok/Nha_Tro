@@ -26,7 +26,7 @@ public class FcmNotificationSender {
 
     private final String postUrl = "https://fcm.googleapis.com/v1/projects/nha-tro-57e88/messages:send";
 
-    public FcmNotificationSender(String userFcmToken, String title, String body, Context context, Home home, String notificationID) {
+    public FcmNotificationSender(String userFcmToken, String title, String body, Context context) {
         this.userFcmToken = userFcmToken;
         this.title = title;
         this.body = body;

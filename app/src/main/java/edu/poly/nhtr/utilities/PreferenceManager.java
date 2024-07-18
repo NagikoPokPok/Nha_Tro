@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Room;
 
 public class PreferenceManager {
     private final SharedPreferences sharedPreferences;
@@ -94,6 +96,23 @@ public class PreferenceManager {
         if (homeJson != null) {
             Gson gson = new Gson();
             return gson.fromJson(homeJson, Home.class); // Convert JSON string back to Home object
+        }
+        return null; // Return null if no value found for the key
+    }
+
+    public void putRoom(String key, Room room, String homeID) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String roomJson = gson.toJson(room); // Convert Room object to JSON string
+        editor.putString(key + "_" + homeID, roomJson);
+        editor.apply();
+    }
+
+    public Room getRoom(String key, String homeID) {
+        String roomJson = sharedPreferences.getString(key + "_" + homeID, null);
+        if (roomJson != null) {
+            Gson gson = new Gson();
+            return gson.fromJson(roomJson, Room.class); // Convert JSON string back to Home object
         }
         return null; // Return null if no value found for the key
     }

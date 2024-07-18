@@ -41,6 +41,7 @@ import edu.poly.nhtr.databinding.LayoutDialogSettingNotificationIndexBinding;
 import edu.poly.nhtr.interfaces.IndexInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.IndexPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -112,6 +113,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     private AlarmService alarmService;
     private String header, body;
+    private Room room;
 
 
 
@@ -126,7 +128,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         assert home != null;
         homeID = home.getIdHome();
 
-        alarmService = new AlarmService(requireContext(), home, header, body);
+        //alarmService = new AlarmService(requireContext(), home, header, body);
 
     }
 
@@ -146,7 +148,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         String header = "Nhập chỉ số cho nhà trọ " + home.getNameHome();
         String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
 
-        alarmService = new AlarmService(requireContext(), home, header, body);
+        alarmService = new AlarmService(requireContext(), home, room, header, body);
 
 
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);

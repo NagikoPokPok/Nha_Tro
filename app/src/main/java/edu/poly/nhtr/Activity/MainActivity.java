@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setNotificationBadgeCount() {
+        BadgeDrawable badge_notification = binding.bottomNavigation.getOrCreateBadge(R.id.menu_notification);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                 .whereEqualTo(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
@@ -108,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                                     numberOfNotificationsAreNotRead++;
                                 }
                             }
-                            BadgeDrawable badge_notification = binding.bottomNavigation.getOrCreateBadge(R.id.menu_notification);
                             if (numberOfNotificationsAreNotRead != 0) {
                                 badge_notification.setNumber(numberOfNotificationsAreNotRead);
                                 badge_notification.setMaxCharacterCount(3);
@@ -116,7 +116,11 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 badge_notification.setVisible(false);
                             }
+                        }else{
+                            badge_notification.setVisible(false);
                         }
+                    }else{
+                        badge_notification.setVisible(false);
                     }
                 })
                 .addOnFailureListener(e -> {

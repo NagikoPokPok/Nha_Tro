@@ -9,6 +9,7 @@ import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
 
 public class AlarmService {
@@ -17,11 +18,13 @@ public class AlarmService {
     private final Home home;
     private final String header;
     private final String body;
+    private final Room room;
 
-    public AlarmService(Context context, Home home, String header, String body) {
+    public AlarmService(Context context, Home home, Room room, String header, String body) {
         this.context = context;
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.home = home;
+        this.room = room;
         this.header = header;
         this.body = body;
     }
@@ -51,6 +54,7 @@ public class AlarmService {
                             getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT)
                                     .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
                                     .putExtra("home", home)
+                                    .putExtra("room", room)
                                     .putExtra("header", header)
                                     .putExtra("body", body)
                     )

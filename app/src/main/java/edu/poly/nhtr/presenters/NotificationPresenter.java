@@ -25,6 +25,7 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.NotificationListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Notification;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
 import timber.log.Timber;
 
@@ -316,49 +317,83 @@ public class NotificationPresenter {
 
     public void getHomeByNotification(Notification notification, OnGetHomeIDByNotificationListener listener) {
         List<Home> homeList = new ArrayList<>();
+        List<Room> roomList = new ArrayList<>();
 
-        // Truy vấn database để lấy danh sách các thông báo dựa trên homeID
+        // Query the database to get the notification details
         db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                 .document(notification.getNotificationID())
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            String homeID = documentSnapshot.getString(Constants.KEY_HOME_ID);
-                            if (homeID != null) {
-                                db.collection(Constants.KEY_COLLECTION_HOMES)
-                                        .document(homeID)
-                                        .get()
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot homeDocumentSnapshot) {
-                                                if (homeDocumentSnapshot.exists()) {
-                                                    Home home = homeDocumentSnapshot.toObject(Home.class);
-                                                    if (home != null) {
-                                                        Long numberOfRooms = homeDocumentSnapshot.getLong(Constants.KEY_NUMBER_OF_ROOMS);
-                                                        home.idHome = homeDocumentSnapshot.getId();
-                                                        home.isHaveService = homeDocumentSnapshot.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE);
-                                                        home.numberOfRooms = numberOfRooms != null ? numberOfRooms.intValue() : 0;
-                                                        home.userID = homeDocumentSnapshot.getString(Constants.KEY_USER_ID);
-                                                        home.dateObject = homeDocumentSnapshot.getDate(Constants.KEY_TIMESTAMP);
-                                                        homeList.add(home);
-                                                    }
-                                                }
-                                                listener.onComplete(homeList);
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> listener.onComplete(homeList));
-                            } else {
-                                listener.onComplete(homeList);
-                            }
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String homeID = documentSnapshot.getString(Constants.KEY_HOME_ID);
+                        String roomID = documentSnapshot.getString(Constants.KEY_ROOM_ID);
+                        if (homeID != null) {
+                            fetchHomeDetails(homeID, homeList, roomID, roomList, listener);
                         } else {
-                            listener.onComplete(homeList);
+                            listener.onComplete(homeList, roomList);
                         }
+                    } else {
+                        listener.onComplete(homeList, roomList);
                     }
                 })
-                .addOnFailureListener(e -> listener.onComplete(homeList));
+                .addOnFailureListener(e -> listener.onComplete(homeList, roomList));
     }
+
+    private void fetchHomeDetails(String homeID, List<Home> homeList, String roomID, List<Room> roomList, OnGetHomeIDByNotificationListener listener) {
+        db.collection(Constants.KEY_COLLECTION_HOMES)
+                .document(homeID)
+                .get()
+                .addOnSuccessListener(homeDocumentSnapshot -> {
+                    if (homeDocumentSnapshot.exists()) {
+                        Home home = homeDocumentSnapshot.toObject(Home.class);
+                        if (home != null) {
+                            populateHomeDetails(home, homeDocumentSnapshot);
+                            homeList.add(home);
+                        }
+                        if (roomID != null) {
+                            fetchRoomDetails(roomID, roomList, listener, homeList);
+                        } else {
+                            listener.onComplete(homeList, roomList);
+                        }
+                    } else {
+                        listener.onComplete(homeList, roomList);
+                    }
+                })
+                .addOnFailureListener(e -> listener.onComplete(homeList, roomList));
+    }
+
+    private void fetchRoomDetails(String roomID, List<Room> roomList, OnGetHomeIDByNotificationListener listener, List<Home> homeList) {
+        db.collection(Constants.KEY_COLLECTION_ROOMS)
+                .document(roomID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Room room = documentSnapshot.toObject(Room.class);
+                        if (room != null) {
+                            populateRoomDetails(room, documentSnapshot);
+                            roomList.add(room);
+                        }
+                    }
+                    listener.onComplete(homeList, roomList);
+                })
+                .addOnFailureListener(e -> listener.onComplete(homeList, roomList));
+    }
+
+    private void populateHomeDetails(Home home, DocumentSnapshot homeDocumentSnapshot) {
+        home.idHome = homeDocumentSnapshot.getId();
+        home.isHaveService = homeDocumentSnapshot.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE);
+        Long numberOfRooms = homeDocumentSnapshot.getLong(Constants.KEY_NUMBER_OF_ROOMS);
+        home.numberOfRooms = numberOfRooms != null ? numberOfRooms.intValue() : 0;
+        home.userID = homeDocumentSnapshot.getString(Constants.KEY_USER_ID);
+        home.dateObject = homeDocumentSnapshot.getDate(Constants.KEY_TIMESTAMP);
+    }
+
+    private void populateRoomDetails(Room room, DocumentSnapshot documentSnapshot) {
+        room.roomId = documentSnapshot.getId();
+        room.nameRoom = documentSnapshot.getString(Constants.KEY_NAME_ROOM);
+        room.price = documentSnapshot.getString(Constants.KEY_PRICE);
+    }
+
 
 
     // Interface for the callback
@@ -373,7 +408,7 @@ public class NotificationPresenter {
 
     // Interface for the callback
     public interface OnGetHomeIDByNotificationListener {
-        void onComplete(List<Home> homeList);
+        void onComplete(List<Home> homeList, List<Room> roomList);
     }
 
     // Interface for the callback

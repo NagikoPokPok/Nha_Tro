@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
@@ -262,6 +263,41 @@ public class RoomBillPresenter {
 
     public interface OnGetDayOfMakeBillCompleteListener {
         void onComplete(String dayOfMakeBill);
+    }
+
+    public void checkNotificationIsGiven(String roomID, String homeID, OnGetNotificationCompleteListener listener)
+    {
+        List<Notification> notificationList = new ArrayList<Notification>();
+        db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeID)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                    Notification notification = new Notification();
+                                    notification.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                    notificationList.add(notification);
+                                }
+                            }
+                            listener.onComplete(notificationList);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onComplete(notificationList);
+                    }
+                });
+    }
+
+    public interface OnGetNotificationCompleteListener {
+        void onComplete(List<Notification> notificationList);
     }
 
 }

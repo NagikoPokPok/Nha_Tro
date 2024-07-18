@@ -1,14 +1,9 @@
 package edu.poly.nhtr.interfaces;
 
-import android.view.View;
-
 import com.google.firebase.firestore.DocumentReference;
-
-import java.util.List;
 
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.Guest;
-import edu.poly.nhtr.models.MainGuest;
 
 public interface RoomGuestInterface {
     interface View {
@@ -42,6 +37,7 @@ public interface RoomGuestInterface {
         void openDialogSuccess(int id);
 
         void dialogClose();
+        boolean isAdded2();
     }
 
     interface Presenter {

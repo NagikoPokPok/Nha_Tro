@@ -26,9 +26,11 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
@@ -36,6 +38,7 @@ public class MessagingService extends FirebaseMessagingService {
     public static final String ACTION_NOTIFICATION_RECEIVED = "edu.poly.nhtr.ACTION_NOTIFICATION_RECEIVED";
     private static final String CHANNEL_ID = "ALARM_MANAGER_CHANNEL";
     private PreferenceManager preferenceManager;
+    private Room room;
 
     @Override
     public void onNewToken(@NonNull String token) {
@@ -60,8 +63,11 @@ public class MessagingService extends FirebaseMessagingService {
         preferenceManager = new PreferenceManager(this);
         String notificationID = preferenceManager.getString(Constants.KEY_NOTIFICATION_ID, getInfoUserFromGoogleAccount(this, preferenceManager));
         Home home = preferenceManager.getHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
+        if(home!=null) {
+            room = preferenceManager.getRoom(Constants.KEY_COLLECTION_ROOMS, home.getIdHome());
+        }
 
-        buildNotification(title, body, notificationID, home);
+        buildNotification(title, body, notificationID, home, room);
 
 
     }
@@ -82,19 +88,11 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
 
-    private void buildNotification(String title, String body, String notificationID, Home home) {
+    private void buildNotification(String title, String body, String notificationID, Home home, Room room) {
         createNotificationChannel(this);
-        Intent resultIntent = new Intent(this, MainRoomActivity.class);
-        resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
-        resultIntent.putExtra("home", home);
-        resultIntent.putExtra("notification_document_id", notificationID);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        PendingIntent resultPendingIntent = getResultPendingIntent(notificationID, home, room);
 
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         // Convert drawable resource to Bitmap
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icon_home_for_app);
 
@@ -113,6 +111,26 @@ public class MessagingService extends FirebaseMessagingService {
         }
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
     }
+
+    private PendingIntent getResultPendingIntent(String notificationID, Home home, Room room) {
+        Intent resultIntent;
+        if (room == null) {
+            resultIntent = new Intent(this, MainRoomActivity.class);
+            resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
+        } else {
+            resultIntent = new Intent(this, MainDetailedRoomActivity.class);
+            resultIntent.putExtra("target_fragment_index", 2);
+            resultIntent.putExtra("room", room);
+        }
+        resultIntent.putExtra("home", home);
+        resultIntent.putExtra("notification_document_id", notificationID);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+
+        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    }
+
 
     private void createNotificationChannel(Context context) {
         CharSequence name = "Alarm Manager Channel";

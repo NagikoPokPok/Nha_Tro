@@ -207,6 +207,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public boolean isAdded2() {
+        return isAdded();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;

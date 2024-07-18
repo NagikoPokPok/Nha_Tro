@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainActivity;
+import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeArrayAdapter;
 import edu.poly.nhtr.Adapter.NotificationAdapter;
@@ -49,6 +51,7 @@ import edu.poly.nhtr.listeners.NotificationListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Notification;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.NotificationPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -108,27 +111,25 @@ public class NotificationFragment extends Fragment implements NotificationListen
         homeList = new ArrayList<>();
         mainActivity = new MainActivity();
 
-       notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
-           @Override
-           public void onComplete(List<Home> homeList) {
-               setHomeList(homeList);
-               notificationPresenter.getNotification(new NotificationPresenter.OnSetNotificationListCompleteListener() {
-                   @Override
-                   public void onComplete() {
+        notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
+            @Override
+            public void onComplete(List<Home> homeList) {
+                setHomeList(homeList);
+                notificationPresenter.getNotification(new NotificationPresenter.OnSetNotificationListCompleteListener() {
+                    @Override
+                    public void onComplete() {
 
-                       // Gửi broadcast để cập nhật badge
-                       Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
-                       requireActivity().sendBroadcast(intent);
+                        // Gửi broadcast để cập nhật badge
+                        Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+                        requireActivity().sendBroadcast(intent);
 
-                       setupDropDownMenu(homeList);
-                       setupRecyclerView();
-                       setupDeleteNotifications();
-                   }
-               }, homeList);
-           }
-       });
-
-
+                        setupDropDownMenu(homeList);
+                        setupRecyclerView();
+                        setupDeleteNotifications();
+                    }
+                }, homeList);
+            }
+        });
 
 
         // Inflate the layout for this fragment
@@ -241,7 +242,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
 
             if (selectedNotifications.isEmpty()) {
                 showToast("Không có thông báo nào được chọn");
-            }else{
+            } else {
                 openDialogConfirmDelete(selectedNotifications);
 
             }
@@ -397,7 +398,6 @@ public class NotificationFragment extends Fragment implements NotificationListen
     }
 
 
-
     @Override
     public void returnNotificationList(List<Notification> notificationList) {
         this.notificationList = notificationList;
@@ -405,18 +405,42 @@ public class NotificationFragment extends Fragment implements NotificationListen
 
     @Override
     public void onNotificationClicked(Notification notification) {
+        notificationPresenter.getHomeByNotification(notification, new NotificationPresenter.OnGetHomeIDByNotificationListener() {
+            @Override
+            public void onComplete(List<Home> homeList, List<Room> roomList) {
+                Home home = homeList.get(0);
+                if (roomList.isEmpty()) {
+                    Intent intent = new Intent(requireContext(), MainRoomActivity.class);
+                    intent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
+                    intent.putExtra("home", home);
 
-         notificationPresenter.getHomeByNotification(notification, new NotificationPresenter.OnGetHomeIDByNotificationListener() {
-             @Override
-             public void onComplete(List<Home> homeList) {
-                 Home home = homeList.get(0);
-                 Intent intent = new Intent(requireContext(), MainRoomActivity.class);
-                 intent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
-                 intent.putExtra("home", home);
-                 startActivity(intent);
-             }
-         });
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(requireContext());
+                    stackBuilder.addParentStack(MainRoomActivity.class);
+                    stackBuilder.addNextIntent(intent);
+
+                    stackBuilder.startActivities();
+                } else {
+                    Room room = roomList.get(0);
+                    Intent intentMainRoom = new Intent(requireContext(), MainRoomActivity.class);
+                    intentMainRoom.putExtra("FRAGMENT_TO_LOAD", "HomeFragment");
+                    intentMainRoom.putExtra("home", home);
+
+                    Intent intentDetailedRoom = new Intent(requireContext(), MainDetailedRoomActivity.class);
+                    intentDetailedRoom.putExtra("target_fragment_index", 2);
+                    intentDetailedRoom.putExtra("room", room);
+                    intentDetailedRoom.putExtra("home", home);
+
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(requireContext());
+                    stackBuilder.addParentStack(MainDetailedRoomActivity.class);
+                    stackBuilder.addNextIntent(intentMainRoom);
+                    stackBuilder.addNextIntent(intentDetailedRoom);
+
+                    stackBuilder.startActivities();
+                }
+            }
+        });
     }
+
 
     @Override
     public void showButtonLoading(int id) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,6 +12,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.poly.nhtr.Adapter.TabLayoutAdapter;
@@ -59,6 +62,29 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
             roomViewModel.setRoom(room);
         } else {
             finish();
+        }
+
+        // Kiểm tra xem có thông báo được truyền từ Intent không
+        String documentId = getIntent().getStringExtra("notification_document_id");
+        if (documentId != null) {
+            // Cập nhật trạng thái đã đọc của thông báo trong Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                    .document(documentId)
+                    .update(Constants.KEY_NOTIFICATION_IS_READ, true)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Xử lý thành công
+                            // Ví dụ: hiển thị thông báo hoặc cập nhật UI
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Xử lý khi thất bại
+                        }
+                    });
         }
 
         setListeners();
@@ -166,7 +192,8 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
         if (currentFragment instanceof GuestAddContractFragment ||
                 currentFragment instanceof RoomGuestContractFragment ||
-                currentFragment instanceof RoomGuestFragment) {
+                currentFragment instanceof RoomGuestFragment ||
+                currentFragment instanceof RoomBillContainerFragment) {
             if (!hasMainGuest) {
                 Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

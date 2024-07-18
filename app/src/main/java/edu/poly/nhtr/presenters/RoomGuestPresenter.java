@@ -42,42 +42,45 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    view.hideLoading();
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        List<Object> guests = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if (document.contains(Constants.KEY_CONTRACT_CREATED_DATE)) {
-                                // This document is a MainGuest
-                                MainGuest mainGuest = new MainGuest();
-                                mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
-                                mainGuest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
-                                mainGuest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
-                                Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
-                                mainGuest.setFileStatus(status != null && status);
-                                mainGuest.setGuestId(document.getId());
-                                guests.add(mainGuest);
-                            } else {
-                                // This document is a regular Guest
-                                Guest guest = new Guest();
-                                guest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
-                                guest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
-                                guest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
-                                Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
-                                guest.setFileStatus(status != null && status);
-                                guest.setGuestId(document.getId());
-                                guests.add(guest);
+                    if (view.isAdded2()) {
+                        view.hideLoading();
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<Object> guests = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.contains(Constants.KEY_CONTRACT_CREATED_DATE)) {
+                                    // This document is a MainGuest
+                                    MainGuest mainGuest = new MainGuest();
+                                    mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
+                                    mainGuest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
+                                    mainGuest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
+                                    Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
+                                    mainGuest.setFileStatus(status != null && status);
+                                    mainGuest.setGuestId(document.getId());
+                                    guests.add(mainGuest);
+                                } else {
+                                    // This document is a regular Guest
+                                    Guest guest = new Guest();
+                                    guest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
+                                    guest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
+                                    guest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
+                                    Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
+                                    guest.setFileStatus(status != null && status);
+                                    guest.setGuestId(document.getId());
+                                    guests.add(guest);
+                                }
                             }
-                        }
-                        roomViewModel.setGuests(guests);
-                        if (guests.isEmpty()) {
-                            view.showNoDataFound();
+                            roomViewModel.setGuests(guests);
+                            if (guests.isEmpty()) {
+                                view.showNoDataFound();
+                            } else {
+                                checkRoomCapacity(roomId, guests);
+                            }
                         } else {
-                            checkRoomCapacity(roomId, guests);
+                            view.showError("Error getting guests");
                         }
-                    } else {
-                        view.showError("Error getting guests");
                     }
                 });
+
     }
 
     private void checkRoomCapacity(String roomId, List<Object> guests) {
