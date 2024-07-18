@@ -86,12 +86,12 @@ public class GuestAddContractPresenter {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                handleNameChanged(s.toString().trim(), textInputLayout);
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Do nothing
+                handleNameChanged(s.toString().trim(), textInputLayout);
             }
         });
     }
@@ -112,7 +112,7 @@ public class GuestAddContractPresenter {
 
     // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
     private boolean isValidName(String name) {
-        String regex = "^[a-zA-Z\\s]+$";
+        String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
         return name.matches(regex);
     }
 
