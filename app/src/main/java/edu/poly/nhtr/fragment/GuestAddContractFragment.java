@@ -42,9 +42,11 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import edu.poly.nhtr.Activity.Enum.DateType;
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
@@ -83,15 +85,18 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private AutoCompleteTextView edtGioiTinh;
     private AutoCompleteTextView edtTotalMembers;
     private TextInputLayout tilNgayTao;
+    private TextInputLayout tilNgayVao;
     private TextInputLayout tilNgayHetHan;
     private TextInputLayout tilNgayTraTien;
     private TextInputEditText edtNgayTao;
+    private TextInputEditText edtNgayVao;
     private TextInputEditText edtNgayHetHan;
     private AutoCompleteTextView edtNgayTraTien;
     private GuestAddContractPresenter presenter;
     private ImageButton imgButtonLichNgaySinh;
     private ImageButton imgButtonLichNgayTao;
     private ImageButton imgButtonLichNgayHetHan;
+    private ImageButton imgButtonLichNgayVaoO;
     private ImageButton imgButtonLichNgayTraTien;
     private RoundedImageView imgCCCDFront;
     private RoundedImageView imgCCCDBack;
@@ -216,9 +221,11 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtGioiTinh = binding.edtGioiTinh;
         edtTotalMembers = binding.edtTotalMembers;
         tilNgayTao = binding.tilNgayTaoHopDong;
+        tilNgayVao = binding.tilNgayVaoO;
         tilNgayHetHan = binding.tilNgayHetHanHopDong;
         tilNgayTraTien = binding.tilNgayTraTienPhong;
         edtNgayTao = binding.edtNgayTaoHopDong;
+        edtNgayVao = binding.edtNgayVaoO;
         edtTienPhong = binding.edtGiaPhong;
         tilTienPhong = binding.tilGiaPhong;
         edtNgayHetHan = binding.edtNgayHetHanHopDong;
@@ -234,6 +241,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         imgContractBack = binding.imgContractBack;
         imgButtonLichNgaySinh = binding.imgButtonCalendarNgaySinh;
         imgButtonLichNgayTao = binding.imgButtonCalendarTao;
+        imgButtonLichNgayVaoO = binding.imgButtonCalendarNgayVao;
         imgButtonLichNgayHetHan = binding.imgButtonCalendarHetHan;
         btnAddContract = binding.btnAddContract;
         btnCancel = binding.btnCancel;
@@ -244,8 +252,13 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         presenter.setUpDropDownMenuTotalMembers();
         presenter.setUpDropDownMenuDays();
         presenter.setUpDateOfBirthField(tilNgaySinh, edtNgaySinh, imgButtonLichNgaySinh, getString(R.string.dd_mm_yyyy));
-        presenter.setUpDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao, getString(R.string.dd_mm_yyyy));
-        presenter.setUpDateField(tilNgayHetHan, edtNgayHetHan, imgButtonLichNgayHetHan, getString(R.string.dd_mm_yyyy));
+
+        Calendar contractCreationDate = Calendar.getInstance();
+        Calendar checkInDate = Calendar.getInstance();
+
+        presenter.setUpDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao, getString(R.string.dd_mm_yyyy), DateType.CONTRACT_CREATION_DATE, contractCreationDate, checkInDate);
+        presenter.setUpDateField(tilNgayVao, edtNgayVao, imgButtonLichNgayVaoO, getString(R.string.dd_mm_yyyy), DateType.CHECK_IN_DATE, contractCreationDate, checkInDate);
+        presenter.setUpDateField(tilNgayHetHan, edtNgayHetHan, imgButtonLichNgayHetHan, getString(R.string.dd_mm_yyyy), DateType.CONTRACT_EXPIRY_DATE, contractCreationDate, checkInDate);
 
         imgAddCCCDFront.setOnClickListener(v -> {
             currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;
@@ -313,7 +326,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     }
 
     @Override
-    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, DocumentReference documentReference) {
+    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
         preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
         preferenceManager.putString(Constants.KEY_GUEST_CCCD, cccdNumber);
@@ -321,6 +334,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_GUEST_GENDER, gender);
         preferenceManager.putString(Constants.KEY_ROOM_TOTAl_MEMBERS, totalMembers + "");
         preferenceManager.putString(Constants.KEY_CONTRACT_CREATED_DATE, createDate);
+        preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
         preferenceManager.putString(Constants.KEY_CONTRACT_ROOM_PRICE, roomPrice + "");
         preferenceManager.putString(Constants.KEY_CONTRACT_EXPIRATION_DATE, expirationDate);
         preferenceManager.putString(Constants.KEY_CONTRACT_PAY_DATE, payDate);
@@ -502,6 +516,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         String gender = getStringFromAutoCompleteTextView(edtGioiTinh);
         String totalMembers = getStringFromAutoCompleteTextView(edtTotalMembers);
         String createDate = getStringFromEditText(edtNgayTao);
+        String dateIn = getStringFromEditText(edtNgayVao);
         String expirationDate = getStringFromEditText(edtNgayHetHan);
         String payDate = getStringFromEditText(edtNgayTraTien);
         String roomPrice = getStringFromEditText(edtTienPhong);
@@ -550,6 +565,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         mainGuest.setGender(gender);
         mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
         mainGuest.setCreateDate(createDate);
+        mainGuest.setDateIn(dateIn);
         mainGuest.setExpirationDate(expirationDate);
         mainGuest.setPayDate(payDate);
         mainGuest.setRoomPrice(roomPriceValue);
@@ -609,6 +625,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtGioiTinh.setText("");
         edtTotalMembers.setText("");
         edtNgayTao.setText("");
+        edtNgayVao.setText("");
         edtTienPhong.setText("");
         edtNgayHetHan.setText("");
         edtNgayTraTien.setText("");
