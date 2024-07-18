@@ -133,11 +133,6 @@ public class Constants {
     public static final String KEY_REASON_OF_ADD_OR_MINUS ="reasonOfAddOrMinus";
     public static final String KEY_NUMBER_OF_DAYS_LIVED ="numberOfDaysLived";
 
-    public static final String KEY_CBX_IS_NOT_PAY_BILL = "cbxIsNotPayBill";
-    public static final String KEY_CBX_IS_PAYED_BILL = "cbxIsPayedBill";
-    public static final String KEY_CBX_IS_DELAY_PAY_BILL = "cbxIsDelayPayBill";
-    public static final String KEY_CBX_IS_NOT_GIVE_BILL = "cbxIsNotGiveBill";
-
 
 
 }
