@@ -11,13 +11,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,11 +36,12 @@ import edu.poly.nhtr.Adapter.RoomBillAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomBillBinding;
 import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
-import edu.poly.nhtr.databinding.LayoutDialogConfirmDeleteBillBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.presenters.RoomBillPresenter;
+import edu.poly.nhtr.utilities.Constants;
+import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class RoomBillFragment extends Fragment implements RoomBillListener {
 
@@ -50,6 +57,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     private String date = "";
     private boolean isSelectAllChecked = false;
     private Dialog dialog;
+    private PreferenceManager preferenceManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +71,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentRoomBillBinding.inflate(inflater, container, false);
         dialog = new Dialog(requireContext());
+        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         View view = binding.getRoot();
 
         // Retrieve the room object from the arguments
@@ -78,6 +87,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             showToast("Arguments are null");
         }
 
+        removeStatusOfCheckBoxFilterBill();
+
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
@@ -85,9 +96,289 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         checkAndAddBillIfNeeded();
         setupMonthPicker();
         setupDeleteManyBills();
-
+        setupFilterBills();
 
         return view;
+    }
+
+    private void setupFilterBills() {
+        binding.layoutFilterBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.btnFilterBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+                binding.frameRoundFilterBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
+                openDialogFilterBills();
+
+            }
+        });
+
+        binding.btnFilterBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.btnFilterBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+                binding.frameRoundFilterBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
+                openDialogFilterBills();
+            }
+        });
+    }
+
+    private void openDialogFilterBills() {
+        setupDialog(R.layout.layout_dialog_filter_bill);
+
+        // Intitial components
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnConfirmApply = dialog.findViewById(R.id.btn_confirm_apply_bill);
+
+        AppCompatCheckBox cbx1 = dialog.findViewById(R.id.cbx_is_not_pay_bill);
+        AppCompatCheckBox cbx2 = dialog.findViewById(R.id.cbx_is_payed_bill);
+        AppCompatCheckBox cbx3 = dialog.findViewById(R.id.cbx_is_delay_pay_bill);
+        AppCompatCheckBox cbx4 = dialog.findViewById(R.id.cbx_is_not_give_bill);
+
+        cbx1.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_IS_NOT_PAY_BILL));
+        cbx2.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_IS_PAYED_BILL));
+        cbx3.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_IS_DELAY_PAY_BILL));
+        cbx4.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_IS_NOT_GIVE_BILL));
+
+        List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
+        checkBoxList.add(cbx1);
+        checkBoxList.add(cbx2);
+        checkBoxList.add(cbx3);
+        checkBoxList.add(cbx4);
+
+        customizeButtonApplyInDialogHaveCheckBox(btnConfirmApply, checkBoxList);
+
+        // Create a method to check the state of all checkboxes
+        View.OnClickListener checkBoxListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customizeButtonApplyInDialogHaveCheckBox(btnConfirmApply, checkBoxList);
+            }
+        };
+
+        // Set the listener to all checkboxes
+        cbx1.setOnClickListener(checkBoxListener);
+        cbx2.setOnClickListener(checkBoxListener);
+        cbx3.setOnClickListener(checkBoxListener);
+        cbx4.setOnClickListener(checkBoxListener);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnConfirmApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.layoutTypeOfFilterBill.setVisibility(View.VISIBLE);
+                List<String> selectedOptions = new ArrayList<>();
+
+                // Check which CheckBoxes are selected and save their state
+                boolean filterByBill1 = cbx1.isChecked();
+                boolean filterByBill2 = cbx2.isChecked();
+                boolean filterByBill3 = cbx3.isChecked();
+                boolean filterByBill4 = cbx4.isChecked();
+
+                if (filterByBill1) {
+                    selectedOptions.add(cbx1.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_PAY_BILL, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_PAY_BILL, false);
+                    removeFromListAndSave(cbx1.getText().toString());
+                }
+                if (filterByBill2) {
+                    selectedOptions.add(cbx2.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_PAYED_BILL, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_PAYED_BILL, false);
+                    removeFromListAndSave(cbx2.getText().toString());
+                }
+                if (filterByBill3) {
+                    selectedOptions.add(cbx3.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_DELAY_PAY_BILL, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_DELAY_PAY_BILL, false);
+                    removeFromListAndSave(cbx3.getText().toString());
+                }
+                if (filterByBill4) {
+                    selectedOptions.add(cbx4.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_GIVE_BILL, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_GIVE_BILL, false);
+                    removeFromListAndSave(cbx4.getText().toString());
+                }
+
+                // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
+                if (!filterByBill1 && !filterByBill2 && !filterByBill3 && !filterByBill4) {
+                    binding.layoutNoData.setVisibility(View.GONE);
+                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+                    binding.recyclerView.setVisibility(View.VISIBLE);
+                    roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+                        @Override
+                        public void onComplete(List<RoomBill> billList) {
+                            roomBillAdapter.setBillList(billList);
+                        }
+                    });
+                } else {
+                    filterListHomes(); // After put status of checkboxes in preferences, check and add them into the list
+                }
+
+                // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
+                for (String option : selectedOptions) {
+                    // Check if the checkbox is already in the listTypeOfFilterHome
+                    boolean alreadyExists = false;
+                    for (int i = 0; i < binding.listTypeOfFilterBill.getChildCount(); i++) {
+                        View view = binding.listTypeOfFilterBill.getChildAt(i);
+                        if (view instanceof LinearLayout) {
+                            TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                            if (textView.getText().toString().equals(option)) {
+                                alreadyExists = true;
+                                break;
+                            }
+                        }
+                    }
+
+
+                    // If the checkbox does not exist, add it to the listTypeOfFilterHome
+                    if (!alreadyExists) {
+
+                        // Inflate the layout containing the TextView and ImageView
+                        LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
+
+                        // Get references to the TextView and ImageView
+                        TextView txtTypeOfFilterHome = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
+                        ImageView iconCancel = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
+
+                        // Set the text for the TextView
+                        txtTypeOfFilterHome.setText(option);
+
+                        // Optionally set an OnClickListener for the ImageView to remove the filter
+                        iconCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Remove the filter
+                                binding.listTypeOfFilterBill.removeView(filterItemLayout);
+
+                                // Update SharedPreferences to uncheck the checkbox in the dialog
+                                if (option.equals(cbx1.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_PAY_BILL, false);
+                                    cbx1.setChecked(false);
+                                } else if (option.equals(cbx2.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_PAYED_BILL, false);
+                                    cbx2.setChecked(false);
+                                } else if (option.equals(cbx3.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_DELAY_PAY_BILL, false);
+                                    cbx3.setChecked(false);
+                                }else if (option.equals(cbx4.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_IS_NOT_GIVE_BILL, false);
+                                    cbx4.setChecked(false);
+                                }
+
+                                if (binding.listTypeOfFilterBill.getChildCount() == 0) {
+                                    // If no filter left in the list -> Set GONE
+                                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+                                    binding.layoutNoData.setVisibility(View.GONE);
+                                    // And update list homes as initial
+                                    //binding.recyclerView.setVisibility(View.VISIBLE);
+                                    roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+                                        @Override
+                                        public void onComplete(List<RoomBill> billList) {
+                                            roomBillAdapter.setBillList(billList);
+                                        }
+                                    });
+                                } else {
+                                    // Update list homes after deleting some check boxes
+                                    filterListHomes();
+                                }
+
+                            }
+                        });
+
+                        // Set layout parameters for filterItemLayout
+                        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+                                FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                                (int) getResources().getDimension(R.dimen.filter_item_height) // Assuming filter_item_height is 40dp
+                        );
+                        int margin = (int) getResources().getDimension(R.dimen.filter_item_margin);
+                        params.setMargins(0, margin, margin, 0);
+                        filterItemLayout.setLayoutParams(params);
+
+
+                        // Add the inflated layout to the main LinearLayout
+                        binding.listTypeOfFilterBill.addView(filterItemLayout);
+                    }
+                }
+                //dialog.dismiss();
+            }
+        });
+    }
+
+    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
+        boolean isAnyChecked = false;
+        for (AppCompatCheckBox checkBox : checkBoxList) {
+            if (checkBox.isChecked()) {
+                isAnyChecked = true;
+                break;
+            }
+        }
+        if (isAnyChecked) {
+            btnApply.setEnabled(true);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+        } else {
+            btnApply.setEnabled(false);
+            btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+        }
+    }
+
+    private void removeFromListAndSave(String option) { // Remove from listType
+        for (int i = 0; i < binding.listTypeOfFilterBill.getChildCount(); i++) {
+            View view = binding.listTypeOfFilterBill.getChildAt(i);
+            if (view instanceof LinearLayout) {
+                TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                if (textView.getText().toString().equals(option)) {
+                    binding.listTypeOfFilterBill.removeView(view);
+                    preferenceManager.removePreference(option);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void filterListHomes() {
+        showButtonLoading(R.id.btn_confirm_apply_bill);
+
+        boolean filterByBill1 = preferenceManager.getBoolean(Constants.KEY_CBX_IS_NOT_PAY_BILL);
+        boolean filterByBill2 = preferenceManager.getBoolean(Constants.KEY_CBX_IS_PAYED_BILL);
+        boolean filterByBill3 = preferenceManager.getBoolean(Constants.KEY_CBX_IS_DELAY_PAY_BILL);
+        boolean filterByBill4 = preferenceManager.getBoolean(Constants.KEY_CBX_IS_NOT_GIVE_BILL);
+
+        List<RoomBill> filteredBills = new ArrayList<>();
+        roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+            @Override
+            public void onComplete(List<RoomBill> billList) {
+                for (RoomBill bill : billList) {
+                    boolean isNotPayBill = bill.isNotPayBill();
+                    boolean isPayedBill = bill.isPayedBill();
+                    boolean isDelayPayBill = bill.isDelayPayBill();
+                    boolean isNotGiveBill = bill.isNotGiveBill();
+
+                    if (filterByBill1 && isNotPayBill) {
+                        filteredBills.add(bill);
+                    } else if (filterByBill2 && isPayedBill) {
+                        filteredBills.add(bill);
+                    } else if (filterByBill3 && isDelayPayBill) {
+                        filteredBills.add(bill);
+                    } else if (filterByBill4 && isNotGiveBill) {
+                        filteredBills.add(bill);
+                    }
+                }
+
+                roomBillPresenter.filterBills(filteredBills);
+            }
+        });
+
+
     }
 
     private void setupDeleteManyBills() {
@@ -244,6 +535,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
                 @Override
                 public void onComplete(List<RoomBill> billList) {
+
                     roomBillAdapter.setBillList(billList);
                 }
             });
@@ -263,7 +555,6 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     @Override
     public void makeBillClick(RoomBill bill) {
         if (onMakeBillClickListener != null) {
-            showToast("Click");
             onMakeBillClickListener.onMakeBillClicked(bill);
         }
 
@@ -422,6 +713,13 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     @Override
     public void closeDialog() {
         dialog.dismiss();
+    }
+
+    public void removeStatusOfCheckBoxFilterBill() {
+        preferenceManager.removePreference(Constants.KEY_CBX_IS_NOT_PAY_BILL);
+        preferenceManager.removePreference(Constants.KEY_CBX_IS_PAYED_BILL);
+        preferenceManager.removePreference(Constants.KEY_CBX_IS_DELAY_PAY_BILL);
+        preferenceManager.removePreference(Constants.KEY_CBX_IS_NOT_GIVE_BILL);
     }
 
 

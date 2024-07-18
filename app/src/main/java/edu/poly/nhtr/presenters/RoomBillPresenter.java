@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomBillListener;
+import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
@@ -210,6 +211,20 @@ public class RoomBillPresenter {
                     listener.onComplete();
                 });
 
+    }
+
+    public void filterBills(List<RoomBill> billList) {
+        if (billList.isEmpty()) {
+            roomBillListener.hideButtonLoading(R.id.btn_confirm_apply_bill);
+            roomBillListener.closeDialog();
+            roomBillListener.hideLoading();
+            roomBillListener.showLayoutNoData();
+        } else {
+
+            roomBillListener.hideButtonLoading(R.id.btn_confirm_apply_bill);
+            roomBillListener.closeDialog();
+            roomBillListener.setBillList(billList);
+        }
     }
 
 }
