@@ -1,8 +1,6 @@
 package edu.poly.nhtr.fragment;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,11 +21,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.flexbox.FlexboxLayout;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,7 +38,6 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentRoomBillBinding;
 import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
-import edu.poly.nhtr.databinding.LayoutDialogSettingNotificationIndexBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Notification;
@@ -74,16 +71,20 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         super.onCreate(savedInstanceState);
         roomBillPresenter = new RoomBillPresenter(this);
         roomBillAdapter = new RoomBillAdapter(requireContext(), billList, roomBillPresenter, this);
+
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentRoomBillBinding.inflate(inflater, container, false);
-        dialog = new Dialog(requireContext());
-        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-        View view = binding.getRoot();
 
+        binding = FragmentRoomBillBinding.inflate(inflater, container, false);
+        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        dialog = new Dialog(requireContext());
+
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
@@ -91,7 +92,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             room = (Room) arguments.getSerializable("room");
             home = (Home) arguments.getSerializable("home");
             if (room != null && home != null) {
-                roomBillPresenter.getBill(room, billList -> roomBillAdapter.setBillList(billList));
+                checkAndAddBillIfNeeded();
             } else {
                 showToast("Room object is null");
             }
@@ -99,13 +100,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             showToast("Arguments are null");
         }
 
+
         String header = "Sắp tới ngày chốt tiền cho phòng " + room.getNameRoom();
         String body = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom();
-
-        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
-
 
         roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
@@ -114,27 +111,24 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                 roomBillPresenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomBillPresenter.OnGetNotificationCompleteListener() {
                     @Override
                     public void onComplete(List<Notification> notificationList) {
-                        if(notificationList.isEmpty()){
-
+                        if (notificationList.isEmpty()) {
                             int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
                             if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
                                 alarmService = new AlarmService(requireContext(), home, room, header, body);
                                 setAlarm(alarmService::setRepetitiveAlarm, currentDay);
                             }
-                        }else{
+                        } else {
                             Notification notification = notificationList.get(0);
-                            Date date = notification.getDateObject();
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(date);
+                            calendar.setTime(notification.getDateObject());
 
                             int day = calendar.get(Calendar.DAY_OF_MONTH);
-                            int month = calendar.get(Calendar.MONTH) ; // Tháng bắt đầu từ 0 nên cần +1
+                            int month = calendar.get(Calendar.MONTH);
                             int year = calendar.get(Calendar.YEAR);
 
-                            if(day == currentDay && month == currentMonth && year == currentYear)
-                            {
+                            if (day == currentDay && month == currentMonth && year == currentYear) {
                                 return;
-                            }else{
+                            } else {
                                 int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
                                 if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
                                     alarmService = new AlarmService(requireContext(), home, room, header, body);
@@ -144,25 +138,80 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                         }
                     }
                 });
-
-
             }
         });
 
-
-
         removeStatusOfCheckBoxFilterBill();
-
-
         setupRecyclerView();
-        checkAndAddBillIfNeeded();
         setupMonthPicker();
         setupDeleteManyBills();
         setupFilterBills();
 
-        return view;
+
+        return binding.getRoot();
     }
 
+
+
+
+    private void checkAndAddBillIfNeeded() {
+//        LocalDate localDate = LocalDate.now();
+//        int dayOfMonth = localDate.getDayOfMonth();
+//        if (dayOfMonth == 1) {
+//            roomBillPresenter.addBill(room);
+//        } else {
+//            roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+//                @Override
+//                public void onComplete(List<RoomBill> billList) {
+//
+//                    roomBillAdapter.setBillList(billList);
+//                }
+//            });
+//        }
+
+
+        roomBillPresenter.checkContractIsCreated(room, new RoomBillPresenter.OnGetContractCompleteListener() {
+            @Override
+            public void onComplete(boolean isHave) {
+                if (!isHave) {
+                    return;
+                }else {
+                    checkAndHandleBillCreation();
+                }
+            }
+        });
+    }
+
+    private void checkAndHandleBillCreation() {
+        roomBillPresenter.checkBillIsCreated(room, currentMonth + 1, currentYear, new RoomBillPresenter.OnCheckBillIsCreatedCompleteListener() {
+            @Override
+            public void onComplete(boolean isCreated) {
+                if (isCreated) {
+                    fetchBillList();
+                } else {
+                    roomBillPresenter.addBill(room);
+                }
+            }
+        });
+    }
+
+    private void fetchBillList() {
+        roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+            @Override
+            public void onComplete(List<RoomBill> billList) {
+                roomBillAdapter.setBillList(billList);
+            }
+        });
+    }
+
+
+    @Override
+    public void setBillList(List<RoomBill> billList) {
+        this.billList = billList;
+        if (roomBillAdapter != null) {
+            roomBillAdapter.setBillList(this.billList);
+        }
+    }
 
 
     private interface AlarmCallback {
@@ -183,8 +232,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
 
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 42);
+        calendar.set(Calendar.HOUR_OF_DAY, 14);
+        calendar.set(Calendar.MINUTE, 41);
 
         pushAlarm(callback, calendar);
 
@@ -621,30 +670,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         binding.recyclerView.setAdapter(roomBillAdapter);
     }
 
-    private void checkAndAddBillIfNeeded() {
-        LocalDate localDate = LocalDate.now();
-        int dayOfMonth = localDate.getDayOfMonth();
-        if (dayOfMonth == 1) {
-            roomBillPresenter.addBill(room);
-        } else {
-            roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
-                @Override
-                public void onComplete(List<RoomBill> billList) {
 
-                    roomBillAdapter.setBillList(billList);
-                }
-            });
-        }
-    }
-
-
-    @Override
-    public void setBillList(List<RoomBill> billList) {
-        this.billList = billList;
-        if (roomBillAdapter != null) {
-            roomBillAdapter.setBillList(this.billList);
-        }
-    }
 
 
     @Override
@@ -728,7 +754,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -816,6 +842,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         preferenceManager.removePreference(Constants.KEY_CBX_IS_DELAY_PAY_BILL);
         preferenceManager.removePreference(Constants.KEY_CBX_IS_NOT_GIVE_BILL);
     }
+
+
 
 
 }

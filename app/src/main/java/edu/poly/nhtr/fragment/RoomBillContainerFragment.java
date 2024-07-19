@@ -23,6 +23,7 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
     private RoomBillFragment roomBillFragment;
     private Room room;
     private Home home;
+    private boolean isToastShown = false; // Biến cờ để kiểm tra showToast
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +45,13 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
 
 
         return view;
+    }
+
+    public void showToastIfNeeded() {
+        if (!isToastShown) {
+            showToast("Not null");
+            isToastShown = true;
+        }
     }
 
     private void showRoomBillFragment() {

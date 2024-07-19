@@ -3,18 +3,24 @@ package edu.poly.nhtr.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.poly.nhtr.Adapter.TabLayoutAdapter;
 import edu.poly.nhtr.R;
@@ -25,11 +31,9 @@ import edu.poly.nhtr.fragment.RoomBillFragment;
 import edu.poly.nhtr.fragment.RoomContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestFragment;
-import edu.poly.nhtr.fragment.RoomMakeBillFragment;
 import edu.poly.nhtr.fragment.RoomServiceFragment;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
-import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -72,18 +76,12 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
             db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                     .document(documentId)
                     .update(Constants.KEY_NOTIFICATION_IS_READ, true)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            // Xử lý thành công
-                            // Ví dụ: hiển thị thông báo hoặc cập nhật UI
-                        }
+                    .addOnSuccessListener(aVoid -> {
+                        // Xử lý thành công
+                        // Ví dụ: hiển thị thông báo hoặc cập nhật UI
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Xử lý khi thất bại
-                        }
+                    .addOnFailureListener(e -> {
+                        // Xử lý khi thất bại
                     });
         }
 
@@ -106,37 +104,114 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         binding.tabLayout.setVisibility(View.VISIBLE);
         binding.viewPager.setVisibility(View.VISIBLE);
 
-        TabLayoutAdapter tabLayoutAdapter = new TabLayoutAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        // Tạo danh sách các lớp Fragment
+        List<Class<? extends Fragment>> fragmentClasses = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
         bundle.putSerializable("home", home);
 
-        // Create fragments and set arguments
-        Fragment roomGuestFragment = new RoomGuestFragment();
-        roomGuestFragment.setArguments(bundle);
-        Fragment roomServiceFragment = new RoomServiceFragment();
-        roomServiceFragment.setArguments(bundle);
-        Fragment roomBillFragment = new RoomBillFragment();
-        roomBillFragment.setArguments(bundle);
-        Fragment roomContractFragment = new RoomContractFragment();
-        roomContractFragment.setArguments(bundle);
+        // Thêm các lớp Fragment vào danh sách
+        fragmentClasses.add(RoomGuestFragment.class);
+        fragmentClasses.add(RoomServiceFragment.class);
+        fragmentClasses.add(RoomBillContainerFragment.class);
+        fragmentClasses.add(RoomContractFragment.class);
 
-        Fragment roomBillContainerFragment = new RoomBillContainerFragment();
-        roomBillContainerFragment.setArguments(bundle);
+        titles.add("Khách");
+        titles.add("Dịch vụ");
+        titles.add("Hóa đơn");
+        titles.add("Hợp đồng");
 
-        // Add fragments to adapter
-        tabLayoutAdapter.addFragment(roomGuestFragment, "Khách");
-        tabLayoutAdapter.addFragment(roomServiceFragment, "Dịch vụ");
-        //tabLayoutAdapter.addFragment(roomBillFragment, "Hóa đơn");
-        tabLayoutAdapter.addFragment(roomBillContainerFragment, "Hóa đơn");
-        tabLayoutAdapter.addFragment(roomContractFragment, "Hợp đồng");
-
+        // Khởi tạo adapter với danh sách lớp Fragment và đối số
+        TabLayoutAdapter tabLayoutAdapter = new TabLayoutAdapter(this, fragmentClasses, bundle);
         binding.viewPager.setAdapter(tabLayoutAdapter);
-        binding.tabLayout.setupWithViewPager(binding.viewPager);
+
+        // Thiết lập TabLayout với ViewPager2
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
+            tab.setText(titles.get(position));
+        }).attach();
 
         if (targetFragmentIndex >= 0) {
-            binding.viewPager.setCurrentItem(targetFragmentIndex); // Set the target fragment
+            binding.viewPager.setCurrentItem(targetFragmentIndex);
+        }
+
+//        // Refresh fragments when switching tabs
+//        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                tabLayoutAdapter.notifyItemChanged(position);
+//            }
+//        });
+
+        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab != null) {
+                    int position = tab.getPosition();
+                    Toast.makeText(MainDetailedRoomActivity.this, position + "", Toast.LENGTH_SHORT).show();
+
+                    // Cập nhật ViewPager
+                    binding.viewPager.setCurrentItem(position, false);
+
+                    // Tạo mới và thay thế fragment trong container
+                    Fragment fragment = createFragmentForPosition(position);
+                    replaceFragment(fragment);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Implement if needed
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Implement if needed
+
+            }
+        });
+
+
+
+    }
+
+    private Fragment createFragmentForPosition(int position) {
+        Fragment fragment = null;
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room); // Thay đổi tên key nếu cần
+        bundle.putSerializable("home", home); // Thay đổi tên key nếu cần
+
+        switch (position) {
+            case 0:
+                fragment = new RoomGuestFragment();
+                break;
+            case 1:
+                fragment = new RoomServiceFragment();
+                break;
+            case 2:
+                fragment = new RoomBillContainerFragment();
+                break;
+            case 3:
+                fragment = new RoomContractFragment();
+                break;
+            default:
+                break;
+        }
+
+        if (fragment != null) {
+            fragment.setArguments(bundle); // Đặt Bundle cho fragment
+        }
+
+        return fragment;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
         }
     }
 
@@ -148,20 +223,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         bundle.putSerializable("room", room);
         fragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
-        binding.viewPager.setVisibility(View.GONE);
-        binding.tabLayout.setVisibility(View.GONE);
-    }
-
-    public void showRoomMakeBillFragment(RoomBill bill) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        RoomMakeBillFragment fragment = new RoomMakeBillFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("bill", bill);
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.addToBackStack(null); // Để quay lại Fragment trước đó khi cần
         fragmentTransaction.commit();
         binding.viewPager.setVisibility(View.GONE);
         binding.tabLayout.setVisibility(View.GONE);
@@ -192,8 +253,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
         if (currentFragment instanceof GuestAddContractFragment ||
                 currentFragment instanceof RoomGuestContractFragment ||
-                currentFragment instanceof RoomGuestFragment ||
-                currentFragment instanceof RoomBillContainerFragment) {
+                currentFragment instanceof RoomGuestFragment) {
             if (!hasMainGuest) {
                 Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
