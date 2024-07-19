@@ -253,12 +253,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         presenter.setUpDropDownMenuDays();
         presenter.setUpDateOfBirthField(tilNgaySinh, edtNgaySinh, imgButtonLichNgaySinh, getString(R.string.dd_mm_yyyy));
 
-        Calendar contractCreationDate = Calendar.getInstance();
-        Calendar checkInDate = Calendar.getInstance();
-
-        presenter.setUpDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao, getString(R.string.dd_mm_yyyy), DateType.CONTRACT_CREATION_DATE, contractCreationDate, checkInDate);
-        presenter.setUpDateField(tilNgayVao, edtNgayVao, imgButtonLichNgayVaoO, getString(R.string.dd_mm_yyyy), DateType.CHECK_IN_DATE, contractCreationDate, checkInDate);
-        presenter.setUpDateField(tilNgayHetHan, edtNgayHetHan, imgButtonLichNgayHetHan, getString(R.string.dd_mm_yyyy), DateType.CONTRACT_EXPIRY_DATE, contractCreationDate, checkInDate);
 
         imgAddCCCDFront.setOnClickListener(v -> {
             currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;
@@ -299,10 +293,20 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         checkCCCDNumber();
         checkRoomPrice();
 
+
+        presenter.setUpContractCreateDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao,
+                getString(R.string.dd_mm_yyyy));
+        presenter.setUpDateInField(tilNgayVao, edtNgayVao, imgButtonLichNgayVaoO,
+                getString(R.string.dd_mm_yyyy));
+        presenter.setUpContractExpireDateField(tilNgayHetHan, edtNgayHetHan, imgButtonLichNgayHetHan,
+                getString(R.string.dd_mm_yyyy));
+
+
         btnAddContract.setOnClickListener(v -> openSaveDialog());
 
         btnCancel.setOnClickListener(v -> openCancelSaveDialog());
     }
+
 
     @Override
     public void showToast(String message) {
@@ -529,13 +533,14 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         System.out.println("Gender: " + gender);
         System.out.println("Total Members: " + totalMembers);
         System.out.println("Create Date: " + createDate);
+        System.out.println("Date In: " + dateIn);
         System.out.println("Expiration Date: " + expirationDate);
         System.out.println("Pay Date: " + payDate);
         System.out.println("Room Price: " + roomPrice);
         System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
 
         if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
-                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || expirationDate.isEmpty() ||
+                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || dateIn.isEmpty() || expirationDate.isEmpty() ||
                 payDate.isEmpty() || roomPrice.isEmpty() || daysUntilDueDateStr.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return false;

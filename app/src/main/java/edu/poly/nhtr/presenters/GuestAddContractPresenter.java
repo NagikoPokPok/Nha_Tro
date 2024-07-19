@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
@@ -35,7 +36,9 @@ public class GuestAddContractPresenter {
     private final MainGuestListener mainGuestListener;
     private final Context context;
     private static final int MAX_PRICE_LENGTH = 9; // Giá phòng tối đa không quá 9 chữ số
-
+    private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
+    private String createDate = "";
+    private String dateIn = "";
 
     public GuestAddContractPresenter(MainGuestListener mainGuestListener, Context context) {
         this.mainGuestListener = mainGuestListener;
@@ -197,8 +200,196 @@ public class GuestAddContractPresenter {
         }
     }
 
-    // Sự kiện cho trường ngày (ngày vào ở, ngày tạo hợp đồng, ngày hết hạn hợp đồng)
-    public void setUpDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint, DateType dateType, Calendar contractCreationDate, Calendar checkInDate) {
+    public void setUpContractCreateDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText,
+                                             ImageButton imgButtonCalendar, String hint) {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        imgButtonCalendar.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
+                String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
+                textInputEditText.setText(selectedDate);
+                createDate = selectedDate; // Cập nhật createDate tại đây
+            }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                textInputLayout.setHint("");
+            } else {
+                if (Objects.requireNonNull(textInputEditText.getText()).toString().isEmpty()) {
+                    textInputLayout.setHint(hint);
+                } else {
+                    textInputLayout.setHint("");
+                }
+            }
+        });
+
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            private final Calendar cal = Calendar.getInstance();
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1; // Selection position (Vị trí được chọn)
+
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < REQUIRED_DATE_LENGTH) {
+                        String ddmmyyyy = "DDmmYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        Calendar c = Calendar.getInstance();
+                        year = (year < 2000) ? 2000 : Math.min(year, c.get(Calendar.YEAR));
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%02d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    textInputEditText.setText(current);
+                    textInputEditText.setSelection(Math.min(sel, current.length()));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    textInputLayout.setHint("");
+                } else {
+                    textInputLayout.setHint(hint);
+                }
+            }
+        });
+    }
+
+    public void setUpDateInField(TextInputLayout textInputLayout, TextInputEditText textInputEditText,
+                                 ImageButton imgButtonCalendar, String hint) {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        imgButtonCalendar.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
+                String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
+                textInputEditText.setText(selectedDate);
+            }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        textInputEditText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                textInputLayout.setHint("");
+            } else {
+                if (Objects.requireNonNull(textInputEditText.getText()).toString().isEmpty()) {
+                    textInputLayout.setHint(hint);
+                } else {
+                    textInputLayout.setHint("");
+                }
+            }
+        });
+
+        textInputEditText.addTextChangedListener(new TextWatcher() {
+            private final Calendar cal = Calendar.getInstance();
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1; // Selection position (Vị trí được chọn)
+
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < REQUIRED_DATE_LENGTH) {
+                        String ddmmyyyy = "DDmmYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        Calendar c = Calendar.getInstance();
+                        year = (year < 2000) ? 2000 : Math.min(year, c.get(Calendar.YEAR));
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%02d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    textInputEditText.setText(current);
+                    textInputEditText.setSelection(Math.min(sel, current.length()));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    textInputLayout.setHint("");
+                } else {
+                    textInputLayout.setHint(hint);
+                }
+            }
+        });
+    }
+
+
+    public void setUpContractExpireDateField(TextInputLayout textInputLayout, TextInputEditText textInputEditText,
+                                             ImageButton imgButtonCalendar, String hint) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -209,7 +400,6 @@ public class GuestAddContractPresenter {
             DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
                 String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
                 textInputEditText.setText(selectedDate);
-                validateDate(selectedDate, dateType, contractCreationDate, checkInDate, textInputLayout);
             }, year, month, day);
             datePickerDialog.show();
         });
@@ -253,7 +443,7 @@ public class GuestAddContractPresenter {
 
                     if (clean.equals(cleanCurr)) sel--;
 
-                    if (clean.length() < 8) {
+                    if (clean.length() < REQUIRED_DATE_LENGTH) {
                         String ddmmyyyy = "DDmmYYYY";
                         clean = clean + ddmmyyyy.substring(clean.length());
                     } else {
@@ -261,10 +451,11 @@ public class GuestAddContractPresenter {
                         int month = Integer.parseInt(clean.substring(2, 4));
                         int year = Integer.parseInt(clean.substring(4, 8));
 
-                        if (month > 12) month = 12;
+                        month = Math.min(month, 12);
+                        Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.MONTH, month - 1);
                         day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
-                        year = Math.max(2000, Math.min(year, 2100)); // Giới hạn năm từ 2000 đến 2100
+                        year = Math.max(2000, Math.min(year, 2100));
 
                         clean = String.format(Locale.getDefault(), "%02d%02d%02d", day, month, year);
                     }
@@ -282,7 +473,6 @@ public class GuestAddContractPresenter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                validateDate(current, dateType, contractCreationDate, checkInDate, textInputLayout);
                 if (!s.toString().isEmpty()) {
                     textInputLayout.setHint("");
                 } else {
@@ -291,51 +481,6 @@ public class GuestAddContractPresenter {
             }
         });
     }
-
-    private void validateDate(String date, DateType dateType, Calendar contractCreationDate, Calendar checkInDate, TextInputLayout textInputLayout) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        Calendar selectedDate = Calendar.getInstance();
-        try {
-            selectedDate.setTime(sdf.parse(date));
-        } catch (ParseException e) {
-            textInputLayout.setError("Ngày không hợp lệ");
-            return;
-        }
-
-        switch (dateType) {
-            case CHECK_IN_DATE:
-                if (selectedDate.before(contractCreationDate)) {
-                    textInputLayout.setError("Ngày vào ở không thể trước ngày tạo hợp đồng");
-                } else if (selectedDate.after(contractCreationDate)) {
-                    // Kiểm tra nếu ngày vào ở không quá 2 tuần so với ngày tạo hợp đồng
-                    Calendar maxCheckInDate = (Calendar) contractCreationDate.clone();
-                    maxCheckInDate.add(Calendar.WEEK_OF_YEAR, 2);
-                    if (selectedDate.after(maxCheckInDate)) {
-                        textInputLayout.setError("Ngày vào ở không được quá 2 tuần so với ngày tạo hợp đồng");
-                    } else {
-                        textInputLayout.setError(null);
-                    }
-                } else {
-                    textInputLayout.setError(null);
-                }
-                break;
-            case CONTRACT_CREATION_DATE:
-                if (selectedDate.after(Calendar.getInstance())) {
-                    textInputLayout.setError("Ngày tạo hợp đồng không thể ở tương lai");
-                } else {
-                    textInputLayout.setError(null);
-                }
-                break;
-            case CONTRACT_EXPIRY_DATE:
-                if (selectedDate.before(checkInDate)) {
-                    textInputLayout.setError("Ngày hết hạn hợp đồng không thể trước ngày vào ở");
-                } else {
-                    textInputLayout.setError(null);
-                }
-                break;
-        }
-    }
-
 
     // Sự kiện cho trường ngày sinh
     public void setUpDateOfBirthField(TextInputLayout textInputLayout, TextInputEditText textInputEditText, ImageButton imgButtonCalendar, String hint) {
@@ -391,7 +536,7 @@ public class GuestAddContractPresenter {
 
                     if (clean.equals(cleanCurr)) sel--;
 
-                    if (clean.length() < 8) {
+                    if (clean.length() < REQUIRED_DATE_LENGTH) {
                         String ddmmyyyy = "DDmmYYYY";
                         clean = clean + ddmmyyyy.substring(clean.length());
                     } else {
@@ -461,6 +606,7 @@ public class GuestAddContractPresenter {
             }
         }
     }
+
 
     public void setUpRoomPriceField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
         textInputEditText.addTextChangedListener(new TextWatcher() {
