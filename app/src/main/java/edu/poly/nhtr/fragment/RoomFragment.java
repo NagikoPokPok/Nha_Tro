@@ -39,9 +39,11 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
@@ -302,7 +304,9 @@ public class RoomFragment extends Fragment implements RoomListener {
 
             }
         });
+
         edtPrice.addTextChangedListener(new TextWatcher() {
+            private String current = "";
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -310,10 +314,30 @@ public class RoomFragment extends Fragment implements RoomListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = edtPrice.getText().toString().trim();
-                if (!name.isEmpty()) {
-                    layoutPrice.setErrorEnabled(false);
-                    layoutPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                if (!s.toString().equals(current)) {
+                    edtPrice.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("\\D", "");
+
+                    if (!cleanString.isEmpty()) {
+                        double parsed = Double.parseDouble(cleanString);
+                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
+
+                        current = formatted;
+                        edtPrice.setText(formatted);
+                        edtPrice.setSelection(formatted.length());
+                    } else {
+                        current = "";
+                        edtPrice.setText("");
+                    }
+
+                    edtPrice.addTextChangedListener(this);
+
+                    String price = edtPrice.getText().toString().trim();
+                    if (!price.isEmpty()) {
+                        layoutPrice.setErrorEnabled(false);
+                        layoutPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                    }
                 }
             }
 

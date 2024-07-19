@@ -519,7 +519,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         String dateIn = getStringFromEditText(edtNgayVao);
         String expirationDate = getStringFromEditText(edtNgayHetHan);
         String payDate = getStringFromEditText(edtNgayTraTien);
-        String roomPrice = getStringFromEditText(edtTienPhong);
+        String roomPrice = getStringFromEditText(edtTienPhong).replace(".", "");
         String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
 
         System.out.println("Name Guest: " + nameGuest);
