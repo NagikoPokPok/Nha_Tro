@@ -37,8 +37,6 @@ public class GuestAddContractPresenter {
     private final Context context;
     private static final int MAX_PRICE_LENGTH = 9; // Giá phòng tối đa không quá 9 chữ số
     private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
-    private String createDate = "";
-    private String dateIn = "";
 
     public GuestAddContractPresenter(MainGuestListener mainGuestListener, Context context) {
         this.mainGuestListener = mainGuestListener;
@@ -211,7 +209,6 @@ public class GuestAddContractPresenter {
             DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year1, monthOfYear, dayOfMonth) -> {
                 String selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year1);
                 textInputEditText.setText(selectedDate);
-                createDate = selectedDate; // Cập nhật createDate tại đây
             }, year, month, day);
             datePickerDialog.show();
         });
