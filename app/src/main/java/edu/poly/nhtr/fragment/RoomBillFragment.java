@@ -129,6 +129,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                             if (day == currentDay && month == currentMonth && year == currentYear) {
                                 return;
                             } else {
+
                                 int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
                                 if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
                                     alarmService = new AlarmService(requireContext(), home, room, header, body);
@@ -232,8 +233,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
 
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 41);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 38);
 
         pushAlarm(callback, calendar);
 

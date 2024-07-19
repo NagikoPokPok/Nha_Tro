@@ -117,6 +117,31 @@ public class PreferenceManager {
         return null; // Return null if no value found for the key
     }
 
+    public void removeString(String key, String homeId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(key + "_" + homeId);
+        editor.apply();
+    }
+
+    public void removeBoolean(String key, String homeId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(key + "_" + homeId);
+        editor.apply();
+    }
+
+    public void removeHome(String key, String userID) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(key + "_" + userID);
+        editor.apply();
+    }
+
+    public void removeRoom(String key, String homeID) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(key + "_" + homeID);
+        editor.apply();
+    }
+
+
 
 
 }

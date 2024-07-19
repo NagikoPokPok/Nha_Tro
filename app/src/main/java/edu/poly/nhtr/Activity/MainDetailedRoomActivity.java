@@ -144,33 +144,33 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 //            }
 //        });
 
-        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab != null) {
-                    int position = tab.getPosition();
-                    Toast.makeText(MainDetailedRoomActivity.this, position + "", Toast.LENGTH_SHORT).show();
-
-                    // Cập nhật ViewPager
-                    binding.viewPager.setCurrentItem(position, false);
-
-                    // Tạo mới và thay thế fragment trong container
-                    Fragment fragment = createFragmentForPosition(position);
-                    replaceFragment(fragment);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // Implement if needed
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // Implement if needed
-
-            }
-        });
+//        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                if (tab != null) {
+//                    int position = tab.getPosition();
+//                    Toast.makeText(MainDetailedRoomActivity.this, position + "", Toast.LENGTH_SHORT).show();
+//
+//                    // Cập nhật ViewPager
+//                    binding.viewPager.setCurrentItem(position, false);
+//
+//                    // Tạo mới và thay thế fragment trong container
+//                    Fragment fragment = createFragmentForPosition(position);
+//                    replaceFragment(fragment);
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//                // Implement if needed
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//                // Implement if needed
+//
+//            }
+//        });
 
 
 

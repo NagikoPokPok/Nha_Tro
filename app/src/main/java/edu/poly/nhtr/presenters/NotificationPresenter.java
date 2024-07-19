@@ -350,7 +350,7 @@ public class NotificationPresenter {
                             populateHomeDetails(home, homeDocumentSnapshot);
                             homeList.add(home);
                         }
-                        if (roomID != null) {
+                        if (!Objects.equals(roomID, "")) {
                             fetchRoomDetails(roomID, roomList, listener, homeList);
                         } else {
                             listener.onComplete(homeList, roomList);
