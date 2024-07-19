@@ -605,59 +605,59 @@ public class GuestAddContractPresenter {
     }
 
 
-    public void setUpRoomPriceField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
-        textInputEditText.addTextChangedListener(new TextWatcher() {
-            private String current = "";
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().equals(current)) {
-                    textInputEditText.removeTextChangedListener(this);
-
-                    String cleanString = s.toString().replaceAll("\\D", "");
-
-                    if (cleanString.length() > MAX_PRICE_LENGTH) {
-                        cleanString = cleanString.substring(0, MAX_PRICE_LENGTH);
-                    }
-
-                    if (!cleanString.isEmpty()) {
-                        double parsed = Double.parseDouble(cleanString);
-                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
-
-                        current = formatted;
-                        textInputEditText.setText(formatted);
-                        textInputEditText.setSelection(formatted.length());
-                    } else {
-                        current = "";
-                        textInputEditText.setText("");
-                    }
-
-                    textInputEditText.addTextChangedListener(this);
-                    handleRoomPriceChanged(cleanString, textInputLayout);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Do nothing
-            }
-        });
-    }
-
-    private void handleRoomPriceChanged(String price, TextInputLayout textInputLayout) {
-        if (price.isEmpty()) {
-            textInputLayout.setError("Không được bỏ trống");
-        } else if (price.length() > MAX_PRICE_LENGTH) {
-            textInputLayout.setError("Giá phòng không được vượt quá 9 chữ số");
-        } else {
-            textInputLayout.setError(null);
-        }
-    }
+//    public void setUpRoomPriceField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
+//        textInputEditText.addTextChangedListener(new TextWatcher() {
+//            private String current = "";
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                // Do nothing
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (!s.toString().equals(current)) {
+//                    textInputEditText.removeTextChangedListener(this);
+//
+//                    String cleanString = s.toString().replaceAll("\\D", "");
+//
+//                    if (cleanString.length() > MAX_PRICE_LENGTH) {
+//                        cleanString = cleanString.substring(0, MAX_PRICE_LENGTH);
+//                    }
+//
+//                    if (!cleanString.isEmpty()) {
+//                        double parsed = Double.parseDouble(cleanString);
+//                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
+//
+//                        current = formatted;
+//                        textInputEditText.setText(formatted);
+//                        textInputEditText.setSelection(formatted.length());
+//                    } else {
+//                        current = "";
+//                        textInputEditText.setText("");
+//                    }
+//
+//                    textInputEditText.addTextChangedListener(this);
+//                    handleRoomPriceChanged(cleanString, textInputLayout);
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                // Do nothing
+//            }
+//        });
+//    }
+//
+//    private void handleRoomPriceChanged(String price, TextInputLayout textInputLayout) {
+//        if (price.isEmpty()) {
+//            textInputLayout.setError("Không được bỏ trống");
+//        } else if (price.length() > MAX_PRICE_LENGTH) {
+//            textInputLayout.setError("Giá phòng không được vượt quá 9 chữ số");
+//        } else {
+//            textInputLayout.setError(null);
+//        }
+//    }
 
 
     public void addContractToFirestore(MainGuest mainGuest) {

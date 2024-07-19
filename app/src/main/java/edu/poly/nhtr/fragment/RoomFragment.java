@@ -712,6 +712,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         Intent intent = new Intent(getContext(), MainDetailedRoomActivity.class);
         intent.putExtra("room", room);
         intent.putExtra("home", home);
+        intent.putExtra("room_price", room.getPrice());
         startActivity(intent);
     }
 

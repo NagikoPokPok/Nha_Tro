@@ -26,6 +26,7 @@ public class RoomGuestContractFragment extends Fragment {
     private FragmentRoomGuestContractBinding binding;
     private PreferenceManager preferenceManager;
     private Room room;
+    private String roomPrice;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -42,6 +43,7 @@ public class RoomGuestContractFragment extends Fragment {
 
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
+            roomPrice = getArguments().getString("room_price");
             if (room != null) {
                 Log.d("RoomGuestContractFragment", "Room ID: " + room.getRoomId());
                 setListener();
@@ -92,6 +94,7 @@ public class RoomGuestContractFragment extends Fragment {
             GuestAddContractFragment guestAddContractFragment = new GuestAddContractFragment();
             Bundle args = new Bundle();
             args.putSerializable("room", room);
+            args.putString("room_price", roomPrice);
             guestAddContractFragment.setArguments(args);
             FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(binding.getRoot().getId(), guestAddContractFragment);

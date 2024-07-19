@@ -459,6 +459,8 @@
                         android:autofillHints=""
                         android:background="@drawable/bottom_outline"
                         android:inputType="number"
+                        android:clickable="false"
+                        android:focusable="false"
                         />
 
                     <TextView

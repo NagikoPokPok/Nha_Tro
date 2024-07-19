@@ -45,6 +45,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     private Room room;
     private boolean hasMainGuest = false;
     private Home home;
+    private String roomPrice;
     private int targetFragmentIndex = -1; // Default to no target
 
     @Override
@@ -58,6 +59,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
 
         room = (Room) getIntent().getSerializableExtra("room");
         home = (Home) getIntent().getSerializableExtra("home");
+        roomPrice = getIntent().getStringExtra("room_price");
         targetFragmentIndex = getIntent().getIntExtra("target_fragment_index", -1); // Get target fragment index
 
         if (room != null && home != null) {
@@ -221,6 +223,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         RoomGuestContractFragment fragment = new RoomGuestContractFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
+        bundle.putString("room_price", roomPrice);
         fragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
