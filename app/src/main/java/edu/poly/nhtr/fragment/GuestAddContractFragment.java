@@ -42,11 +42,9 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-import edu.poly.nhtr.Activity.Enum.DateType;
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
@@ -97,7 +95,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private ImageButton imgButtonLichNgayTao;
     private ImageButton imgButtonLichNgayHetHan;
     private ImageButton imgButtonLichNgayVaoO;
-    private ImageButton imgButtonLichNgayTraTien;
     private RoundedImageView imgCCCDFront;
     private RoundedImageView imgCCCDBack;
     private ImageView imgAddCCCDFront;
@@ -493,14 +490,13 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
                 progressBar.setVisibility(View.INVISIBLE);
 
+                dialog.dismiss();
                 if (saveContractSuccessfully) {
-                    dialog.dismiss();
                     MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
                     if (activity != null) {
                         activity.showTabLayoutAndRoomGuestFragment();
                     }
                 } else {
-                    dialog.dismiss();
                     Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
                 }
             }, 2000);
