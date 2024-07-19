@@ -1,9 +1,13 @@
 package edu.poly.nhtr.presenters;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -193,19 +197,75 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                     }
 
     @Override
-    public void updateGuestInFirebase(String guestId, Guest guest) {
-        HashMap<String, Object> guestData = new HashMap<>();
-        guestData.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
-        guestData.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
-        guestData.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
-        guestData.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
+    public void updateGuestInFirebase(Guest guest) {
 
-        database.collection(Constants.KEY_COLLECTION_GUESTS).document(guestId)
-                .update(guestData)
-                .addOnSuccessListener(aVoid -> {
-                    view.showToast("Cập nhật thông tin khách thành công");
-                    getGuests(view.getInfoRoomFromGoogleAccount()); // Refresh the guest list
-                })
-                .addOnFailureListener(e -> view.showToast("Cập nhật thông tin khách thất bại"));
+        view.showLoadingOfFunctions(R.id.btn_add_new_guest);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+        database.collection(Constants.KEY_COLLECTION_GUESTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<DocumentSnapshot> documentSnapshots = getDocumentSnapshots(task);
+
+                        position = 0;
+                        boolean found = false;
+
+                        for (DocumentSnapshot doc : documentSnapshots) {
+                            position++;
+                            String roomIdFromFirestore = doc.getId();
+
+                            // Kiểm tra nếu roomId khớp
+                            if (roomIdFromFirestore.equals(guest.getGuestId())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+
+                            HashMap<String, Object> updateInfo = new HashMap<>();
+                            updateInfo.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
+                            updateInfo.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
+                            updateInfo.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
+                            updateInfo.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
+
+                            database.collection(Constants.KEY_COLLECTION_GUESTS)
+                                    .document(guest.getGuestId())
+                                    .update(updateInfo)
+                                    .addOnSuccessListener(aVoid -> {
+                                        getGuests(view.getInfoRoomFromGoogleAccount());
+                                        //homeListener.showToast("Cập nhật thành công ở vị trí: " + getPosition());
+                                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                                        view.dialogClose();
+                                        view.openDialogSuccess(R.layout.layout_dialog_update_guest_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                                        view.showToast("Cập nhật thông tin khách thất bại");
+                                    });
+                        } else {
+                            view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                            view.showToast("Không tìm thấy khách");
+                        }
+                    } else {
+                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                        view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
+                    }
+                });
+    }
+
+    private static @NonNull List<DocumentSnapshot> getDocumentSnapshots(Task<QuerySnapshot> task) {
+        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+
+        documentSnapshots.sort((o1, o2) -> {
+            Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
+            Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
+            if (timestamp1 != null && timestamp2 != null) {
+                return timestamp1.compareTo(timestamp2);
+            }
+            return 0;
+        });
+        return documentSnapshots;
     }
 }

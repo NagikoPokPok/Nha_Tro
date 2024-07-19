@@ -51,6 +51,6 @@ public interface RoomGuestInterface {
 
         void deleteGuest(Guest guest);
 
-        void updateGuestInFirebase(String guestId, Guest guest);
+        void updateGuestInFirebase(Guest guest);
     }
 }

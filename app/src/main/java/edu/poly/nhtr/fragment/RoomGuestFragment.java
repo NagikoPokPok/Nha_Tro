@@ -277,6 +277,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         // Thêm dấu * đỏ cho TextView cần
         nameGuest.append(customizeText("*"));
+        phoneGuest.append(customizeText("*"));
 
         // Set hint cho các trường và nút
         title.setText("Thêm khách mới");
@@ -441,18 +442,17 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             String newPhoneGuest = edtPhoneGuest.getText().toString().trim();
             String newDateIn = edtDateIn.getText().toString().trim();
 
-            Guest updatedGuest = new Guest();
-            updatedGuest.setNameGuest(newNameGuest);
-            updatedGuest.setPhoneGuest(newPhoneGuest);
-            updatedGuest.setDateIn(newDateIn);
-            updatedGuest.setFileStatus(guest.isFileStatus());
+            // Cập nhật dữ liệu
+            guest.setNameGuest(newNameGuest);
+            guest.setPhoneGuest(newPhoneGuest);
+            guest.setDateIn(newDateIn);
+            guest.setFileStatus(false);
 
-            String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
-            presenter.updateGuestInFirebase(roomId, updatedGuest);
+            presenter.updateGuestInFirebase(guest);
         });
     }
 
-    private void openDeleteRoomDialog(Guest guest) {
+    private void openDeleteGuestDialog(Guest guest) {
 
         setUpDialog(R.layout.layout_dialog_delete_guest);
 
@@ -468,7 +468,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         // Xử lý sự kiện cho Button
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
+
         btnDeleteGuest.setOnClickListener(v -> {
             presenter.deleteGuest(guest);
             dialog.dismiss();
@@ -488,7 +488,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
             else if (itemId == R.id.menu_delete_guest) {
                 // Thực hiện hành động cho mục xóa
-                openDeleteRoomDialog(guest);
+                openDeleteGuestDialog(guest);
                 return true;
             }
             return false;
