@@ -275,6 +275,8 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         Button btnAddGuest = dialog.findViewById(R.id.btn_add_new_guest);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
+        int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
+
         // Thêm dấu * đỏ cho TextView cần
         nameGuest.append(customizeText("*"));
         phoneGuest.append(customizeText("*"));
@@ -295,11 +297,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = edtNameGuest.getText().toString().trim();
-                if (!name.isEmpty()) {
-                    nameGuestLayout.setErrorEnabled(false);
-                    nameGuestLayout.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }
+                presenter.handleNameChanged(s.toString(), nameGuestLayout, boxStrokeColor);
             }
 
             @Override
@@ -360,7 +358,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         TextView txtPhoneGuest = dialog.findViewById(R.id.txt_phone_number);
         TextInputLayout layoutNameGuest = dialog.findViewById(R.id.layout_name_guest);
         TextInputLayout layoutPhoneGuest = dialog.findViewById(R.id.layout_phone_number);
-
+        int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
 
         //Hiện thông tin lên edt
         edtNameGuest.setText(guest.getNameGuest());
@@ -380,11 +378,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = edtNameGuest.getText().toString().trim();
-                if (!name.isEmpty()) {
-                    layoutNameGuest.setErrorEnabled(false);
-                    layoutNameGuest.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }
+                presenter.handleNameChanged(s.toString(), layoutNameGuest, boxStrokeColor);
             }
 
             @Override

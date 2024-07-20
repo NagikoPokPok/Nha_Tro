@@ -1,8 +1,11 @@
 package edu.poly.nhtr.presenters;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -267,5 +270,28 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
             return 0;
         });
         return documentSnapshots;
+    }
+
+    @Override
+    public void handleNameChanged(String name, TextInputLayout textInputLayout, int boxStrokeColor) {
+        if (textInputLayout == null) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(name)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (!isValidName(name)) {
+            textInputLayout.setError("Tên không được chứa số hoặc ký tự đặc biệt");
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+        }
+    }
+
+
+    // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
+    private boolean isValidName(String name) {
+        String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
+        return name.matches(regex);
     }
 }

@@ -120,9 +120,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             binding.txtProfileStatus.setTextColor(color);
 
             binding.imgMenu.setOnClickListener(v -> {
-                binding.frmImage2.setVisibility(View.VISIBLE);
-                binding.frmImage.setVisibility(View.GONE);
-                view.openPopup(v, mainGuest, binding);
+                view.showToast("Khách chính không thể xóa hoặc sửa thông tin. Hãy qua bên phần hợp đồng để thực hiện.");
             });
         }
     }
