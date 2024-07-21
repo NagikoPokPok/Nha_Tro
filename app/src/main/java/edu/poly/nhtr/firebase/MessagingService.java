@@ -69,7 +69,7 @@ public class MessagingService extends FirebaseMessagingService {
             room = preferenceManager.getRoom(Constants.KEY_COLLECTION_ROOMS, home.getIdHome());
         }
 
-        removePreferences();
+        //removePreferences();
 
         buildNotification(title, body, notificationID, home, room);
 

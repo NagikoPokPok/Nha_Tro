@@ -13,7 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -111,6 +113,8 @@ public class NotificationFragment extends Fragment implements NotificationListen
         homeList = new ArrayList<>();
         mainActivity = new MainActivity();
 
+
+
         notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
             @Override
             public void onComplete(List<Home> homeList) {
@@ -163,10 +167,13 @@ public class NotificationFragment extends Fragment implements NotificationListen
 
 
     private void setupRecyclerView() {
+        //RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
+
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         adapter = new NotificationAdapter(requireActivity(), new ArrayList<>(), notificationPresenter, this);
         binding.recyclerView.setAdapter(adapter);
+        //binding.recyclerView.addItemDecoration(itemDecoration);
     }
 
     @Override

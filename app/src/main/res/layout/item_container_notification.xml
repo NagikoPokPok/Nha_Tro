@@ -75,8 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginStart="10dp">
 
         <TextView
             android:id="@+id/time_get_notification_until_now"
@@ -96,7 +95,7 @@
             android:layout_gravity="center"
             android:background="@drawable/checkbox_selector_index"
             android:button="@null"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_marginTop="15dp"/>
 
 
