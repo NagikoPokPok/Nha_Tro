@@ -114,6 +114,7 @@ public class MessagingService extends FirebaseMessagingService {
             return;
         }
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+        //notificationManager.notify(1001, builder.build());
 
     }
 
@@ -125,6 +126,8 @@ public class MessagingService extends FirebaseMessagingService {
 
     private PendingIntent getResultPendingIntent(String notificationID, Home home, Room room) {
         Intent resultIntent;
+        int requestCode = (int) System.currentTimeMillis(); // Unique request code for each PendingIntent
+
         if (room == null) {
             resultIntent = new Intent(this, MainRoomActivity.class);
             resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
@@ -132,9 +135,8 @@ public class MessagingService extends FirebaseMessagingService {
             resultIntent.putExtra("notification_document_id", notificationID);
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
             stackBuilder.addNextIntentWithParentStack(resultIntent);
-            return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            return stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         } else {
-
             Intent intentMainRoom = new Intent(this, MainRoomActivity.class);
             intentMainRoom.putExtra("FRAGMENT_TO_LOAD", "HomeFragment");
             intentMainRoom.putExtra("home", home);
@@ -142,7 +144,7 @@ public class MessagingService extends FirebaseMessagingService {
             Intent intentDetailedRoom = new Intent(this, MainDetailedRoomActivity.class);
             intentDetailedRoom.putExtra("target_fragment_index", 2);
             intentDetailedRoom.putExtra("room", room);
-            intentDetailedRoom.putExtra("notification_document_id",notificationID);
+            intentDetailedRoom.putExtra("notification_document_id", notificationID);
             intentDetailedRoom.putExtra("home", home);
 
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -150,13 +152,10 @@ public class MessagingService extends FirebaseMessagingService {
             stackBuilder.addNextIntent(intentMainRoom);
             stackBuilder.addNextIntent(intentDetailedRoom);
 
-            return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            return stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
-
-
-
-
     }
+
 
 
     private void createNotificationChannel(Context context) {

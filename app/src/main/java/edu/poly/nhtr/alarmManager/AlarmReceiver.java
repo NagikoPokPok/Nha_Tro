@@ -55,6 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        int requestCode = intent.getIntExtra("requestCode", -1);
         Home home = (Home) intent.getSerializableExtra("home");
         Room room = (Room) intent.getSerializableExtra("room");
         String header = (String) intent.getSerializableExtra("header");
@@ -68,39 +69,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         //String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
 
         switch (Objects.requireNonNull(intent.getAction())) {
-            case Constants.ACTION_SET_EXACT: // For bill
-
-                notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
-                notificationIndex.put(Constants.KEY_NOTIFICATION_BODY, body);
-                notificationIndex.put(Constants.KEY_USER_ID, getInfoUserFromGoogleAccount(context, preferenceManager));
-                notificationIndex.put(Constants.KEY_HOME_ID, home.getIdHome());
-                notificationIndex.put(Constants.KEY_NAME_HOME, home.getNameHome());
-                notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
-
-                if( room != null){
-                    notificationIndex.put(Constants.KEY_ROOM_ID, room.getRoomId());
-                    notificationIndex.put(Constants.KEY_NAME_ROOM, room.getNameRoom());
-                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, true);
-                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, false);
-                    notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
-                }
-
-                db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
-                        .add(notificationIndex)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                getNotificationIndex(documentReference, context, preferenceManager);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                showToast(context, "failure");
-                            }
-                        });
-                break;
-
+            case Constants.ACTION_SET_EXACT: // For bil
 
             case Constants.ACTION_SET_REPETITIVE_EXACT: // For index
                 notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
@@ -111,11 +80,20 @@ public class AlarmReceiver extends BroadcastReceiver {
                 notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
 
                 if (Constants.ACTION_SET_REPETITIVE_EXACT.equals(intent.getAction()) && room==null) {
-                    setRepetitiveAlarm(new AlarmService(context, home, null, header, body));
+                    setRepetitiveAlarm(new AlarmService(context, home, null, header, body), requestCode);
                     notificationIndex.put(Constants.KEY_ROOM_ID, "");
                     notificationIndex.put(Constants.KEY_NAME_ROOM, "");
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, false);
+                    notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
+                }
+
+                if( room != null){
+                    setRepetitiveAlarm(new AlarmService(context, home, room, header, body), requestCode);
+                    notificationIndex.put(Constants.KEY_ROOM_ID, room.getRoomId());
+                    notificationIndex.put(Constants.KEY_NAME_ROOM, room.getNameRoom());
+                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, true);
+                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, false);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
                 }
 
@@ -255,56 +233,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void buildNotification(Context context,String header, String body, Home home, DocumentReference documentReference) {
-        createNotificationChannel(context);
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        Intent resultIntent = new Intent(context, MainRoomActivity.class);
-        resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
-        resultIntent.putExtra("home", home);
-        resultIntent.putExtra("notification_document_id", documentReference.getId());
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.icon_notification)
-                .setContentTitle(header)
-                .setContentText(body)
-                .setSound(uri)
-                .setContentIntent(resultPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-    }
-
-    private void createNotificationChannel(Context context) {
-        CharSequence name = "Alarm Manager Channel";
-        String description = "Channel for Alarm Manager notifications";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.setDescription(description);
-
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        if (notificationManager != null) {
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    private void setRepetitiveAlarm(AlarmService alarmService) {
+    private void setRepetitiveAlarm(AlarmService alarmService, int requestCode) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
         Timber.d("Set alarm for next month same time - %s", convertDate(cal.getTimeInMillis()));
-        alarmService.setRepetitiveAlarm(cal.getTimeInMillis());
+        alarmService.setRepetitiveAlarm(cal.getTimeInMillis(),requestCode);
     }
 
     private String convertDate(long timeInMillis) {

@@ -50,18 +50,19 @@ public class AlarmService {
     }
 
 
-    public void setRepetitiveAlarm(long timeInMillis) {
+    public void setRepetitiveAlarm(long timeInMillis, int requestCode) {
         if (canScheduleExactAlarms()) {
             setAlarm(
                     timeInMillis,
                     getPendingIntent(
                             getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT)
                                     .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
+                                    .putExtra("requestCode", requestCode)
                                     .putExtra("home", home)
                                     .putExtra("room", room)
                                     .putExtra("header", header)
                                     .putExtra("body", body),
-                            0
+                            requestCode
                     )
             );
         } else {

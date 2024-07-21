@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.RoomBillAdapter;
@@ -123,11 +124,11 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
                             // Set alarm for reminding make bill
                             alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-                            setAlarm(alarmService::setExactAlarm, dayOfGiveBill - 1, 1); // requestCode 1
+                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
 
                             // Set alarm for reminding give bill
                             alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-                            setAlarm(alarmService2::setExactAlarm, dayOfGiveBill, 2); // requestCode 2
+                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
                         } else {
                             Notification notification = notificationList.get(0);
                             Calendar calendar = Calendar.getInstance();
@@ -140,24 +141,17 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                             if (day == currentDay && month == currentMonth && year == currentYear) { // Check today have pushed notification or not
                                 return;
                             }
-                            else {
-                                // Set alarm for reminding make bill
-                                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-                                alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-                                setAlarm(alarmService::setExactAlarm, dayOfGiveBill - 1, 1); // requestCode 1
-
-                                // Set alarm for reminding give bill
-                                alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-                                setAlarm(alarmService2::setExactAlarm, dayOfGiveBill, 2); // requestCode 2
-
-//                                if (dayOfGiveBill - currentDay == 1) {
-//                                    alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-//                                    setAlarm(alarmService::setExactAlarm, currentDay, 1);
-//                                }else if (dayOfGiveBill == currentDay) {
-//                                    alarmService = new AlarmService(requireContext(), home, room, header2, body2);
-//                                    setAlarm(alarmService::setExactAlarm, currentDay, 2);
-//                                }
-                            }
+//                            else {
+////                                // Set alarm for reminding make bill
+////                                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+////                                alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+////                                setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
+////
+////                                // Set alarm for reminding give bill
+////                                alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+////                                setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+//
+//                            }
                         }
                     }
                 });
@@ -172,6 +166,11 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
 
         return binding.getRoot();
+    }
+
+    private int generateRandomRequestCode() {
+        Random random = new Random();
+        return random.nextInt(1000000); // Giới hạn số ngẫu nhiên trong khoảng 0 đến 9999
     }
 
     private interface AlarmCallback {

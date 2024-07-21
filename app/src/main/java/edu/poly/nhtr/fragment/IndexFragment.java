@@ -77,6 +77,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
@@ -360,13 +361,20 @@ public class IndexFragment extends Fragment implements IndexInterface {
         ).show();
     }
 
+    private int generateRandomRequestCode() {
+        Random random = new Random();
+        return random.nextInt(1000000); // Giới hạn số ngẫu nhiên trong khoảng 0 đến 9999
+    }
+
+
     private void pushAlarm(LayoutDialogSettingNotificationIndexBinding binding1, AlarmCallback callback, Calendar calendar)
     {
         binding1.btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, true, homeID);
-                callback.onAlarmSet(calendar.getTimeInMillis());
+                int requestCode = generateRandomRequestCode();
+                callback.onAlarmSet(calendar.getTimeInMillis(), requestCode);
                 dialog.dismiss();
             }
         });
@@ -374,7 +382,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
     }
 
     private interface AlarmCallback {
-        void onAlarmSet(long timeInMillis);
+        void onAlarmSet(long timeInMillis, int requestCode);
     }
 
     private void showRowInTable(boolean waterIsIndex) {
