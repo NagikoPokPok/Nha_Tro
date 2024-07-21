@@ -55,7 +55,7 @@
                 android:fontFamily="@font/inter_bold"
                 android:layout_marginStart="10dp"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="16sp"/>
+                android:textSize="15sp"/>
 
 
         </LinearLayout>
@@ -67,7 +67,8 @@
             android:text="This is notification body"
             android:textColor="@color/colorTextBlack"
             android:layout_marginTop="2dp"
-            android:fontFamily="@font/inter_medium"/>
+            android:fontFamily="@font/inter_medium"
+            android:textSize="14sp"/>
     </LinearLayout>
 
     <LinearLayout

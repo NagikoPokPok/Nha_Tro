@@ -1,251 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.RoomBillFragment"
-    android:orientation="vertical"
-    android:id="@+id/layout_main_of_room_bill">
+    android:id="@+id/swipe_refresh_fragment">
 
     <LinearLayout
-        android:id="@+id/layout_functions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:gravity="end"
-        android:orientation="horizontal"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        >
-
-        <FrameLayout
-            android:id="@+id/layout_delete_bill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/frame_round_delete_bill"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/background_delete_index_normal"
-                android:scaleType="fitXY"
-                app:riv_oval="true" />
-
-            <ImageButton
-                android:id="@+id/btn_delete_bill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_delete_outline"
-                android:backgroundTint="@color/colorGray" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/layout_filter_bill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/frame_round_filter_bill"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/background_delete_index_normal"
-                android:scaleType="fitXY"
-                app:riv_oval="true" />
-
-            <ImageButton
-                android:id="@+id/btn_filter_bill"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_filter_index"
-                android:backgroundTint="@color/colorGray" />
-
-        </FrameLayout>
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/layout_main_of_room_bill">
 
         <LinearLayout
-            android:id="@+id/layout_date_time"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/background_date_time_index"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:id="@+id/layout_functions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            >
 
-            <TextView
-                android:id="@+id/txt_date_time"
+            <FrameLayout
+                android:id="@+id/layout_delete_bill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp">
 
-                android:layout_gravity="center_vertical"
-                android:text=""
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/frame_round_delete_bill"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_delete_index_normal"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
 
-            <ImageButton
-                android:id="@+id/img_calendar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/icon_calendar"
-                android:contentDescription="Calendar"
-                android:backgroundTint="@color/colorPrimary"
-                android:layout_marginStart="5dp"/>
+                <ImageButton
+                    android:id="@+id/btn_delete_bill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_delete_outline"
+                    android:backgroundTint="@color/colorGray" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/layout_filter_bill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/frame_round_filter_bill"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_delete_index_normal"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
+
+                <ImageButton
+                    android:id="@+id/btn_filter_bill"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_filter_index"
+                    android:backgroundTint="@color/colorGray" />
+
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_date_time"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/background_date_time_index"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_date_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/img_calendar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/icon_calendar"
+                    android:contentDescription="Calendar"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginStart="5dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_delete_many_bills"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="7dp"
-        android:visibility="gone">
-
         <LinearLayout
-            android:id="@+id/layout_select_all"
-            android:layout_width="0dp"
+            android:id="@+id/layout_delete_many_bills"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="7dp"
+            android:visibility="gone">
 
-            <CheckBox
-                android:id="@+id/checkbox_select_all"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/checkbox_selector_index"
-                android:button="@null"
-                android:visibility="visible" />
+            <LinearLayout
+                android:id="@+id/layout_select_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkbox_select_all"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/checkbox_selector_index"
+                    android:button="@null"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Chọn tất cả"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/txt_cancel_delete_bill"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Chọn tất cả"
+                android:layout_marginStart="60dp"
+                android:text="Huỷ"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
+                />
+
+
+            <TextView
+                android:id="@+id/txt_delete_bill_here"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Nhấn ở đây để xoá !"
+                android:textColor="@color/colorOrange"
                 android:textSize="15sp" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txt_cancel_delete_bill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:text="Huỷ"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="15sp"
-            android:fontFamily="@font/inter_medium"
-            />
-
-
-        <TextView
-            android:id="@+id/txt_delete_bill_here"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Nhấn ở đây để xoá !"
-            android:textColor="@color/colorOrange"
-            android:textSize="15sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_type_of_filter_bill"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        >
-
-        <TextView
-            android:id="@+id/txt_title_filter_bill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="5dp"
-            android:text="Lọc theo:  "
-            android:textSize="15sp"
-            android:fontFamily="@font/inter_medium"
-            android:textColor="@color/colorTextBlack"/>
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/list_type_of_filter_bill"
+        <LinearLayout
+            android:id="@+id/layout_type_of_filter_bill"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:flexWrap="wrap"
-            android:orientation="horizontal">
-        </com.google.android.flexbox.FlexboxLayout>
-    </LinearLayout>
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
 
-    <FrameLayout
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+            <TextView
+                android:id="@+id/txt_title_filter_bill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                android:text="Lọc theo:  "
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"/>
 
-        <ProgressBar
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/list_type_of_filter_bill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"
+                android:orientation="horizontal">
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/colorPrimary"
+                />
+
+<!--            <com.github.ybq.android.spinkit.SpinKitView-->
+<!--                android:id="@+id/spinkit"-->
+<!--                style="@style/SpinKitView.Large.Wave"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                app:SpinKit_Color="@color/colorPrimary" />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đang tải dữ liệu..."
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="14sp"/>
+
+
+
+        </FrameLayout>
+
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
             />
 
-    </FrameLayout>
+        <LinearLayout
+            android:id="@+id/layout_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"
-        />
-
-    <LinearLayout
-        android:id="@+id/layout_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        >
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/img_no_data" />
 
 
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/img_no_data" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Không có thông tin !"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="16sp" />
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="Không có thông tin !"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="16sp" />
-
+        </LinearLayout>
 
     </LinearLayout>
 
 
-
-
-</LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -74,7 +74,7 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         holder.binding.dateCreateBill.setText(dateCreateBill);
         holder.binding.datePayBill.setText(datePayBill);
 
-        if(bill.isNotGiveBill || bill.isPayedBill || bill.isDelayPayBill){
+        if(bill.isNotPayBill || bill.isPayedBill || bill.isDelayPayBill || bill.isNotGiveBill){
             holder.binding.layoutStatusOfPay.setVisibility(View.VISIBLE);
         }else{
             holder.binding.layoutStatusOfPay.setVisibility(View.INVISIBLE);
@@ -89,15 +89,18 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         }else if(bill.isDelayPayBill()){
             holder.binding.imgStatusOfPay.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorRed));
             holder.binding.txtStatusOfPay.setText("Quá hạn thanh toán");
+        }else if(bill.isNotGiveBill()){
+            holder.binding.imgStatusOfPay.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorOrange));
+            holder.binding.txtStatusOfPay.setText("Chưa gửi phiếu");
         }
 
 
-        if(bill.isNotGiveBill()){
-            holder.binding.imgStatusOfGiveBill.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorOrange));
-            holder.binding.txtStatusOfGiveBill.setText("Chưa gửi phiếu");
-        }else{
-            holder.binding.layoutStatusOfGiveBill.setVisibility(View.INVISIBLE);
-        }
+//        if(bill.isNotGiveBill()){
+//            holder.binding.imgStatusOfGiveBill.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorOrange));
+//            holder.binding.txtStatusOfGiveBill.setText("Chưa gửi phiếu");
+//        }else{
+//            holder.binding.layoutStatusOfGiveBill.setVisibility(View.INVISIBLE);
+//        }
 
         // Định dạng số tiền
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());

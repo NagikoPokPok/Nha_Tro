@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +23,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.github.ybq.android.spinkit.style.Wave;
 import com.google.android.flexbox.FlexboxLayout;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,7 +48,7 @@ import edu.poly.nhtr.presenters.RoomBillPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class RoomBillFragment extends Fragment implements RoomBillListener {
+public class RoomBillFragment extends Fragment implements RoomBillListener, SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentRoomBillBinding binding;
     private RoomBillPresenter roomBillPresenter;
@@ -64,6 +65,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     private Dialog dialog;
     private PreferenceManager preferenceManager;
     private AlarmService alarmService;
+    private AlarmService alarmService2;
     private Home home;
 
     @Override
@@ -83,6 +85,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         dialog = new Dialog(requireContext());
 
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
+
+
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
@@ -100,9 +105,11 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             showToast("Arguments are null");
         }
 
+        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
 
-        String header = "Sắp tới ngày chốt tiền cho phòng " + room.getNameRoom();
-        String body = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom();
+        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();;
 
         roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
@@ -113,10 +120,14 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                     public void onComplete(List<Notification> notificationList) {
                         if (notificationList.isEmpty()) {
                             int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-                            if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
-                                alarmService = new AlarmService(requireContext(), home, room, header, body);
-                                setAlarm(alarmService::setRepetitiveAlarm, currentDay);
-                            }
+
+                            // Set alarm for reminding make bill
+                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+                            setAlarm(alarmService::setExactAlarm, dayOfGiveBill - 1, 1); // requestCode 1
+
+                            // Set alarm for reminding give bill
+                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+                            setAlarm(alarmService2::setExactAlarm, dayOfGiveBill, 2); // requestCode 2
                         } else {
                             Notification notification = notificationList.get(0);
                             Calendar calendar = Calendar.getInstance();
@@ -126,15 +137,26 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                             int month = calendar.get(Calendar.MONTH);
                             int year = calendar.get(Calendar.YEAR);
 
-                            if (day == currentDay && month == currentMonth && year == currentYear) {
+                            if (day == currentDay && month == currentMonth && year == currentYear) { // Check today have pushed notification or not
                                 return;
-                            } else {
-
+                            }
+                            else {
+                                // Set alarm for reminding make bill
                                 int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-                                if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
-                                    alarmService = new AlarmService(requireContext(), home, room, header, body);
-                                    setAlarm(alarmService::setRepetitiveAlarm, currentDay);
-                                }
+                                alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+                                setAlarm(alarmService::setExactAlarm, dayOfGiveBill - 1, 1); // requestCode 1
+
+                                // Set alarm for reminding give bill
+                                alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+                                setAlarm(alarmService2::setExactAlarm, dayOfGiveBill, 2); // requestCode 2
+
+//                                if (dayOfGiveBill - currentDay == 1) {
+//                                    alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+//                                    setAlarm(alarmService::setExactAlarm, currentDay, 1);
+//                                }else if (dayOfGiveBill == currentDay) {
+//                                    alarmService = new AlarmService(requireContext(), home, room, header2, body2);
+//                                    setAlarm(alarmService::setExactAlarm, currentDay, 2);
+//                                }
                             }
                         }
                     }
@@ -152,24 +174,55 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         return binding.getRoot();
     }
 
+    private interface AlarmCallback {
+        void onAlarmSet(long timeInMillis, int requestCode);
+    }
+
+
+    private void setAlarm(AlarmCallback callback, int day, int requestCode) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+
+        pushAlarm(callback, calendar, requestCode);
+    }
+
+    private void pushAlarm(AlarmCallback callback, Calendar calendar, int requestCode) {
+        callback.onAlarmSet(calendar.getTimeInMillis(), requestCode);
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onRefresh() {
+        // Get list bill
+        checkAndAddBillIfNeeded();
+        // Remove layout delete bills
+        closeLayoutDeleteBills();
+        // Remove layout filter bills
+        closeLayoutFilterBills();
+        // Remove date time
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.swipeRefreshFragment.setRefreshing(false);
+            }
+        }, 2000);
+    }
+
 
 
 
     private void checkAndAddBillIfNeeded() {
-//        LocalDate localDate = LocalDate.now();
-//        int dayOfMonth = localDate.getDayOfMonth();
-//        if (dayOfMonth == 1) {
-//            roomBillPresenter.addBill(room);
-//        } else {
-//            roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
-//                @Override
-//                public void onComplete(List<RoomBill> billList) {
-//
-//                    roomBillAdapter.setBillList(billList);
-//                }
-//            });
-//        }
-
 
         roomBillPresenter.checkContractIsCreated(room, new RoomBillPresenter.OnGetContractCompleteListener() {
             @Override
@@ -215,36 +268,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     }
 
 
-    private interface AlarmCallback {
-        void onAlarmSet(long timeInMillis);
-    }
-
-    private void setAlarm(AlarmCallback callback, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
 
 
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
 
-
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 38);
-
-        pushAlarm(callback, calendar);
-
-
-    }
-
-    private void pushAlarm(AlarmCallback callback, Calendar calendar) {
-        callback.onAlarmSet(calendar.getTimeInMillis());
-        dialog.dismiss();
-    }
 
     private void setupFilterBills() {
         binding.layoutFilterBill.setOnClickListener(new View.OnClickListener() {
@@ -421,9 +447,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                                 }
 
                                 if (binding.listTypeOfFilterBill.getChildCount() == 0) {
-                                    // If no filter left in the list -> Set GONE
-                                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
-                                    binding.layoutNoData.setVisibility(View.GONE);
+                                    // If no filter left in the list -> close layout
+                                    closeLayoutFilterBills();
                                     // And update list homes as initial
                                     //binding.recyclerView.setVisibility(View.VISIBLE);
                                     roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
@@ -457,6 +482,13 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                 //dialog.dismiss();
             }
         });
+    }
+
+    private void closeLayoutFilterBills() {
+        binding.btnFilterBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
+        binding.frameRoundFilterBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+        binding.layoutNoData.setVisibility(View.GONE);
     }
 
     private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {

@@ -100,6 +100,12 @@ dependencies {
 
     implementation ("androidx.viewpager2:viewpager2:1.1.0")
 
+    //SwipeRefresh
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    // Custom progress bar
+    implementation ("com.github.ybq:Android-SpinKit:1.4.0")
+
 
 
 }

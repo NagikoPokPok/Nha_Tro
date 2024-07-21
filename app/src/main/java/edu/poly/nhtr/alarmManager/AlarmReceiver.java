@@ -68,8 +68,41 @@ public class AlarmReceiver extends BroadcastReceiver {
         //String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
 
         switch (Objects.requireNonNull(intent.getAction())) {
-            case Constants.ACTION_SET_EXACT:
-            case Constants.ACTION_SET_REPETITIVE_EXACT:
+            case Constants.ACTION_SET_EXACT: // For bill
+
+                notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
+                notificationIndex.put(Constants.KEY_NOTIFICATION_BODY, body);
+                notificationIndex.put(Constants.KEY_USER_ID, getInfoUserFromGoogleAccount(context, preferenceManager));
+                notificationIndex.put(Constants.KEY_HOME_ID, home.getIdHome());
+                notificationIndex.put(Constants.KEY_NAME_HOME, home.getNameHome());
+                notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
+
+                if( room != null){
+                    notificationIndex.put(Constants.KEY_ROOM_ID, room.getRoomId());
+                    notificationIndex.put(Constants.KEY_NAME_ROOM, room.getNameRoom());
+                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, true);
+                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, false);
+                    notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
+                }
+
+                db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                        .add(notificationIndex)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                getNotificationIndex(documentReference, context, preferenceManager);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                showToast(context, "failure");
+                            }
+                        });
+                break;
+
+
+            case Constants.ACTION_SET_REPETITIVE_EXACT: // For index
                 notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
                 notificationIndex.put(Constants.KEY_NOTIFICATION_BODY, body);
                 notificationIndex.put(Constants.KEY_USER_ID, getInfoUserFromGoogleAccount(context, preferenceManager));
@@ -83,15 +116,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                     notificationIndex.put(Constants.KEY_NAME_ROOM, "");
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, false);
-                    notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
-                }
-
-                if( room != null){
-                    setRepetitiveAlarm(new AlarmService(context, home, room, header, body));
-                    notificationIndex.put(Constants.KEY_ROOM_ID, room.getRoomId());
-                    notificationIndex.put(Constants.KEY_NAME_ROOM, room.getNameRoom());
-                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, true);
-                    notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, false);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
                 }
 
