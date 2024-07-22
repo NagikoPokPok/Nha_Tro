@@ -711,32 +711,30 @@ public class GuestAddContractPresenter {
                 })
                 .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
 
+        // Thêm MainGuest vào collection guests trên Firebase
+        HashMap<String, Object> guest = new HashMap<>();
+        guest.put(Constants.KEY_GUEST_NAME, mainGuest.getNameGuest());
+        guest.put(Constants.KEY_GUEST_PHONE, mainGuest.getPhoneGuest());
+        guest.put(Constants.KEY_GUEST_DATE_IN, mainGuest.getDateIn());
+        guest.put(Constants.KEY_CONTRACT_STATUS, mainGuest.isFileStatus());
+        guest.put(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount());
+        guest.put(Constants.KEY_TIMESTAMP, new Date());
+        guest.put(Constants.KEY_IS_MAIN_GUEST, true);
+
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
-                .add(contract)
+                .add(guest)
                 .addOnSuccessListener(documentReference -> {
-                    mainGuestListener.putContractInfoInPreferences(
+                    mainGuestListener.putMainGuestInfoInPreferences(
                             mainGuest.getNameGuest(),
                             mainGuest.getPhoneGuest(),
-                            mainGuest.getCccdNumber(),
-                            mainGuest.getDateOfBirth(),
-                            mainGuest.getGender(),
-                            mainGuest.getTotalMembers(),
-                            mainGuest.getCreateDate(),
                             mainGuest.getDateIn(),
-                            mainGuest.getRoomPrice(),
-                            mainGuest.getExpirationDate(),
-                            mainGuest.getPayDate(),
-                            mainGuest.getDaysUntilDueDate(),
-                            mainGuest.getCccdImageFront(),
-                            mainGuest.getCccdImageBack(),
-                            mainGuest.getContractImageFront(),
-                            mainGuest.getContractImageBack(),
                             mainGuest.isFileStatus(),
                             mainGuestListener.getInfoRoomFromGoogleAccount(),
                             documentReference
                     );
-                    mainGuestListener.showToast("Thêm hợp đồng thành công");
+                    mainGuestListener.showToast("Thêm khách thành công");
                 })
-                .addOnFailureListener(e -> mainGuestListener.showToast("Thêm hợp đồng thất bại"));
+                .addOnFailureListener(e -> mainGuestListener.showToast("Thêm khách thất bại"));
     }
 }
+

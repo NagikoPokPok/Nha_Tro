@@ -12,10 +12,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
@@ -201,7 +204,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
 
     @Override
     public void updateGuestInFirebase(Guest guest) {
-
         view.showLoadingOfFunctions(R.id.btn_add_new_guest);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
@@ -226,7 +228,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                             }
                         }
                         if (found) {
-
                             HashMap<String, Object> updateInfo = new HashMap<>();
                             updateInfo.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
                             updateInfo.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
@@ -238,7 +239,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                     .update(updateInfo)
                                     .addOnSuccessListener(aVoid -> {
                                         getGuests(view.getInfoRoomFromGoogleAccount());
-                                        //homeListener.showToast("Cập nhật thành công ở vị trí: " + getPosition());
                                         view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
                                         view.dialogClose();
                                         view.openDialogSuccess(R.layout.layout_dialog_update_guest_success);
@@ -257,6 +257,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                     }
                 });
     }
+
 
     private static @NonNull List<DocumentSnapshot> getDocumentSnapshots(Task<QuerySnapshot> task) {
         List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
@@ -294,4 +295,73 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
         String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
         return name.matches(regex);
     }
+
+    @Override
+    public void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor) {
+        if (textInputLayout == null) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(phone)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (!isValidPhoneNumber(phone)) {
+            textInputLayout.setError("Số điện thoại không hợp lệ");
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+        }
+    }
+
+    // Kiểm tra số điện thoại có hợp lệ không
+    private boolean isValidPhoneNumber(CharSequence target) {
+        if (target.length() != 10) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(target).matches();
+        }
+    }
+
+    @Override
+    public void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor) {
+        if (textInputLayout == null) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(checkInDate)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (!isCheckInDateValid(checkInDate, roomId)) {
+            textInputLayout.setError("Ngày vào ở không hợp lệ");
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+        }
+    }
+
+    private boolean isCheckInDateValid(String checkInDate, String roomId) {
+        try {
+            Task<QuerySnapshot> task = database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                    .get();
+
+            if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                QueryDocumentSnapshot contractDoc = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                String contractCreatedDate = contractDoc.getString(Constants.KEY_CONTRACT_CREATED_DATE);
+
+                if (contractCreatedDate != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    Date checkIn = sdf.parse(checkInDate);
+                    Date contractCreated = sdf.parse(contractCreatedDate);
+
+                    if (checkIn != null && contractCreated != null) {
+                        return !checkIn.before(contractCreated);
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }

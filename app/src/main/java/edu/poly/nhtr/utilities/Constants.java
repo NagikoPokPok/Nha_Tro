@@ -94,6 +94,7 @@ public class Constants {
     public static final String KEY_COLLECTION_GUESTS = "guests";
     public static final String KEY_GUEST_DATE_IN = "guestDateIn";
     public static final String KEY_GUEST_ID = "guestId";
+    public static final String KEY_IS_MAIN_GUEST = "isMainGuest";
 
 
 

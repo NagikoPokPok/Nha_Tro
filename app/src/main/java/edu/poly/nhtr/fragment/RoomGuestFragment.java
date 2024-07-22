@@ -306,6 +306,40 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
         });
 
+        edtPhoneGuest.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.handlePhoneChanged(s.toString(), phoneGuestLayout, boxStrokeColor);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
+
+        edtDateIn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), dateInLayout, boxStrokeColor);
+            }
+        });
+
         // Handle add guest button state
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -333,7 +367,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             String name = edtNameGuest.getText().toString().trim();
             String phone = edtPhoneGuest.getText().toString().trim();
             String dateIn = edtDateIn.getText().toString().trim();
-            Guest guest = new Guest(name, phone, false, dateIn);
+            Guest guest = new Guest(name, phone, true, dateIn);
             presenter.addGuestToFirebase(guest);
 
             String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
@@ -358,6 +392,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         TextView txtPhoneGuest = dialog.findViewById(R.id.txt_phone_number);
         TextInputLayout layoutNameGuest = dialog.findViewById(R.id.layout_name_guest);
         TextInputLayout layoutPhoneGuest = dialog.findViewById(R.id.layout_phone_number);
+        TextInputLayout layoutDateIn = dialog.findViewById(R.id.layout_date_in);
         int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
 
         //Hiện thông tin lên edt
@@ -395,16 +430,29 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String address = edtPhoneGuest.getText().toString().trim();
-                if (!address.isEmpty()) {
-                    layoutPhoneGuest.setErrorEnabled(false);
-                    layoutPhoneGuest.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }
+                presenter.handlePhoneChanged(s.toString(), layoutPhoneGuest, boxStrokeColor);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        edtDateIn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), layoutDateIn, boxStrokeColor);
             }
         });
 
@@ -440,7 +488,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             guest.setNameGuest(newNameGuest);
             guest.setPhoneGuest(newPhoneGuest);
             guest.setDateIn(newDateIn);
-            guest.setFileStatus(false);
+            guest.setFileStatus(true);
 
             presenter.updateGuestInFirebase(guest);
         });

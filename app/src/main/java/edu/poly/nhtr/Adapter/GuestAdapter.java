@@ -19,12 +19,21 @@ import edu.poly.nhtr.models.MainGuest;
 
 public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Object> itemList;// Danh sách khách thuê phòng gồm MainGuest và Guest
+    private List<Object> itemList; // Danh sách khách thuê phòng gồm MainGuest và Guest
     private static RoomGuestInterface.View view;
 
     public GuestAdapter(List<Object> itemList, RoomGuestInterface.View view) {
         this.itemList = itemList;
-        this.view = view;
+        GuestAdapter.view = view;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (itemList.get(position) instanceof MainGuest) {
+            return 1; // MainGuest
+        } else {
+            return 0; // Guest
+        }
     }
 
     @NonNull
@@ -32,7 +41,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemContainerGuestBinding binding = ItemContainerGuestBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
-        return new GuestViewHolder(binding);
+        if (viewType == 1) {
+            return new MainGuestViewHolder(binding);
+        } else {
+            return new GuestViewHolder(binding);
+        }
     }
 
     @Override
@@ -119,9 +132,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
             binding.txtProfileStatus.setTextColor(color);
 
+            // Disable the menu button for MainGuest
             binding.imgMenu.setOnClickListener(v -> {
                 view.showToast("Khách chính không thể xóa hoặc sửa thông tin. Hãy qua bên phần hợp đồng để thực hiện.");
             });
         }
     }
 }
+

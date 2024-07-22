@@ -349,6 +349,15 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
     }
 
+    @Override
+    public void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, DocumentReference documentReference) {
+        preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
+        preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
+        preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
+        preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
+        preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+    }
+
 
     @Override
     public void onMainGuestsLoaded(List<MainGuest> mainGuests, String action) {

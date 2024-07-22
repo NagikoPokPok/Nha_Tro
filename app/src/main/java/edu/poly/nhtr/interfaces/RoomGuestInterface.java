@@ -55,5 +55,9 @@ public interface RoomGuestInterface {
         void updateGuestInFirebase(Guest guest);
 
         void handleNameChanged(String name, TextInputLayout textInputLayout, int boxStrokeColor);
+
+        void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor);
+
+        void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor);
     }
 }
