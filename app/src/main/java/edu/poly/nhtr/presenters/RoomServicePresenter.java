@@ -249,14 +249,13 @@ public class RoomServicePresenter {
         return false;
     }
 
-    public List<Service> getServiceOfRoom(List<RoomService> roomServices, OnGetServiceOfRoomListener callback) {
+    public void getServiceOfRoom(List<RoomService> roomServices, OnGetServiceOfRoomListener callback) {
         List<Service> services = new ArrayList<>();
         for (RoomService roomService : roomServices){
             services.add(roomService.getService());
 //            Log.e("serviceList", roomService.getService().getName());
         }
         callback.OnGetServiceOfRoom(services);
-        return services;
     }
 
     public void updateServiceQuantity(int quantity, String roomServiceId) {
@@ -309,58 +308,72 @@ public class RoomServicePresenter {
         String roomId = roomServices.get(0).getRoomId();
         WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
+        final int[] count = {0};
+
         //Update data of services in room to firebase
         for (Service service : listServiceAdd){
-            int quantity = setNewRoomServiceQuantity(roomId, service);
+            setNewRoomServiceQuantity(roomId, service, new OnSetNewRoomServiceQuantityListener() {
+                @Override
+                public void onSetNewRoomServiceQuantity(int quantity) {
+                    HashMap<String, Object> data = new HashMap<>();
+                    data.put(Constants.KEY_ROOM_ID, roomId);
+                    data.put(Constants.KEY_SERVICE_ID, service.getIdService());
+                    data.put(Constants.KEY_ROOM_SERVICE_QUANTITY, quantity);
 
-            HashMap<String, Object> data = new HashMap<>();
-            data.put(Constants.KEY_ROOM_ID, roomId);
-            data.put(Constants.KEY_SERVICE_ID, service.getIdService());
-            data.put(Constants.KEY_ROOM_SERVICE_QUANTITY, quantity);
+                    DocumentReference documentRoomService = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION).document();
+                    batch.set(documentRoomService, data);
+                    count[0]++;
 
-            DocumentReference documentRoomService = FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION).document();
-            batch.set(documentRoomService, data);
+                    if (listServiceAdd.size() == count[0]){
+                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    getRoomServices(roomId, new OnGetRoomServiceListener() {
+                                        @Override
+                                        public void onGetRoomService(List<RoomService> listRoomService) {
+                                            roomServices.clear();
+                                            roomServices.addAll(listRoomService);
+
+                                            // Remove listServiceAdd in services
+                                            for (Service service : listServiceAdd){
+                                                services.remove(service);
+                                            }
+
+                                            listener.updateDataBeforeAddSuccessfully(adapter);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+
 
         }
 
-        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    getRoomServices(roomId, new OnGetRoomServiceListener() {
-                        @Override
-                        public void onGetRoomService(List<RoomService> listRoomService) {
-                            roomServices.clear();
-                            roomServices.addAll(listRoomService);
 
-                            // Remove listServiceAdd in services
-                            for (Service service : listServiceAdd){
-                                services.remove(service);
-                            }
-
-                            listener.updateDataBeforeAddSuccessfully(adapter);
-                        }
-                    });
-                }
-            }
-        });
 
 
     }
 
-    private int setNewRoomServiceQuantity(String roomId, Service service) {
-        final int[] quantity = {0};
+    private void setNewRoomServiceQuantity(String roomId, Service service, OnSetNewRoomServiceQuantityListener callback) {
         if(service.getFee_base() == 1){
-            quantity[0] = 1;
+            callback.onSetNewRoomServiceQuantity(1);
         } else if (service.getFee_base() == 2) {
             getNumberOfGuest(roomId, new OnGetGuestListener() {
                 @Override
                 public void onGetQuantityOfGuestInRoom(int quantityOfGuest) {
-                    quantity[0] = quantityOfGuest;
+                    callback.onSetNewRoomServiceQuantity(quantityOfGuest);
                 }
             });
+        } else if (service.getFee_base() == 3) {
+            callback.onSetNewRoomServiceQuantity(0);
+        } else if (service.getFee_base() == 0) {
+            callback.onSetNewRoomServiceQuantity(404);
         }
-        return quantity[0];
     }
 
     public interface OnRoomServiceAutoSetListener {
@@ -380,5 +393,8 @@ public class RoomServicePresenter {
     }
     public interface OnGetGuestListener{
         void onGetQuantityOfGuestInRoom(int quantityOfGuest);
+    }
+    public interface OnSetNewRoomServiceQuantityListener{
+        void onSetNewRoomServiceQuantity(int quantity);
     }
 }

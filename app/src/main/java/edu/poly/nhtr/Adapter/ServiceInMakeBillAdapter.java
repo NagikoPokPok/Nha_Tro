@@ -10,6 +10,7 @@ import java.util.List;
 
 import edu.poly.nhtr.databinding.ItemServiceInMakeBillBinding;
 import edu.poly.nhtr.models.RoomService;
+import edu.poly.nhtr.models.Service;
 
 public class ServiceInMakeBillAdapter extends RecyclerView.Adapter<ServiceInMakeBillAdapter.ViewHolder> {
 
@@ -28,13 +29,25 @@ public class ServiceInMakeBillAdapter extends RecyclerView.Adapter<ServiceInMake
 
     @Override
     public void onBindViewHolder(@NonNull ServiceInMakeBillAdapter.ViewHolder holder, int position) {
-        String serviceName = "Tiền " + roomServices.get(position).getServiceName().toLowerCase();
-        String titleQuantity = "Số " + roomServices.get(position).getServiceName().toLowerCase() +" đã sử dụng";
+        RoomService roomService = roomServices.get(position);
+        Service service = roomService.getService();
+
+        String serviceName = "Tiền " + roomService.getServiceName().toLowerCase();
+        String titleQuantity;
+        if (service.getFee_base() == 0)
+            titleQuantity = "Số " + roomService.getServiceName().toLowerCase() +" đã sử dụng";
+        else
+            titleQuantity = "Số " + service.getUnit().toLowerCase() + " sử dụng";
+
 
         holder.binding.txtServiceName.setText(serviceName);
-        holder.binding.txtServiceFee.setText(roomServices.get(position).getService().getPrice());
         holder.binding.txtTitleQuantity.setText(titleQuantity);
-        holder.binding.txtQuantity.setText(roomServices.get(position).getQuantity());
+
+        String serviceFee = service.getPrice()+"/"+service.getUnit();
+        holder.binding.txtServiceFee.setText(serviceFee);
+
+        String quantity = roomServices.get(position).getQuantity()+" "+service.getUnit();
+        holder.binding.txtQuantity.setText(quantity);
     }
 
     @Override
@@ -42,7 +55,7 @@ public class ServiceInMakeBillAdapter extends RecyclerView.Adapter<ServiceInMake
         return roomServices.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
         ItemServiceInMakeBillBinding binding;
         public ViewHolder(@NonNull ItemServiceInMakeBillBinding itemBinding) {
             super(itemBinding.getRoot());
