@@ -91,11 +91,11 @@ public class MainRoomActivity extends AppCompatActivity {
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_index);
             }else if(fragmentToLoad != null && fragmentToLoad.equals("ServiceFragment"))
             {
-                replaceFragment(new IndexFragment(), "ServiceFragment");
+                replaceFragment(new ServiceFragment(), "ServiceFragment");
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_index);
             }else if(fragmentToLoad != null && fragmentToLoad.equals("StatisticFragment"))
             {
-                replaceFragment(new IndexFragment(), "StatisticFragment");
+                replaceFragment(new StatisticFragment(), "StatisticFragment");
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_index);
             }
             else {

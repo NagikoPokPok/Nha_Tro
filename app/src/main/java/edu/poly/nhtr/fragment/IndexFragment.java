@@ -1,7 +1,5 @@
 package edu.poly.nhtr.fragment;
 
-import static android.content.Intent.getIntent;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -13,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
@@ -59,29 +58,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 
-public class IndexFragment extends Fragment implements IndexInterface {
+public class IndexFragment extends Fragment implements IndexInterface,  SwipeRefreshLayout.OnRefreshListener {
     private IndexPresenter indexPresenter;
     private PreferenceManager preferenceManager;
     private FragmentIndexBinding binding;
@@ -157,6 +151,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
         checkWaterIsIndexOrNot();
 
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
+
 
 
         return binding.getRoot();
@@ -178,7 +174,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
                 });
 
 
-                removeStatusOfCheckBoxFilterHome();
+                removeStatusOfCheckBoxFilterIndex();
                 setupRecyclerView();
 
 
@@ -192,6 +188,49 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        // Get index
+        indexPresenter.checkWaterIsIndexOrNot(new IndexPresenter.OnCheckWaterIsIndexCompleteListener() {
+            @Override
+            public void onComplete(boolean isWaterIndex) {
+                waterIsIndex = isWaterIndex;
+                indexPresenter.fetchRoomsAndAddIndex(homeID, isWaterIndex, task1 -> {
+                    indexPresenter.updateWaterIsIndex(homeID, currentMonth + 1, currentYear, isWaterIndex, task2 -> {
+                        setupLayout(homeID, currentMonth + 1, currentYear);
+                    });
+
+                });
+
+            }
+        });
+
+        //Delete layout delete index
+        closeLayoutDeleteManyRows();
+
+        // Delete layout filter index
+        closeLayoutFilterIndexes();
+
+        // Set date time default
+        String monthYear = (currentMonth + 1) + "/" + currentYear;
+        binding.txtDateTime.setText(monthYear);
+
+        // Delete layout search index
+        binding.edtSearchIndex.clearFocus();
+
+        removeStatusOfCheckBoxFilterIndex();
+
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.swipeRefreshFragment.setRefreshing(false);
+            }
+        }, 2000);
     }
 
     private void setupAlarmService() {
@@ -381,6 +420,8 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
     }
 
+
+
     private interface AlarmCallback {
         void onAlarmSet(long timeInMillis, int requestCode);
     }
@@ -458,9 +499,18 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding.btnFilterIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                binding.btnFilterIndex.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+                binding.frameRoundFilterIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
                 openFilterIndexDialog();
             }
         });
+    }
+
+    private void closeLayoutFilterIndexes() {
+        binding.btnFilterIndex.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
+        binding.frameRoundFilterIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        binding.layoutTypeOfFilterIndex.setVisibility(View.GONE);
+        binding.layoutNoData.setVisibility(View.GONE);
     }
 
     private void openFilterIndexDialog() {
@@ -532,6 +582,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         binding1.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeLayoutFilterIndexes();
                 dialog.dismiss();
             }
         });
@@ -596,8 +647,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
                 // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
                 if (!filterByIndex1 && !filterByIndex2 && !filterByIndex3 && !filterByWaterIndex1 && !filterByWaterIndex2 && !filterByWaterIndex3) {
-                    binding.layoutNoData.setVisibility(View.GONE);
-                    binding.layoutTypeOfFilterIndex.setVisibility(View.GONE);
+                    closeLayoutFilterIndexes();
                     binding.recyclerView.setVisibility(View.VISIBLE);
                     indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
                 } else {
@@ -663,8 +713,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
 
                                 if (binding.listTypeOfFilterIndex.getChildCount() == 0) {
                                     // If no filter left in the list -> Set GONE
-                                    binding.layoutTypeOfFilterIndex.setVisibility(View.GONE);
-                                    binding.layoutNoData.setVisibility(View.GONE);
+                                    closeLayoutFilterIndexes();
                                     // And update list homes as initial
                                     //binding.recyclerView.setVisibility(View.VISIBLE);
                                     indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
@@ -1649,7 +1698,7 @@ public class IndexFragment extends Fragment implements IndexInterface {
         dialog.show();
     }
 
-    public void removeStatusOfCheckBoxFilterHome() {
+    public void removeStatusOfCheckBoxFilterIndex() {
         preferenceManager.removePreference("cbxByElectricityIndex1");
         preferenceManager.removePreference("cbxByElectricityIndex2");
         preferenceManager.removePreference("cbxByElectricityIndex3");

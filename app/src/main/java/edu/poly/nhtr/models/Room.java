@@ -91,6 +91,10 @@ public class Room  implements Serializable {
         this.roomId = roomId;
     }
 
+    public Date getDateObject() {
+        return dateObject;
+    }
+
     public HashMap<String, String> existingRooms = new HashMap<>();
     public Date dateObject;
 

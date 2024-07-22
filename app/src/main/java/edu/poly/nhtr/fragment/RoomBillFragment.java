@@ -165,6 +165,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         setupFilterBills();
 
 
+
         return binding.getRoot();
     }
 
@@ -210,6 +211,10 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         // Remove layout filter bills
         closeLayoutFilterBills();
         // Remove date time
+        binding.txtDateTime.setText("");
+        binding.btnCancelMonthPicker.setVisibility(View.GONE);
+        removeStatusOfCheckBoxFilterBill();
+
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -381,8 +386,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
                 // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
                 if (!filterByBill1 && !filterByBill2 && !filterByBill3 && !filterByBill4) {
-                    binding.layoutNoData.setVisibility(View.GONE);
-                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+//                    binding.layoutNoData.setVisibility(View.GONE);
+//                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+                    closeLayoutFilterBills();
                     binding.recyclerView.setVisibility(View.VISIBLE);
                     roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
                         @Override
@@ -659,7 +665,16 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     }
 
     private void setupMonthPicker() {
-        binding.txtDateTime.setText(String.valueOf(currentYear));
+
+        binding.btnCancelMonthPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.txtDateTime.setText("");
+                binding.btnCancelMonthPicker.setVisibility(View.GONE);
+                // Get list bill
+                checkAndAddBillIfNeeded();
+            }
+        });
 
 
         binding.imgCalendar.setOnClickListener(v -> {
@@ -676,6 +691,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                     public void onMonthSelected(int month, int year) {
                         date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
                         binding.txtDateTime.setText(date);
+                        binding.btnCancelMonthPicker.setVisibility(View.VISIBLE);
                         roomBillPresenter.getBillByMonthYear(room, month, year, new RoomBillPresenter.OnGetBillByMonthYearCompleteListener() {
                             @Override
                             public void onComplete(List<RoomBill> billList) {

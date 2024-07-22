@@ -15,6 +15,7 @@ import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
@@ -26,24 +27,39 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import edu.poly.nhtr.Adapter.RevenueOfMonthAdapter;
 import edu.poly.nhtr.Adapter.RevenueOfRoomAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentStatisticBinding;
+import edu.poly.nhtr.listeners.StatisticListener;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.RevenueOfMonthModel;
 import edu.poly.nhtr.models.RevenueOfRoomModel;
+import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomBill;
+import edu.poly.nhtr.presenters.IndexPresenter;
+import edu.poly.nhtr.presenters.StatisticPresenter;
 
 
-public class StatisticFragment extends Fragment {
+public class StatisticFragment extends Fragment implements StatisticListener {
     private FragmentStatisticBinding binding;
     private RevenueOfMonthAdapter revenueOfMonthAdapter;
     private RevenueOfRoomAdapter revenueOfRoomAdapter;
+    private String homeID;
+    private StatisticPresenter statisticPresenter;
+    Map<String, Long> mapForLineChart = new HashMap<>();
+    private String year;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,8 +71,53 @@ public class StatisticFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        assert getArguments() != null;
+        Home home = (Home) getArguments().getSerializable("home");
+        assert home != null;
+        homeID = home.getIdHome();
+        statisticPresenter = new StatisticPresenter(this, homeID);
 
-        setupLineChart();
+        year = binding.txtDateTime.getText().toString().trim();
+
+        statisticPresenter.getListRoomByHome(homeID, new StatisticPresenter.OnGetRoomCompleteListener() {
+            @Override
+            public void onComplete(List<Room> roomList) {
+                statisticPresenter.getListBillByListRoom(roomList, new StatisticPresenter.OnGetBillCompleteListener() {
+                    @Override
+                    public void onComplete(List<RoomBill> roomBillList) {
+                        Map<String, Long> monthYearTotalMap = new HashMap<>();
+
+                        for (RoomBill roomBill : roomBillList) {
+                            String monthYearKey = roomBill.getMonth() + "-" + roomBill.getYear();
+                            long totalOfMoney = roomBill.getTotalOfMoney();
+
+                            if (monthYearTotalMap.containsKey(monthYearKey)) {
+                                monthYearTotalMap.put(monthYearKey, monthYearTotalMap.get(monthYearKey) + totalOfMoney);
+                            } else {
+                                monthYearTotalMap.put(monthYearKey, totalOfMoney);
+                            }
+                        }
+
+                        mapForLineChart = monthYearTotalMap;
+
+                        setupLineChart(monthYearTotalMap);
+
+                        // Thay đổi month và year dưới đây để kiểm tra một monthYear cụ thể
+                        String specificMonthYear = "8-2024"; // Ví dụ: tháng 7 năm 2023
+
+                        if (monthYearTotalMap.containsKey(specificMonthYear)) {
+                            long totalMoney = monthYearTotalMap.get(specificMonthYear);
+                            showToast("Month-Year: " + specificMonthYear + ", Total Money: " + totalMoney);
+                        } else {
+                            showToast("No data for Month-Year: " + specificMonthYear);
+                        }
+                    }
+                });
+            }
+        });
+
+
+
         setupBarChart();
         setListeners();
         customizeTextViewUnderLine();
@@ -67,10 +128,12 @@ public class StatisticFragment extends Fragment {
         return binding.getRoot();
     }
 
+
+
     private void setupTableRevenueOfMonth() {
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        revenueOfMonthAdapter = new RevenueOfMonthAdapter(requireContext(), getRevenueOfMonthList());
+        revenueOfMonthAdapter = new RevenueOfMonthAdapter(requireContext(), getRevenueOfMonthList(mapForLineChart));
         binding.recyclerView.setAdapter(revenueOfMonthAdapter);
 
     }
@@ -126,23 +189,29 @@ public class StatisticFragment extends Fragment {
     }
 
 
-    private List<RevenueOfMonthModel> getRevenueOfMonthList() {
+    private List<RevenueOfMonthModel> getRevenueOfMonthList(Map<String, Long> monthYearTotalMap) {
         List<RevenueOfMonthModel> revenueOfMonthList = new ArrayList<>();
-        revenueOfMonthList.add(new RevenueOfMonthModel("T1", 2000000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T2", 2000000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T3", 2700000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T4", 2800000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T5", 2500000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T6", 3000000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T7", 2800000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T8", 2700000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T9", 2000000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T10", 3000000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T11", 2600000L));
-        revenueOfMonthList.add(new RevenueOfMonthModel("T12", 2600000L));
+
+        // Định dạng số tiền với dấu phân cách ba chữ số
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+
+        // Tạo danh sách tháng từ 1 đến 12
+        for (int month = 1; month <= 12; month++) {
+            String monthKey = month + "-" + year; // Thay đổi năm nếu cần
+            long totalMoney = monthYearTotalMap.getOrDefault(monthKey, 0L);
+
+            // Định dạng số tiền
+            String formattedMoney = numberFormat.format(totalMoney);
+
+            // Thay đổi định dạng theo kiểu 6.000.000 (hoặc 6 triệu)
+            revenueOfMonthList.add(new RevenueOfMonthModel("T." + month, formattedMoney));
+        }
 
         return revenueOfMonthList;
     }
+
+
+
 
     private List<RevenueOfRoomModel> getRevenueOfRoomList() {
         List<RevenueOfRoomModel> revenueOfRoomList = new ArrayList<>();
@@ -179,7 +248,7 @@ public class StatisticFragment extends Fragment {
         binding.btnViewDetailedRevenueOfRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupLineChart();
+                setupLineChart(mapForLineChart);
                 setVisible(true);
             }
         });
@@ -200,7 +269,7 @@ public class StatisticFragment extends Fragment {
         binding.txtBackToLineChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupLineChart();
+                setupLineChart(mapForLineChart);
                 setVisibleForTableRevenueOfMonth(false);
             }
         });
@@ -275,7 +344,7 @@ public class StatisticFragment extends Fragment {
         binding.barChart.getXAxis().setGranularityEnabled(true);
     }
 
-    private void setupLineChart() {
+    private void setupLineChart(Map<String, Long> monthYearTotalMap) {
         Description description = new Description();
         description.setText("Doanh thu tháng");
         description.setPosition(160f, 15f);
@@ -290,49 +359,61 @@ public class StatisticFragment extends Fragment {
         xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
         xAxis.setLabelCount(12);
         xAxis.setGranularity(1f);
-        ;
         xAxis.enableGridDashedLine(10f, 10f, 0f);
-
+        xAxis.setTextSize(10f); // Điều chỉnh kích thước nhãn trục X
 
         YAxis yAxis = binding.lineChart.getAxisLeft();
         yAxis.setAxisMinimum(0f);
-        yAxis.setAxisMaximum(4.0f);
         yAxis.setAxisLineWidth(2f);
         yAxis.setLabelCount(10);
-        // Thiết lập đường lưới nét đứt cho trục Y
-        yAxis.enableGridDashedLine(10f, 10f, 0f); // (khoảng cách nét, khoảng cách đứt, phase)
+        yAxis.enableGridDashedLine(10f, 10f, 0f);
+        yAxis.setTextSize(10f); // Điều chỉnh kích thước nhãn trục Y
 
-        // Nếu muốn thiết lập cho trục Y bên phải (nếu có sử dụng)
         YAxis rightAxis = binding.lineChart.getAxisRight();
-        rightAxis.setDrawLabels(false); // Ẩn nhãn trục Y bên phải
-        rightAxis.enableGridDashedLine(10f, 10f, 0f); // (khoảng cách nét, khoảng cách đứt, phase)
+        rightAxis.setDrawLabels(false);
+        rightAxis.enableGridDashedLine(10f, 10f, 0f);
 
-        List<Entry> entries1 = new ArrayList<>();
-        entries1.add(new Entry(0, 2.0f));
-        entries1.add(new Entry(1, 2.0f));
-        entries1.add(new Entry(2, 2.7f));
-        entries1.add(new Entry(3, 2.8f));
-        entries1.add(new Entry(4, 2.5f));
-        entries1.add(new Entry(5, 3.0f));
-        entries1.add(new Entry(6, 2.8f));
-        entries1.add(new Entry(7, 2.7f));
-        entries1.add(new Entry(8, 2.0f));
-        entries1.add(new Entry(9, 3.0f));
-        entries1.add(new Entry(10, 2.6f));
-        entries1.add(new Entry(11, 2.6f));
+        List<Entry> entries = new ArrayList<>();
+        long maxTotalMoney = 0;
 
+        for (int i = 0; i < 12; i++) {
+            String monthYearKey = (i + 1) + "-" + year; // Thay đổi năm nếu cần
+            long totalMoney = monthYearTotalMap.getOrDefault(monthYearKey, 0L);
+            float convertedTotalMoney = totalMoney / 1_000_000f; // Chia cho 1,000,000 để chuyển đổi sang triệu
+            entries.add(new Entry(i, convertedTotalMoney));
+            if (convertedTotalMoney > maxTotalMoney) {
+                maxTotalMoney = (long) convertedTotalMoney;
+            }
+        }
 
-        LineDataSet dataSet1 = new LineDataSet(entries1, "Doanh thu tháng");
-        dataSet1.setColor(Color.BLUE);
-        dataSet1.setDrawFilled(true);  // Bật chế độ tô màu phía dưới đường line
+        yAxis.setAxisMaximum(maxTotalMoney + 1); // Đặt giá trị tối đa cho trục Y, thêm một khoảng trống nhỏ
 
-        // Đặt drawable tùy chỉnh cho vùng phía dưới đường line
+        // Tạo ValueFormatter để định dạng số liệu trên trục Y
+        yAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format("%.1f", value); // Hiển thị với 1 số thập phân và đơn vị triệu
+            }
+        });
+
+        LineDataSet dataSet = new LineDataSet(entries, "Doanh thu tháng");
+        dataSet.setColor(Color.BLUE);
+        dataSet.setDrawFilled(true);
+        dataSet.setValueTextSize(10f); // Điều chỉnh kích thước chữ hiển thị trên các điểm dữ liệu
+        dataSet.setValueTextColor(getResources().getColor(R.color.colorTextBlack));
+
         Drawable drawable = ContextCompat.getDrawable(requireContext(), R.drawable.fill_color_of_line_chart);
-        dataSet1.setFillDrawable(drawable);
+        dataSet.setFillDrawable(drawable);
 
-
-        LineData lineData = new LineData(dataSet1);
+        LineData lineData = new LineData(dataSet);
         binding.lineChart.setData(lineData);
         binding.lineChart.invalidate();
+    }
+
+
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -1,691 +1,702 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/swipe_refresh_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.IndexFragment">
 
-
-    <LinearLayout
-        android:id="@+id/layout_functions"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_search_index"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="32dp"
-            app:boxCornerRadiusBottomStart="32dp"
-            app:boxCornerRadiusTopEnd="32dp"
-            app:boxCornerRadiusTopStart="32dp"
-            app:boxStrokeWidth="1dp"
-            app:hintEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_search_index"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Search"
-                android:imeOptions="actionGo"
-                android:maxLines="1"
-                android:paddingStart="15dp"
-                android:textSize="13sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/layout_delete"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="50dp"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:background="@drawable/background_delete_index_normal"-->
-<!--            android:gravity="center"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/txt_delete"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:text="Delete" />-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/btn_delete"-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:layout_marginStart="2dp"-->
-<!--                android:background="@drawable/ic_delete"-->
-<!--                android:backgroundTint="@color/colorGray" />-->
-
-<!--        </LinearLayout>-->
-
-        <FrameLayout
-            android:id="@+id/layout_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/frame_round_delete_index"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/background_delete_index_normal"
-                android:scaleType="fitXY"
-                app:riv_oval="true" />
-
-            <ImageButton
-                android:id="@+id/btn_delete"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_delete_outline"
-                android:backgroundTint="@color/colorGray" />
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/layout_filter_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp">
-
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/background_delete_index_normal"
-                android:scaleType="fitXY"
-                app:riv_oval="true" />
-
-            <ImageButton
-                android:id="@+id/btn_filter_index"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_filter_index"
-                android:backgroundTint="@color/colorGray" />
-
-        </FrameLayout>
-
+        android:layout_height="match_parent"
+        android:id="@+id/main">
 
         <LinearLayout
-            android:id="@+id/layout_date_time"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/background_date_time_index"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:id="@+id/layout_functions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
-            <TextView
-                android:id="@+id/txt_date_time"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_search_index"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="32dp"
+                app:boxCornerRadiusBottomStart="32dp"
+                app:boxCornerRadiusTopEnd="32dp"
+                app:boxCornerRadiusTopStart="32dp"
+                app:boxStrokeWidth="1dp"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_search_index"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Search"
+                    android:imeOptions="actionGo"
+                    android:maxLines="1"
+                    android:paddingStart="15dp"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <!--        <LinearLayout-->
+            <!--            android:id="@+id/layout_delete"-->
+            <!--            android:layout_width="100dp"-->
+            <!--            android:layout_height="50dp"-->
+            <!--            android:layout_marginStart="5dp"-->
+            <!--            android:background="@drawable/background_delete_index_normal"-->
+            <!--            android:gravity="center"-->
+            <!--            android:orientation="horizontal">-->
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/txt_delete"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:gravity="center"-->
+            <!--                android:text="Delete" />-->
+
+            <!--            <ImageButton-->
+            <!--                android:id="@+id/btn_delete"-->
+            <!--                android:layout_width="20dp"-->
+            <!--                android:layout_height="20dp"-->
+            <!--                android:layout_marginStart="2dp"-->
+            <!--                android:background="@drawable/ic_delete"-->
+            <!--                android:backgroundTint="@color/colorGray" />-->
+
+            <!--        </LinearLayout>-->
+
+            <FrameLayout
+                android:id="@+id/layout_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp">
 
-                android:layout_gravity="center_vertical"
-                android:text=""
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/frame_round_delete_index"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_delete_index_normal"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
 
-            <ImageButton
-                android:id="@+id/img_calendar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/icon_calendar"
-                android:contentDescription="Calendar"
-                android:backgroundTint="@color/colorPrimary"
-                android:layout_marginStart="5dp"/>
+                <ImageButton
+                    android:id="@+id/btn_delete"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_delete_outline"
+                    android:backgroundTint="@color/colorGray" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/layout_filter_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/frame_round_filter_index"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_delete_index_normal"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true" />
+
+                <ImageButton
+                    android:id="@+id/btn_filter_index"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_filter_index"
+                    android:backgroundTint="@color/colorGray" />
+
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_date_time"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/background_date_time_index"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_date_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/img_calendar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/icon_calendar"
+                    android:contentDescription="Calendar"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginStart="5dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_delete_many_rows"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_functions"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:visibility="gone">
-
         <LinearLayout
-            android:id="@+id/layout_select_all"
-            android:layout_width="0dp"
+            android:id="@+id/layout_delete_many_rows"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_below="@id/layout_functions"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="gone">
 
-            <CheckBox
-                android:id="@+id/checkbox_select_all"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/checkbox_selector_index"
-                android:button="@null"
-                android:visibility="visible" />
+            <LinearLayout
+                android:id="@+id/layout_select_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkbox_select_all"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/checkbox_selector_index"
+                    android:button="@null"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Chọn tất cả"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/txt_cancel_delete_index"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Chọn tất cả"
+                android:layout_marginStart="60dp"
+                android:text="Huỷ"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
+                />
+
+
+            <TextView
+                android:id="@+id/txt_delete_index_here"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Nhấn ở đây để xoá !"
+                android:textColor="@color/colorOrange"
                 android:textSize="15sp" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txt_cancel_delete_index"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layout_type_of_filter_index"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:text="Huỷ"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="15sp"
-            android:fontFamily="@font/inter_medium"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="5dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_below="@id/layout_delete_many_rows">
+
+            <TextView
+                android:id="@+id/txt_title_filter_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                android:text="Lọc theo:  "
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/colorTextBlack"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/list_type_of_filter_index"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"
+                android:orientation="horizontal">
+            </com.google.android.flexbox.FlexboxLayout>
+        </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_type_of_filter_index"
+            android:layout_marginTop="5dp"
+            android:stretchColumns="1"
+            android:background="#140054FF">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <!-- Column 2: ID -->
+                <LinearLayout
+                    android:id="@+id/layout_name_room_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/column_name_room"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Phòng"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_medium"/>
+
+                    <ImageButton
+                        android:id="@+id/img_two_arrows_name_room"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_two_arrows"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorGray"
+                        android:layout_marginStart="-7dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_up_name_room"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="270"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageButton
+                        android:id="@+id/img_arrow_down_name_room"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:rotation="90"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_marginStart="-7dp"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
+
+                <LinearLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <!-- Column 3: Name -->
+                    <LinearLayout
+                        android:id="@+id/layout_electricity_index_old"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="15dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/column_electricity_index_old"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:text="Chỉ số điện cũ"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/inter_medium"/>
+
+                        <ImageButton
+                            android:id="@+id/img_two_arrows_electricity_index_old"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_two_arrows"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorGray"
+                            android:layout_marginStart="-7dp"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_up_electricity_index_old"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="270"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_down_electricity_index_old"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+                    </LinearLayout>
+
+                    <!-- Column 4: Payment -->
+                    <LinearLayout
+                        android:id="@+id/layout_electricity_index_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/column_electricity_index_new"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:text="Chỉ số điện mới"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/inter_medium"/>
+
+                        <ImageButton
+                            android:id="@+id/img_two_arrows_electricity_index_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_two_arrows"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorGray"
+                            android:layout_marginStart="-7dp"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_up_electricity_index_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="270"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_down_electricity_index_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+                    </LinearLayout>
+
+                    <!-- Column 5: Birth Date (initially hidden) -->
+                    <LinearLayout
+                        android:id="@+id/layout_water_index_old"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:layout_marginStart="15dp">
+
+                        <TextView
+                            android:id="@+id/column_water_index_old"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:text="Chỉ số nước cũ"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/inter_medium"/>
+
+                        <ImageButton
+                            android:id="@+id/img_two_arrows_water_index_old"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_two_arrows"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorGray"
+                            android:layout_marginStart="-7dp"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_up_water_index_old"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="270"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_down_water_index_old"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+                    </LinearLayout>
+
+                    <!-- Column 6: Address (initially hidden) -->
+                    <LinearLayout
+                        android:id="@+id/layout_water_index_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/column_water_index_new"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:text="Chỉ số nước mới"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/inter_medium"/>
+
+                        <ImageButton
+                            android:id="@+id/img_two_arrows_water_index_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_two_arrows"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorGray"
+                            android:layout_marginStart="-7dp"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_up_water_index_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="270"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+
+                        <ImageButton
+                            android:id="@+id/img_arrow_down_water_index_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_arrow_right"
+                            android:rotation="90"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_marginStart="-7dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Column 7: Button Previous -->
+                <ImageButton
+                    android:id="@+id/btn_previous"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="0dp"
+                    android:background="@drawable/ic_prev"
+                    android:backgroundTint="@color/colorGray" />
+
+                <ImageButton
+                    android:id="@+id/btn_next"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/ic_next"
+                    android:backgroundTint="@color/colorGray" />
+            </TableRow>
+        </TableLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/layout_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            android:layout_below="@id/tableLayout"
+            android:layout_above="@id/button_layout">
+
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/img_no_data" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Không có dữ liệu !"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="18sp" />
+
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tableLayout"
+            android:layout_above="@id/layout_setting_notification_index"
+            android:layout_marginBottom="10dp"/>
+
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@id/tableLayout"
+            android:layout_above="@id/layout_setting_notification_index"
+            android:layout_marginStart="200dp"
+            android:visibility="gone"
             />
 
 
-        <TextView
-            android:id="@+id/txt_delete_index_here"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Nhấn ở đây để xoá !"
-            android:textColor="@color/colorOrange"
-            android:textSize="15sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_type_of_filter_index"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_below="@id/layout_delete_many_rows">
-
-        <TextView
-            android:id="@+id/txt_title_filter_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+        <LinearLayout
+            android:id="@+id/layout_setting_notification_index"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="5dp"
-            android:text="Lọc theo:  "
-            android:textSize="15sp"
-            android:fontFamily="@font/inter_medium"
-            android:textColor="@color/colorTextBlack"/>
+            android:background="@drawable/background_date_time_index"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_above="@id/button_layout">
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/list_type_of_filter_index"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:flexWrap="wrap"
-            android:orientation="horizontal">
-        </com.google.android.flexbox.FlexboxLayout>
-    </LinearLayout>
-
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_type_of_filter_index"
-        android:layout_marginTop="5dp"
-        android:stretchColumns="1"
-        android:background="#140054FF">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
-
-            <!-- Column 2: ID -->
-            <LinearLayout
-                android:id="@+id/layout_name_room_index"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/column_name_room"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Phòng"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/inter_medium"/>
-
-                <ImageButton
-                    android:id="@+id/img_two_arrows_name_room"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/ic_two_arrows"
-                    android:rotation="90"
-                    android:backgroundTint="@color/colorGray"
-                    android:layout_marginStart="-7dp"
-                    android:layout_gravity="center_vertical"/>
-
-                <ImageButton
-                    android:id="@+id/img_arrow_up_name_room"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/ic_arrow_right"
-                    android:rotation="270"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:layout_marginStart="-7dp"
-                    android:visibility="gone"
-                    android:layout_gravity="center_vertical"/>
-
-                <ImageButton
-                    android:id="@+id/img_arrow_down_name_room"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/ic_arrow_right"
-                    android:rotation="90"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:layout_marginStart="-7dp"
-                    android:visibility="gone"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
-
-            <LinearLayout
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <!-- Column 3: Name -->
-                <LinearLayout
-                    android:id="@+id/layout_electricity_index_old"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:layout_marginStart="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/column_electricity_index_old"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Chỉ số điện cũ"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/inter_medium"/>
-
-                    <ImageButton
-                        android:id="@+id/img_two_arrows_electricity_index_old"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_two_arrows"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorGray"
-                        android:layout_marginStart="-7dp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_up_electricity_index_old"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="270"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_down_electricity_index_old"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-                </LinearLayout>
-
-                <!-- Column 4: Payment -->
-                <LinearLayout
-                    android:id="@+id/layout_electricity_index_new"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/column_electricity_index_new"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Chỉ số điện mới"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/inter_medium"/>
-
-                    <ImageButton
-                        android:id="@+id/img_two_arrows_electricity_index_new"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_two_arrows"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorGray"
-                        android:layout_marginStart="-7dp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_up_electricity_index_new"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="270"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_down_electricity_index_new"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-                </LinearLayout>
-
-                <!-- Column 5: Birth Date (initially hidden) -->
-                <LinearLayout
-                    android:id="@+id/layout_water_index_old"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:layout_marginStart="15dp">
-
-                    <TextView
-                        android:id="@+id/column_water_index_old"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Chỉ số nước cũ"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/inter_medium"/>
-
-                    <ImageButton
-                        android:id="@+id/img_two_arrows_water_index_old"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_two_arrows"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorGray"
-                        android:layout_marginStart="-7dp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_up_water_index_old"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="270"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_down_water_index_old"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-                </LinearLayout>
-
-                <!-- Column 6: Address (initially hidden) -->
-                <LinearLayout
-                    android:id="@+id/layout_water_index_new"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/column_water_index_new"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Chỉ số nước mới"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/inter_medium"/>
-
-                    <ImageButton
-                        android:id="@+id/img_two_arrows_water_index_new"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_two_arrows"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorGray"
-                        android:layout_marginStart="-7dp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_up_water_index_new"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="270"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-
-                    <ImageButton
-                        android:id="@+id/img_arrow_down_water_index_new"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_arrow_right"
-                        android:rotation="90"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_marginStart="-7dp"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Column 7: Button Previous -->
-            <ImageButton
-                android:id="@+id/btn_previous"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="0dp"
-                android:background="@drawable/ic_prev"
-                android:backgroundTint="@color/colorGray" />
 
             <ImageButton
-                android:id="@+id/btn_next"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/ic_next"
-                android:backgroundTint="@color/colorGray" />
-        </TableRow>
-    </TableLayout>
+                android:id="@+id/btn_setting_notification_index"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_settings"
+                android:contentDescription="Calendar"
+                android:backgroundTint="@color/colorPrimary" />
+        </LinearLayout>
 
 
 
-    <LinearLayout
-        android:id="@+id/layout_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:layout_below="@id/tableLayout"
-        android:layout_above="@id/button_layout">
 
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/img_no_data" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/button_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="Không có dữ liệu !"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="18sp" />
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="visible"
+            >
+
+            <!--        <TextView-->
+            <!--            android:id="@+id/btn_previous_page"-->
+            <!--            android:layout_width="0dp"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_gravity="start|center_vertical"-->
+            <!--            android:layout_weight="1"-->
+            <!--            android:gravity="center"-->
+            <!--            android:text="Previous" />-->
+
+            <!--        <HorizontalScrollView-->
+            <!--            android:id="@+id/scroll"-->
+            <!--            android:layout_width="0dp"-->
+            <!--            android:layout_height="50dp"-->
+            <!--            android:layout_gravity="center_vertical"-->
+            <!--            android:layout_weight="3"-->
+            <!--            android:fillViewport="true"-->
+            <!--            android:scrollbars="none">-->
+
+            <!--            <LinearLayout-->
+            <!--                android:id="@+id/linear_scroll"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="35dp"-->
+            <!--                android:layout_gravity="center_vertical"-->
+            <!--                android:orientation="horizontal">-->
+
+            <!--            </LinearLayout>-->
+            <!--        </HorizontalScrollView>-->
+
+            <!--        <TextView-->
+            <!--            android:id="@+id/btn_next_page"-->
+            <!--            android:layout_width="0dp"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_gravity="center_vertical"-->
+            <!--            android:layout_weight="1"-->
+            <!--            android:gravity="center"-->
+            <!--            android:text="Next" />-->
 
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/setExact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set Exact"
+                style="@style/BUTTON"
+                app:backgroundTint="@null"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tableLayout"
-        android:layout_above="@id/layout_setting_notification_index"
-        android:layout_marginBottom="10dp"/>
-
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_below="@id/tableLayout"
-        android:layout_above="@id/layout_setting_notification_index"
-        android:layout_marginStart="200dp"
-        android:visibility="gone"
-        />
+            <Button
+                android:id="@+id/setRepetitive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set Repetitive Exact"
+                style="@style/BUTTON"
+                app:backgroundTint="@null"/>
+        </LinearLayout>
 
 
-
-    <LinearLayout
-        android:id="@+id/layout_setting_notification_index"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="5dp"
-        android:background="@drawable/background_date_time_index"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_above="@id/button_layout">
-
-
-        <ImageButton
-            android:id="@+id/btn_setting_notification_index"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/icon_settings"
-            android:contentDescription="Calendar"
-            android:backgroundTint="@color/colorPrimary" />
-    </LinearLayout>
+    </RelativeLayout>
 
 
 
 
-    <LinearLayout
-        android:id="@+id/button_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:padding="5dp"
-        android:visibility="visible"
-        >
 
-<!--        <TextView-->
-<!--            android:id="@+id/btn_previous_page"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="start|center_vertical"-->
-<!--            android:layout_weight="1"-->
-<!--            android:gravity="center"-->
-<!--            android:text="Previous" />-->
-
-<!--        <HorizontalScrollView-->
-<!--            android:id="@+id/scroll"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="50dp"-->
-<!--            android:layout_gravity="center_vertical"-->
-<!--            android:layout_weight="3"-->
-<!--            android:fillViewport="true"-->
-<!--            android:scrollbars="none">-->
-
-<!--            <LinearLayout-->
-<!--                android:id="@+id/linear_scroll"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="35dp"-->
-<!--                android:layout_gravity="center_vertical"-->
-<!--                android:orientation="horizontal">-->
-
-<!--            </LinearLayout>-->
-<!--        </HorizontalScrollView>-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/btn_next_page"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center_vertical"-->
-<!--            android:layout_weight="1"-->
-<!--            android:gravity="center"-->
-<!--            android:text="Next" />-->
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/setExact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Set Exact"
-            style="@style/BUTTON"
-            app:backgroundTint="@null"/>
-
-        <Button
-            android:id="@+id/setRepetitive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Set Repetitive Exact"
-            style="@style/BUTTON"
-            app:backgroundTint="@null"/>
-    </LinearLayout>
-
-
-</RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
