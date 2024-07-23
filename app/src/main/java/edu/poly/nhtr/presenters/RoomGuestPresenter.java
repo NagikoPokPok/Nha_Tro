@@ -1,14 +1,24 @@
 package edu.poly.nhtr.presenters;
 
+import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
@@ -193,19 +203,165 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                     }
 
     @Override
-    public void updateGuestInFirebase(String guestId, Guest guest) {
-        HashMap<String, Object> guestData = new HashMap<>();
-        guestData.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
-        guestData.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
-        guestData.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
-        guestData.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
+    public void updateGuestInFirebase(Guest guest) {
+        view.showLoadingOfFunctions(R.id.btn_add_new_guest);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        database.collection(Constants.KEY_COLLECTION_GUESTS).document(guestId)
-                .update(guestData)
-                .addOnSuccessListener(aVoid -> {
-                    view.showToast("Cập nhật thông tin khách thành công");
-                    getGuests(view.getInfoRoomFromGoogleAccount()); // Refresh the guest list
-                })
-                .addOnFailureListener(e -> view.showToast("Cập nhật thông tin khách thất bại"));
+        database.collection(Constants.KEY_COLLECTION_GUESTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<DocumentSnapshot> documentSnapshots = getDocumentSnapshots(task);
+
+                        position = 0;
+                        boolean found = false;
+
+                        for (DocumentSnapshot doc : documentSnapshots) {
+                            position++;
+                            String roomIdFromFirestore = doc.getId();
+
+                            // Kiểm tra nếu roomId khớp
+                            if (roomIdFromFirestore.equals(guest.getGuestId())) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            HashMap<String, Object> updateInfo = new HashMap<>();
+                            updateInfo.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
+                            updateInfo.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
+                            updateInfo.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
+                            updateInfo.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
+
+                            database.collection(Constants.KEY_COLLECTION_GUESTS)
+                                    .document(guest.getGuestId())
+                                    .update(updateInfo)
+                                    .addOnSuccessListener(aVoid -> {
+                                        getGuests(view.getInfoRoomFromGoogleAccount());
+                                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                                        view.dialogClose();
+                                        view.openDialogSuccess(R.layout.layout_dialog_update_guest_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                                        view.showToast("Cập nhật thông tin khách thất bại");
+                                    });
+                        } else {
+                            view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                            view.showToast("Không tìm thấy khách");
+                        }
+                    } else {
+                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
+                        view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
+                    }
+                });
     }
+
+
+    private static @NonNull List<DocumentSnapshot> getDocumentSnapshots(Task<QuerySnapshot> task) {
+        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+
+        documentSnapshots.sort((o1, o2) -> {
+            Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
+            Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
+            if (timestamp1 != null && timestamp2 != null) {
+                return timestamp1.compareTo(timestamp2);
+            }
+            return 0;
+        });
+        return documentSnapshots;
+    }
+
+    @Override
+    public void handleNameChanged(String name, TextInputLayout textInputLayout, int boxStrokeColor) {
+        if (textInputLayout == null) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(name)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (!isValidName(name)) {
+            textInputLayout.setError("Tên không được chứa số hoặc ký tự đặc biệt");
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+        }
+    }
+
+
+    // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
+    private boolean isValidName(String name) {
+        String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
+        return name.matches(regex);
+    }
+
+    @Override
+    public void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor) {
+        if (textInputLayout == null) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(phone)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (!isValidPhoneNumber(phone)) {
+            textInputLayout.setError("Số điện thoại không hợp lệ");
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+        }
+    }
+
+    // Kiểm tra số điện thoại có hợp lệ không
+    private boolean isValidPhoneNumber(CharSequence target) {
+        if (target.length() != 10) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(target).matches();
+        }
+    }
+
+    @Override
+    public void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor) {
+        if (textInputLayout == null) {
+            return;
+        }
+
+        if (TextUtils.isEmpty(checkInDate)) {
+            textInputLayout.setError("Không được bỏ trống");
+        } else if (!isCheckInDateValid(checkInDate, roomId)) {
+            textInputLayout.setError("Ngày vào ở không hợp lệ");
+        } else {
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+        }
+    }
+
+    private boolean isCheckInDateValid(String checkInDate, String roomId) {
+        try {
+            Task<QuerySnapshot> task = database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                    .get();
+
+            if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                QueryDocumentSnapshot contractDoc = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                String contractCreatedDate = contractDoc.getString(Constants.KEY_CONTRACT_CREATED_DATE);
+
+                if (contractCreatedDate != null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    Date checkIn = sdf.parse(checkInDate);
+                    Date contractCreated = sdf.parse(contractCreatedDate);
+
+                    if (checkIn != null && contractCreated != null) {
+                        return !checkIn.before(contractCreated);
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }

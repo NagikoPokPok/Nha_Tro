@@ -76,324 +76,346 @@
 
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/frm_menu_tools"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_fragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:foregroundGravity="center"
-        android:padding="10dp"
-        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_top_main">
+        app:layout_constraintTop_toBottomOf="@id/frm_top_main"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/ll_search_home"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+            <FrameLayout
+                android:id="@+id/frm_menu_tools"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:foregroundGravity="center"
+                android:padding="10dp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layout_search_home"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_light"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorGray"
-                    android:textSize="15sp"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="20dp"
-                    app:boxCornerRadiusBottomStart="20dp"
-                    app:boxCornerRadiusTopEnd="20dp"
-                    app:boxCornerRadiusTopStart="20dp"
-                    app:cursorColor="@color/colorPrimary"
-                    app:endIconDrawable="@drawable/ic_search_orange"
-                    app:endIconTint="@color/colorButton"
-                    app:hintEnabled="false">
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_search_home"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:id="@+id/ll_search_home"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="@string/tim_kiem_nha_tro"
-                        android:imeOptions="actionGo"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="50dp" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginStart="7dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_search_home"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_light"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/colorGray"
+                            android:textSize="15sp"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusBottomEnd="20dp"
+                            app:boxCornerRadiusBottomStart="20dp"
+                            app:boxCornerRadiusTopEnd="20dp"
+                            app:boxCornerRadiusTopStart="20dp"
+                            app:cursorColor="@color/colorPrimary"
+                            app:endIconDrawable="@drawable/ic_search_orange"
+                            app:endIconTint="@color/colorButton"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_search_home"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/tim_kiem_nha_tro"
+                                android:imeOptions="actionGo"
+                                android:paddingStart="20dp"
+                                android:paddingEnd="50dp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/btn_filter_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="10dp">
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/custom_btn_sort"
+                            android:scaleType="fitXY"
+                            app:riv_oval="true" />
+
+                        <ImageButton
+                            android:id="@+id/img_filter_home"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/icon_filter"
+                            android:backgroundTint="@color/white" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/btn_sort_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp">
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/custom_btn_sort"
+                            android:scaleType="fitXY"
+                            app:riv_oval="true" />
+
+                        <ImageButton
+                            android:id="@+id/img_sort_home"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/icon_sort"
+                            android:backgroundTint="@color/white" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_type_of_sort_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
+                app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_title_sort_filter_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textSize="15sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:background="@drawable/bg_sort_filter_home"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/txt_type_of_sort_filter_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:text=""
+                        android:textSize="15sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:textColor="@color/colorTextBlack"/>
+
+                    <ImageView
+                        android:id="@+id/btn_cancel_sort_home"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginEnd="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_cancel" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_type_of_filter_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
+                app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_title_filter_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:text="Lọc theo:  "
+                    android:textSize="15sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"/>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/list_type_of_filter_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexWrap="wrap"
+                    android:orientation="horizontal">
+                </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+
+                <ImageView
+                    android:id="@+id/img_add_home"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/img_add_home"
+                    android:visibility="gone" />
+
+
+                <TextView
+                    android:id="@+id/txt_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/btn_filter_home"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:id="@+id/layout_no_data"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/frm_menu_tools">
 
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/custom_btn_sort"
-                    android:scaleType="fitXY"
-                    app:riv_oval="true" />
 
-                <ImageButton
-                    android:id="@+id/img_filter_home"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_filter"
-                    android:backgroundTint="@color/white" />
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/img_no_data" />
 
-            </FrameLayout>
 
-            <FrameLayout
-                android:id="@+id/btn_sort_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp">
-
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/custom_btn_sort"
-                    android:scaleType="fitXY"
-                    app:riv_oval="true" />
-
-                <ImageButton
-                    android:id="@+id/img_sort_home"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_sort"
-                    android:backgroundTint="@color/white" />
-
-            </FrameLayout>
-
-        </LinearLayout>
-
-
-    </FrameLayout>
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Không có dữ liệu !"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="18sp" />
 
 
-    <LinearLayout
-        android:id="@+id/layout_type_of_sort_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
-        android:visibility="gone">
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/txt_title_sort_filter_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text=""
-            android:textSize="15sp"
-            android:fontFamily="@font/inter_medium"
-            android:textColor="@color/colorTextBlack"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:background="@drawable/bg_sort_filter_home"
-            android:orientation="horizontal"
-            >
-
-            <TextView
-                android:id="@+id/txt_type_of_sort_filter_home"
+            <!-- Barrier -->
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:text=""
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_bold"
-                android:textColor="@color/colorTextBlack"/>
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="layout_type_of_sort_home, layout_type_of_filter_home" />
 
-            <ImageView
-                android:id="@+id/btn_cancel_sort_home"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="18dp"
-                android:layout_marginEnd="5dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_cancel" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                android:visibility="invisible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
 
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_type_of_filter_home"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/txt_title_filter_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="5dp"
-            android:text="Lọc theo:  "
-            android:textSize="15sp"
-            android:fontFamily="@font/inter_medium"
-            android:textColor="@color/colorTextBlack"/>
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/list_type_of_filter_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:flexWrap="wrap"
-            android:orientation="horizontal">
-        </com.google.android.flexbox.FlexboxLayout>
-    </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/frm_menu_tools" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/btn_add_home"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_top_main">
-
-        <ImageView
-            android:id="@+id/img_add_home"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/img_add_home"
-            android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_home"
+                style="@style/BUTTON"
+                android:layout_width="200dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/them_nha_tro"
+                android:textSize="18sp"
+                app:backgroundTint="@null"
+                app:icon="@drawable/icon_add"
+                app:iconGravity="textStart"
+                app:iconSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.90"
+                app:layout_constraintStart_toStartOf="parent" />
 
 
-        <TextView
-            android:id="@+id/txt_notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="20sp"
-            android:visibility="gone" />
-
-    </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <LinearLayout
-        android:id="@+id/layout_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/btn_add_home"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools">
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/img_no_data" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="Không có dữ liệu !"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="18sp" />
-
-
-    </LinearLayout>
-
-    <!-- Barrier -->
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="layout_type_of_sort_home, layout_type_of_filter_home" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:overScrollMode="never"
-        android:visibility="invisible"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/btn_add_home"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/frm_menu_tools" />
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add_home"
-        style="@style/BUTTON"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/them_nha_tro"
-        android:textSize="18sp"
-        app:backgroundTint="@null"
-        app:icon="@drawable/icon_add"
-        app:iconGravity="textStart"
-        app:iconSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.90"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

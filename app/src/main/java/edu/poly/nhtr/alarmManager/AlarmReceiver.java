@@ -55,6 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        int requestCode = intent.getIntExtra("requestCode", -1);
         Home home = (Home) intent.getSerializableExtra("home");
         Room room = (Room) intent.getSerializableExtra("room");
         String header = (String) intent.getSerializableExtra("header");
@@ -68,8 +69,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         //String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
 
         switch (Objects.requireNonNull(intent.getAction())) {
-            case Constants.ACTION_SET_EXACT:
-            case Constants.ACTION_SET_REPETITIVE_EXACT:
+            case Constants.ACTION_SET_EXACT: // For bil
+
+            case Constants.ACTION_SET_REPETITIVE_EXACT: // For index
                 notificationIndex.put(Constants.KEY_NOTIFICATION_HEADER, header);
                 notificationIndex.put(Constants.KEY_NOTIFICATION_BODY, body);
                 notificationIndex.put(Constants.KEY_USER_ID, getInfoUserFromGoogleAccount(context, preferenceManager));
@@ -78,14 +80,16 @@ public class AlarmReceiver extends BroadcastReceiver {
                 notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
 
                 if (Constants.ACTION_SET_REPETITIVE_EXACT.equals(intent.getAction()) && room==null) {
-                    setRepetitiveAlarm(new AlarmService(context, home, null, header, body));
+                    setRepetitiveAlarm(new AlarmService(context, home, null, header, body), requestCode);
+                    notificationIndex.put(Constants.KEY_ROOM_ID, "");
+                    notificationIndex.put(Constants.KEY_NAME_ROOM, "");
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, false);
                     notificationIndex.put(Constants.KEY_NOTIFICATION_IS_READ, false);
                 }
 
                 if( room != null){
-                    setRepetitiveAlarm(new AlarmService(context, home, room, header, body));
+                    setRepetitiveAlarm(new AlarmService(context, home, room, header, body), requestCode);
                     notificationIndex.put(Constants.KEY_ROOM_ID, room.getRoomId());
                     notificationIndex.put(Constants.KEY_NAME_ROOM, room.getNameRoom());
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, true);
@@ -124,175 +128,117 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void getNotificationIndex(DocumentReference documentReference, Context context, PreferenceManager preferenceManager) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                 .document(documentReference.getId())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document != null && document.exists()) {
-                                String header = document.getString(Constants.KEY_NOTIFICATION_HEADER);
-                                String body = document.getString(Constants.KEY_NOTIFICATION_BODY);
-                                String homeID = document.getString(Constants.KEY_HOME_ID);
-                                String roomID = document.getString(Constants.KEY_ROOM_ID);
-                                String notificationID = document.getId();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                        DocumentSnapshot document = task.getResult();
+                        handleNotificationDocument(document, context, preferenceManager, db);
+                    }
+                });
+    }
 
-                                if (homeID != null) {
-                                    db.collection(Constants.KEY_COLLECTION_HOMES)
-                                            .document(homeID)
-                                            .get()
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onSuccess(DocumentSnapshot homeDocumentSnapshot) {
-                                                    if (homeDocumentSnapshot.exists()) {
-                                                        Home home = homeDocumentSnapshot.toObject(Home.class);
-                                                        if (home != null) {
-                                                            home.idHome = homeDocumentSnapshot.getId();
-                                                            home.isHaveService = homeDocumentSnapshot.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE);
-                                                            home.numberOfRooms = Objects.requireNonNull(homeDocumentSnapshot.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue();
-                                                            home.userID = homeDocumentSnapshot.getString(Constants.KEY_USER_ID);
-                                                            home.dateObject = homeDocumentSnapshot.getDate(Constants.KEY_TIMESTAMP);
+    private void handleNotificationDocument(DocumentSnapshot document, Context context, PreferenceManager preferenceManager, FirebaseFirestore db) {
+        String header = document.getString(Constants.KEY_NOTIFICATION_HEADER);
+        String body = document.getString(Constants.KEY_NOTIFICATION_BODY);
+        String homeID = document.getString(Constants.KEY_HOME_ID);
+        String roomID = document.getString(Constants.KEY_ROOM_ID);
+        String notificationID = document.getId();
 
-                                                            if(roomID!=null){
-                                                                db.collection(Constants.KEY_COLLECTION_ROOMS)
-                                                                        .document(roomID)
-                                                                        .get()
-                                                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                                            @Override
-                                                                            public void onSuccess(DocumentSnapshot roomDocumentSnapshot) {
-                                                                                if (roomDocumentSnapshot.exists()) {
-                                                                                    Room room = roomDocumentSnapshot.toObject(Room.class);
-                                                                                    if (room != null) {
-                                                                                        room.roomId = roomDocumentSnapshot.getId();
-                                                                                        room.nameRoom = roomDocumentSnapshot.getString(Constants.KEY_NAME_ROOM);
-                                                                                        room.price = roomDocumentSnapshot.getString(Constants.KEY_PRICE);
-
-                                                                                        // There are two ways to push notification to user
-                                                                                        // C1: push notification by alarm service: buildNotification(context, header, body, home, documentReference);
-                                                                                        // buildNotification(context, header, body, home, documentReference);
-
-
-                                                                                        // C2: User FCM HTTP V1 to push notification, assure using true data payload structure, which use data instead notification
-                                                                                        preferenceManager.putString(Constants.KEY_NOTIFICATION_ID, notificationID, getInfoUserFromGoogleAccount(context,preferenceManager));
-                                                                                        preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, getInfoUserFromGoogleAccount(context,preferenceManager));
-                                                                                        preferenceManager.putRoom(Constants.KEY_COLLECTION_ROOMS, room, homeID);
-
-                                                                                        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
-                                                                                                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
-                                                                                                header, body, context.getApplicationContext()
-                                                                                        );
-                                                                                        fcmNotificationSender.SendNotifications();
-
-                                                                                        // Gửi broadcast để cập nhật badge
-                                                                                        Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
-                                                                                        context.getApplicationContext().sendBroadcast(intent);
-
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        })
-                                                                        .addOnFailureListener(new OnFailureListener() {
-                                                                            @Override
-                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                // Handle failure
-                                                                            }
-                                                                        });
-                                                            }
-
-                                                            // There are two ways to push notification to user
-                                                            // C1: push notification by alarm service: buildNotification(context, header, body, home, documentReference);
-                                                           // buildNotification(context, header, body, home, documentReference);
-
-
-                                                            // C2: User FCM HTTP V1 to push notification, assure using true data payload structure, which use data instead notification
-                                                            preferenceManager.putString(Constants.KEY_NOTIFICATION_ID, notificationID, getInfoUserFromGoogleAccount(context,preferenceManager));
-                                                            preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, getInfoUserFromGoogleAccount(context,preferenceManager));
-
-                                                            FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
-                                                                    preferenceManager.getString(Constants.KEY_FCM_TOKEN),
-                                                                    header, body, context.getApplicationContext()
-                                                            );
-                                                            fcmNotificationSender.SendNotifications();
-
-                                                            // Gửi broadcast để cập nhật badge
-                                                            Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
-                                                            context.getApplicationContext().sendBroadcast(intent);
-
-                                                        }
-                                                    }
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // Handle failure
-                                                }
-                                            });
+        if (homeID != null) {
+            db.collection(Constants.KEY_COLLECTION_HOMES)
+                    .document(homeID)
+                    .get()
+                    .addOnSuccessListener(homeDocumentSnapshot -> {
+                        if (homeDocumentSnapshot.exists()) {
+                            Home home = homeDocumentSnapshot.toObject(Home.class);
+                            if (home != null) {
+                                setupHome(home, homeDocumentSnapshot);
+                                if (!Objects.equals(roomID, "")) {
+                                    fetchRoomAndNotify(roomID, home, header, body, notificationID, context, preferenceManager, db);
+                                } else {
+                                    notifyUser(header, body, home, notificationID, context, preferenceManager);
                                 }
-
-
                             }
+                        }
+                    });
+        }
+    }
+
+    private void setupHome(Home home, DocumentSnapshot homeDocumentSnapshot) {
+        home.idHome = homeDocumentSnapshot.getId();
+        home.isHaveService = homeDocumentSnapshot.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE);
+        home.numberOfRooms = Objects.requireNonNull(homeDocumentSnapshot.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue();
+        home.userID = homeDocumentSnapshot.getString(Constants.KEY_USER_ID);
+        home.dateObject = homeDocumentSnapshot.getDate(Constants.KEY_TIMESTAMP);
+    }
+
+    private void fetchRoomAndNotify(String roomID, Home home, String header, String body, String notificationID, Context context, PreferenceManager preferenceManager, FirebaseFirestore db) {
+        db.collection(Constants.KEY_COLLECTION_ROOMS)
+                .document(roomID)
+                .get()
+                .addOnSuccessListener(roomDocumentSnapshot -> {
+                    if (roomDocumentSnapshot.exists()) {
+                        Room room = roomDocumentSnapshot.toObject(Room.class);
+                        if (room != null) {
+                            setupRoom(room, roomDocumentSnapshot);
+                            notifyUserWithRoom(header, body, home, room, notificationID, context, preferenceManager);
                         }
                     }
                 });
     }
 
+    private void setupRoom(Room room, DocumentSnapshot roomDocumentSnapshot) {
+        room.roomId = roomDocumentSnapshot.getId();
+        room.nameRoom = roomDocumentSnapshot.getString(Constants.KEY_NAME_ROOM);
+        room.price = roomDocumentSnapshot.getString(Constants.KEY_PRICE);
+    }
+
+    private void notifyUser(String header, String body, Home home, String notificationID, Context context, PreferenceManager preferenceManager) {
+        preferenceManager.putString(Constants.KEY_NOTIFICATION_ID, notificationID, getInfoUserFromGoogleAccount(context, preferenceManager));
+        preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, getInfoUserFromGoogleAccount(context, preferenceManager));
+
+        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
+                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
+                header, body, context.getApplicationContext()
+        );
+        fcmNotificationSender.SendNotifications();
+
+        sendBadgeUpdateBroadcast(context);
+    }
+
+    private void notifyUserWithRoom(String header, String body, Home home, Room room, String notificationID, Context context, PreferenceManager preferenceManager) {
+        preferenceManager.putString(Constants.KEY_NOTIFICATION_ID, notificationID, getInfoUserFromGoogleAccount(context, preferenceManager));
+        preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, getInfoUserFromGoogleAccount(context, preferenceManager));
+        preferenceManager.putRoom(Constants.KEY_COLLECTION_ROOMS, room, home.idHome);
+
+        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
+                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
+                header, body, context.getApplicationContext()
+        );
+        fcmNotificationSender.SendNotifications();
+
+        sendBadgeUpdateBroadcast(context);
+    }
+
+    private void sendBadgeUpdateBroadcast(Context context) {
+        Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+        context.getApplicationContext().sendBroadcast(intent);
+    }
+
+
     private void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void buildNotification(Context context,String header, String body, Home home, DocumentReference documentReference) {
-        createNotificationChannel(context);
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        Intent resultIntent = new Intent(context, MainRoomActivity.class);
-        resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
-        resultIntent.putExtra("home", home);
-        resultIntent.putExtra("notification_document_id", documentReference.getId());
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.icon_notification)
-                .setContentTitle(header)
-                .setContentText(body)
-                .setSound(uri)
-                .setContentIntent(resultPendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-    }
-
-    private void createNotificationChannel(Context context) {
-        CharSequence name = "Alarm Manager Channel";
-        String description = "Channel for Alarm Manager notifications";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.setDescription(description);
-
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        if (notificationManager != null) {
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    private void setRepetitiveAlarm(AlarmService alarmService) {
+    private void setRepetitiveAlarm(AlarmService alarmService, int requestCode) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
         Timber.d("Set alarm for next month same time - %s", convertDate(cal.getTimeInMillis()));
-        alarmService.setRepetitiveAlarm(cal.getTimeInMillis());
+        alarmService.setRepetitiveAlarm(cal.getTimeInMillis(),requestCode);
     }
 
     private String convertDate(long timeInMillis) {

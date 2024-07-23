@@ -1,5 +1,6 @@
 package edu.poly.nhtr.interfaces;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
@@ -51,6 +52,12 @@ public interface RoomGuestInterface {
 
         void deleteGuest(Guest guest);
 
-        void updateGuestInFirebase(String guestId, Guest guest);
+        void updateGuestInFirebase(Guest guest);
+
+        void handleNameChanged(String name, TextInputLayout textInputLayout, int boxStrokeColor);
+
+        void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor);
+
+        void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor);
     }
 }

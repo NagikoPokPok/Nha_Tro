@@ -233,7 +233,7 @@ public class RoomBillPresenter {
         }
     }
 
-    public void getDayOfMakeBill(String roomID, OnGetDayOfMakeBillCompleteListener listener){
+    public void getDayOfMakeBill(String roomID, OnGetDayOfMakeBillCompleteListener listener) {
 
         db.collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
@@ -265,8 +265,7 @@ public class RoomBillPresenter {
         void onComplete(String dayOfMakeBill);
     }
 
-    public void checkNotificationIsGiven(String roomID, String homeID, OnGetNotificationCompleteListener listener)
-    {
+    public void checkNotificationIsGiven(String roomID, String homeID, OnGetNotificationCompleteListener listener) {
         List<Notification> notificationList = new ArrayList<Notification>();
         db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
                 .whereEqualTo(Constants.KEY_HOME_ID, homeID)
@@ -284,6 +283,7 @@ public class RoomBillPresenter {
                                     notificationList.add(notification);
                                 }
                             }
+                            notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
                             listener.onComplete(notificationList);
                         }
                     }
@@ -298,6 +298,74 @@ public class RoomBillPresenter {
 
     public interface OnGetNotificationCompleteListener {
         void onComplete(List<Notification> notificationList);
+    }
+
+
+    public void checkContractIsCreated(Room room, OnGetContractCompleteListener listener) {
+        roomBillListener.showLoading();
+        db.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, room.getRoomId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                listener.onComplete(true);
+                            } else {
+                                listener.onComplete(false);
+                            }
+
+                        } else {
+                            listener.onComplete(false);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onComplete(false);
+                    }
+                });
+    }
+
+    public interface OnGetContractCompleteListener {
+        void onComplete(boolean isHave);
+    }
+
+
+    public void checkBillIsCreated(Room room, int month, int year, OnCheckBillIsCreatedCompleteListener listener) {
+        db.collection(Constants.KEY_COLLECTION_BILL)
+                .whereEqualTo(Constants.KEY_ROOM_ID, room.getRoomId())
+                .whereEqualTo(Constants.KEY_MONTH, month)
+                .whereEqualTo(Constants.KEY_YEAR, year)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                listener.onComplete(true);
+                            } else {
+                                listener.onComplete(false);
+                            }
+                        } else {
+                            listener.onComplete(false);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onComplete(false);
+                    }
+                });
+    }
+
+    public interface OnCheckBillIsCreatedCompleteListener {
+        void onComplete(boolean isCreated);
     }
 
 }

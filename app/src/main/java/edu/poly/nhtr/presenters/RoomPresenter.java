@@ -391,23 +391,22 @@ public class RoomPresenter {
                 });
     }
     private List<Room> sortRoomByPriceAscending(List<Room> rooms) {
+        rooms.sort((o1, o2) -> {
+            String price1 = o1.price.replace(".", "");
+            String price2 = o2.price.replace(".", "");
 
+            int a = Integer.parseInt(price1);
+            int b = Integer.parseInt(price2);
 
-        rooms.sort(new Comparator<Room>() {
-            @Override
-            public int compare(Room o1, Room o2) {
-
-                int a = Integer.parseInt(o1.price);
-                int b = Integer.parseInt(o2.price);
-                int c = Integer.compare(a,b);
-
-                return c;
-
-            }
+            return Integer.compare(a, b);
         });
-        roomListener.showToast(rooms.get(0).price);
+
+        // Optional: Show a toast with the price of the first room
+        // roomListener.showToast(rooms.get(0).price);
+
         return rooms;
     }
+
 //    private List<Room> sortRoomByPriceAscending(List<Room> rooms) {
 //        rooms.sort(Comparator.comparingInt(room -> Integer.parseInt(room.getPrice())));
 //        return rooms;

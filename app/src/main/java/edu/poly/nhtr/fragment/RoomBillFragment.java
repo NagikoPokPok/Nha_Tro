@@ -1,11 +1,11 @@
 package edu.poly.nhtr.fragment;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,15 +24,15 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.github.ybq.android.spinkit.style.Wave;
 import com.google.android.flexbox.FlexboxLayout;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import edu.poly.nhtr.Activity.MonthPickerDialog;
 import edu.poly.nhtr.Adapter.RoomBillAdapter;
@@ -40,7 +40,6 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentRoomBillBinding;
 import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
-import edu.poly.nhtr.databinding.LayoutDialogSettingNotificationIndexBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Notification;
@@ -50,7 +49,7 @@ import edu.poly.nhtr.presenters.RoomBillPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class RoomBillFragment extends Fragment implements RoomBillListener {
+public class RoomBillFragment extends Fragment implements RoomBillListener, SwipeRefreshLayout.OnRefreshListener {
 
     private FragmentRoomBillBinding binding;
     private RoomBillPresenter roomBillPresenter;
@@ -67,6 +66,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     private Dialog dialog;
     private PreferenceManager preferenceManager;
     private AlarmService alarmService;
+    private AlarmService alarmService2;
     private Home home;
 
     @Override
@@ -74,16 +74,23 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         super.onCreate(savedInstanceState);
         roomBillPresenter = new RoomBillPresenter(this);
         roomBillAdapter = new RoomBillAdapter(requireContext(), billList, roomBillPresenter, this);
+
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentRoomBillBinding.inflate(inflater, container, false);
-        dialog = new Dialog(requireContext());
-        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-        View view = binding.getRoot();
 
+        binding = FragmentRoomBillBinding.inflate(inflater, container, false);
+        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        dialog = new Dialog(requireContext());
+
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
+
+
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
@@ -91,7 +98,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             room = (Room) arguments.getSerializable("room");
             home = (Home) arguments.getSerializable("home");
             if (room != null && home != null) {
-                roomBillPresenter.getBill(room, billList -> roomBillAdapter.setBillList(billList));
+                checkAndAddBillIfNeeded();
             } else {
                 showToast("Room object is null");
             }
@@ -99,13 +106,11 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
             showToast("Arguments are null");
         }
 
-        String header = "Sắp tới ngày chốt tiền cho phòng " + room.getNameRoom();
-        String body = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom();
+        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
 
-        currentMonth = Calendar.getInstance().get(Calendar.MONTH);
-        currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
-
+        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();;
 
         roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
@@ -114,62 +119,67 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                 roomBillPresenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomBillPresenter.OnGetNotificationCompleteListener() {
                     @Override
                     public void onComplete(List<Notification> notificationList) {
-                        if(notificationList.isEmpty()){
-
+                        if (notificationList.isEmpty()) {
                             int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-                            if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
-                                alarmService = new AlarmService(requireContext(), home, room, header, body);
-                                setAlarm(alarmService::setRepetitiveAlarm, currentDay);
-                            }
-                        }else{
+
+                            // Set alarm for reminding make bill
+                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
+
+                            // Set alarm for reminding give bill
+                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+                        } else {
                             Notification notification = notificationList.get(0);
-                            Date date = notification.getDateObject();
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(date);
+                            calendar.setTime(notification.getDateObject());
 
                             int day = calendar.get(Calendar.DAY_OF_MONTH);
-                            int month = calendar.get(Calendar.MONTH) ; // Tháng bắt đầu từ 0 nên cần +1
+                            int month = calendar.get(Calendar.MONTH);
                             int year = calendar.get(Calendar.YEAR);
 
-                            if(day == currentDay && month == currentMonth && year == currentYear)
-                            {
+                            if (day == currentDay && month == currentMonth && year == currentYear) { // Check today have pushed notification or not
                                 return;
-                            }else{
-                                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-                                if (dayOfGiveBill - currentDay == 1 || dayOfGiveBill - currentDay == 2) {
-                                    alarmService = new AlarmService(requireContext(), home, room, header, body);
-                                    setAlarm(alarmService::setRepetitiveAlarm, currentDay);
-                                }
                             }
+//                            else {
+////                                // Set alarm for reminding make bill
+////                                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+////                                alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+////                                setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
+////
+////                                // Set alarm for reminding give bill
+////                                alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+////                                setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+//
+//                            }
                         }
                     }
                 });
-
-
             }
         });
 
-
-
         removeStatusOfCheckBoxFilterBill();
-
-
         setupRecyclerView();
-        checkAndAddBillIfNeeded();
         setupMonthPicker();
         setupDeleteManyBills();
         setupFilterBills();
 
-        return view;
+
+
+        return binding.getRoot();
     }
 
-
+    private int generateRandomRequestCode() {
+        Random random = new Random();
+        return random.nextInt(1000000); // Giới hạn số ngẫu nhiên trong khoảng 0 đến 9999
+    }
 
     private interface AlarmCallback {
-        void onAlarmSet(long timeInMillis);
+        void onAlarmSet(long timeInMillis, int requestCode);
     }
 
-    private void setAlarm(AlarmCallback callback, int day) {
+
+    private void setAlarm(AlarmCallback callback, int day, int requestCode) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
@@ -177,24 +187,94 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
 
-
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
 
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 42);
-
-        pushAlarm(callback, calendar);
-
-
+        pushAlarm(callback, calendar, requestCode);
     }
 
-    private void pushAlarm(AlarmCallback callback, Calendar calendar) {
-        callback.onAlarmSet(calendar.getTimeInMillis());
+    private void pushAlarm(AlarmCallback callback, Calendar calendar, int requestCode) {
+        callback.onAlarmSet(calendar.getTimeInMillis(), requestCode);
         dialog.dismiss();
     }
+
+    @Override
+    public void onRefresh() {
+        // Get list bill
+        checkAndAddBillIfNeeded();
+        // Remove layout delete bills
+        closeLayoutDeleteBills();
+        // Remove layout filter bills
+        closeLayoutFilterBills();
+        // Remove date time
+        binding.txtDateTime.setText("");
+        binding.btnCancelMonthPicker.setVisibility(View.GONE);
+        removeStatusOfCheckBoxFilterBill();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.swipeRefreshFragment.setRefreshing(false);
+            }
+        }, 2000);
+    }
+
+
+
+
+    private void checkAndAddBillIfNeeded() {
+
+        roomBillPresenter.checkContractIsCreated(room, new RoomBillPresenter.OnGetContractCompleteListener() {
+            @Override
+            public void onComplete(boolean isHave) {
+                if (!isHave) {
+                    return;
+                }else {
+                    checkAndHandleBillCreation();
+                }
+            }
+        });
+    }
+
+    private void checkAndHandleBillCreation() {
+        roomBillPresenter.checkBillIsCreated(room, currentMonth + 1, currentYear, new RoomBillPresenter.OnCheckBillIsCreatedCompleteListener() {
+            @Override
+            public void onComplete(boolean isCreated) {
+                if (isCreated) {
+                    fetchBillList();
+                } else {
+                    roomBillPresenter.addBill(room);
+                }
+            }
+        });
+    }
+
+    private void fetchBillList() {
+        roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
+            @Override
+            public void onComplete(List<RoomBill> billList) {
+                roomBillAdapter.setBillList(billList);
+            }
+        });
+    }
+
+
+    @Override
+    public void setBillList(List<RoomBill> billList) {
+        this.billList = billList;
+        if (roomBillAdapter != null) {
+            roomBillAdapter.setBillList(this.billList);
+        }
+    }
+
+
+
+
+
 
     private void setupFilterBills() {
         binding.layoutFilterBill.setOnClickListener(new View.OnClickListener() {
@@ -306,8 +386,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
 
                 // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
                 if (!filterByBill1 && !filterByBill2 && !filterByBill3 && !filterByBill4) {
-                    binding.layoutNoData.setVisibility(View.GONE);
-                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+//                    binding.layoutNoData.setVisibility(View.GONE);
+//                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+                    closeLayoutFilterBills();
                     binding.recyclerView.setVisibility(View.VISIBLE);
                     roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
                         @Override
@@ -371,9 +452,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                                 }
 
                                 if (binding.listTypeOfFilterBill.getChildCount() == 0) {
-                                    // If no filter left in the list -> Set GONE
-                                    binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
-                                    binding.layoutNoData.setVisibility(View.GONE);
+                                    // If no filter left in the list -> close layout
+                                    closeLayoutFilterBills();
                                     // And update list homes as initial
                                     //binding.recyclerView.setVisibility(View.VISIBLE);
                                     roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
@@ -407,6 +487,13 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                 //dialog.dismiss();
             }
         });
+    }
+
+    private void closeLayoutFilterBills() {
+        binding.btnFilterBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
+        binding.frameRoundFilterBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        binding.layoutTypeOfFilterBill.setVisibility(View.GONE);
+        binding.layoutNoData.setVisibility(View.GONE);
     }
 
     private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
@@ -578,7 +665,16 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
     }
 
     private void setupMonthPicker() {
-        binding.txtDateTime.setText(String.valueOf(currentYear));
+
+        binding.btnCancelMonthPicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.txtDateTime.setText("");
+                binding.btnCancelMonthPicker.setVisibility(View.GONE);
+                // Get list bill
+                checkAndAddBillIfNeeded();
+            }
+        });
 
 
         binding.imgCalendar.setOnClickListener(v -> {
@@ -595,6 +691,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
                     public void onMonthSelected(int month, int year) {
                         date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
                         binding.txtDateTime.setText(date);
+                        binding.btnCancelMonthPicker.setVisibility(View.VISIBLE);
                         roomBillPresenter.getBillByMonthYear(room, month, year, new RoomBillPresenter.OnGetBillByMonthYearCompleteListener() {
                             @Override
                             public void onComplete(List<RoomBill> billList) {
@@ -621,30 +718,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         binding.recyclerView.setAdapter(roomBillAdapter);
     }
 
-    private void checkAndAddBillIfNeeded() {
-        LocalDate localDate = LocalDate.now();
-        int dayOfMonth = localDate.getDayOfMonth();
-        if (dayOfMonth == 1) {
-            roomBillPresenter.addBill(room);
-        } else {
-            roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
-                @Override
-                public void onComplete(List<RoomBill> billList) {
 
-                    roomBillAdapter.setBillList(billList);
-                }
-            });
-        }
-    }
-
-
-    @Override
-    public void setBillList(List<RoomBill> billList) {
-        this.billList = billList;
-        if (roomBillAdapter != null) {
-            roomBillAdapter.setBillList(this.billList);
-        }
-    }
 
 
     @Override
@@ -728,7 +802,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -816,6 +890,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener {
         preferenceManager.removePreference(Constants.KEY_CBX_IS_DELAY_PAY_BILL);
         preferenceManager.removePreference(Constants.KEY_CBX_IS_NOT_GIVE_BILL);
     }
+
+
 
 
 }

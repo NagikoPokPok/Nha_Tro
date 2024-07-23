@@ -7,7 +7,8 @@
     android:background="@drawable/bg_white_corner_16"
     android:elevation="10dp"
     android:orientation="vertical"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    >
 
 
     <TextView
@@ -89,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton

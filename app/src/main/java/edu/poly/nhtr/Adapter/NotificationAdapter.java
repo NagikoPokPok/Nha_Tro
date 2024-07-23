@@ -1,7 +1,6 @@
 package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import java.util.List;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ItemContainerNotificationBinding;
 import edu.poly.nhtr.listeners.NotificationListener;
-import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.presenters.NotificationPresenter;
 
@@ -61,11 +59,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         if(notification.getRead())
         {
-            holder.binding.mainLayout.setBackground(null);
+            holder.binding.mainLayout.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.background_item_notification_is_read));
             holder.binding.layoutNotification.setBackgroundTintList(holder.itemView.getContext().getResources().getColorStateList(R.color.colorPrimary));
             holder.binding.imgNotification.setBackgroundTintList(holder.itemView.getContext().getResources().getColorStateList(R.color.colorGray));
         }else{
-            holder.binding.mainLayout.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.background_item_notification));
+            holder.binding.mainLayout.setBackground(holder.itemView.getContext().getResources().getDrawable(R.drawable.background_item_notification_is_not_read));
             holder.binding.layoutNotification.setBackground(holder.itemView.getContext().getDrawable(R.drawable.background_date_time_index));
             holder.binding.imgNotification.setBackgroundTintList(holder.itemView.getContext().getResources().getColorStateList(R.color.colorPrimary));
         }

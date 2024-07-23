@@ -13,8 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,7 +61,7 @@ import edu.poly.nhtr.presenters.NotificationPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class NotificationFragment extends Fragment implements NotificationListener {
+public class NotificationFragment extends Fragment implements NotificationListener,  SwipeRefreshLayout.OnRefreshListener {
     private FragmentNotificationBinding binding;
     private Dialog dialog;
     private List<Notification> notificationList;
@@ -69,6 +74,41 @@ public class NotificationFragment extends Fragment implements NotificationListen
     private MainActivity mainActivity;
     private OnNotificationReadListener listener;
     private MenuItem deleteNotificationsItem;
+
+    @Override
+    public void onRefresh() {
+        // Get list notification
+        notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
+            @Override
+            public void onComplete(List<Home> homeList) {
+                setHomeList(homeList);
+                notificationPresenter.getNotification(new NotificationPresenter.OnSetNotificationListCompleteListener() {
+                    @Override
+                    public void onComplete() {
+
+                        // Gửi broadcast để cập nhật badge
+                        Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+                        requireActivity().sendBroadcast(intent);
+
+                    }
+                }, homeList);
+            }
+        });
+
+        //Delete layout dropdown menu
+        binding.spinner.clearFocus();
+        binding.autoCompleteTxt.clearFocus();
+
+        // Delete layout delete notifications
+        closeLayoutDeleteNotification();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.swipeRefreshFragment.setRefreshing(false);
+            }
+        }, 2000);
+    }
 
     public interface OnNotificationReadListener {
         void onNotificationsRead();
@@ -110,6 +150,10 @@ public class NotificationFragment extends Fragment implements NotificationListen
         adapter = new NotificationAdapter(requireActivity(), new ArrayList<>(), notificationPresenter, this);
         homeList = new ArrayList<>();
         mainActivity = new MainActivity();
+
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
+
+
 
         notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
             @Override
@@ -163,10 +207,13 @@ public class NotificationFragment extends Fragment implements NotificationListen
 
 
     private void setupRecyclerView() {
+        //RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL);
+
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
         adapter = new NotificationAdapter(requireActivity(), new ArrayList<>(), notificationPresenter, this);
         binding.recyclerView.setAdapter(adapter);
+        //binding.recyclerView.addItemDecoration(itemDecoration);
     }
 
     @Override

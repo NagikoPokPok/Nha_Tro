@@ -42,6 +42,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -77,7 +78,7 @@ import edu.poly.nhtr.presenters.HomePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class HomeFragment extends Fragment implements HomeListener {
+public class HomeFragment extends Fragment implements HomeListener,  SwipeRefreshLayout.OnRefreshListener {
 
     private View view;
     private List<Home> currentListHomes = new ArrayList<>();
@@ -121,6 +122,9 @@ public class HomeFragment extends Fragment implements HomeListener {
         // Load home information
         homePresenter.getHomes("init");
 
+        // Refresh layout
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
+
 
 
         //Set preference
@@ -163,6 +167,25 @@ public class HomeFragment extends Fragment implements HomeListener {
 
         //mainLogic();
 
+    }
+
+    @Override
+    public void onRefresh() {
+        // Load home information
+        homePresenter.getHomes("init");
+
+        binding.edtSearchHome.clearFocus();
+        binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
+        binding.layoutTypeOfSortHome.setVisibility(View.GONE);
+        removeStatusOfCheckBoxFilterHome();
+        preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.swipeRefreshFragment.setRefreshing(false);
+            }
+        }, 2000);
     }
 
 
@@ -793,6 +816,7 @@ public class HomeFragment extends Fragment implements HomeListener {
             new HomeFragment.DownloadImageTask(binding.imgProfile, binding.imgAva).execute(photoUrl);
         }
     }
+
 
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         private final ImageView imageView;

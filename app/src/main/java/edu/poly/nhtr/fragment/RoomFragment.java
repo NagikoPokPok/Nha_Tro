@@ -39,9 +39,11 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
@@ -302,26 +304,59 @@ public class RoomFragment extends Fragment implements RoomListener {
 
             }
         });
+
         edtPrice.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+            private static final int MAX_DIGITS = 12;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = edtPrice.getText().toString().trim();
-                if (!name.isEmpty()) {
-                    layoutPrice.setErrorEnabled(false);
-                    layoutPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                if (!s.toString().equals(current)) {
+                    edtPrice.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("\\D", "");
+
+                    if (!cleanString.isEmpty()) {
+                        if (cleanString.length() > MAX_DIGITS) {
+                            layoutPrice.setError("Không được nhập quá 9 chữ số");
+                        } else {
+                            layoutPrice.setError(null);
+                        }
+
+                        cleanString = cleanString.length() > MAX_DIGITS ? cleanString.substring(0, MAX_DIGITS) : cleanString;
+
+                        double parsed = Double.parseDouble(cleanString);
+                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
+
+                        current = formatted;
+                        edtPrice.setText(formatted);
+                        edtPrice.setSelection(formatted.length());
+                    } else {
+                        current = "";
+                        edtPrice.setText("");
+                        layoutPrice.setError(null);
+                    }
+
+                    edtPrice.addTextChangedListener(this);
+
+                    String price = edtPrice.getText().toString().trim();
+                    if (!price.isEmpty()) {
+                        layoutPrice.setErrorEnabled(false);
+                        layoutPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
+
+
 
         // Xử lý/ hiệu chỉnh màu nút button add room
         TextWatcher textWatcher = new TextWatcher() {
@@ -575,23 +610,53 @@ public class RoomFragment extends Fragment implements RoomListener {
         });
 
         edt_new_price.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+            private static final int MAX_DIGITS = 12;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String address = edt_new_price.getText().toString().trim();
-                if (!address.isEmpty()) {
-                    layotPrice.setErrorEnabled(false);
-                    layotPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                if (!s.toString().equals(current)) {
+                    edt_new_price.removeTextChangedListener(this);
+
+                    String cleanString = s.toString().replaceAll("\\D", "");
+
+                    if (!cleanString.isEmpty()) {
+                        if (cleanString.length() > MAX_DIGITS) {
+                            layotPrice.setError("Không được nhập quá 9 chữ số");
+                        } else {
+                            layotPrice.setError(null);
+                        }
+
+                        cleanString = cleanString.length() > MAX_DIGITS ? cleanString.substring(0, MAX_DIGITS) : cleanString;
+
+                        double parsed = Double.parseDouble(cleanString);
+                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
+
+                        current = formatted;
+                        edt_new_price.setText(formatted);
+                        edt_new_price.setSelection(formatted.length());
+                    } else {
+                        current = "";
+                        edt_new_price.setText("");
+                        edt_new_price.setError(null);
+                    }
+
+                    edt_new_price.addTextChangedListener(this);
+
+                    String price = edt_new_price.getText().toString().trim();
+                    if (!price.isEmpty()) {
+                        layotPrice.setErrorEnabled(false);
+                        layotPrice.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -615,24 +680,15 @@ public class RoomFragment extends Fragment implements RoomListener {
         edt_new_price.addTextChangedListener(textWatcher);
 
         // Xử lý sự kiện cho Button
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
 
-            }
-        });
+        btn_update_room.setOnClickListener(v -> {
+            // Lấy dữ liệu
+            String newNameRoom = edt_new_name_room.getText().toString().trim();
+            String newPrice = edt_new_price.getText().toString().trim();
+            String newDescribe = edt_new_describe.getText().toString().trim();
 
-        btn_update_room.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Lấy dữ liệu
-                String newNameRoom = edt_new_name_room.getText().toString().trim();
-                String newPrice = edt_new_price.getText().toString().trim();
-                String newDescribe = edt_new_describe.getText().toString().trim();
-
-                roomPresenter.updateRoom(newNameRoom, newPrice, newDescribe, room);
-            }
+            roomPresenter.updateRoom(newNameRoom, newPrice, newDescribe, room);
         });
     }
 
@@ -652,12 +708,7 @@ public class RoomFragment extends Fragment implements RoomListener {
             }
         });
 
-        btn_confirm_update_home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                roomPresenter.updateSuccess(newNameRoom, newPrice, newDescribe, room);
-            }
-        });
+        btn_confirm_update_home.setOnClickListener(v -> roomPresenter.updateSuccess(newNameRoom, newPrice, newDescribe, room));
     }
 
 
@@ -712,6 +763,7 @@ public class RoomFragment extends Fragment implements RoomListener {
         Intent intent = new Intent(getContext(), MainDetailedRoomActivity.class);
         intent.putExtra("room", room);
         intent.putExtra("home", home);
+        intent.putExtra("room_price", room.getPrice());
         startActivity(intent);
     }
 

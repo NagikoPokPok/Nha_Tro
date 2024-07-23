@@ -1,6 +1,7 @@
 package edu.poly.nhtr.presenters;
 
 import android.icu.text.Collator;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -134,6 +135,7 @@ public class RoomMakeBillPresenter {
                                         document.getBoolean(Constants.KEY_SERVICE_ISDELETABLE),
                                         document.getBoolean(Constants.KEY_SERVICE_ISAPPLY)
                                 );
+                                roomService.setService(service);
                                 callback.onGetServiceFromFirebase(roomService);
                             }
                         }

@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -39,6 +40,7 @@ public class MessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "ALARM_MANAGER_CHANNEL";
     private PreferenceManager preferenceManager;
     private Room room;
+    private Home home;
 
     @Override
     public void onNewToken(@NonNull String token) {
@@ -62,10 +64,12 @@ public class MessagingService extends FirebaseMessagingService {
 
         preferenceManager = new PreferenceManager(this);
         String notificationID = preferenceManager.getString(Constants.KEY_NOTIFICATION_ID, getInfoUserFromGoogleAccount(this, preferenceManager));
-        Home home = preferenceManager.getHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
+        home = preferenceManager.getHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
         if(home!=null) {
             room = preferenceManager.getRoom(Constants.KEY_COLLECTION_ROOMS, home.getIdHome());
         }
+
+        //removePreferences();
 
         buildNotification(title, body, notificationID, home, room);
 
@@ -110,26 +114,48 @@ public class MessagingService extends FirebaseMessagingService {
             return;
         }
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+        //notificationManager.notify(1001, builder.build());
+
+    }
+
+    private void removePreferences() {
+        preferenceManager.removeString(Constants.KEY_NOTIFICATION_ID,getInfoUserFromGoogleAccount(this, preferenceManager) );
+        preferenceManager.removeRoom(Constants.KEY_COLLECTION_ROOMS, home.idHome);
+        preferenceManager.removeHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
     }
 
     private PendingIntent getResultPendingIntent(String notificationID, Home home, Room room) {
         Intent resultIntent;
+        int requestCode = (int) System.currentTimeMillis(); // Unique request code for each PendingIntent
+
         if (room == null) {
             resultIntent = new Intent(this, MainRoomActivity.class);
             resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
+            resultIntent.putExtra("home", home);
+            resultIntent.putExtra("notification_document_id", notificationID);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addNextIntentWithParentStack(resultIntent);
+            return stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         } else {
-            resultIntent = new Intent(this, MainDetailedRoomActivity.class);
-            resultIntent.putExtra("target_fragment_index", 2);
-            resultIntent.putExtra("room", room);
+            Intent intentMainRoom = new Intent(this, MainRoomActivity.class);
+            intentMainRoom.putExtra("FRAGMENT_TO_LOAD", "HomeFragment");
+            intentMainRoom.putExtra("home", home);
+
+            Intent intentDetailedRoom = new Intent(this, MainDetailedRoomActivity.class);
+            intentDetailedRoom.putExtra("target_fragment_index", 2);
+            intentDetailedRoom.putExtra("room", room);
+            intentDetailedRoom.putExtra("notification_document_id", notificationID);
+            intentDetailedRoom.putExtra("home", home);
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addParentStack(MainDetailedRoomActivity.class);
+            stackBuilder.addNextIntent(intentMainRoom);
+            stackBuilder.addNextIntent(intentDetailedRoom);
+
+            return stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         }
-        resultIntent.putExtra("home", home);
-        resultIntent.putExtra("notification_document_id", notificationID);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
+
 
 
     private void createNotificationChannel(Context context) {

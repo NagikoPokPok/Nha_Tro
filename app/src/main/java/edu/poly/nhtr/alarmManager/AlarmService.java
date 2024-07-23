@@ -27,9 +27,10 @@ public class AlarmService {
         this.room = room;
         this.header = header;
         this.body = body;
+
     }
 
-    public void setExactAlarm(long timeInMillis) {
+    public void setExactAlarm(long timeInMillis, int requestCode) {
         if (canScheduleExactAlarms()) {
             setAlarm(
                     timeInMillis,
@@ -37,8 +38,10 @@ public class AlarmService {
                             getIntent().setAction(Constants.ACTION_SET_EXACT)
                                     .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
                                     .putExtra("home", home)
+                                    .putExtra("room", room)
                                     .putExtra("header", header)
-                                    .putExtra("body", body)
+                                    .putExtra("body", body),
+                            requestCode
                     )
             );
         } else {
@@ -46,17 +49,20 @@ public class AlarmService {
         }
     }
 
-    public void setRepetitiveAlarm(long timeInMillis) {
+
+    public void setRepetitiveAlarm(long timeInMillis, int requestCode) {
         if (canScheduleExactAlarms()) {
             setAlarm(
                     timeInMillis,
                     getPendingIntent(
                             getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT)
                                     .putExtra(Constants.EXTRA_EXACT_ALARM_TIME, timeInMillis)
+                                    .putExtra("requestCode", requestCode)
                                     .putExtra("home", home)
                                     .putExtra("room", room)
                                     .putExtra("header", header)
-                                    .putExtra("body", body)
+                                    .putExtra("body", body),
+                            requestCode
                     )
             );
         } else {
@@ -79,10 +85,10 @@ public class AlarmService {
         }
     }
 
-    private PendingIntent getPendingIntent(Intent intent) {
+    private PendingIntent getPendingIntent(Intent intent,  int requestCode) {
         return PendingIntent.getBroadcast(
                 context,
-                0,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );

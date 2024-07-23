@@ -275,8 +275,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         Button btnAddGuest = dialog.findViewById(R.id.btn_add_new_guest);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
+        int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
+
         // Thêm dấu * đỏ cho TextView cần
         nameGuest.append(customizeText("*"));
+        phoneGuest.append(customizeText("*"));
 
         // Set hint cho các trường và nút
         title.setText("Thêm khách mới");
@@ -294,16 +297,46 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = edtNameGuest.getText().toString().trim();
-                if (!name.isEmpty()) {
-                    nameGuestLayout.setErrorEnabled(false);
-                    nameGuestLayout.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }
+                presenter.handleNameChanged(s.toString(), nameGuestLayout, boxStrokeColor);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 // Do nothing
+            }
+        });
+
+        edtPhoneGuest.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.handlePhoneChanged(s.toString(), phoneGuestLayout, boxStrokeColor);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
+
+        edtDateIn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), dateInLayout, boxStrokeColor);
             }
         });
 
@@ -334,7 +367,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             String name = edtNameGuest.getText().toString().trim();
             String phone = edtPhoneGuest.getText().toString().trim();
             String dateIn = edtDateIn.getText().toString().trim();
-            Guest guest = new Guest(name, phone, false, dateIn);
+            Guest guest = new Guest(name, phone, true, dateIn);
             presenter.addGuestToFirebase(guest);
 
             String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
@@ -359,7 +392,8 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         TextView txtPhoneGuest = dialog.findViewById(R.id.txt_phone_number);
         TextInputLayout layoutNameGuest = dialog.findViewById(R.id.layout_name_guest);
         TextInputLayout layoutPhoneGuest = dialog.findViewById(R.id.layout_phone_number);
-
+        TextInputLayout layoutDateIn = dialog.findViewById(R.id.layout_date_in);
+        int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
 
         //Hiện thông tin lên edt
         edtNameGuest.setText(guest.getNameGuest());
@@ -379,11 +413,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String name = edtNameGuest.getText().toString().trim();
-                if (!name.isEmpty()) {
-                    layoutNameGuest.setErrorEnabled(false);
-                    layoutNameGuest.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }
+                presenter.handleNameChanged(s.toString(), layoutNameGuest, boxStrokeColor);
             }
 
             @Override
@@ -400,16 +430,29 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String address = edtPhoneGuest.getText().toString().trim();
-                if (!address.isEmpty()) {
-                    layoutPhoneGuest.setErrorEnabled(false);
-                    layoutPhoneGuest.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }
+                presenter.handlePhoneChanged(s.toString(), layoutPhoneGuest, boxStrokeColor);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        edtDateIn.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), layoutDateIn, boxStrokeColor);
             }
         });
 
@@ -441,18 +484,17 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             String newPhoneGuest = edtPhoneGuest.getText().toString().trim();
             String newDateIn = edtDateIn.getText().toString().trim();
 
-            Guest updatedGuest = new Guest();
-            updatedGuest.setNameGuest(newNameGuest);
-            updatedGuest.setPhoneGuest(newPhoneGuest);
-            updatedGuest.setDateIn(newDateIn);
-            updatedGuest.setFileStatus(guest.isFileStatus());
+            // Cập nhật dữ liệu
+            guest.setNameGuest(newNameGuest);
+            guest.setPhoneGuest(newPhoneGuest);
+            guest.setDateIn(newDateIn);
+            guest.setFileStatus(true);
 
-            String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
-            presenter.updateGuestInFirebase(roomId, updatedGuest);
+            presenter.updateGuestInFirebase(guest);
         });
     }
 
-    private void openDeleteRoomDialog(Guest guest) {
+    private void openDeleteGuestDialog(Guest guest) {
 
         setUpDialog(R.layout.layout_dialog_delete_guest);
 
@@ -468,7 +510,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         // Xử lý sự kiện cho Button
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
+
         btnDeleteGuest.setOnClickListener(v -> {
             presenter.deleteGuest(guest);
             dialog.dismiss();
@@ -488,7 +530,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
             else if (itemId == R.id.menu_delete_guest) {
                 // Thực hiện hành động cho mục xóa
-                openDeleteRoomDialog(guest);
+                openDeleteGuestDialog(guest);
                 return true;
             }
             return false;

@@ -20,4 +20,5 @@ public interface RoomBillListener {
     void showButtonLoading(int id);
     void hideButtonLoading(int id);
     void closeDialog();
+
 }

@@ -42,11 +42,9 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-import edu.poly.nhtr.Activity.Enum.DateType;
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
@@ -97,7 +95,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private ImageButton imgButtonLichNgayTao;
     private ImageButton imgButtonLichNgayHetHan;
     private ImageButton imgButtonLichNgayVaoO;
-    private ImageButton imgButtonLichNgayTraTien;
     private RoundedImageView imgCCCDFront;
     private RoundedImageView imgCCCDBack;
     private ImageView imgAddCCCDFront;
@@ -151,6 +148,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private AppCompatButton btnCancel;
     private Dialog dialog;
     private Room room;
+    private String roomPrice;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -176,6 +174,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
+            roomPrice = getArguments().getString("room_price");
             if (room != null) {
                 Timber.tag("GuestAddContractFragment").d("Room ID: %s", room.getRoomId());
                 setListeners();
@@ -291,8 +290,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         checkName();
         checkPhoneNumber();
         checkCCCDNumber();
-        checkRoomPrice();
-
+        setRoomPrice();
 
         presenter.setUpContractCreateDateField(tilNgayTao, edtNgayTao, imgButtonLichNgayTao,
                 getString(R.string.dd_mm_yyyy));
@@ -339,7 +337,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_ROOM_TOTAl_MEMBERS, totalMembers + "");
         preferenceManager.putString(Constants.KEY_CONTRACT_CREATED_DATE, createDate);
         preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
-        preferenceManager.putString(Constants.KEY_CONTRACT_ROOM_PRICE, roomPrice + "");
+        preferenceManager.putString(Constants.KEY_PRICE, roomPrice + "");
         preferenceManager.putString(Constants.KEY_CONTRACT_EXPIRATION_DATE, expirationDate);
         preferenceManager.putString(Constants.KEY_CONTRACT_PAY_DATE, payDate);
         preferenceManager.putString(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE, daysUntilDueDate + "");
@@ -347,6 +345,15 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_GUEST_CCCD_IMAGE_BACK, cccdImageBack);
         preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_FRONT, contractImageFront);
         preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_BACK, contractImageBack);
+        preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
+        preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+    }
+
+    @Override
+    public void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, DocumentReference documentReference) {
+        preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
+        preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
+        preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
         preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
     }
@@ -404,10 +411,9 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         presenter.setUpCCCDField(edtSoCCCD, tilSoCCCD);
     }
 
-    public void checkRoomPrice() {
-        presenter.setUpRoomPriceField(edtTienPhong, tilTienPhong);
+    public void setRoomPrice() {
+        edtTienPhong.setText(roomPrice);
     }
-
     @Override
     public void setNameErrorMessage(String message) {
         tilHoTen.setError(message);
@@ -493,14 +499,13 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
                 progressBar.setVisibility(View.INVISIBLE);
 
+                dialog.dismiss();
                 if (saveContractSuccessfully) {
-                    dialog.dismiss();
                     MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
                     if (activity != null) {
                         activity.showTabLayoutAndRoomGuestFragment();
                     }
                 } else {
-                    dialog.dismiss();
                     Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
                 }
             }, 2000);
@@ -523,7 +528,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         String dateIn = getStringFromEditText(edtNgayVao);
         String expirationDate = getStringFromEditText(edtNgayHetHan);
         String payDate = getStringFromEditText(edtNgayTraTien);
-        String roomPrice = getStringFromEditText(edtTienPhong);
+        String roomPrice = getStringFromEditText(edtTienPhong).replace(".", "");
         String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
 
         System.out.println("Name Guest: " + nameGuest);
@@ -541,7 +546,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
                 gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || dateIn.isEmpty() || expirationDate.isEmpty() ||
-                payDate.isEmpty() || roomPrice.isEmpty() || daysUntilDueDateStr.isEmpty()) {
+                payDate.isEmpty() || daysUntilDueDateStr.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -551,14 +556,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             daysUntilDueDate = Integer.parseInt(daysUntilDueDateStr);
         } catch (NumberFormatException e) {
             Toast.makeText(requireContext(), "Invalid number format for days until due date", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        double roomPriceValue;
-        try {
-            roomPriceValue = Double.parseDouble(roomPrice);
-        } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Invalid number format for room price", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -573,7 +570,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         mainGuest.setDateIn(dateIn);
         mainGuest.setExpirationDate(expirationDate);
         mainGuest.setPayDate(payDate);
-        mainGuest.setRoomPrice(roomPriceValue);
+        mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
         mainGuest.setDaysUntilDueDate(daysUntilDueDate);
         mainGuest.setCccdImageFront(encodedCCCDFrontImage);
         mainGuest.setCccdImageBack(encodedCCCDBackImage);
@@ -631,7 +628,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtTotalMembers.setText("");
         edtNgayTao.setText("");
         edtNgayVao.setText("");
-        edtTienPhong.setText("");
         edtNgayHetHan.setText("");
         edtNgayTraTien.setText("");
         edtHanThanhToan.setText("");
