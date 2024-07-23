@@ -47,6 +47,7 @@ public class StatisticPresenter {
                                 for (DocumentSnapshot document : querySnapshot.getDocuments()) {
                                     Room room = new Room();
                                     room.roomId = document.getId();
+                                    room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
                                     room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                     roomList.add(room);
                                 }
@@ -84,6 +85,8 @@ public class StatisticPresenter {
                                     for (DocumentSnapshot document : querySnapshot.getDocuments()) {
                                         RoomBill bill = new RoomBill();
                                         bill.billID = document.getId();
+                                        bill.roomName = document.getString(Constants.KEY_NAME_ROOM);
+                                        bill.roomID = document.getString(Constants.KEY_ROOM_ID);
                                         bill.totalOfMoney = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY)).intValue();
                                         bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
                                         bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();

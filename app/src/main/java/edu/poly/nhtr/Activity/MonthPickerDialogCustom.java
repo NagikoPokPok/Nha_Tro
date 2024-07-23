@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 
 import edu.poly.nhtr.R;
 
-public class MonthPickerDialog extends Dialog {
+public class MonthPickerDialogCustom extends Dialog {
 
     public interface OnMonthSelectedListener {
         void onMonthSelected(int month, int year);
@@ -38,7 +38,7 @@ public class MonthPickerDialog extends Dialog {
 
     ImageView decreaseYearButton, increaseYearButton;
 
-    public MonthPickerDialog(@NonNull Context context, int currentMonth, int currentYear, OnMonthSelectedListener listener) {
+    public MonthPickerDialogCustom(@NonNull Context context, int currentMonth, int currentYear, OnMonthSelectedListener listener) {
         super(context);
         this.listener = listener;
         this.selectedMonthPosition = currentMonth;

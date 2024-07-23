@@ -2,9 +2,9 @@ package edu.poly.nhtr.models;
 
 public class RevenueOfRoomModel {
     public String room;
-    public Long revenueOfRoom;
+    public String revenueOfRoom;
 
-    public RevenueOfRoomModel(String room, Long revenueOfRoom) {
+    public RevenueOfRoomModel(String room, String revenueOfRoom) {
         this.room = room;
         this.revenueOfRoom = revenueOfRoom;
     }
@@ -13,7 +13,7 @@ public class RevenueOfRoomModel {
         return room;
     }
 
-    public Long getRevenueOfRoom() {
+    public String getRevenueOfRoom() {
         return revenueOfRoom;
     }
 }

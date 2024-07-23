@@ -1,237 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/swipe_refresh_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.StatisticFragment"
-    android:orientation="vertical"
-    android:padding="10dp">
+    >
 
-    <TextView
-        android:id="@+id/txt_revenue_of_month"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Báo cáo doanh thu các tháng theo từng năm"
-        android:textSize="18sp"
-        android:fontFamily="@font/inter_bold"
-        android:textAlignment="center"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:textColor="@color/colorTextBlack"/>
-
-    <TextView
-        android:id="@+id/txt_revenue_of_room"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Báo cáo doanh thu các phòng theo từng tháng"
-        android:textSize="17sp"
-        android:fontFamily="@font/inter_bold"
-        android:textAlignment="center"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"
-        android:textColor="@color/colorTextBlack"/>
 
     <LinearLayout
-        android:id="@+id/layout_date_time"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:background="@drawable/background_date_time_index"
-        android:layout_gravity="end"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
-            android:id="@+id/txt_date_time"
-            android:layout_width="wrap_content"
+            android:id="@+id/txt_revenue_of_month"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="2024"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="Báo cáo doanh thu các tháng năm "
+            android:textSize="18sp"
+            android:fontFamily="@font/inter_bold"
             android:textAlignment="center"
+            android:layout_marginTop="10dp"
+            android:visibility="visible"
             android:textColor="@color/colorTextBlack"/>
 
-        <ImageButton
-            android:id="@+id/img_calendar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/icon_calendar"
-            android:contentDescription="Calendar"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/txt_back_to_line_chart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quay lại"
-        android:gravity="end"
-        android:layout_gravity="end"
-        android:textColor="@color/colorButton"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:textStyle="italic"
-        />
-
-    <TextView
-        android:id="@+id/txt_back_to_bar_chart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quay lại"
-        android:gravity="end"
-        android:layout_gravity="end"
-        android:textColor="@color/colorButton"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:textStyle="italic"
-        />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_chart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        />
-
-    <LinearLayout
-        android:id="@+id/table_layout_revenue_of_month"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        <TextView
+            android:id="@+id/txt_revenue_of_room"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Báo cáo doanh thu các phòng tháng "
+            android:textSize="17sp"
+            android:fontFamily="@font/inter_bold"
+            android:textAlignment="center"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:textColor="@color/colorTextBlack"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:id="@+id/layout_date_time_for_month"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:background="@drawable/background_date_time_index"
+            android:layout_gravity="end"
             android:orientation="horizontal"
-            android:background="@drawable/background_table_revenue_color"
+            android:gravity="center"
             android:layout_marginTop="10dp"
-           >
+            >
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/txt_date_time_for_month"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Tháng"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:fontFamily="@font/inter_medium"
+                android:layout_gravity="center"
+                android:text="2024"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
                 android:textColor="@color/colorTextBlack"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorGray"/>
+            <ImageButton
+                android:id="@+id/img_calendar_for_month"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_calendar"
+                android:contentDescription="Calendar"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_date_time_for_room"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:background="@drawable/background_date_time_index"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            >
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/txt_date_time_for_room"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Doanh thu (VNĐ)"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:fontFamily="@font/inter_medium"
+                android:layout_gravity="center"
+                android:text="2024"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
                 android:textColor="@color/colorTextBlack"/>
+
+            <ImageButton
+                android:id="@+id/img_calendar_for_room"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_calendar"
+                android:contentDescription="Calendar"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"/>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <TextView
+            android:id="@+id/txt_back_to_line_chart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quay lại"
+            android:gravity="end"
+            android:layout_gravity="end"
+            android:textColor="@color/colorButton"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:textStyle="italic"
+            />
+
+        <TextView
+            android:id="@+id/txt_back_to_bar_chart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quay lại"
+            android:gravity="end"
+            android:layout_gravity="end"
+            android:textColor="@color/colorButton"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:textStyle="italic"
+            />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@drawable/background_table_revenue"/>
-
-    </LinearLayout>
-
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/bar_chart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"/>
-
-    <LinearLayout
-        android:id="@+id/layout_information_of_chart"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-       >
-
-        <TextView
-            android:id="@+id/txt_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:text="Đơn vị đo: Triệu VNĐ"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/background_date_time_index"
-            android:padding="15dp"
-            android:textColor="@color/colorTextBlack"/>
-
-        <TextView
-            android:id="@+id/txt_view_detailed_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Xem chi tiết số liệu"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/colorButton"
-
+            android:layout_marginTop="10dp"
+            android:visibility="visible"
             />
 
+        <LinearLayout
+            android:id="@+id/table_layout_revenue_of_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:background="@drawable/background_table_revenue_color"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    android:id="@+id/txt_title_of_column_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tháng"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorGray"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Doanh thu (VNĐ)"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_table_revenue"/>
+
+        </LinearLayout>
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/layout_information_of_chart"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView
+                android:id="@+id/txt_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="Đơn vị đo: Triệu VNĐ"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/background_date_time_index"
+                android:padding="15dp"
+                android:textColor="@color/colorTextBlack"/>
+
+            <TextView
+                android:id="@+id/txt_view_detailed_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Xem chi tiết số liệu"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/colorButton"
+
+                />
+
+        </LinearLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_view_detailed_revenue_of_month"
+            style="@style/BACKGROUND_BUTTON"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center"
+            android:text="Xem chi tiết doanh thu phòng"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/icon_right"
+            app:iconGravity="textEnd"
+            app:iconSize="26dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:visibility="visible"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_view_detailed_revenue_of_room"
+            style="@style/BACKGROUND_BUTTON"
+            android:layout_width="340dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/inter_bold"
+            android:gravity="center"
+            android:text="Xem chi tiết doanh thu phòng"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/colorPrimary"
+            app:icon="@drawable/ic_arrow_left"
+            app:iconGravity="textStart"
+            app:iconSize="26dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:padding="10dp"
+            android:visibility="gone"/>
+
+
     </LinearLayout>
 
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_view_detailed_revenue_of_month"
-        style="@style/BACKGROUND_BUTTON"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="@font/inter_bold"
-        android:gravity="center"
-        android:text="Xem chi tiết doanh thu phòng"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/colorPrimary"
-        app:icon="@drawable/icon_right"
-        app:iconGravity="textEnd"
-        app:iconSize="26dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:padding="10dp"
-        android:visibility="visible"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_view_detailed_revenue_of_room"
-        style="@style/BACKGROUND_BUTTON"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="@font/inter_bold"
-        android:gravity="center"
-        android:text="Xem chi tiết doanh thu phòng"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/colorPrimary"
-        app:icon="@drawable/ic_arrow_left"
-        app:iconGravity="textStart"
-        app:iconSize="26dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:padding="10dp"
-        android:visibility="gone"/>
 
-</LinearLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

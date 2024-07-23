@@ -228,4 +228,7 @@
     <string name="ban_da_cap_nhat_khach_thanh_cong">Bạn đã cập nhật khách thành công!</string>
     <string name="xoa_khach">Xóa khách</string>
 
+    <string name="label_month">MONTH</string>
+    <string name="label_year">YEAR</string>
+
 </resources>

@@ -26,7 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import edu.poly.nhtr.Activity.MonthPickerDialog;
+import edu.poly.nhtr.Activity.MonthPickerDialogCustom;
 import edu.poly.nhtr.Adapter.IndexAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
@@ -1414,8 +1414,8 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
     }
 
     private void showMonthPicker() {
-        MonthPickerDialog monthPickerDialog = new MonthPickerDialog(requireContext(), currentMonth, currentYear,
-                new MonthPickerDialog.OnMonthSelectedListener() {
+        MonthPickerDialogCustom monthPickerDialogCustom = new MonthPickerDialogCustom(requireContext(), currentMonth, currentYear,
+                new MonthPickerDialogCustom.OnMonthSelectedListener() {
                     @Override
                     public void onMonthSelected(int month, int year) {
                         date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
@@ -1433,8 +1433,8 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
                     }
                 });
 
-        Objects.requireNonNull(monthPickerDialog.getWindow()).setBackgroundDrawableResource(R.drawable.background_dialog_index);
-        monthPickerDialog.show();
+        Objects.requireNonNull(monthPickerDialogCustom.getWindow()).setBackgroundDrawableResource(R.drawable.background_dialog_index);
+        monthPickerDialogCustom.show();
     }
 
 //    private void updateButtonPageState() {

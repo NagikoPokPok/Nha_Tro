@@ -216,5 +216,19 @@
 
     <string name="my_text">Bạn chưa có nhà trọ. \n<br />Hãy nhấn nút <b>+</b> để thêm nhà trọ.</string>
 
+    <style name="MonthPickerDialogStyle" >
+        <!-- Customize month picker theme here. -->
+        <item name="monthBgColor">#FFFFFF</item>
+         <item name="monthBgSelectedColor">@color/colorPrimary</item>
+         <item name="monthFontColorSelected">#ffffff</item>
+         <item name="monthFontColorNormal">#000000</item>
+         <item name="monthFontColorDisabled">#33000000</item>
+
+         <item name="headerBgColor">@color/colorPrimary</item>
+         <item name="headerFontColorSelected">#ffffff</item>
+         <item name="headerFontColorNormal">#85ffffff</item>
+         <item name="headerTitleColor">#ffffff</item>
+    </style>
+
 
 </resources>

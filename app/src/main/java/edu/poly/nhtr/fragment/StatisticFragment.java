@@ -1,5 +1,7 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,12 +11,17 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.components.Description;
@@ -33,11 +40,14 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
+import edu.poly.nhtr.Activity.MonthPickerDialogCustom;
 import edu.poly.nhtr.Adapter.RevenueOfMonthAdapter;
 import edu.poly.nhtr.Adapter.RevenueOfRoomAdapter;
 import edu.poly.nhtr.R;
@@ -48,18 +58,23 @@ import edu.poly.nhtr.models.RevenueOfMonthModel;
 import edu.poly.nhtr.models.RevenueOfRoomModel;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
-import edu.poly.nhtr.presenters.IndexPresenter;
+import edu.poly.nhtr.monthpicker.MonthPickerDialog;
 import edu.poly.nhtr.presenters.StatisticPresenter;
 
 
-public class StatisticFragment extends Fragment implements StatisticListener {
+public class StatisticFragment extends Fragment implements StatisticListener, SwipeRefreshLayout.OnRefreshListener {
     private FragmentStatisticBinding binding;
     private RevenueOfMonthAdapter revenueOfMonthAdapter;
     private RevenueOfRoomAdapter revenueOfRoomAdapter;
     private String homeID;
     private StatisticPresenter statisticPresenter;
     Map<String, Long> mapForLineChart = new HashMap<>();
-    private String year;
+    Map<String, Long> mapForBarChart = new HashMap<>();
+    private int currentYear;
+    private int currentMonth;
+    private String date;
+    private List<Room> currentRoomList = new ArrayList<>();
+    private TextView textView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,8 +92,82 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         homeID = home.getIdHome();
         statisticPresenter = new StatisticPresenter(this, homeID);
 
-        year = binding.txtDateTime.getText().toString().trim();
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
 
+        setupDateTime();
+        getValueForLineChart();
+        getValueForBarChart();
+
+        setListeners();
+        customizeTextViewUnderLine();
+        //setupMonthPicker();
+
+
+        // Inflate the layout for this fragment
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onRefresh() {
+        setupDateTime();
+        getValueForBarChart();
+        getValueForLineChart();
+        customizeTextViewUnderLine();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.swipeRefreshFragment.setRefreshing(false);
+            }
+        }, 2000);
+    }
+
+    private void setupDateTime()
+    {
+        currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+        currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        binding.txtDateTimeForMonth.setText(String.valueOf(currentYear));
+        binding.txtDateTimeForRoom.setText(currentMonth + "/" + currentYear);
+
+
+        // Tạo chuỗi hoàn chỉnh
+        String dateTimeForMonth = String.format("Báo cáo doanh thu các tháng năm %s", currentYear);
+        binding.txtRevenueOfMonth.setText(dateTimeForMonth);
+        String dateTimeForRoom = String.format("Báo cáo doanh thu các phòng tháng %s", currentMonth + "/" + currentYear);
+        binding.txtRevenueOfRoom.setText(dateTimeForRoom);
+    }
+
+    private void getValueForBarChart()
+    {
+        statisticPresenter.getListRoomByHome(homeID, new StatisticPresenter.OnGetRoomCompleteListener() {
+            @Override
+            public void onComplete(List<Room> roomList) {
+                currentRoomList = roomList;
+                statisticPresenter.getListBillByListRoom(roomList, new StatisticPresenter.OnGetBillCompleteListener() {
+                    @Override
+                    public void onComplete(List<RoomBill> roomBillList) {
+                        Map<String, Long> monthYearTotalMap = new HashMap<>();
+                        for (RoomBill roomBill : roomBillList) {
+                            String monthYearKey = roomBill.getMonth() + "-" + roomBill.getYear() + "-" + roomBill.getRoomName();
+                            long totalOfMoney = roomBill.getTotalOfMoney();
+
+                            monthYearTotalMap.put(monthYearKey, totalOfMoney);
+
+                        }
+
+                        mapForBarChart = monthYearTotalMap;
+
+                        setupBarChart(monthYearTotalMap, currentMonth, currentYear);
+
+                    }
+                });
+
+            }
+        });
+    }
+
+    private void getValueForLineChart()
+    {
         statisticPresenter.getListRoomByHome(homeID, new StatisticPresenter.OnGetRoomCompleteListener() {
             @Override
             public void onComplete(List<Room> roomList) {
@@ -100,40 +189,110 @@ public class StatisticFragment extends Fragment implements StatisticListener {
 
                         mapForLineChart = monthYearTotalMap;
 
-                        setupLineChart(monthYearTotalMap);
+                        setupLineChart(monthYearTotalMap, currentYear);
 
-                        // Thay đổi month và year dưới đây để kiểm tra một monthYear cụ thể
-                        String specificMonthYear = "8-2024"; // Ví dụ: tháng 7 năm 2023
-
-                        if (monthYearTotalMap.containsKey(specificMonthYear)) {
-                            long totalMoney = monthYearTotalMap.get(specificMonthYear);
-                            showToast("Month-Year: " + specificMonthYear + ", Total Money: " + totalMoney);
-                        } else {
-                            showToast("No data for Month-Year: " + specificMonthYear);
-                        }
                     }
                 });
             }
         });
+    }
+
+    private void showYearPicker() {
+        final Calendar today = Calendar.getInstance();
+        MonthPickerDialog.Builder builder = new MonthPickerDialog.Builder(requireContext(),
+                new MonthPickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(int selectedMonth, int selectedYear) {
+                        binding.txtDateTimeForMonth.setText(String.valueOf(selectedYear));
+                        String dateTimeForMonth = String.format("Báo cáo doanh thu các tháng năm %s", selectedYear);
+                        binding.txtRevenueOfMonth.setText(dateTimeForMonth);
+                        setupLineChart(mapForLineChart,selectedYear);
+                    }
+                }, today.get(Calendar.YEAR), today.get(Calendar.MONTH));
+
+        builder.setActivatedMonth(Calendar.JULY)
+                .setMinYear(1990)
+                .setMaxYear(2100)
+                .setActivatedYear(today.get(Calendar.YEAR))
+                .setTitle("Chọn năm")
+                .showYearOnly()
+                .build().show();
+    }
 
 
+    private void showYearPickerDialog() {
+        // Tạo một view từ layout
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View view = inflater.inflate(R.layout.layout_dialog_year_picker, null);
 
-        setupBarChart();
-        setListeners();
-        customizeTextViewUnderLine();
-        //setupTableRevenueOfMonth();
+        final NumberPicker yearPicker = view.findViewById(R.id.yearPicker);
 
+        // Đặt giá trị minValue, maxValue và wrapSelectorWheel trong Java
+        yearPicker.setMinValue(1900);
+        yearPicker.setMaxValue(2100);
+        yearPicker.setWrapSelectorWheel(false);
 
-        // Inflate the layout for this fragment
-        return binding.getRoot();
+        // Đặt giá trị ban đầu cho NumberPicker
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        yearPicker.setValue(currentYear);
+
+        // Tạo và hiển thị dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Chọn năm")
+                .setView(view)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int selectedYear = yearPicker.getValue();
+                        // Thực hiện hành động với năm đã chọn
+                        Toast.makeText(requireContext(), "Năm đã chọn: " + selectedYear, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
 
+    private void showMonthPicker() {
+        MonthPickerDialogCustom monthPickerDialogCustom = new MonthPickerDialogCustom(requireContext(), currentMonth-1, currentYear,
+                new MonthPickerDialogCustom.OnMonthSelectedListener() {
+                    @Override
+                    public void onMonthSelected(int month, int year) {
+                        date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
+                        binding.txtDateTimeForRoom.setText(date);
+                        String dateTimeForRoom = String.format("Báo cáo doanh thu các phòng tháng %s", date);
+                        binding.txtRevenueOfRoom.setText(dateTimeForRoom);
+                        setupBarChart(mapForBarChart, month, year);
+
+                        currentMonth = month ; // Cập nhật currentMonth, have to minus 1
+                        currentYear = year; // Cập nhật year
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+
+        Objects.requireNonNull(monthPickerDialogCustom.getWindow()).setBackgroundDrawableResource(R.drawable.background_dialog_index);
+        monthPickerDialogCustom.show();
+    }
+
+
     private void setupTableRevenueOfMonth() {
+
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        revenueOfMonthAdapter = new RevenueOfMonthAdapter(requireContext(), getRevenueOfMonthList(mapForLineChart));
+        int year = Integer.parseInt(binding.txtDateTimeForMonth.getText().toString());
+        revenueOfMonthAdapter = new RevenueOfMonthAdapter(requireContext(), getRevenueOfMonthList(mapForLineChart, year));
         binding.recyclerView.setAdapter(revenueOfMonthAdapter);
 
     }
@@ -141,7 +300,14 @@ public class StatisticFragment extends Fragment implements StatisticListener {
     private void setupTableRevenueOfRoom() {
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        revenueOfRoomAdapter = new RevenueOfRoomAdapter(requireContext(), getRevenueOfRoomList());
+        String date = binding.txtDateTimeForRoom.getText().toString();
+        // Tách chuỗi bằng ký tự "/"
+        String[] parts = date.split("/");
+
+        // Lấy tháng và năm
+        int month = Integer.parseInt(parts[0]);
+        int year = Integer.parseInt(parts[1]);
+        revenueOfRoomAdapter = new RevenueOfRoomAdapter(requireContext(), getRevenueOfRoomList(mapForBarChart, month, year));
         binding.recyclerView.setAdapter(revenueOfRoomAdapter);
 
     }
@@ -150,10 +316,11 @@ public class StatisticFragment extends Fragment implements StatisticListener {
     private void setVisibleForTableRevenueOfMonth(boolean visible) {
         if (visible) {
             binding.tableLayoutRevenueOfMonth.setVisibility(View.VISIBLE);
+            binding.txtTitleOfColumn1.setText("Tháng");
             binding.txtBackToLineChart.setVisibility(View.VISIBLE);
 
 
-            binding.layoutDateTime.setVisibility(View.GONE);
+            binding.layoutDateTimeForMonth.setVisibility(View.GONE);
             binding.lineChart.setVisibility(View.GONE);
             binding.layoutInformationOfChart.setVisibility(View.GONE);
             binding.btnViewDetailedRevenueOfMonth.setVisibility(View.GONE);
@@ -161,7 +328,7 @@ public class StatisticFragment extends Fragment implements StatisticListener {
             binding.tableLayoutRevenueOfMonth.setVisibility(View.GONE);
             binding.txtBackToLineChart.setVisibility(View.GONE);
 
-            binding.layoutDateTime.setVisibility(View.VISIBLE);
+            binding.layoutDateTimeForMonth.setVisibility(View.VISIBLE);
             binding.lineChart.setVisibility(View.VISIBLE);
             binding.layoutInformationOfChart.setVisibility(View.VISIBLE);
             binding.btnViewDetailedRevenueOfMonth.setVisibility(View.VISIBLE);
@@ -171,9 +338,10 @@ public class StatisticFragment extends Fragment implements StatisticListener {
     private void setVisibleForTableRevenueOfRoom(boolean visible) {
         if (visible) {
             binding.tableLayoutRevenueOfMonth.setVisibility(View.VISIBLE);
+            binding.txtTitleOfColumn1.setText("Phòng");
             binding.txtBackToBarChart.setVisibility(View.VISIBLE);
 
-            binding.layoutDateTime.setVisibility(View.GONE);
+            binding.layoutDateTimeForRoom.setVisibility(View.GONE);
             binding.barChart.setVisibility(View.GONE);
             binding.layoutInformationOfChart.setVisibility(View.GONE);
             binding.btnViewDetailedRevenueOfRoom.setVisibility(View.GONE);
@@ -181,7 +349,7 @@ public class StatisticFragment extends Fragment implements StatisticListener {
             binding.tableLayoutRevenueOfMonth.setVisibility(View.GONE);
             binding.txtBackToBarChart.setVisibility(View.GONE);
 
-            binding.layoutDateTime.setVisibility(View.VISIBLE);
+            binding.layoutDateTimeForRoom.setVisibility(View.VISIBLE);
             binding.barChart.setVisibility(View.VISIBLE);
             binding.layoutInformationOfChart.setVisibility(View.VISIBLE);
             binding.btnViewDetailedRevenueOfRoom.setVisibility(View.VISIBLE);
@@ -189,7 +357,7 @@ public class StatisticFragment extends Fragment implements StatisticListener {
     }
 
 
-    private List<RevenueOfMonthModel> getRevenueOfMonthList(Map<String, Long> monthYearTotalMap) {
+    private List<RevenueOfMonthModel> getRevenueOfMonthList(Map<String, Long> monthYearTotalMap, int currentYear) {
         List<RevenueOfMonthModel> revenueOfMonthList = new ArrayList<>();
 
         // Định dạng số tiền với dấu phân cách ba chữ số
@@ -197,7 +365,7 @@ public class StatisticFragment extends Fragment implements StatisticListener {
 
         // Tạo danh sách tháng từ 1 đến 12
         for (int month = 1; month <= 12; month++) {
-            String monthKey = month + "-" + year; // Thay đổi năm nếu cần
+            String monthKey = month + "-" + currentYear; // Thay đổi năm nếu cần
             long totalMoney = monthYearTotalMap.getOrDefault(monthKey, 0L);
 
             // Định dạng số tiền
@@ -211,20 +379,29 @@ public class StatisticFragment extends Fragment implements StatisticListener {
     }
 
 
-
-
-    private List<RevenueOfRoomModel> getRevenueOfRoomList() {
+    private List<RevenueOfRoomModel> getRevenueOfRoomList(Map<String, Long> monthYearTotalMap, int currentMonth, int currentYear) {
         List<RevenueOfRoomModel> revenueOfRoomList = new ArrayList<>();
-        revenueOfRoomList.add(new RevenueOfRoomModel("P100", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P101", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P102", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P103", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P104", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P105", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P200", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P201", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P202", 1000000L));
-        revenueOfRoomList.add(new RevenueOfRoomModel("P203", 1000000L));
+        // Định dạng số tiền với dấu phân cách ba chữ số
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+        List<String> xValues = new ArrayList<>();
+
+
+
+        for (Room room : currentRoomList) {
+            xValues.add(room.getNameRoom());
+        }
+        for (int i = 0; i < xValues.size(); i++) {
+            String keyMonthYearRoom = currentMonth + "-" + currentYear + "-" + xValues.get(i);
+            long totalMoney = monthYearTotalMap.getOrDefault(keyMonthYearRoom, 0L);
+
+            // Định dạng số tiền
+            String formattedMoney = numberFormat.format(totalMoney);
+
+            // Thay đổi định dạng theo kiểu 6.000.000 (hoặc 6 triệu)
+            revenueOfRoomList.add(new RevenueOfRoomModel(xValues.get(i), formattedMoney));
+
+        }
+
 
         return revenueOfRoomList;
     }
@@ -240,7 +417,17 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         binding.btnViewDetailedRevenueOfMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupBarChart();
+                String date = binding.txtDateTimeForRoom.getText().toString();
+                // Tách chuỗi bằng ký tự "/"
+                String[] parts = date.split("/");
+
+                // Lấy tháng và năm
+                int month = Integer.parseInt(parts[0]);
+                int year = Integer.parseInt(parts[1]);
+
+                String dateTimeForRoom = String.format("Báo cáo doanh thu các phòng tháng %s", month + "/" + year);
+                binding.txtRevenueOfRoom.setText(dateTimeForRoom);
+                setupBarChart(mapForBarChart, month, year);
                 setVisible(false);
             }
         });
@@ -248,7 +435,10 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         binding.btnViewDetailedRevenueOfRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupLineChart(mapForLineChart);
+                int year = Integer.parseInt(binding.txtDateTimeForMonth.getText().toString());
+                String dateTimeForMonth = String.format("Báo cáo doanh thu các tháng năm %s", year);
+                binding.txtRevenueOfMonth.setText(dateTimeForMonth);
+                setupLineChart(mapForLineChart, year);
                 setVisible(true);
             }
         });
@@ -269,7 +459,10 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         binding.txtBackToLineChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupLineChart(mapForLineChart);
+                int year = Integer.parseInt(binding.txtDateTimeForMonth.getText().toString());
+                String dateTimeForMonth = String.format("Báo cáo doanh thu các tháng năm %s", year);
+                binding.txtRevenueOfMonth.setText(dateTimeForMonth);
+                setupLineChart(mapForLineChart, year);
                 setVisibleForTableRevenueOfMonth(false);
             }
         });
@@ -277,8 +470,31 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         binding.txtBackToBarChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupBarChart();
+                String date = binding.txtDateTimeForRoom.getText().toString();
+                // Tách chuỗi bằng ký tự "/"
+                String[] parts = date.split("/");
+
+                // Lấy tháng và năm
+                int month = Integer.parseInt(parts[0]);
+                int year = Integer.parseInt(parts[1]);
+                String dateTimeForRoom = String.format("Báo cáo doanh thu các phòng tháng %s", month + "/" + year);
+                binding.txtRevenueOfRoom.setText(dateTimeForRoom);
+                setupBarChart(mapForBarChart, month, year);
                 setVisibleForTableRevenueOfRoom(false);
+            }
+        });
+
+        binding.imgCalendarForMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showYearPicker();
+            }
+        });
+
+        binding.imgCalendarForRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMonthPicker();
             }
         });
     }
@@ -288,47 +504,75 @@ public class StatisticFragment extends Fragment implements StatisticListener {
             binding.btnViewDetailedRevenueOfMonth.setVisibility(View.VISIBLE);
             binding.lineChart.setVisibility(View.VISIBLE);
             binding.txtRevenueOfMonth.setVisibility(View.VISIBLE);
+            binding.layoutDateTimeForMonth.setVisibility(View.VISIBLE);
 
             binding.btnViewDetailedRevenueOfRoom.setVisibility(View.GONE);
             binding.barChart.setVisibility(View.GONE);
             binding.txtRevenueOfRoom.setVisibility(View.GONE);
+            binding.layoutDateTimeForRoom.setVisibility(View.GONE);
         } else {
             binding.btnViewDetailedRevenueOfMonth.setVisibility(View.GONE);
             binding.lineChart.setVisibility(View.GONE);
             binding.txtRevenueOfMonth.setVisibility(View.GONE);
+            binding.layoutDateTimeForMonth.setVisibility(View.GONE);
 
             binding.btnViewDetailedRevenueOfRoom.setVisibility(View.VISIBLE);
             binding.barChart.setVisibility(View.VISIBLE);
             binding.txtRevenueOfRoom.setVisibility(View.VISIBLE);
+            binding.layoutDateTimeForRoom.setVisibility(View.VISIBLE);
         }
     }
 
 
-    private void setupBarChart() {
-        List<String> xValues = Arrays.asList("P100", "P101", "P102", "P103", "P104", "P105", "P200", "P201", "P202", "P203");
+    private void setupBarChart(Map<String, Long> monthYearTotalMap, int currentMonth, int currentYear) {
+        List<String> xValues = new ArrayList<>();
+
+        for (Room room : currentRoomList) {
+            xValues.add(room.getNameRoom());
+        }
+
         binding.barChart.getAxisRight().setDrawLabels(false);
 
-        ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-        entries.add(new BarEntry(0, 1f));
-        entries.add(new BarEntry(1, 1f));
-        entries.add(new BarEntry(2, 1.5f));
-        entries.add(new BarEntry(3, 2f));
-        entries.add(new BarEntry(4, 2.2f));
-        entries.add(new BarEntry(5, 2.5f));
-        entries.add(new BarEntry(6, 2.8f));
-        entries.add(new BarEntry(7, 1.7f));
-        entries.add(new BarEntry(8, 2.2f));
-        entries.add(new BarEntry(9, 1.5f));
+        ArrayList<BarEntry> entries = new ArrayList<>();
+
+        float maxTotalMoney = 0;
+
+        for (int i = 0; i < xValues.size(); i++) {
+            String keyMonthYearRoom = currentMonth + "-" + currentYear + "-" + xValues.get(i);
+            long totalMoney = monthYearTotalMap.getOrDefault(keyMonthYearRoom, 0L);
+            float convertedTotalMoney = totalMoney / 1_000_000f; // Chia cho 1,000,000 để chuyển đổi sang triệu
+            entries.add(new BarEntry(i, convertedTotalMoney));
+            if (convertedTotalMoney > maxTotalMoney) {
+                maxTotalMoney = convertedTotalMoney;
+            }
+        }
 
         YAxis yAxis = binding.barChart.getAxisLeft();
-        yAxis.setAxisMaximum(3f);
         yAxis.setAxisMinimum(0f);
         yAxis.setAxisLineWidth(0.5f);
         yAxis.setAxisLineColor(Color.BLACK);
+        yAxis.setTextSize(12f);
         yAxis.setLabelCount(7, true); // Nếu muốn cố định có số 3(giá trị max) thì cho là true, nếu không thì bỏ true
+        yAxis.setAxisMaximum(maxTotalMoney + 1); // Đặt giá trị tối đa cho trục Y, thêm một khoảng trống nhỏ
+
+        yAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.format("%.1f", value); // Hiển thị với 1 số thập phân và đơn vị triệu
+            }
+        });
 
         BarDataSet dataSet = new BarDataSet(entries, "Phòng");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setValueTextSize(12f); // Điều chỉnh kích thước chữ hiển thị trên các điểm dữ liệu
+        dataSet.setValueTextColor(getResources().getColor(R.color.colorTextBlack));
+
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getBarLabel(BarEntry barEntry) {
+                return String.format("%.2f", barEntry.getY()); // Hiển thị với 2 số thập phân
+            }
+        });
 
         BarData barData = new BarData(dataSet);
         binding.barChart.setData(barData);
@@ -340,11 +584,13 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         binding.barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xValues));
         binding.barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         binding.barChart.getXAxis().setGranularity(1f);
-        binding.barChart.getXAxis().setLabelCount(10);
+        binding.barChart.getXAxis().setLabelCount(xValues.size());
         binding.barChart.getXAxis().setGranularityEnabled(true);
+        binding.barChart.getXAxis().setTextSize(12f);
     }
 
-    private void setupLineChart(Map<String, Long> monthYearTotalMap) {
+
+    private void setupLineChart(Map<String, Long> monthYearTotalMap, int currentYear) {
         Description description = new Description();
         description.setText("Doanh thu tháng");
         description.setPosition(160f, 15f);
@@ -377,7 +623,7 @@ public class StatisticFragment extends Fragment implements StatisticListener {
         long maxTotalMoney = 0;
 
         for (int i = 0; i < 12; i++) {
-            String monthYearKey = (i + 1) + "-" + year; // Thay đổi năm nếu cần
+            String monthYearKey = (i + 1) + "-" + currentYear; // Thay đổi năm nếu cần
             long totalMoney = monthYearTotalMap.getOrDefault(monthYearKey, 0L);
             float convertedTotalMoney = totalMoney / 1_000_000f; // Chia cho 1,000,000 để chuyển đổi sang triệu
             entries.add(new Entry(i, convertedTotalMoney));
@@ -411,9 +657,10 @@ public class StatisticFragment extends Fragment implements StatisticListener {
     }
 
 
-
     @Override
     public void showToast(String message) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+
 }

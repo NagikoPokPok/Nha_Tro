@@ -25,16 +25,15 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import com.github.ybq.android.spinkit.style.Wave;
+
 import com.google.android.flexbox.FlexboxLayout;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import edu.poly.nhtr.Activity.MonthPickerDialog;
+import edu.poly.nhtr.Activity.MonthPickerDialogCustom;
 import edu.poly.nhtr.Adapter.RoomBillAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
@@ -685,8 +684,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     }
 
     private void showMonthPicker() {
-        MonthPickerDialog monthPickerDialog = new MonthPickerDialog(requireContext(), currentMonth, currentYear,
-                new MonthPickerDialog.OnMonthSelectedListener() {
+        MonthPickerDialogCustom monthPickerDialogCustom = new MonthPickerDialogCustom(requireContext(), currentMonth, currentYear,
+                new MonthPickerDialogCustom.OnMonthSelectedListener() {
                     @Override
                     public void onMonthSelected(int month, int year) {
                         date = month + "/" + year; // month = selectedMonthPosition + 1 ==> month == actual value
@@ -708,8 +707,8 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                     }
                 });
 
-        Objects.requireNonNull(monthPickerDialog.getWindow()).setBackgroundDrawableResource(R.drawable.background_dialog_index);
-        monthPickerDialog.show();
+        Objects.requireNonNull(monthPickerDialogCustom.getWindow()).setBackgroundDrawableResource(R.drawable.background_dialog_index);
+        monthPickerDialogCustom.show();
     }
 
     private void setupRecyclerView() {
