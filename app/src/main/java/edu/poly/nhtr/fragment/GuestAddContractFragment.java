@@ -49,6 +49,7 @@ import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
 import edu.poly.nhtr.listeners.MainGuestListener;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.GuestAddContractPresenter;
@@ -148,6 +149,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     private AppCompatButton btnCancel;
     private Dialog dialog;
     private Room room;
+    private Home home;
     private String roomPrice;
 
     @Override
@@ -175,6 +177,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
             roomPrice = getArguments().getString("room_price");
+            home = (Home) getArguments().getSerializable("home");
             if (room != null) {
                 Timber.tag("GuestAddContractFragment").d("Room ID: %s", room.getRoomId());
                 setListeners();
@@ -323,12 +326,17 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     }
 
     @Override
+    public String getInfoHomeFromGoogleAccount() {
+        return preferenceManager.getString(Constants.KEY_HOME_ID);
+    }
+
+    @Override
     public void getListMainGuest(List<MainGuest> listContracts) {
 
     }
 
     @Override
-    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, DocumentReference documentReference) {
+    public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, String homeId, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
         preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
         preferenceManager.putString(Constants.KEY_GUEST_CCCD, cccdNumber);
@@ -347,15 +355,17 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         preferenceManager.putString(Constants.KEY_GUEST_CONTRACT_IMAGE_BACK, contractImageBack);
         preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
     }
 
     @Override
-    public void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, DocumentReference documentReference) {
+    public void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
         preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
         preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
         preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
     }
 
 

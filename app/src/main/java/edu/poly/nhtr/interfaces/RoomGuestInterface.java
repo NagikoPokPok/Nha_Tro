@@ -17,9 +17,11 @@ public interface RoomGuestInterface {
 
         void hideLoadingOfFunctions(int id);
 
+        String getInfoHomeFromGoogleAccount();
+
         String getInfoRoomFromGoogleAccount();
 
-        void putGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, DocumentReference documentReference);
+        void putGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, DocumentReference documentReference);
 
         void showToast(String message);
 

@@ -41,6 +41,20 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
         this.database = FirebaseFirestore.getInstance();
     }
 
+    private static @NonNull List<DocumentSnapshot> getDocumentSnapshots(Task<QuerySnapshot> task) {
+        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+
+        documentSnapshots.sort((o1, o2) -> {
+            Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
+            Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
+            if (timestamp1 != null && timestamp2 != null) {
+                return timestamp1.compareTo(timestamp2);
+            }
+            return 0;
+        });
+        return documentSnapshots;
+    }
+
     public int getPosition() {
         return position;
     }
@@ -122,6 +136,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
         guests.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
         guests.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
         guests.put(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount());
+        guests.put(Constants.KEY_HOME_ID, view.getInfoHomeFromGoogleAccount());
         guests.put(Constants.KEY_TIMESTAMP, new Date());
 
         // Add guest to firebase
@@ -134,6 +149,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                             guest.getDateIn(),
                             guest.isFileStatus(),
                             view.getInfoRoomFromGoogleAccount(),
+                            view.getInfoHomeFromGoogleAccount(),
                             documentReference
                     );
                     view.dialogClose();
@@ -152,55 +168,55 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
-                            List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
 
-                            documentSnapshots.sort((o1, o2) -> {
-                                Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
-                                Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
-                                if (timestamp1 != null && timestamp2 != null) {
-                                    return timestamp1.compareTo(timestamp2);
-                                }
-                                return 0;
-                            });
-
-                            position = 0;
-                            boolean found = false;
-
-                            for (DocumentSnapshot doc : documentSnapshots) {
-                                position++;
-                                String roomIdFromFirestore = doc.getId();
-
-                                // Kiểm tra nếu roomId khớp
-                                if (roomIdFromFirestore.equals(guest.getGuestId())) {
-                                    found = true;
-                                    break;
-                                }
+                        documentSnapshots.sort((o1, o2) -> {
+                            Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
+                            Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
+                            if (timestamp1 != null && timestamp2 != null) {
+                                return timestamp1.compareTo(timestamp2);
                             }
+                            return 0;
+                        });
 
-                            if (found) {
-                                database.collection(Constants.KEY_COLLECTION_GUESTS)
-                                        .document(guest.getGuestId())
-                                        .delete()
-                                        .addOnSuccessListener(aVoid -> {
-                                            getGuests(view.getInfoRoomFromGoogleAccount());
-                                            view.hideLoadingOfFunctions(R.id.btn_delete_guest);
-                                            view.dialogClose();
-                                            view.openDialogSuccess(R.layout.layout_dialog_delete_guest_success);
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            view.hideLoadingOfFunctions(R.id.btn_delete_guest);
-                                            view.showToast("Xoá khách thất bại");
-                                        });
-                            } else {
-                                view.hideLoadingOfFunctions(R.id.btn_delete_guest);
-                                view.showToast("Không tìm thấy homeId");
+                        position = 0;
+                        boolean found = false;
+
+                        for (DocumentSnapshot doc : documentSnapshots) {
+                            position++;
+                            String roomIdFromFirestore = doc.getId();
+
+                            // Kiểm tra nếu roomId khớp
+                            if (roomIdFromFirestore.equals(guest.getGuestId())) {
+                                found = true;
+                                break;
                             }
+                        }
+
+                        if (found) {
+                            database.collection(Constants.KEY_COLLECTION_GUESTS)
+                                    .document(guest.getGuestId())
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        getGuests(view.getInfoRoomFromGoogleAccount());
+                                        view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                                        view.dialogClose();
+                                        view.openDialogSuccess(R.layout.layout_dialog_delete_guest_success);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                                        view.showToast("Xoá khách thất bại");
+                                    });
                         } else {
                             view.hideLoadingOfFunctions(R.id.btn_delete_guest);
-                            view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
+                            view.showToast("Không tìm thấy homeId");
                         }
-                        });
+                    } else {
+                        view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                        view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
+                });
+    }
 
     @Override
     public void updateGuestInFirebase(Guest guest) {
@@ -258,21 +274,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                 });
     }
 
-
-    private static @NonNull List<DocumentSnapshot> getDocumentSnapshots(Task<QuerySnapshot> task) {
-        List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-
-        documentSnapshots.sort((o1, o2) -> {
-            Timestamp timestamp1 = o1.getTimestamp(Constants.KEY_TIMESTAMP);
-            Timestamp timestamp2 = o2.getTimestamp(Constants.KEY_TIMESTAMP);
-            if (timestamp1 != null && timestamp2 != null) {
-                return timestamp1.compareTo(timestamp2);
-            }
-            return 0;
-        });
-        return documentSnapshots;
-    }
-
     @Override
     public void handleNameChanged(String name, TextInputLayout textInputLayout, int boxStrokeColor) {
         if (textInputLayout == null) {
@@ -307,10 +308,10 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
         } else if (!isValidPhoneNumber(phone)) {
             textInputLayout.setError("Số điện thoại không hợp lệ");
         } else {
-            textInputLayout.setErrorEnabled(false);
-            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+            checkDuplicatePhoneNumber(phone, textInputLayout, boxStrokeColor);
         }
     }
+
 
     // Kiểm tra số điện thoại có hợp lệ không
     private boolean isValidPhoneNumber(CharSequence target) {
@@ -319,6 +320,25 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
         } else {
             return android.util.Patterns.PHONE.matcher(target).matches();
         }
+    }
+
+    private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout, int boxStrokeColor) {
+        database.collection(Constants.KEY_COLLECTION_GUESTS)
+                .whereEqualTo(Constants.KEY_HOME_ID, view.getInfoHomeFromGoogleAccount())
+                .whereEqualTo(Constants.KEY_GUEST_PHONE, phone)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            textInputLayout.setError("Số điện thoại đã tồn tại trong nhà trọ này");
+                        } else {
+                            textInputLayout.setError(null);
+                            textInputLayout.setBoxStrokeColor(boxStrokeColor);
+                        }
+                    } else {
+                        textInputLayout.setError("Có lỗi xảy ra khi kiểm tra số điện thoại");
+                    }
+                });
     }
 
     @Override

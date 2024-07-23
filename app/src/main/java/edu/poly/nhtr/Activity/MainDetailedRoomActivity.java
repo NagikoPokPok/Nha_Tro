@@ -223,6 +223,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         RoomGuestContractFragment fragment = new RoomGuestContractFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
         bundle.putString("room_price", roomPrice);
         fragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.fragment_container, fragment);
@@ -275,6 +276,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
         RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
         roomGuestFragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction()

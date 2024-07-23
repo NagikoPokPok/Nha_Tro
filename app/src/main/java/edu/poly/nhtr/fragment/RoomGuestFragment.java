@@ -140,17 +140,24 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public String getInfoHomeFromGoogleAccount() {
+        return preferenceManager.getString(Constants.KEY_HOME_ID);
+    }
+
+    @Override
     public String getInfoRoomFromGoogleAccount() {
         return preferenceManager.getString(Constants.KEY_ROOM_ID);
     }
 
     @Override
-    public void putGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, DocumentReference documentReference) {
+    public void putGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
         preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
         preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
         preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
+        preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
+
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
@@ -17,7 +16,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.CountryCodePicker;
 
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,17 +24,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-import edu.poly.nhtr.Activity.Enum.DateType;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.MainGuestListener;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.utilities.Constants;
 
 public class GuestAddContractPresenter {
+    private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
     private final MainGuestListener mainGuestListener;
     private final Context context;
-    private static final int MAX_PRICE_LENGTH = 9; // Giá phòng tối đa không quá 9 chữ số
-    private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
 
     public GuestAddContractPresenter(MainGuestListener mainGuestListener, Context context) {
         this.mainGuestListener = mainGuestListener;
@@ -113,7 +109,7 @@ public class GuestAddContractPresenter {
 
     // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
     private boolean isValidName(String name) {
-        String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
+        String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỂưạảấầẩẫậắằẳẵặẹẻẽềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
         return name.matches(regex);
     }
 
@@ -160,9 +156,31 @@ public class GuestAddContractPresenter {
         if (!ccp.isValidFullNumber()) {
             textInputLayout.setError("Số điện thoại không hợp lệ");
         } else {
-            textInputLayout.setError(null); // Clear the error if valid
+            checkDuplicatePhoneNumber(phoneNumber, textInputLayout);
         }
     }
+
+    private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection(Constants.KEY_COLLECTION_GUESTS)
+                .whereEqualTo(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount())
+                .whereEqualTo(Constants.KEY_GUEST_PHONE, phone)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            textInputLayout.setError("Số điện thoại đã tồn tại trong nhà trọ này");
+                        } else {
+                            textInputLayout.setError(null);
+                        }
+                    } else {
+                        textInputLayout.setError("Có lỗi xảy ra khi kiểm tra số điện thoại");
+                    }
+                });
+    }
+
+
 
     // Sự kiện cho trường CCCD
     public void setUpCCCDField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
@@ -414,7 +432,6 @@ public class GuestAddContractPresenter {
         });
 
         textInputEditText.addTextChangedListener(new TextWatcher() {
-            private final Calendar cal = Calendar.getInstance();
             private String current = "";
 
             @Override
@@ -605,61 +622,6 @@ public class GuestAddContractPresenter {
     }
 
 
-//    public void setUpRoomPriceField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
-//        textInputEditText.addTextChangedListener(new TextWatcher() {
-//            private String current = "";
-//
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                // Do nothing
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                if (!s.toString().equals(current)) {
-//                    textInputEditText.removeTextChangedListener(this);
-//
-//                    String cleanString = s.toString().replaceAll("\\D", "");
-//
-//                    if (cleanString.length() > MAX_PRICE_LENGTH) {
-//                        cleanString = cleanString.substring(0, MAX_PRICE_LENGTH);
-//                    }
-//
-//                    if (!cleanString.isEmpty()) {
-//                        double parsed = Double.parseDouble(cleanString);
-//                        String formatted = NumberFormat.getInstance(new Locale("vi", "VN")).format(parsed);
-//
-//                        current = formatted;
-//                        textInputEditText.setText(formatted);
-//                        textInputEditText.setSelection(formatted.length());
-//                    } else {
-//                        current = "";
-//                        textInputEditText.setText("");
-//                    }
-//
-//                    textInputEditText.addTextChangedListener(this);
-//                    handleRoomPriceChanged(cleanString, textInputLayout);
-//                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                // Do nothing
-//            }
-//        });
-//    }
-//
-//    private void handleRoomPriceChanged(String price, TextInputLayout textInputLayout) {
-//        if (price.isEmpty()) {
-//            textInputLayout.setError("Không được bỏ trống");
-//        } else if (price.length() > MAX_PRICE_LENGTH) {
-//            textInputLayout.setError("Giá phòng không được vượt quá 9 chữ số");
-//        } else {
-//            textInputLayout.setError(null);
-//        }
-//    }
-
-
     public void addContractToFirestore(MainGuest mainGuest) {
         HashMap<String, Object> contract = new HashMap<>();
         contract.put(Constants.KEY_ROOM_TOTAl_MEMBERS, mainGuest.getTotalMembers());
@@ -681,6 +643,7 @@ public class GuestAddContractPresenter {
         contract.put(Constants.KEY_CONTRACT_STATUS, mainGuest.isFileStatus());
         contract.put(Constants.KEY_TIMESTAMP, new Date());
         contract.put(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount());
+        contract.put(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount());
 
         // Add contract to Firebase
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_CONTRACTS)
@@ -705,6 +668,7 @@ public class GuestAddContractPresenter {
                             mainGuest.getContractImageBack(),
                             mainGuest.isFileStatus(),
                             mainGuestListener.getInfoRoomFromGoogleAccount(),
+                            mainGuestListener.getInfoHomeFromGoogleAccount(),
                             documentReference
                     );
                     mainGuestListener.showToast("Thêm hợp đồng thành công");
@@ -718,6 +682,7 @@ public class GuestAddContractPresenter {
         guest.put(Constants.KEY_GUEST_DATE_IN, mainGuest.getDateIn());
         guest.put(Constants.KEY_CONTRACT_STATUS, mainGuest.isFileStatus());
         guest.put(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount());
+        guest.put(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount());
         guest.put(Constants.KEY_TIMESTAMP, new Date());
         guest.put(Constants.KEY_IS_MAIN_GUEST, true);
 
@@ -730,6 +695,7 @@ public class GuestAddContractPresenter {
                             mainGuest.getDateIn(),
                             mainGuest.isFileStatus(),
                             mainGuestListener.getInfoRoomFromGoogleAccount(),
+                            mainGuestListener.getInfoHomeFromGoogleAccount(),
                             documentReference
                     );
                     mainGuestListener.showToast("Thêm khách thành công");
