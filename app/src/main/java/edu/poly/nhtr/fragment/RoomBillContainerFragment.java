@@ -18,7 +18,7 @@ import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 
-public class RoomBillContainerFragment extends Fragment implements RoomBillFragment.OnMakeBillClickListener {
+public class RoomBillContainerFragment extends Fragment implements RoomBillFragment.OnMakeBillClickListener, RoomBillFragment.OnViewBillListener {
 
     private RoomBillFragment roomBillFragment;
     private Room room;
@@ -57,6 +57,7 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
     private void showRoomBillFragment() {
         roomBillFragment = new RoomBillFragment();
         roomBillFragment.setOnMakeBillClickListener(this); // Register listener
+        roomBillFragment.setOnViewBillListener(this);
 
         // Create and set bundle
         Bundle bundle = new Bundle();
@@ -86,6 +87,21 @@ public class RoomBillContainerFragment extends Fragment implements RoomBillFragm
         // Replace RoomBillFragment with RoomMakeBillFragment
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.frame_container_frame, roomMakeBillFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onViewBill(RoomBill bill) {
+        // Create RoomMakeBillFragment and pass data
+        DetailBillFragment detailBillFragment = new DetailBillFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("bill", bill);
+        detailBillFragment.setArguments(bundle);
+
+        // Replace RoomBillFragment with RoomMakeBillFragment
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.frame_container_frame, detailBillFragment)
                 .addToBackStack(null)
                 .commit();
     }

@@ -56,6 +56,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     private List<RoomBill> billList = new ArrayList<>();
     private Room room;
     private OnMakeBillClickListener onMakeBillClickListener;
+    private OnViewBillListener onViewBillListener;
     private int currentMonth;
     private int currentYear;
     private int currentDay;
@@ -735,7 +736,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_view_bill) {
-                showToast("view bill");
+                if(onViewBillListener != null) {
+                    onViewBillListener.onViewBill(bill);
+                }
                 return true;
             } else if (itemId == R.id.menu_edit_bill) {
                 showToast("edit bill");
@@ -848,8 +851,20 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         void onMakeBillClicked(RoomBill bill);
     }
 
+    public interface OnViewBillListener {
+        void onViewBill(RoomBill bill);
+    }
+
     public void setOnMakeBillClickListener(OnMakeBillClickListener listener) {
         this.onMakeBillClickListener = listener;
+    }
+
+    public OnViewBillListener getOnViewBillListener() {
+        return onViewBillListener;
+    }
+
+    public void setOnViewBillListener(OnViewBillListener onViewBillListener) {
+        this.onViewBillListener = onViewBillListener;
     }
 
     private void setupDialog(int layoutId) {
