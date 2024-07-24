@@ -50,8 +50,6 @@ public interface RoomGuestInterface {
 
         void getGuests(String roomId);
 
-        // void deleteGuest(String guestId);
-
         void deleteGuest(Guest guest);
 
         void updateGuestInFirebase(Guest guest);
@@ -61,5 +59,6 @@ public interface RoomGuestInterface {
         void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor);
 
         void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor);
+
     }
 }

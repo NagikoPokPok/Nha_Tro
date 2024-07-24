@@ -36,7 +36,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.Adapter.GuestAdapter;
@@ -53,6 +55,8 @@ import timber.log.Timber;
 
 public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View {
 
+    private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
+    private static final int FULL_DATE_LENGTH = 10; // dd/MM/yyyy
     private FragmentRoomGuestBinding binding;
     private RecyclerView recyclerView;
     private GuestAdapter adapter;
@@ -229,8 +233,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     // Hàm set mau va font chu cho Text
-    private Spannable customizeText(String s)
-    {
+    private Spannable customizeText(String s) {
         Typeface interBoldTypeface = Typeface.createFromAsset(requireContext().getAssets(), "font/inter_bold.ttf");
         Spannable text1 = new SpannableString(s);
         text1.setSpan(new TypefaceSpan(interBoldTypeface), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -284,18 +287,15 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
 
-        // Thêm dấu * đỏ cho TextView cần
         nameGuest.append(customizeText("*"));
         phoneGuest.append(customizeText("*"));
 
-        // Set hint cho các trường và nút
         title.setText("Thêm khách mới");
         edtNameGuest.setHint("Ví dụ: Nguyễn Văn A");
         edtPhoneGuest.setHint("Ví dụ: 0123456789");
         edtDateIn.setHint("Ví dụ: 01/01/2022");
         btnAddGuest.setText("Thêm khách");
 
-        // Handle input field changes
         edtNameGuest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -331,6 +331,9 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         });
 
         edtDateIn.addTextChangedListener(new TextWatcher() {
+            private final Calendar cal = Calendar.getInstance();
+            private String current = "";
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // Do nothing
@@ -338,20 +341,64 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do nothing
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1;
+
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < 8) {
+                        String ddmmyyyy = "DDMMYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        year = Math.min(Math.max(year, 2000), 2100);
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%04d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    edtDateIn.setText(current);
+                    edtDateIn.setSelection(Math.min(sel, current.length()));
+                }
+
+                if (s.length() == REQUIRED_DATE_LENGTH) {
+                    presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), dateInLayout, boxStrokeColor);
+                } else {
+                    dateInLayout.setError(null);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), dateInLayout, boxStrokeColor);
+
             }
         });
 
-        // Handle add guest button state
         TextWatcher textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
             }
 
             @Override
@@ -361,28 +408,33 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Do nothing
             }
         };
 
-        // Add textWatcher to input fields
         edtNameGuest.addTextChangedListener(textWatcher);
         edtPhoneGuest.addTextChangedListener(textWatcher);
 
-        // Handle add guest button click
         btnAddGuest.setOnClickListener(v -> {
-            String name = edtNameGuest.getText().toString().trim();
-            String phone = edtPhoneGuest.getText().toString().trim();
-            String dateIn = edtDateIn.getText().toString().trim();
-            Guest guest = new Guest(name, phone, true, dateIn);
-            presenter.addGuestToFirebase(guest);
+            if (nameGuestLayout.getError() == null && phoneGuestLayout.getError() == null && dateInLayout.getError() == null) {
+                String name = edtNameGuest.getText().toString().trim();
+                String phone = edtPhoneGuest.getText().toString().trim();
+                String dateIn = edtDateIn.getText().toString().trim();
+                Guest guest = new Guest(name, phone, true, dateIn);
+                presenter.addGuestToFirebase(guest);
 
-            String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
-            presenter.getGuests(roomId);
+                String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);
+                presenter.getGuests(roomId);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(getContext(), "Hãy điền thông tin chính xác để lưu", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
+
+
+
 
     private void openUpdateGuestDialog(Guest guest) {
 
@@ -447,6 +499,9 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         });
 
         edtDateIn.addTextChangedListener(new TextWatcher() {
+            private final Calendar cal = Calendar.getInstance();
+            private String current = "";
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // Do nothing
@@ -454,14 +509,59 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do nothing
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1; // Selection position (Vị trí được chọn)
+
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < 8) {
+                        String ddmmyyyy = "DDMMYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        year = Math.min(Math.max(year, 2000), 2100);
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%04d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    edtDateIn.setText(current);
+                    edtDateIn.setSelection(Math.min(sel, current.length()));
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), layoutDateIn, boxStrokeColor);
+                if (s.length() == REQUIRED_DATE_LENGTH) {
+                    presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), layoutDateIn, boxStrokeColor);
+                } else {
+                    layoutDateIn.setError(null);
+                }
             }
         });
+
 
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -486,18 +586,23 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnUpdateGuest.setOnClickListener(v -> {
-            // Lấy dữ liệu
-            String newNameGuest = edtNameGuest.getText().toString().trim();
-            String newPhoneGuest = edtPhoneGuest.getText().toString().trim();
-            String newDateIn = edtDateIn.getText().toString().trim();
 
-            // Cập nhật dữ liệu
-            guest.setNameGuest(newNameGuest);
-            guest.setPhoneGuest(newPhoneGuest);
-            guest.setDateIn(newDateIn);
-            guest.setFileStatus(true);
+            if (layoutNameGuest.getError() == null && layoutPhoneGuest.getError() == null) {
+                // Lấy dữ liệu
+                String newNameGuest = edtNameGuest.getText().toString().trim();
+                String newPhoneGuest = edtPhoneGuest.getText().toString().trim();
+                String newDateIn = edtDateIn.getText().toString().trim();
 
-            presenter.updateGuestInFirebase(guest);
+                // Cập nhật dữ liệu
+                guest.setNameGuest(newNameGuest);
+                guest.setPhoneGuest(newPhoneGuest);
+                guest.setDateIn(newDateIn);
+                guest.setFileStatus(true);
+
+                presenter.updateGuestInFirebase(guest);
+            } else {
+                Toast.makeText(getContext(), "Please correct the errors before adding a guest", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -534,8 +639,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                 // Thực hiện hành động cho mục chỉnh sửa
                 openUpdateGuestDialog(guest);
                 return true;
-            }
-            else if (itemId == R.id.menu_delete_guest) {
+            } else if (itemId == R.id.menu_delete_guest) {
                 // Thực hiện hành động cho mục xóa
                 openDeleteGuestDialog(guest);
                 return true;
