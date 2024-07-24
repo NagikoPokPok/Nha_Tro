@@ -84,13 +84,15 @@ public class StatisticPresenter {
                                 if (querySnapshot != null && !querySnapshot.isEmpty()) {
                                     for (DocumentSnapshot document : querySnapshot.getDocuments()) {
                                         RoomBill bill = new RoomBill();
-                                        bill.billID = document.getId();
-                                        bill.roomName = document.getString(Constants.KEY_NAME_ROOM);
-                                        bill.roomID = document.getString(Constants.KEY_ROOM_ID);
-                                        bill.totalOfMoney = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY)).intValue();
-                                        bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
-                                        bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();
-                                        roomBillList.add(bill);
+                                        if(Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_PAYED_BILL))) {
+                                            bill.billID = document.getId();
+                                            bill.roomName = document.getString(Constants.KEY_NAME_ROOM);
+                                            bill.roomID = document.getString(Constants.KEY_ROOM_ID);
+                                            bill.totalOfMoney = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY)).intValue();
+                                            bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
+                                            bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();
+                                            roomBillList.add(bill);
+                                        }
                                     }
                                 }
                                 roomBillList.sort(Comparator.comparing(RoomBill::getMonth));

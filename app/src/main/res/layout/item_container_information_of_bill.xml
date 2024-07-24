@@ -229,8 +229,9 @@
             android:paddingEnd="15dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:fontFamily="@font/inter_light"
                 android:text="Tiền phòng:"
                 android:textColor="@color/colorTextBlack"
@@ -238,9 +239,9 @@
 
             <TextView
                 android:id="@+id/money_of_room"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+
                 android:fontFamily="@font/inter_medium"
                 android:gravity="end"
                 android:text="0 đ"
@@ -259,8 +260,9 @@
             android:paddingEnd="15dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:fontFamily="@font/inter_light"
                 android:text="Tiền dịch vụ:"
                 android:textColor="@color/colorTextBlack"
@@ -268,9 +270,8 @@
 
             <TextView
                 android:id="@+id/money_of_service"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
                 android:gravity="end"
                 android:text="0 đ"
@@ -290,18 +291,66 @@
 
             <TextView
                 android:id="@+id/txt_money_add_or_minus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_light"
-                android:text="Tiền cộng thêm/ giảm:"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/money_of_add_or_minus"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/inter_light"
+                android:text="Tiền cộng thêm:"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@drawable/icon_add"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/colorTextBlack"
+                />
+
+            <TextView
+                android:id="@+id/money_of_add_or_minus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="end"
+                android:text="0 đ"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:id="@+id/txt_money_minus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/inter_light"
+                android:text="Tiền giảm:"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="1.25dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="13dp"
+                android:background="@color/colorTextBlack" />
+
+            <TextView
+                android:id="@+id/money_of_minus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
                 android:gravity="end"
                 android:text="0 đ"
@@ -329,8 +378,9 @@
             android:paddingEnd="15dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:fontFamily="@font/inter_bold"
                 android:text="Tổng cộng :"
                 android:textColor="@color/colorButton"
@@ -338,9 +388,8 @@
 
             <TextView
                 android:id="@+id/total_money"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="@font/inter_medium"
                 android:gravity="end"
                 android:text="0 đ"
