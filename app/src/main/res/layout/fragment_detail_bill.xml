@@ -1,13 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ScrollView
+    <TextView
+        android:id="@+id/txt_status_of_bill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hoá đơn đã được thanh toán"
+        android:fontFamily="@font/inter_bold"
+        android:textColor="@color/colorGreen"
+        android:textSize="16sp"
+        android:layout_above="@id/layout_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/layout_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel_view_bill"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/custom_button_add"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="12dp"
+            android:text="Hủy"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="20sp"
+            app:backgroundTint="@color/grey"
+            app:icon="@drawable/icon_exit"
+            app:iconGravity="textStart"
+            app:iconPadding="3dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/black" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_make_bill"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/custom_button_add"
+            android:gravity="center"
+            android:paddingStart="9dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="12dp"
+            android:text="Gửi tin nhắn"
+            android:textSize="20sp"
+            app:backgroundTint="@null"
+            app:icon="@drawable/ic_mail"
+            app:iconGravity="textStart"
+            app:iconSize="24dp"
+            android:visibility="visible"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_mark_bill_is_paid"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/background_mark_bill_is_paid"
+            android:gravity="center"
+            android:paddingStart="9dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="9dp"
+            android:paddingBottom="12dp"
+            android:text="Xác nhận thanh toán"
+            android:textColor="@color/colorGreen"
+            android:textSize="16sp"
+            app:backgroundTint="@null"
+            app:icon="@drawable/ic_tick"
+            app:iconTint="@color/colorGreen"
+            app:iconGravity="textStart"
+            app:iconSize="24dp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/frame_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txt_status_of_bill"
+        android:scrollbars="none"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,20 +127,21 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.25"
+                        android:layout_weight="1"
                         android:fontFamily="@font/inter_medium"
                         android:gravity="end"
-                        android:text="Tháng 1, "
+                        android:text="Tháng "
                         android:textColor="@color/colorTextBlack"
                         android:textSize="18sp" />
 
                     <TextView
+                        android:id="@+id/txt_month_year_of_bill"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/inter_medium"
                         android:gravity="start"
-                        android:text="2024"
+                        android:text="1/2024"
                         android:textColor="@color/colorTextBlack"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -60,7 +151,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.75dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
@@ -94,6 +185,7 @@
                         android:textSize="17dp" />
 
                     <TextView
+                        android:id="@+id/txt_date_make_bill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -127,6 +219,7 @@
                         android:textSize="17dp" />
 
                     <TextView
+                        android:id="@+id/txt_date_due_pay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -143,80 +236,11 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.75dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5dp"
                 android:background="@color/black" />
 
-            <!--            <LinearLayout-->
-            <!--                android:id="@+id/thanh_tien"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginStart="20dp"-->
-            <!--                android:layout_marginTop="5dp"-->
-            <!--                android:layout_marginEnd="20dp"-->
-            <!--                android:orientation="vertical">-->
-
-            <!--                <LinearLayout-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_marginStart="0dp"-->
-            <!--                    android:layout_marginTop="0dp"-->
-            <!--                    android:orientation="horizontal">-->
-
-            <!--                    <TextView-->
-            <!--                        android:layout_width="0dp"-->
-            <!--                        android:layout_height="match_parent"-->
-            <!--                        android:layout_weight="1"-->
-            <!--                        android:fontFamily="@font/inter_medium"-->
-            <!--                        android:gravity="center"-->
-            <!--                        android:text="Tiền phòng"-->
-            <!--                        android:textColor="@color/colorTextBlack"-->
-            <!--                        android:textSize="17dp"-->
-
-            <!--                        />-->
-
-            <!--                    <TextView-->
-            <!--                        android:layout_width="0dp"-->
-            <!--                        android:layout_height="match_parent"-->
-            <!--                        android:layout_gravity="left"-->
-            <!--                        android:layout_weight="1"-->
-            <!--                        android:fontFamily="@font/inter_medium"-->
-            <!--                        android:gravity="center"-->
-            <!--                        android:text="Thành tiền"-->
-            <!--                        android:textColor="@color/colorTextBlack"-->
-            <!--                        android:textSize="17dp" />-->
-            <!--                </LinearLayout>-->
-
-            <!--                <LinearLayout-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_marginStart="0dp"-->
-            <!--                    android:layout_marginTop="10dp"-->
-            <!--                    android:layout_marginBottom="0dp"-->
-            <!--                    android:orientation="horizontal">-->
-
-            <!--                    <TextView-->
-            <!--                        android:layout_width="0dp"-->
-            <!--                        android:layout_height="match_parent"-->
-            <!--                        android:layout_marginStart="0dp"-->
-            <!--                        android:layout_weight="2.5"-->
-            <!--                        android:fontFamily="@font/inter_medium"-->
-            <!--                        android:gravity="center"-->
-            <!--                        android:text="30 ngày"-->
-            <!--                        android:textColor="@color/colorTextBlack"-->
-            <!--                        android:textSize="17dp" />-->
-
-            <!--                    <TextView-->
-            <!--                        android:layout_width="0dp"-->
-            <!--                        android:layout_height="match_parent"-->
-            <!--                        android:layout_weight="2"-->
-            <!--                        android:fontFamily="@font/inter_bold"-->
-            <!--                        android:gravity="center"-->
-            <!--                        android:text="500.000 đ"-->
-            <!--                        android:textSize="17dp" />-->
-            <!--                </LinearLayout>-->
-            <!--            </LinearLayout>-->
 
 
             <LinearLayout
@@ -240,10 +264,11 @@
 
 
                     <TextView
+                        android:id="@+id/txt_price_of_room"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/inter_light"
-                        android:text="30 days,"
+                        android:text="2.000.000 VND"
                         android:textColor="@color/colorTextBlack"
                         android:textSize="15sp" />
 
@@ -251,19 +276,53 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/inter_medium"
-                        android:text="Tiền thuê phòng"
+                        android:text="Số ngày ở"
                         android:textColor="@color/colorTextBlack"
                         android:textSize="16sp"
                         android:layout_marginTop="10dp"/>
 
 
                     <TextView
+                        android:id="@+id/number_of_days_lived"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/inter_light"
-                        android:text="30 days,"
+                        android:text="30 days"
                         android:textColor="@color/colorTextBlack"
                         android:textSize="15sp" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="end"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Thành tiền"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="16sp"
+                        android:layout_marginTop="10dp"/>
+
+
+                    <TextView
+                        android:id="@+id/txt_total_money_of_room"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="2.000.000 VNĐ"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="15sp"
+                        />
+
 
 
                 </LinearLayout>
@@ -276,7 +335,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.75dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="5dp"
                 android:background="@color/black" />
@@ -317,32 +376,126 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="0dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="40dp"
                     android:fontFamily="@font/inter_medium"
                     android:gravity="end"
                     android:text="Thành tiền"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="17dp" />
+                    android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/txt_total_money_of_service"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="30dp"
-                    android:fontFamily="@font/inter_bold"
+                    android:fontFamily="@font/inter_medium"
                     android:gravity="end"
-                    android:text="500.000 đ"
+                    android:text="500.000 VNĐ"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="17dp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0.75dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:background="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Tiền cộng thêm"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="16sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_light"
+                        android:text="2.000.000 VND"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Lí do"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="16sp"
+                        android:layout_marginTop="10dp"/>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_light"
+                        android:text="Fix the window"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="15sp" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="end"
+                    android:layout_gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Thành tiền"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="16sp"
+                        android:layout_marginTop="10dp"/>
+
+
+                    <TextView
+                        android:id="@+id/txt_total_money_of_add_or_minus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="2.000.000 VNĐ"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="15sp"
+                        />
+
+
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.75dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="10dp"
                 android:background="@color/black" />
@@ -351,144 +504,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="0dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="30dp"
                     android:fontFamily="@font/inter_medium"
                     android:gravity="end"
                     android:text="Tổng cộng"
                     android:textColor="@color/colorButton"
-                    android:textSize="20dp" />
+                    android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/txt_total_money_of_bill"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="30dp"
                     android:fontFamily="@font/inter_bold"
                     android:gravity="end"
-                    android:text="1.500.000 đ"
+                    android:text="1.500.000 VNĐ"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="20dp" />
+                    android:textSize="19sp" />
             </LinearLayout>
 
-            <!--            <LinearLayout-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:orientation="horizontal"-->
-            <!--                android:layout_gravity="center"-->
-            <!--                android:layout_marginTop="10dp"-->
-            <!--                android:background="@drawable/linear_background_bill">-->
-
-            <!--                <LinearLayout-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:orientation="horizontal">-->
-            <!--                    <ImageView-->
-            <!--                        android:layout_width="60dp"-->
-            <!--                        android:layout_height="60dp"-->
-            <!--                        android:padding="15dp"-->
-            <!--                        android:src="@drawable/ic_phone_blue" />-->
-            <!--                    <TextView-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:text="Gọi điện"-->
-            <!--                        android:textColor="#373797"-->
-            <!--                        android:layout_gravity="center"-->
-            <!--                        android:textSize="20dp"-->
-            <!--                        android:fontFamily="@font/inter_bold"-->
-            <!--                        />-->
-            <!--                </LinearLayout>-->
-
-            <!--                <View-->
-            <!--                    android:layout_width="1dp"-->
-            <!--                    android:layout_height="match_parent"-->
-            <!--                    android:background="@color/black"-->
-
-            <!--                    />-->
-
-
-            <!--                <LinearLayout-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:layout_marginEnd="5dp"-->
-            <!--                    android:orientation="horizontal">-->
-            <!--                    <ImageView-->
-            <!--                        android:layout_width="60dp"-->
-            <!--                        android:layout_height="60dp"-->
-            <!--                        android:padding="15dp"-->
-            <!--                        android:src="@drawable/ic_mail_blue" />-->
-            <!--                    <TextView-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:text="Gửi tin nhắn"-->
-            <!--                        android:textColor="#373797"-->
-            <!--                        android:layout_gravity="center"-->
-            <!--                        android:textSize="20dp"-->
-            <!--                        android:fontFamily="@font/inter_bold"-->
-            <!--                        />-->
-            <!--                </LinearLayout>-->
-            <!--            </LinearLayout>-->
 
 
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cancel_view_bill"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/custom_button_add"
-            android:gravity="center"
-            android:paddingStart="0dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="9dp"
-            android:paddingBottom="12dp"
-            android:text="Hủy"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="20sp"
-            app:backgroundTint="@color/grey"
-            app:icon="@drawable/icon_exit"
-            app:iconGravity="textStart"
-            app:iconPadding="3dp"
-            app:iconSize="24dp"
-            app:iconTint="@color/black" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_make_bill"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/custom_button_add"
-            android:gravity="center"
-            android:paddingStart="9dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="9dp"
-            android:paddingBottom="12dp"
-            android:text="Gửi tin nhắn"
-            android:textSize="20sp"
-            app:backgroundTint="@null"
-            app:icon="@drawable/ic_mail"
-            app:iconGravity="textStart"
-            app:iconSize="24dp" />
-
-    </LinearLayout>
 
 
-</FrameLayout>
+
+</RelativeLayout>
