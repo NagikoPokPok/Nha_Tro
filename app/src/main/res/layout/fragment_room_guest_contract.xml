@@ -61,16 +61,6 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"/>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_contract"

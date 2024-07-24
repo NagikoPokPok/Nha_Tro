@@ -100,6 +100,10 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             boolean isProfileComplete = guest.isFileStatus();
             binding.txtProfileStatus.setText(isProfileComplete ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
 
+            binding.txtOrdinalNumber.setText(String.valueOf(getAdapterPosition() + 1)); // Assuming position starts at 0
+            binding.imgStar.setVisibility(View.GONE);
+            binding.txtOrdinalNumber.setVisibility(View.VISIBLE);
+
             int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.greenText)
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
             binding.txtProfileStatus.setTextColor(color);
@@ -131,6 +135,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.greenText)
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
             binding.txtProfileStatus.setTextColor(color);
+
+            binding.imgStar.setVisibility(View.VISIBLE);
 
             // Disable the menu button for MainGuest
             binding.imgMenu.setOnClickListener(v -> {

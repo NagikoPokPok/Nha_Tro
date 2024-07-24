@@ -230,5 +230,6 @@
 
     <string name="label_month">MONTH</string>
     <string name="label_year">YEAR</string>
+    <string name="nhap_o_day_de_xoa">Nhấn ở đây để xóa !</string>
 
 </resources>

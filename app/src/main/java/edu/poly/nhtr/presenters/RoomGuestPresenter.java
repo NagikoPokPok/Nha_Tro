@@ -72,7 +72,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                             if (task.isSuccessful() && task.getResult() != null) {
                                 List<Object> guests = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if (document.contains(Constants.KEY_CONTRACT_CREATED_DATE)) {
+                                    if (document.contains(Constants.KEY_IS_MAIN_GUEST)) {
                                         // This document is a MainGuest
                                         MainGuest mainGuest = new MainGuest();
                                         mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
