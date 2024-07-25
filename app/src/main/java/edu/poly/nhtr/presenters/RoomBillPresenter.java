@@ -131,6 +131,7 @@ public class RoomBillPresenter {
             Timber.e(task.getException(), "Error getting bills for roomID: %s", room.getRoomId());
         }
         billList.sort(Comparator.comparing(RoomBill::getMonth).reversed());
+        billList.sort(Comparator.comparing(RoomBill::getYear).reversed());
         listener.onComplete(billList);
     }
 

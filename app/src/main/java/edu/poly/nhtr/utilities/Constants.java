@@ -18,6 +18,8 @@ public class Constants {
     public static final String KEY_ADDRESS_HOME= "addressHome";
     public static final String KEY_NUMBER_OF_ROOMS= "numberOfRooms";
     public static final String KEY_NUMBER_OF_ROOMS_AVAILABLE = "numberOfRoomsAvailable";
+    public static final String KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL = "numberOfRoomsAreDelayedPay";
+    public static final String KEY_REVENUE_OF_MONTH_FOR_HOME = "revenueOfMonthForHome";
     public static final String KEY_HOME_ID = "homeId";
     public static final String KEY_HOME_IS_HAVE_SERVICE = "homeIsHaveService";
     public static final String KEY_COLLECTION_ROOMS = "rooms";

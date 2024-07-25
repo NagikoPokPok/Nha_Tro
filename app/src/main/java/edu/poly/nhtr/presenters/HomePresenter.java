@@ -1,32 +1,30 @@
 package edu.poly.nhtr.presenters;
 
-import android.app.Dialog;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.utilities.Constants;
 
 public class HomePresenter {
@@ -118,59 +116,92 @@ public class HomePresenter {
                 });
     }
 
+//    public void getHomes(String action) {
+//        homeListener.showLoading();
+//        FirebaseFirestore database = FirebaseFirestore.getInstance();
+//        String userId = homeListener.getInfoUserFromGoogleAccount();
+//
+//        database.collection(Constants.KEY_COLLECTION_HOMES)
+//                .whereEqualTo(Constants.KEY_USER_ID, userId)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (homeListener.isAdded2()) {
+//                        homeListener.hideLoading();
+//                        if (task.isSuccessful() && task.getResult() != null) {
+//                            List<Home> homes = new ArrayList<>();
+//                            List<String> homeIds = new ArrayList<>();
+//
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                homeIds.add(document.getId());
+//                            }
+//
+//                            if (!homeIds.isEmpty()) {
+//                                database.collection(Constants.KEY_COLLECTION_ROOMS)
+//                                        .whereIn(Constants.KEY_HOME_ID, homeIds)
+//                                        .get()
+//                                        .addOnCompleteListener(roomTask -> {
+//                                            if (roomTask.isSuccessful() && roomTask.getResult() != null) {
+//                                                // Tạo Map để lưu trữ số lượng rooms cho từng home
+//                                                Map<String, Integer> homeRoomCount = new HashMap<>();
+//                                                for (QueryDocumentSnapshot roomDocument : roomTask.getResult()) {
+//                                                    String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
+//                                                    homeRoomCount.put(homeId, homeRoomCount.getOrDefault(homeId, 0) + 1);
+//                                                }
+//
+//                                                // Duyệt qua danh sách homes và cập nhật số lượng rooms từ Map
+//                                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                                    Home home = new Home();
+//                                                    home.nameHome = document.getString(Constants.KEY_NAME_HOME);
+//                                                    home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
+//                                                    home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+//                                                    home.idHome = document.getId();
+//                                                    home.numberOfRooms = homeRoomCount.getOrDefault(home.idHome, 0);
+//                                                    // Update the number of rooms in Firestore
+//                                                    document.getReference().update(Constants.KEY_NUMBER_OF_ROOMS, home.numberOfRooms);
+//                                                    homes.add(home);
+//                                                }
+//
+//                                                // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
+//                                                homes.sort(Comparator.comparing(obj -> obj.dateObject));
+//
+//                                                homeListener.addHome(homes, action);
+//                                            } else {
+//                                                homeListener.addHomeFailed();
+//                                            }
+//                                        });
+//                            } else {
+//                                homeListener.addHomeFailed();
+//                            }
+//                        } else {
+//                            homeListener.addHomeFailed();
+//                        }
+//                    }
+//                });
+//    }
+
     public void getHomes(String action) {
         homeListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userId = homeListener.getInfoUserFromGoogleAccount();
 
+        // Lấy danh sách homes từ Firestore
+        getHomesFromDatabase(database, userId, action);
+
+    }
+
+    private void getHomesFromDatabase(FirebaseFirestore database, String userId, String action) {
         database.collection(Constants.KEY_COLLECTION_HOMES)
                 .whereEqualTo(Constants.KEY_USER_ID, userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (homeListener.isAdded2()) {
-                        homeListener.hideLoading();
                         if (task.isSuccessful() && task.getResult() != null) {
-                            List<Home> homes = new ArrayList<>();
                             List<String> homeIds = new ArrayList<>();
-
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 homeIds.add(document.getId());
                             }
-
                             if (!homeIds.isEmpty()) {
-                                database.collection(Constants.KEY_COLLECTION_ROOMS)
-                                        .whereIn(Constants.KEY_HOME_ID, homeIds)
-                                        .get()
-                                        .addOnCompleteListener(roomTask -> {
-                                            if (roomTask.isSuccessful() && roomTask.getResult() != null) {
-                                                // Tạo Map để lưu trữ số lượng rooms cho từng home
-                                                Map<String, Integer> homeRoomCount = new HashMap<>();
-                                                for (QueryDocumentSnapshot roomDocument : roomTask.getResult()) {
-                                                    String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
-                                                    homeRoomCount.put(homeId, homeRoomCount.getOrDefault(homeId, 0) + 1);
-                                                }
-
-                                                // Duyệt qua danh sách homes và cập nhật số lượng rooms từ Map
-                                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    Home home = new Home();
-                                                    home.nameHome = document.getString(Constants.KEY_NAME_HOME);
-                                                    home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
-                                                    home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
-                                                    home.idHome = document.getId();
-                                                    home.numberOfRooms = homeRoomCount.getOrDefault(home.idHome, 0);
-                                                    // Update the number of rooms in Firestore
-                                                    document.getReference().update(Constants.KEY_NUMBER_OF_ROOMS, home.numberOfRooms);
-                                                    homes.add(home);
-                                                }
-
-                                                // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào
-                                                homes.sort(Comparator.comparing(obj -> obj.dateObject));
-
-                                                homeListener.addHome(homes, action);
-                                            } else {
-                                                homeListener.addHomeFailed();
-                                            }
-                                        });
+                                getRoomsForHomes(database, homeIds, task, action);
                             } else {
                                 homeListener.addHomeFailed();
                             }
@@ -179,6 +210,210 @@ public class HomePresenter {
                         }
                     }
                 });
+    }
+
+    private void getRoomsForHomes(FirebaseFirestore database, List<String> homeIds, Task<QuerySnapshot> homesTask, String action) {
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereIn(Constants.KEY_HOME_ID, homeIds)
+                .get()
+                .addOnCompleteListener(roomTask -> {
+                    if (roomTask.isSuccessful() && roomTask.getResult() != null) {
+                        Map<String, Integer> homeRoomCount = countRoomsForHomes(roomTask.getResult());
+                        countRoomsAreAvailableForHomes(roomTask.getResult(), countRoomsAreAvailable -> {
+                            countRoomsAreDelayedPayBillForHome(roomTask.getResult(), countRoomsAreDelayedPayBill -> {
+                                revenueOfMonthForHome(roomTask.getResult(), revenueOfMonth -> {
+                                    List<Home> homes = createHomeList(homesTask.getResult(), homeRoomCount, countRoomsAreAvailable, countRoomsAreDelayedPayBill, revenueOfMonth);
+                                    updateHomesInDatabase(homesTask.getResult(), homeRoomCount, countRoomsAreAvailable, countRoomsAreDelayedPayBill, revenueOfMonth);
+                                    homes.sort(Comparator.comparing(home -> home.dateObject));
+                                    homeListener.hideLoading();
+                                    homeListener.addHome(homes, action);
+                                });
+                            });
+                        });
+                    } else {
+                        homeListener.addHomeFailed();
+                    }
+                });
+    }
+
+    private void countRoomsAreDelayedPayBillForHome(QuerySnapshot result, OnCountRoomsAreDelayedPayBillListener listener) {
+        Map<String, Integer> count = new HashMap<>();
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        for (QueryDocumentSnapshot roomDocument : result) {
+            String roomId = roomDocument.getId();
+            String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
+
+            Task<QuerySnapshot> task = db.collection(Constants.KEY_COLLECTION_BILL)
+                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                    .get()
+                    .addOnCompleteListener(contractTask -> {
+                        if (contractTask.isSuccessful() && contractTask.getResult() != null) {
+                            List<DocumentSnapshot> documents = contractTask.getResult().getDocuments();
+                            if (!documents.isEmpty()) {
+                                // Tìm hóa đơn gần nhất
+                                RoomBill latestBill = null;
+                                for (DocumentSnapshot document : documents) {
+                                    RoomBill bill = new RoomBill();
+                                    bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
+                                    bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();
+                                    bill.isPayedBill = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_PAYED_BILL));
+
+                                    // Cập nhật hóa đơn gần nhất
+                                    if (latestBill == null || bill.getYear() > latestBill.getYear() ||
+                                            (bill.getYear() == latestBill.getYear() && bill.getMonth() > latestBill.getMonth())) {
+                                        latestBill = bill;
+                                    }
+                                }
+
+                                // Kiểm tra nếu hóa đơn gần nhất bị trễ
+                                if (latestBill.isPayedBill()) {
+                                    count.put(homeId, count.getOrDefault(homeId, 0) + 1);
+                                }
+                            }
+                        }
+                    });
+
+            tasks.add(task);
+        }
+
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(allTasks -> listener.onCountRoomsAreDelayedPayBillComplete(count));
+    }
+
+    public interface OnCountRoomsAreDelayedPayBillListener {
+        void onCountRoomsAreDelayedPayBillComplete(Map<String, Integer> count);
+    }
+
+    private void revenueOfMonthForHome(QuerySnapshot result, OnGetRevenueOfMonthListener listener) {
+        Map<String, Long> sum = new HashMap<>();
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        for (QueryDocumentSnapshot roomDocument : result) {
+            String roomId = roomDocument.getId();
+            String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
+
+            Task<QuerySnapshot> task = db.collection(Constants.KEY_COLLECTION_BILL)
+                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                    .get()
+                    .addOnCompleteListener(contractTask -> {
+                        if (contractTask.isSuccessful() && contractTask.getResult() != null) {
+                            List<DocumentSnapshot> documents = contractTask.getResult().getDocuments();
+                            if (!documents.isEmpty()) {
+                                // Tìm hóa đơn gần nhất
+                                RoomBill latestBill = null;
+                                for (DocumentSnapshot document : documents) {
+                                    RoomBill bill = new RoomBill();
+                                    bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
+                                    bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();
+                                    bill.totalOfMoney = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY)).intValue();
+
+                                    // Cập nhật hóa đơn gần nhất
+                                    if (latestBill == null || bill.getYear() > latestBill.getYear() ||
+                                            (bill.getYear() == latestBill.getYear() && bill.getMonth() > latestBill.getMonth())) {
+                                        latestBill = bill;
+                                    }
+                                }
+
+                                // Cộng tổng doanh thu cho hóa đơn gần nhất nếu nó đã được thanh toán
+                                if (latestBill != null) {
+                                    long currentSum = sum.getOrDefault(homeId, 0L);
+                                    sum.put(homeId, currentSum + latestBill.totalOfMoney);
+                                }
+                            }
+                        }
+                    });
+
+            tasks.add(task);
+        }
+
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(allTasks -> listener.onGetRevenueOfMonthComplete(sum));
+    }
+
+    public interface OnGetRevenueOfMonthListener {
+        void onGetRevenueOfMonthComplete(Map<String, Long> sum);
+    }
+
+
+
+    private void countRoomsAreAvailableForHomes(QuerySnapshot result, OnCountRoomsAvailableListener listener) {
+        Map<String, Integer> count = new HashMap<>();
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        for (QueryDocumentSnapshot roomDocument : result) {
+            String roomId = roomDocument.getId();
+            String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
+
+            Task<QuerySnapshot> task = db.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                    .get()
+                    .addOnCompleteListener(contractTask -> {
+                        if (!contractTask.isSuccessful() || contractTask.getResult() == null || contractTask.getResult().isEmpty()) {
+                            // If the contract task is not successful, or there are no contracts, increment the count for the corresponding homeId
+                            count.put(homeId, count.getOrDefault(homeId, 0) + 1);
+                        }
+                    });
+
+            tasks.add(task);
+        }
+
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(allTasks -> listener.onCountRoomsAvailableComplete(count));
+    }
+
+    // Interface to listen for room count results
+    public interface OnCountRoomsAvailableListener {
+        void onCountRoomsAvailableComplete(Map<String, Integer> count);
+    }
+
+    private Map<String, Integer> countRoomsForHomes(QuerySnapshot roomResult) {
+        Map<String, Integer> homeRoomCount = new HashMap<>();
+        for (QueryDocumentSnapshot roomDocument : roomResult) {
+            String homeId = roomDocument.getString(Constants.KEY_HOME_ID);
+            homeRoomCount.put(homeId, homeRoomCount.getOrDefault(homeId, 0) + 1);
+        }
+        return homeRoomCount;
+    }
+
+    private List<Home> createHomeList(QuerySnapshot homesResult, Map<String, Integer> homeRoomCount, Map<String, Integer> roomsAreAvailable, Map<String, Integer> roomsAreDelayedPayBill, Map<String, Long> revenue) {
+        List<Home> homes = new ArrayList<>();
+        for (QueryDocumentSnapshot document : homesResult) {
+            Home home = new Home();
+            home.nameHome = document.getString(Constants.KEY_NAME_HOME);
+            home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
+            home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+            home.idHome = document.getId();
+            home.numberOfRooms = homeRoomCount.getOrDefault(home.idHome, 0);
+            home.numberOfRoomsAvailable = roomsAreAvailable.getOrDefault(home.idHome, 0);
+            home.numberOfRoomsAreDelayedPayBill = roomsAreDelayedPayBill.getOrDefault(home.idHome, 0);
+            home.revenueOfMonth = revenue.getOrDefault(home.idHome, 0L);
+            homes.add(home);
+        }
+        return homes;
+    }
+
+    private void updateHomesInDatabase(QuerySnapshot homesResult, Map<String, Integer> homeRoomCount, Map<String, Integer> roomsAreAvailable, Map<String, Integer> roomsAreDelayedPayBill, Map<String, Long> revenue) {
+        for (QueryDocumentSnapshot document : homesResult) {
+            String homeId = document.getId();
+            int numberOfRooms = homeRoomCount.getOrDefault(homeId, 0);
+            int numberOfRoomsAvailable = roomsAreAvailable.getOrDefault(homeId, 0);
+            int numberOfRoomsAreDelayedPayBill = roomsAreDelayedPayBill.getOrDefault(homeId, 0);
+            long revenueOfMonth = revenue.getOrDefault(homeId,0L);
+            Map<String, Object> updates = new HashMap<>();
+            updates.put(Constants.KEY_NUMBER_OF_ROOMS, numberOfRooms);
+            updates.put(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE, numberOfRoomsAvailable);
+            updates.put(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL, numberOfRoomsAreDelayedPayBill);
+            updates.put(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME, revenueOfMonth);
+
+            document.getReference().update(updates);
+        }
     }
 
 

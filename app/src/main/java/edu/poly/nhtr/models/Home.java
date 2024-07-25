@@ -9,6 +9,17 @@ import java.util.HashMap;
 public class Home implements Serializable {
     public String nameHome, addressHome, idHome;
     public int numberOfRooms, numberOfRoomsAvailable;
+    public int numberOfRoomsAreDelayedPayBill;
+    public long revenueOfMonth;
+
+    public int getNumberOfRoomsAreDelayedPayBill() {
+        return numberOfRoomsAreDelayedPayBill;
+    }
+
+    public long getRevenueOfMonth() {
+        return revenueOfMonth;
+    }
+
     public HashMap<String, String> existingHomes = new HashMap<>();
 
     public Date dateObject;

@@ -188,7 +188,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/txt_so_phong_trong"
+                android:id="@+id/txt_number_of_rooms_is_empty"
                 style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -219,7 +219,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/txt_so_phong_no_tien"
+                android:id="@+id/txt_number_of_rooms_is_delayed_pay_bill"
                 style="@style/TEXT_LIGHT_2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -244,7 +244,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -252,21 +252,21 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/doanh_thu_thang"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/txt_doanh_thu_thang"
+                android:id="@+id/txt_revenue_of_month"
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
                 android:layout_weight="1"
                 android:text="@string/zero"
-                android:textSize="18sp" />
+                android:textSize="15sp"
+                android:textAlignment="center"/>
 
         </LinearLayout>
 

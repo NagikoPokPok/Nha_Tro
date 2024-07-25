@@ -16,9 +16,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainViewModel;
@@ -251,6 +253,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             });
 
             binding.txtNumberOfRooms.setText(String.valueOf(home.numberOfRooms));
+            binding.txtNumberOfRoomsIsEmpty.setText(String.valueOf(home.numberOfRoomsAvailable));
+            binding.txtNumberOfRoomsIsDelayedPayBill.setText(String.valueOf(home.numberOfRoomsAreDelayedPayBill));
+
+            // Định dạng số tiền
+            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+            String revenueOfMonth = numberFormat.format(home.revenueOfMonth) + " VNĐ";
+            binding.txtRevenueOfMonth.setText(revenueOfMonth);
         }
     }
 
