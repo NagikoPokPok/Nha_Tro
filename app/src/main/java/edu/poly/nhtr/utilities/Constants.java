@@ -34,6 +34,11 @@ public class Constants {
     public static final String KEY_SELECTED_RADIO_BUTTON = "selectedRadioButtonId";
     public static final String PREF_KEY_ROOM_ID = "prefRoomId";
 
+    // Key Home
+    public static final String KEY_CBX_REVENUE_OF_MONTH_1 = "cbxRevenueOfMonth1";
+    public static final String KEY_CBX_REVENUE_OF_MONTH_2 = "cbxRevenueOfMonth2";
+    public static final String KEY_CBX_REVENUE_OF_MONTH_3 = "cbxRevenueOfMonth3";
+
     // Key Service
     public static final String KEY_COLLECTION_SERVICES = "services";
     public static final String KEY_SERVICE_ID = "serviceId";

@@ -62,8 +62,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeAdapter;
@@ -78,7 +81,7 @@ import edu.poly.nhtr.presenters.HomePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class HomeFragment extends Fragment implements HomeListener,  SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends Fragment implements HomeListener, SwipeRefreshLayout.OnRefreshListener {
 
     private View view;
     private List<Home> currentListHomes = new ArrayList<>();
@@ -116,6 +119,12 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
             }
         });
 
+        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+            @Override
+            public void onComplete(List<Home> homeList) {
+                currentListHomes = homeList;
+            }
+        });
 
 
         editFonts();
@@ -124,7 +133,6 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
 
         // Refresh layout
         binding.swipeRefreshFragment.setOnRefreshListener(this);
-
 
 
         //Set preference
@@ -160,8 +168,8 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         // Xử lý nút 3 chấm menu in Frame Top
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
 
-        customizeLayoutSearch();// Customize layout search
 
+        customizeLayoutSearch();// Customize layout search
         setListenersForTools(); // Set listeners for sort and filter
 
 
@@ -189,15 +197,13 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
     }
 
 
-    private void getToken()
-    {
+    private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
     }
 
 
-    private void updateToken(String token)
-    {
-        preferenceManager.putString(Constants.KEY_FCM_TOKEN,token);
+    private void updateToken(String token) {
+        preferenceManager.putString(Constants.KEY_FCM_TOKEN, token);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_USER_ID));
@@ -228,14 +234,26 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFilterHomeDialog();
+                homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+                    @Override
+                    public void onComplete(List<Home> homeList) {
+                        currentListHomes = homeList;
+                        openFilterHomeDialog(homeList);
+                    }
+                });
             }
         });
 
         binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFilterHomeDialog();
+                homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+                    @Override
+                    public void onComplete(List<Home> homeList) {
+                        currentListHomes = homeList;
+                        openFilterHomeDialog(homeList);
+                    }
+                });
             }
         });
 
@@ -256,29 +274,71 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         }
     }
 
-    private void filterListHomes()
-    {
+    private void filterListHomes(int range1, int range2, int range3, long range4, long range5, long range6) {
         showLoadingOfFunctions(R.id.btn_confirm_apply);
+
         boolean filterByRoom1 = preferenceManager.getBoolean("cbxByRoom1");
         boolean filterByRoom2 = preferenceManager.getBoolean("cbxByRoom2");
         boolean filterByRoom3 = preferenceManager.getBoolean("cbxByRoom3");
+        boolean filterByRevenue1 = preferenceManager.getBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_1);
+        boolean filterByRevenue2 = preferenceManager.getBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_2);
+        boolean filterByRevenue3 = preferenceManager.getBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_3);
 
+        List<Home> filteredHomesByRooms = new ArrayList<>();
+        List<Home> filteredHomesByRevenue = new ArrayList<>();
         List<Home> filteredHomes = new ArrayList<>();
-        for (Home home : currentListHomes) {
-            if (filterByRoom1 && home.numberOfRooms >= 0 && home.numberOfRooms <= 1) {
-                filteredHomes.add(home);
-            } else if (filterByRoom2 && home.numberOfRooms > 1 && home.numberOfRooms <= 2) {
-                filteredHomes.add(home);
-            } else if (filterByRoom3 && home.numberOfRooms >2) {
-                filteredHomes.add(home);
+
+        // Lọc theo phòng
+        if (filterByRoom1 || filterByRoom2 || filterByRoom3) {
+            for (Home home : currentListHomes) {
+                if (filterByRoom1 && home.numberOfRooms >= 0 && home.numberOfRooms <= range1) {
+                    filteredHomesByRooms.add(home);
+                } else if (filterByRoom2 && home.numberOfRooms >= (range1 + 1) && home.numberOfRooms <= range2) {
+                    filteredHomesByRooms.add(home);
+                } else if (filterByRoom3 && home.numberOfRooms >= (range2 + 1) && home.numberOfRooms <= range3) {
+                    filteredHomesByRooms.add(home);
+                }
+            }
+        }
+
+        // Lọc theo doanh thu
+        if (filterByRevenue1 || filterByRevenue2 || filterByRevenue3) {
+            for (Home home : currentListHomes) {
+                if (filterByRevenue1 && home.revenueOfMonth >= 0 && home.revenueOfMonth <= range4) {
+                    filteredHomesByRevenue.add(home);
+                } else if (filterByRevenue2 && home.revenueOfMonth >= (range4 + 1) && home.revenueOfMonth <= range5) {
+                    filteredHomesByRevenue.add(home);
+                } else if (filterByRevenue3 && home.revenueOfMonth >= (range5 + 1) && home.revenueOfMonth <= range6) {
+                    filteredHomesByRevenue.add(home);
+                }
+            }
+        }
+
+        // Kết hợp kết quả lọc
+        if ((filterByRoom1 || filterByRoom2 || filterByRoom3) && (filterByRevenue1 || filterByRevenue2 || filterByRevenue3)) {
+            if (!filteredHomesByRooms.isEmpty() && !filteredHomesByRevenue.isEmpty()) {
+                Set<Home> setRooms = new HashSet<>(filteredHomesByRooms);
+                Set<Home> setRevenue = new HashSet<>(filteredHomesByRevenue);
+                setRooms.retainAll(setRevenue); // Giao của hai tập hợp
+                filteredHomes.addAll(setRooms);
+            }
+            // Nếu một trong hai danh sách rỗng, kết quả cuối cùng sẽ là rỗng
+        } else {
+            if (!filteredHomesByRooms.isEmpty()) {
+                filteredHomes.addAll(filteredHomesByRooms);
+            }
+            if (!filteredHomesByRevenue.isEmpty()) {
+                filteredHomes.addAll(filteredHomesByRevenue);
             }
         }
 
         homePresenter.filterHome(filteredHomes);
     }
 
-    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList)
-    {
+
+
+
+    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
         boolean isAnyChecked = false;
         for (AppCompatCheckBox checkBox : checkBoxList) {
             if (checkBox.isChecked()) {
@@ -295,14 +355,13 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         }
     }
 
-    private void openFilterHomeDialog() {
-        if(binding.edtSearchHome.isFocused())
-        {
+    private void openFilterHomeDialog(List<Home> currentListHomes) {
+
+        if (binding.edtSearchHome.isFocused()) {
             binding.edtSearchHome.clearFocus();
             binding.edtSearchHome.setText("");
             homePresenter.getHomes("init");
-        }
-        else if(binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
+        } else if (binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
             // Clear the selected RadioButton ID from SharedPreferences
             preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
             binding.layoutTypeOfSortHome.setVisibility(View.GONE);
@@ -311,7 +370,7 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
 
 
         setupDialog(R.layout.layout_dialog_filter_home, Gravity.CENTER);
-        homePresenter.getListHomes();
+
 
         AppCompatCheckBox cbxByRoom1 = dialog.findViewById(R.id.cbx_from_0_to_5_rooms);
         AppCompatCheckBox cbxByRoom2 = dialog.findViewById(R.id.cbx_from_6_to_10_rooms);
@@ -324,15 +383,112 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         Button btnApply = dialog.findViewById(R.id.btn_confirm_apply);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
+
+        // Bước 1: Tìm số lượng phòng lớn nhất
+        int maxRooms = 0;
+        for (Home home : currentListHomes) {
+            int numberOfRooms = home.getNumberOfRooms();
+            if (numberOfRooms > maxRooms) {
+                maxRooms = numberOfRooms;
+            }
+        }
+
+        // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
+        int range1Max, range2Max, range3Max;
+        if (maxRooms == 0) {
+            range1Max = range2Max = range3Max = 0;
+        } else {
+            range1Max = (int) Math.ceil((double) maxRooms / 3.0);  // Kích thước mỗi khoảng
+            range2Max = 2 * range1Max;
+            range3Max = maxRooms;
+        }
+
+        // Bước 3: Thiết lập văn bản và hiển thị các checkbox
+        cbxByRoom1.setText("Từ " + 0 + " - " + range1Max + " phòng");
+
+        if (range2Max > range1Max) {
+            if ((range1Max + 1) != range2Max) {
+                cbxByRoom2.setText("Từ " + (range1Max + 1) + " - " + range2Max + " phòng");
+            } else {
+                cbxByRoom2.setText("Từ " + (range1Max + 1) + " phòng");
+            }
+            cbxByRoom2.setVisibility(View.VISIBLE);
+        } else {
+            cbxByRoom2.setVisibility(View.GONE);
+        }
+
+        if (range3Max > range2Max) {
+            if ((range2Max + 1) != range3Max) {
+                cbxByRoom3.setText("Từ " + (range2Max + 1) + " - " + range3Max + " phòng");
+            } else {
+                cbxByRoom3.setText("Từ " + (range2Max + 1) + " phòng");
+            }
+            cbxByRoom3.setVisibility(View.VISIBLE);
+        } else {
+            cbxByRoom3.setVisibility(View.GONE);
+        }
+
+        long maxRevenue = 0;
+        for (Home home : currentListHomes) {
+            long revenueOfMonth = home.getRevenueOfMonth();
+            if (revenueOfMonth > maxRevenue) {
+                maxRevenue = revenueOfMonth;
+            }
+        }
+
+        long range4Max, range5Max, range6Max;
+        if (maxRevenue == 0) {
+            range4Max = range5Max = range6Max = 0;
+        } else {
+            range4Max = (long) Math.ceil((double) maxRevenue / 3.0);  // Kích thước mỗi khoảng
+            range5Max = 2 * range4Max;
+            range6Max = maxRevenue;
+        }
+
+        // Bước 3: Thiết lập văn bản và hiển thị các checkbox
+        cbxByRevenue1.setText(String.format(Locale.US, "Từ 0 - %.2f triệu", range4Max / 1000000F));
+
+        if (range5Max > range4Max) {
+            if ((range4Max + 1) != range5Max) {
+                cbxByRevenue2.setText(String.format(Locale.US, "Từ %.2f - %.2f triệu", (range4Max + 1) / 1000000F, range5Max / 1000000F));
+            } else {
+                cbxByRevenue2.setText(String.format(Locale.US, "Từ %.2f triệu", (range4Max + 1) / 1000000F));
+            }
+            cbxByRevenue2.setVisibility(View.VISIBLE);
+        } else {
+            cbxByRevenue2.setVisibility(View.GONE);
+        }
+
+        if (range6Max > range5Max) {
+            if ((range5Max + 1) != range6Max) {
+                cbxByRevenue3.setText(String.format(Locale.US, "Từ %.2f - %.2f triệu", (range5Max + 1) / 1000000F, range6Max / 1000000F));
+            } else {
+                cbxByRevenue3.setText(String.format(Locale.US, "Từ %.2f triệu", (range5Max + 1) / 1000000F));
+            }
+            cbxByRevenue3.setVisibility(View.VISIBLE);
+        } else {
+            cbxByRevenue3.setVisibility(View.GONE);
+        }
+
+
+
+
         cbxByRoom1.setChecked(preferenceManager.getBoolean("cbxByRoom1"));
         cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxByRoom2"));
         cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxByRoom3"));
+
+        cbxByRevenue1.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_1));
+        cbxByRevenue2.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_2));
+        cbxByRevenue3.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_3));
 
         // Add CheckBoxes to a list
         List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
         checkBoxList.add(cbxByRoom1);
         checkBoxList.add(cbxByRoom2);
         checkBoxList.add(cbxByRoom3);
+        checkBoxList.add(cbxByRevenue1);
+        checkBoxList.add(cbxByRevenue2);
+        checkBoxList.add(cbxByRevenue3);
 
 
         customizeButtonApplyInDialogHaveCheckBox(btnApply, checkBoxList);
@@ -350,6 +506,9 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         cbxByRoom1.setOnClickListener(checkBoxListener);
         cbxByRoom2.setOnClickListener(checkBoxListener);
         cbxByRoom3.setOnClickListener(checkBoxListener);
+        cbxByRevenue1.setOnClickListener(checkBoxListener);
+        cbxByRevenue2.setOnClickListener(checkBoxListener);
+        cbxByRevenue3.setOnClickListener(checkBoxListener);
 
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -361,6 +520,9 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                 boolean filterByRoom1 = cbxByRoom1.isChecked();
                 boolean filterByRoom2 = cbxByRoom2.isChecked();
                 boolean filterByRoom3 = cbxByRoom3.isChecked();
+                boolean filterByRevenue1 = cbxByRevenue1.isChecked();
+                boolean filterByRevenue2 = cbxByRevenue2.isChecked();
+                boolean filterByRevenue3 = cbxByRevenue3.isChecked();
 
                 if (filterByRoom1) {
                     selectedOptions.add(cbxByRoom1.getText().toString());
@@ -384,13 +546,35 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                     removeFromListAndSave(cbxByRoom3.getText().toString());
                 }
 
+                if (filterByRevenue1) {
+                    selectedOptions.add(cbxByRevenue1.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_1, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_1, false);
+                    removeFromListAndSave(cbxByRevenue1.getText().toString());
+                }
+                if (filterByRevenue2) {
+                    selectedOptions.add(cbxByRevenue2.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_2, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_2, false);
+                    removeFromListAndSave(cbxByRevenue2.getText().toString());
+                }
+                if (filterByRevenue3) {
+                    selectedOptions.add(cbxByRevenue3.getText().toString());
+                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_3, true);
+                } else {
+                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_3, false);
+                    removeFromListAndSave(cbxByRevenue3.getText().toString());
+                }
+
                 // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
-                if(!filterByRoom1 && !filterByRoom2 && !filterByRoom3) {
+                if (!filterByRoom1 && !filterByRoom2 && !filterByRoom3 && !filterByRevenue1 && !filterByRevenue2 && !filterByRevenue3) {
                     binding.layoutNoData.setVisibility(View.GONE);
                     binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
                     homePresenter.getHomes("init");
-                }else {
-                    filterListHomes(); // After put status of checkboxes in preferences, check and add them into the list
+                } else {
+                    filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max); // After put status of checkboxes in preferences, check and add them into the list
                 }
 
                 // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
@@ -439,6 +623,15 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                                 } else if (option.equals(cbxByRoom3.getText().toString())) {
                                     preferenceManager.putBoolean("cbxByRoom3", false);
                                     cbxByRoom3.setChecked(false);
+                                } else if (option.equals(cbxByRevenue1.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_1, false);
+                                    cbxByRevenue1.setChecked(false);
+                                } else if (option.equals(cbxByRevenue2.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_2, false);
+                                    cbxByRevenue2.setChecked(false);
+                                } else if (option.equals(cbxByRevenue3.getText().toString())) {
+                                    preferenceManager.putBoolean(Constants.KEY_CBX_REVENUE_OF_MONTH_3, false);
+                                    cbxByRevenue3.setChecked(false);
                                 }
 
                                 if (binding.listTypeOfFilterHome.getChildCount() == 0) {
@@ -447,9 +640,9 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                                     binding.layoutNoData.setVisibility(View.GONE);
                                     // And update list homes as initial
                                     homePresenter.getHomes("init");
-                                }else {
+                                } else {
                                     // Update list homes after deleting some check boxes
-                                    filterListHomes();
+                                    filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max);
                                 }
 
                             }
@@ -487,13 +680,11 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
     }
 
     private void openSortHomeDialog() {
-        if(binding.edtSearchHome.isFocused())
-        {
+        if (binding.edtSearchHome.isFocused()) {
             binding.edtSearchHome.clearFocus();
             binding.edtSearchHome.setText("");
             homePresenter.getHomes("init");
-        }
-        else if(binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
+        } else if (binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
             removeStatusOfCheckBoxFilterHome();
             binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
             homePresenter.getHomes("init");
@@ -557,11 +748,13 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_revenue_asc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterHome.setText(selectedText);
+                    homePresenter.sortHomes("revenue_asc");
 
                 } else if (selectedId == R.id.radio_btn_revenue_desc) {
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_revenue_desc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterHome.setText(selectedText);
+                    homePresenter.sortHomes("revenue_desc");
 
                 } else {
                     showToast("No option selected");
@@ -600,13 +793,12 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if(binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
+                    if (binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
                         // Xoa sort khi click vao search
                         preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
                         binding.layoutTypeOfSortHome.setVisibility(View.GONE);
                         homePresenter.getHomes("init");
-                    }
-                    else if(binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
+                    } else if (binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
                         // Clear the status of check boxes
                         removeStatusOfCheckBoxFilterHome();
                         binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
@@ -614,7 +806,7 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                     }
 
                     binding.layoutSearchHome.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-                }else {
+                } else {
                     binding.imgSortHome.setEnabled(true);
                     binding.imgFilterHome.setEnabled(true);
                     binding.btnSortHome.setEnabled(true);
@@ -665,20 +857,19 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         binding.layoutNoData.setVisibility(View.VISIBLE);
     }
 
-    public void hideOtherComponents(String action){
-        if(binding.edtSearchHome.isFocused()){
+    public void hideOtherComponents(String action) {
+        if (binding.edtSearchHome.isFocused()) {
             binding.edtSearchHome.clearFocus();
             binding.edtSearchHome.setText("");
             homePresenter.getHomes(action);
         }
         // Clear the status of check boxes
-        else if(binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
+        else if (binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
             // Xoa sort khi click vao search
             preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
             binding.layoutTypeOfSortHome.setVisibility(View.GONE);
             homePresenter.getHomes(action);
-        }
-        else if(binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
+        } else if (binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
             // Clear the status of check boxes
             removeStatusOfCheckBoxFilterHome();
             binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
@@ -692,7 +883,12 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         hideOtherComponents("init");
 
         // Get current list of homes
-        homePresenter.getListHomes();
+        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+            @Override
+            public void onComplete(List<Home> homeList) {
+                currentListHomes = homeList;
+            }
+        });
 
         // Set popup menus
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
@@ -711,11 +907,11 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                 binding.homesRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                            RecyclerView.ViewHolder viewHolder = binding.homesRecyclerView.findViewHolderForAdapterPosition(0);
-                            if (viewHolder instanceof HomeAdapter.HomeViewHolder) {
-                                HomeAdapter.HomeViewHolder homeViewHolder = (HomeAdapter.HomeViewHolder) viewHolder;
-                                homeAdapter.performClick(homeViewHolder);
-                            }
+                        RecyclerView.ViewHolder viewHolder = binding.homesRecyclerView.findViewHolderForAdapterPosition(0);
+                        if (viewHolder instanceof HomeAdapter.HomeViewHolder) {
+                            HomeAdapter.HomeViewHolder homeViewHolder = (HomeAdapter.HomeViewHolder) viewHolder;
+                            homeAdapter.performClick(homeViewHolder);
+                        }
                     }
                 });
 
@@ -751,7 +947,12 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
 
-        homePresenter.getListHomes();
+        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+            @Override
+            public void onComplete(List<Home> homeList) {
+                currentListHomes = homeList;
+            }
+        });
         homeAdapter = new HomeAdapter(getCurrentListHomes(), this, this);
         return binding.getRoot();
     }
@@ -1013,11 +1214,13 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
 
     @Override
     public void hideLoading() {
+        binding.homesRecyclerView.setVisibility(View.VISIBLE);
         binding.progressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void showLoading() {
+        binding.homesRecyclerView.setVisibility(View.INVISIBLE);
         binding.progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -1172,17 +1375,16 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
                 dialog.dismiss();
                 //hideOtherComponents("update");
 
-                if(binding.edtSearchHome.isFocused()){
+                if (binding.edtSearchHome.isFocused()) {
                     binding.edtSearchHome.clearFocus();
                     binding.edtSearchHome.setText("");
                 }
                 // Clear the status of check boxes
-                else if(binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
+                else if (binding.layoutTypeOfSortHome.getVisibility() == View.VISIBLE) {
                     // Xoa sort khi click vao search
                     preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
                     binding.layoutTypeOfSortHome.setVisibility(View.GONE);
-                }
-                else if(binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
+                } else if (binding.layoutTypeOfFilterHome.getVisibility() == View.VISIBLE) {
                     // Clear the status of check boxes
                     removeStatusOfCheckBoxFilterHome();
                     binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
@@ -1352,7 +1554,6 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
     }
 
 
-
     @Override
     public void hideFrameTop() {
         binding.frmTopMain.setVisibility(View.GONE);
@@ -1414,6 +1615,9 @@ public class HomeFragment extends Fragment implements HomeListener,  SwipeRefres
         preferenceManager.removePreference("cbxByRoom1");
         preferenceManager.removePreference("cbxByRoom2");
         preferenceManager.removePreference("cbxByRoom3");
+        preferenceManager.removePreference(Constants.KEY_CBX_REVENUE_OF_MONTH_1);
+        preferenceManager.removePreference(Constants.KEY_CBX_REVENUE_OF_MONTH_2);
+        preferenceManager.removePreference(Constants.KEY_CBX_REVENUE_OF_MONTH_3);
     }
 
 

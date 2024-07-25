@@ -599,28 +599,38 @@ public class HomePresenter {
 
 
     public void searchHome(String nameHome) {
-
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_HOMES)
                 .get()
                 .addOnCompleteListener(task -> {
-
                     if (task.isSuccessful() && task.getResult() != null) {
                         List<Home> homes = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
-                            String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
-                            String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
-                            Long numberOfRooms = document.getLong(Constants.KEY_NUMBER_OF_ROOMS);
+                            try {
+                                String nameFromFirestore = document.getString(Constants.KEY_NAME_HOME);
+                                String addressFromFirestore = document.getString(Constants.KEY_ADDRESS_HOME);
+                                String userIdFromFirestore = document.getString(Constants.KEY_USER_ID);
+                                int numberOfRooms = document.getLong(Constants.KEY_NUMBER_OF_ROOMS) != null ? Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue() : 0;
+                                int numberOfRoomsAvailable = document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE) != null ? Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE)).intValue() : 0;
+                                int numberOfRoomsAreDelayedPayBill = document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL) != null ? Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL)).intValue() : 0;
+                                long revenueOfMonth = document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME) != null ? Objects.requireNonNull(document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME)) : 0L;
 
-                            if (nameFromFirestore != null && nameFromFirestore.toLowerCase().contains(nameHome.toLowerCase()) && Objects.equals(userIdFromFirestore, homeListener.getInfoUserFromGoogleAccount())) {
-                                Home home = new Home();
-                                home.nameHome = nameFromFirestore;
-                                home.addressHome = addressFromFirestore;
-                                home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
-                                home.idHome = document.getId();
-                                home.numberOfRooms = numberOfRooms != null ? numberOfRooms.intValue() : 0;
-                                homes.add(home);
+                                if (nameFromFirestore != null && nameFromFirestore.toLowerCase().contains(nameHome.toLowerCase()) && Objects.equals(userIdFromFirestore, homeListener.getInfoUserFromGoogleAccount())) {
+                                    Home home = new Home();
+                                    home.nameHome = nameFromFirestore;
+                                    home.addressHome = addressFromFirestore;
+                                    home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                    home.idHome = document.getId();
+                                    home.numberOfRooms = numberOfRooms;
+                                    home.numberOfRoomsAvailable = numberOfRoomsAvailable;
+                                    home.numberOfRoomsAreDelayedPayBill = numberOfRoomsAreDelayedPayBill;
+                                    home.revenueOfMonth = revenueOfMonth;
+
+                                    homes.add(home);
+                                }
+                            } catch (NullPointerException e) {
+                                // Xử lý lỗi nếu có bất kỳ trường nào là null
+                                e.printStackTrace();
                             }
                         }
 
@@ -634,6 +644,7 @@ public class HomePresenter {
                     }
                 });
     }
+
 
     public void deleteListHomes(List<Home> homesToDelete, ActionMode mode) {
         homeListener.showLoadingOfFunctions(R.id.btn_delete_home);
@@ -685,6 +696,9 @@ public class HomePresenter {
                                 home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
                                 home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
+                                home.numberOfRoomsAvailable = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE)).intValue();
+                                home.numberOfRoomsAreDelayedPayBill = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL)).intValue();
+                                home.revenueOfMonth = Objects.requireNonNull(document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME)).intValue();
                                 homes.add(home);
                             }
                             // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
@@ -692,6 +706,10 @@ public class HomePresenter {
                                 homes = sortHomesByNumberOfHomesAscending(homes);
                             } else if (typeOfSort.equals("number_room_desc")) {
                                 homes = sortHomesByNumberOfHomesDescending(homes);
+                            } else if (typeOfSort.equals("revenue_asc")) {
+                                homes = sortHomesByRevenueAscending(homes);
+                            } else if (typeOfSort.equals("revenue_desc")) {
+                                homes = sortHomesByRevenueDescending(homes);
                             }
                             homeListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
                             homeListener.dialogClose();
@@ -713,12 +731,32 @@ public class HomePresenter {
         return homes;
     }
 
+    private List<Home> sortHomesByRevenueAscending(List<Home> homes) {
+        homes.sort(new Comparator<Home>() {
+            @Override
+            public int compare(Home home1, Home home2) {
+                return Long.compare(home1.revenueOfMonth, home2.revenueOfMonth);
+            }
+        });
+        return homes;
+    }
+
     private List<Home> sortHomesByNumberOfHomesDescending(List<Home> homes) {
         homes.sort(new Comparator<Home>() {
             @Override
             public int compare(Home home1, Home home2) {
                 int a = Integer.compare(home2.numberOfRooms, home1.numberOfRooms);
                 return a;
+            }
+        });
+        return homes;
+    }
+
+    private List<Home> sortHomesByRevenueDescending(List<Home> homes) {
+        homes.sort(new Comparator<Home>() {
+            @Override
+            public int compare(Home home1, Home home2) {
+                return Long.compare(home2.revenueOfMonth, home1.revenueOfMonth);
             }
         });
         return homes;
@@ -736,7 +774,7 @@ public class HomePresenter {
         }
     }
 
-    public void getListHomes() {
+    public void getListHomes(OnGetHomesCompleteListener listener) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userId = homeListener.getInfoUserFromGoogleAccount();
 
@@ -755,10 +793,14 @@ public class HomePresenter {
                                 home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
                                 home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
+                                home.numberOfRoomsAvailable = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE)).intValue();
+                                home.numberOfRoomsAreDelayedPayBill = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL)).intValue();
+                                home.revenueOfMonth = Objects.requireNonNull(document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME)).intValue();
                                 homes.add(home);
                             }
 
                             homeListener.getListHomes(homes);
+                            listener.onComplete(homes);
 
                         } else {
                             homeListener.addHomeFailed();
@@ -766,6 +808,10 @@ public class HomePresenter {
                     }
                 });
 
+    }
+
+    public interface OnGetHomesCompleteListener {
+        void onComplete(List<Home> homeList);
     }
 
 }
