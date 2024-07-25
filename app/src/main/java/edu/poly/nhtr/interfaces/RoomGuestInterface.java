@@ -3,12 +3,16 @@ package edu.poly.nhtr.interfaces;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.List;
+
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.Guest;
 
 public interface RoomGuestInterface {
     interface View {
 
+        android.view.View getRootView();
+        void onGuestClick(Guest guest);
 
         void showError(String message);
         void showNoDataFound();
@@ -40,7 +44,19 @@ public interface RoomGuestInterface {
         void openDialogSuccess(int id);
 
         void dialogClose();
+        
         boolean isAdded2();
+
+        void cancelDeleteAll();
+
+        void noGuestData();
+
+        void openDeleteListDialog(List<Guest> listGuest);
+
+        void deleteListAll(List<Guest> list);
+
+
+        void setDeleteAllUI();
     }
 
     interface Presenter {
@@ -60,5 +76,6 @@ public interface RoomGuestInterface {
 
         void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor);
 
+        void deleteListGuests(List<Guest> listGuest);
     }
 }

@@ -7,15 +7,16 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,113 +52,113 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
             if (timestamp1 != null && timestamp2 != null) {
                 return timestamp1.compareTo(timestamp2);
             }
-                return 0;
-            });
-            return documentSnapshots;
-        }
+            return 0;
+        });
+        return documentSnapshots;
+    }
 
-        public int getPosition() {
-            return position;
-        }
+    public int getPosition() {
+        return position;
+    }
 
-        @Override
-        public void getGuests(String roomId) {
-            view.showLoading();
-            database.collection(Constants.KEY_COLLECTION_GUESTS)
-                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (view.isAdded2()) {
-                            view.hideLoading();
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                List<Object> guests = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if (document.contains(Constants.KEY_IS_MAIN_GUEST)) {
-                                        // This document is a MainGuest
-                                        MainGuest mainGuest = new MainGuest();
-                                        mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
-                                        mainGuest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
-                                        mainGuest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
-                                        Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
-                                        mainGuest.setFileStatus(status != null && status);
-                                        mainGuest.setGuestId(document.getId());
-                                        guests.add(mainGuest);
-                                    } else {
-                                        // This document is a regular Guest
-                                        Guest guest = new Guest();
-                                        guest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
-                                        guest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
-                                        guest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
-                                        Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
-                                        guest.setFileStatus(status != null && status);
-                                        guest.setGuestId(document.getId());
-                                        guests.add(guest);
-                                    }
-                                }
-                                roomViewModel.setGuests(guests);
-                                if (guests.isEmpty()) {
-                                    view.showNoDataFound();
+    @Override
+    public void getGuests(String roomId) {
+        view.showLoading();
+        database.collection(Constants.KEY_COLLECTION_GUESTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (view.isAdded2()) {
+                        view.hideLoading();
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<Object> guests = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if (document.contains(Constants.KEY_IS_MAIN_GUEST)) {
+                                    // This document is a MainGuest
+                                    MainGuest mainGuest = new MainGuest();
+                                    mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
+                                    mainGuest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
+                                    mainGuest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
+                                    Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
+                                    mainGuest.setFileStatus(status != null && status);
+                                    mainGuest.setGuestId(document.getId());
+                                    guests.add(mainGuest);
                                 } else {
-                                    checkRoomCapacity(roomId, guests);
+                                    // This document is a regular Guest
+                                    Guest guest = new Guest();
+                                    guest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
+                                    guest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
+                                    guest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
+                                    Boolean status = document.getBoolean(Constants.KEY_CONTRACT_STATUS);
+                                    guest.setFileStatus(status != null && status);
+                                    guest.setGuestId(document.getId());
+                                    guests.add(guest);
                                 }
-                            } else {
-                                view.showError("Error getting guests");
                             }
-                        }
-                    });
-
-        }
-
-        private void checkRoomCapacity(String roomId, List<Object> guests) {
-            database.collection(Constants.KEY_COLLECTION_CONTRACTS)
-                    .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
-                    .get()
-                    .addOnCompleteListener(contractTask -> {
-                        if (contractTask.isSuccessful() && contractTask.getResult() != null) {
-                            for (QueryDocumentSnapshot contractDoc : contractTask.getResult()) {
-                                int totalMembers = Objects.requireNonNull(contractDoc.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)).intValue();
-                                Timber.tag("RoomGuestPresenter").d("Max people in room: %s", totalMembers);
-                                if (guests.size() >= totalMembers) {
-                                    view.disableAddGuestButton();
-                                } else {
-                                    view.enableAddGuestButton();
-                                }
+                            roomViewModel.setGuests(guests);
+                            if (guests.isEmpty()) {
+                                view.showNoDataFound();
+                            } else {
+                                checkRoomCapacity(roomId, guests);
                             }
                         } else {
-                            view.showError("Error checking room capacity");
+                            view.showError("Error getting guests");
                         }
-                    });
-        }
+                    }
+                });
 
-        @Override
-        public void addGuestToFirebase(Guest guest) {
-            HashMap<String, Object> guests = new HashMap<>();
-            guests.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
-            guests.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
-            guests.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
-            guests.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
-            guests.put(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount());
-            guests.put(Constants.KEY_HOME_ID, view.getInfoHomeFromGoogleAccount());
-            guests.put(Constants.KEY_TIMESTAMP, new Date());
+    }
 
-            // Add guest to firebase
-            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
-                    .add(guests)
-                    .addOnSuccessListener(documentReference -> {
-                        view.putGuestInfoInPreferences(
-                                guest.getNameGuest(),
-                                guest.getPhoneGuest(),
-                                guest.getDateIn(),
-                                guest.isFileStatus(),
-                                view.getInfoRoomFromGoogleAccount(),
-                                view.getInfoHomeFromGoogleAccount(),
-                                documentReference
-                        );
-                        view.dialogClose();
-                        view.showToast("Thêm khách thành công");
-                    })
-                    .addOnFailureListener(e -> view.showToast("Thêm hợp đồng thất bại"));
-        }
+    private void checkRoomCapacity(String roomId, List<Object> guests) {
+        database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
+                .get()
+                .addOnCompleteListener(contractTask -> {
+                    if (contractTask.isSuccessful() && contractTask.getResult() != null) {
+                        for (QueryDocumentSnapshot contractDoc : contractTask.getResult()) {
+                            int totalMembers = Objects.requireNonNull(contractDoc.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)).intValue();
+                            Timber.tag("RoomGuestPresenter").d("Max people in room: %s", totalMembers);
+                            if (guests.size() >= totalMembers) {
+                                view.disableAddGuestButton();
+                            } else {
+                                view.enableAddGuestButton();
+                            }
+                        }
+                    } else {
+                        view.showError("Error checking room capacity");
+                    }
+                });
+    }
+
+    @Override
+    public void addGuestToFirebase(Guest guest) {
+        HashMap<String, Object> guests = new HashMap<>();
+        guests.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
+        guests.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
+        guests.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
+        guests.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
+        guests.put(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount());
+        guests.put(Constants.KEY_HOME_ID, view.getInfoHomeFromGoogleAccount());
+        guests.put(Constants.KEY_TIMESTAMP, new Date());
+
+        // Add guest to firebase
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
+                .add(guests)
+                .addOnSuccessListener(documentReference -> {
+                    view.putGuestInfoInPreferences(
+                            guest.getNameGuest(),
+                            guest.getPhoneGuest(),
+                            guest.getDateIn(),
+                            guest.isFileStatus(),
+                            view.getInfoRoomFromGoogleAccount(),
+                            view.getInfoHomeFromGoogleAccount(),
+                            documentReference
+                    );
+                    view.dialogClose();
+                    view.showToast("Thêm khách thành công");
+                })
+                .addOnFailureListener(e -> view.showToast("Thêm hợp đồng thất bại"));
+    }
 
     @Override
     public void deleteGuest(Guest guest) {
@@ -217,6 +218,41 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                         view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
+    }
+
+    @Override
+    public void deleteListGuests(List<Guest> guests) {
+        if (guests.isEmpty()) {
+            view.showToast("123456");
+        } else {
+            view.showToast("qwerty");
+            view.showLoadingOfFunctions(R.id.btn_delete_guest);
+            FirebaseFirestore database = FirebaseFirestore.getInstance();
+
+            // Bắt đầu một batch mới
+            WriteBatch batch = database.batch();
+
+            // Duyệt qua danh sách các guest cần xóa và thêm thao tác xóa vào batch
+            for (Guest guest : guests) {
+                DocumentReference guestRef = database.collection(Constants.KEY_COLLECTION_GUESTS).document(guest.getGuestId());
+                batch.delete(guestRef); // Thêm thao tác xóa vào batch
+            }
+
+            // Commit batch
+            batch.commit()
+                    .addOnSuccessListener(aVoid -> {
+
+                        //homeListener.showToast("Xóa thành công " + homesToDelete.size() + " homes.");
+                        getGuests(view.getInfoRoomFromGoogleAccount());
+                        view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                        //roomListener.dialogAndModeClose(mode);
+                        view.openDialogSuccess(R.layout.layout_dialog_delete_guest_success);
+                    })
+                    .addOnFailureListener(e -> {
+                        view.hideLoadingOfFunctions(R.id.btn_delete_guest);
+                        view.showToast("Xóa khách thất bại: " + e.getMessage());
+                    });
+        }
     }
 
     @Override
@@ -378,11 +414,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                 Date inputDateParsed = sdf.parse(inputDate);
                                 Date mainGuestDateParsed = sdf.parse(mainGuestDate);
 
-                                if (inputDateParsed != null && inputDateParsed.before(mainGuestDateParsed)) {
-                                    callback.onResult(false);
-                                } else {
-                                    callback.onResult(true);
-                                }
+                                callback.onResult(inputDateParsed == null || !inputDateParsed.before(mainGuestDateParsed));
                             } catch (ParseException e) {
                                 callback.onResult(false);
                             }

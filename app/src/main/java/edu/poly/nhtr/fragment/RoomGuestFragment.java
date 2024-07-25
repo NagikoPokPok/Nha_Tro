@@ -120,6 +120,16 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public View getRootView() {
+        return getView();
+    }
+
+    @Override
+    public void onGuestClick(Guest guest) {
+
+    }
+
+    @Override
     public void showError(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         binding.progressBar.setVisibility(View.GONE);
@@ -220,6 +230,51 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     @Override
     public boolean isAdded2() {
         return isAdded();
+    }
+
+    @Override
+    public void cancelDeleteAll() {
+        binding.layoutDeleteAll.setVisibility(View.GONE);
+        binding.btnAddGuest.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void noGuestData() {
+        binding.guestsRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void openDeleteListDialog(List<Guest> listGuest) {
+        dialog.setContentView(R.layout.layout_dialog_delete_guest);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel_delete_guest);
+        Button btn_delete_guest = dialog.findViewById(R.id.btn_delete_guest);
+
+
+        btn_cancel.setOnClickListener(v -> dialog.dismiss());
+        btn_delete_guest.setOnClickListener(v -> presenter.deleteListGuests(listGuest));
+
+    }
+
+    @Override
+    public void deleteListAll(List<Guest> list) {
+        binding.txtDeleteHere.setOnClickListener(v -> openDeleteListDialog(list));
+        binding.txtCancelDeleteAll.setOnClickListener(v -> adapter.cancelDeleteAll());
+    }
+
+    @Override
+    public void setDeleteAllUI() {
+        binding.layoutDeleteAll.setVisibility(View.VISIBLE);
+        binding.btnAddGuest.setVisibility(View.GONE);
     }
 
     @Override

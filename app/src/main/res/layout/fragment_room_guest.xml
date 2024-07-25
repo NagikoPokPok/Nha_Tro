@@ -43,7 +43,7 @@
         android:padding="10dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/guestsRecyclerView"
-        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="0dp">
 
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="@string/huy"
+            android:text="Hủy"
             android:textColor="@color/colorOrange"
             android:textSize="17sp" />
 
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="@string/nhap_o_day_de_xoa"
+            android:text="Nhấn ở đây để xóa !"
             android:textColor="@color/colorOrange"
             android:textSize="17sp" />
 

@@ -3,12 +3,14 @@ package edu.poly.nhtr.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.poly.nhtr.R;
@@ -21,10 +23,15 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private List<Object> itemList; // Danh sách khách thuê phòng gồm MainGuest và Guest
     private static RoomGuestInterface.View view;
+    boolean[] isVisible;
+    private boolean isEnabled = false;
+    private boolean isSelectAll = false;
+    private List<Guest> selectList = new ArrayList<>();
 
     public GuestAdapter(List<Object> itemList, RoomGuestInterface.View view) {
         this.itemList = itemList;
         GuestAdapter.view = view;
+        isVisible = new boolean[itemList.size()];
     }
 
     @Override
@@ -56,6 +63,98 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } else if (holder instanceof MainGuestViewHolder) {
             ((MainGuestViewHolder) holder).bind((MainGuest) item);
         }
+
+        CheckBox checkBoxSelectAll = view.getRootView().findViewById(R.id.checkbox_select_all);
+
+        checkBoxSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                for (int i = 0; i < getItemCount(); i++) {
+                    isVisible[i] = true;
+                    if (itemList.get(i) instanceof Guest) {
+                        selectList.add((Guest) itemList.get(i));
+                    }
+                }
+                notifyDataSetChanged();
+            } else {
+                Arrays.fill(isVisible, false);
+                selectList.clear();
+                notifyDataSetChanged();
+            }
+        });
+
+        view.deleteListAll(selectList);
+
+        holder.itemView.setOnLongClickListener(v -> {
+            isEnabled = true;
+            view.setDeleteAllUI();
+            toggleAllCheckboxes(true);
+            notifyDataSetChanged();
+            return false;
+        });
+
+        performCheckBoxes(holder, position);
+    }
+
+    public void performCheckBoxes(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof GuestViewHolder) {
+            GuestViewHolder guestHolder = (GuestViewHolder) holder;
+            guestHolder.binding.ivCheckBox.setOnClickListener(v -> {
+                if (guestHolder.binding.ivCheckBox.isChecked()) {
+                    selectList.add((Guest) itemList.get(holder.getAdapterPosition()));
+                } else {
+                    selectList.remove(itemList.get(holder.getAdapterPosition()));
+                }
+            });
+
+            holder.itemView.setOnClickListener(v -> {
+                if (isEnabled) {
+                    clickItem(holder);
+                } else {
+                    view.onGuestClick((Guest) itemList.get(holder.getAdapterPosition()));
+                }
+            });
+
+            if (isVisible[position]) {
+                guestHolder.binding.frmImage.setVisibility(View.INVISIBLE);
+                guestHolder.binding.ivCheckBox.setVisibility(View.VISIBLE);
+                guestHolder.binding.ivCheckBox.setChecked(selectList.contains(itemList.get(position)));
+            } else {
+                guestHolder.binding.ivCheckBox.setChecked(false);
+                guestHolder.binding.ivCheckBox.setVisibility(View.GONE);
+                guestHolder.binding.frmImage.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    public void cancelDeleteAll() {
+        if (itemList.size() == 0) {
+            view.cancelDeleteAll();
+            view.noGuestData();
+        } else {
+            isEnabled = false;
+            isSelectAll = false;
+            selectList.clear();
+            toggleAllCheckboxes(false);
+            notifyDataSetChanged();
+            view.cancelDeleteAll();
+        }
+    }
+
+    public void clickItem(RecyclerView.ViewHolder holder) {
+        Guest guest = (Guest) itemList.get(holder.getAdapterPosition());
+        if (!((GuestViewHolder) holder).binding.ivCheckBox.isChecked()) {
+            ((GuestViewHolder) holder).binding.ivCheckBox.setChecked(true);
+            if (!selectList.contains(guest)) {
+                selectList.add(guest);
+            }
+        } else {
+            ((GuestViewHolder) holder).binding.ivCheckBox.setChecked(false);
+            selectList.remove(guest);
+        }
+    }
+
+    private void toggleAllCheckboxes(boolean show) {
+        Arrays.fill(isVisible, show);
     }
 
     @Override
@@ -64,7 +163,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setGuestList(List<Object> guests) {
-        // Sắp xếp danh sách để chắc chắn MainGuest luôn hiện đầu
+        // Sort the list to ensure MainGuest always appears first
         List<Object> sortedList = new ArrayList<>();
         List<MainGuest> mainGuests = new ArrayList<>();
         List<Guest> regularGuests = new ArrayList<>();
@@ -81,8 +180,10 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         sortedList.addAll(regularGuests);
 
         this.itemList = sortedList;
+        this.isVisible = new boolean[itemList.size()]; // Initialize isVisible array with the correct size
         notifyDataSetChanged();
     }
+
 
     public static class GuestViewHolder extends RecyclerView.ViewHolder {
         ItemContainerGuestBinding binding;
@@ -145,4 +246,3 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 }
-
