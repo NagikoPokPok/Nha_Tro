@@ -86,13 +86,17 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         view.deleteListAll(selectList);
 
-        holder.itemView.setOnLongClickListener(v -> {
-            isEnabled = true;
-            view.setDeleteAllUI();
-            toggleAllCheckboxes(true);
-            notifyDataSetChanged();
-            return false;
-        });
+        // Set LongClickListener only for GuestViewHolder
+        if (holder instanceof GuestViewHolder) {
+            holder.itemView.setOnLongClickListener(v -> {
+                isEnabled = true;
+                view.setDeleteAllUI();
+                clickItem(holder);
+                toggleAllCheckboxes(true);
+                notifyDataSetChanged();
+                return false;
+            });
+        }
 
         performCheckBoxes(holder, position);
     }
@@ -189,7 +193,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.isVisible = new boolean[itemList.size()];
         notifyDataSetChanged();
     }
-
 
     public static class GuestViewHolder extends RecyclerView.ViewHolder {
         ItemContainerGuestBinding binding;

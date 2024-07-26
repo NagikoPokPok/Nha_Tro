@@ -261,7 +261,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
 
         btn_cancel.setOnClickListener(v -> dialog.dismiss());
-        btn_delete_guest.setOnClickListener(v -> presenter.deleteListGuests(listGuest));
+        btn_delete_guest.setOnClickListener(v -> {
+            presenter.deleteListGuests(listGuest);
+            dialog.dismiss();
+            cancelDeleteAll();
+        });
 
     }
 
