@@ -3,7 +3,6 @@ package edu.poly.nhtr.fragment;
 import android.icu.text.Collator;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,22 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.poly.nhtr.Adapter.PlusOrMinusMoneyAdapter;
 import edu.poly.nhtr.Adapter.ServiceInMakeBillAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomMakeBillBinding;
 import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.MainGuest;
+import edu.poly.nhtr.models.PlusOrMinusMoney;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
@@ -42,6 +40,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     private List<RoomService> roomServiceList;
     private RoomBill bill;
     private RoomMakeBillPresenter presenter;
+    private PlusOrMinusMoneyAdapter plusOrMinusMoneyAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,18 +79,24 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             public void onGetContractFromFirebase(MainGuest mainGuest1) {
                 mainGuest = mainGuest1;
                 setDateTimeAndRoomPrice();
+                presenter.getListRoomService(roomId, new RoomMakeBillPresenter.OnGetRoomServiceFromFirebaseListener() {
+                    @Override
+                    public void onGetRoomServiceFromFirebase(List<RoomService> roomServices) {
+                        if (roomServiceList == null) roomServiceList = new ArrayList<>();
+                        roomServiceList.clear();
+                        roomServiceList.addAll(roomServices);
+                        roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
+                        presenter.setQuantityToServiceWithIndex(roomServices, bill, new RoomMakeBillPresenter.OnGetQuantityForServiceWithIndexListener() {
+                            @Override
+                            public void onGetQuantityForServiceWithIndex() {
+                                setOtherData();
+                            }
+                        });
+                    }
+                });
             }
         });
-        presenter.getListRoomService(roomId, new RoomMakeBillPresenter.OnGetRoomServiceFromFirebaseListener() {
-            @Override
-            public void onGetRoomServiceFromFirebase(List<RoomService> roomServices) {
-                if (roomServiceList == null) roomServiceList = new ArrayList<>();
-                roomServiceList.clear();
-                roomServiceList.addAll(roomServices);
-                roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
-                setOtherData();
-            }
-        });
+
     }
 
     private void setListener() {
@@ -106,16 +111,19 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         binding.btnMakeBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                presenter.updateBill(bill);
             }
         });
     }
 
 
     private void setOtherData() {
-        // set adapter
-        ServiceInMakeBillAdapter adapter = new ServiceInMakeBillAdapter(roomServiceList);
-        binding.serviceInBillRecyclerView.setAdapter(adapter);
+        // set adapter for service
+        ServiceInMakeBillAdapter serviceInMakeBillAdapter = new ServiceInMakeBillAdapter(roomServiceList);
+        binding.serviceInBillRecyclerView.setAdapter(serviceInMakeBillAdapter);
+        binding.serviceInBillRecyclerView.setVisibility(View.VISIBLE);
+
+
 
         // Set into money of service
         int totalOfService = 0;
@@ -123,12 +131,68 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             totalOfService += (roomService.getService().getPrice() * roomService.getQuantity());
         }
         binding.txtTotalServiceFee.setText(toStringFromInt(totalOfService));
+        bill.moneyOfService = totalOfService;
+        bill.moneyOfRoom = Integer.parseInt(binding.txtIntoRoomMoney.getText().toString());
+
 
         // Set total money of bill
-        int totalMoney = 0;
-        totalMoney = totalOfService + Integer.parseInt(binding.txtIntoRoomMoney.getText().toString());
+        long totalMoney = 0;
+        totalMoney = totalOfService + bill.moneyOfRoom;
+        setTotalMoney(totalMoney);
 
-        binding.txtTotalMoney.setText(toStringFromInt(totalMoney));
+        // set adapter for plus or minus money
+        List<PlusOrMinusMoney> plusOrMinusMoneyList = new ArrayList<>();
+        long finalTotalMoney = totalMoney;
+        plusOrMinusMoneyAdapter = new PlusOrMinusMoneyAdapter(plusOrMinusMoneyList, new PlusOrMinusMoneyAdapter.OnItemValueChangeListener() {
+            @Override
+            public void onItemValueChange() {
+                // Set total money plus or minus
+                setTotalMoney(finalTotalMoney);
+            }
+        });
+        binding.plusOrMinusRecyclerView.setAdapter(plusOrMinusMoneyAdapter);
+
+        setVisibleOfPlusOrMinusRecycler();
+
+        // set listener for button plus and minus
+        binding.btnPlusMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                plusOrMinusMoneyAdapter.addPlusOrMinusMoney(true);
+                binding.btnPlusMoney.setChecked(false);
+                setVisibleOfPlusOrMinusRecycler();
+            }
+        });
+
+        binding.btnMinusMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                plusOrMinusMoneyAdapter.addPlusOrMinusMoney(false);
+                binding.btnMinusMoney.setChecked(false);
+                setVisibleOfPlusOrMinusRecycler();
+            }
+        });
+
+
+    }
+
+    private void setVisibleOfPlusOrMinusRecycler() {
+        if (plusOrMinusMoneyAdapter.getItemCount() == 0){
+            binding.txtNullPlusOrMinus.setVisibility(View.VISIBLE);
+            binding.plusOrMinusRecyclerView.setVisibility(View.GONE);
+        }else {
+            binding.txtNullPlusOrMinus.setVisibility(View.GONE);
+            binding.plusOrMinusRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setTotalMoney(long totalMoney) {
+        long total = totalMoney;
+        if (plusOrMinusMoneyAdapter != null){
+            total += plusOrMinusMoneyAdapter.getTotalMoney();
+        }
+        binding.txtTotalMoney.setText(toStringFromLong(total));
+        bill.totalOfMoney = total;
     }
 
     private void setDateTimeAndRoomPrice() {
@@ -144,6 +208,10 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         binding.txtMonthYear.setText(monthYear);
         binding.txtCreateBillDate.setText(createBillDate);
+
+        bill.month = date.getMonthValue();
+        bill.year = date.getYear();
+        bill.dateCreateBill = java.sql.Date.valueOf(String.valueOf(date));
 
         String txt_createContractDate = mainGuest.getCreateDate();
         String txt_expirationContractDate = mainGuest.getExpirationDate();
@@ -172,6 +240,13 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         else
             startDate = payDate.minusMonths(1);
 
+        binding.txtDateStart.setText(startDate.format(formatter));
+        binding.txtDateEnd.setText(payDate.format(formatter));
+
+        bill.datePayBill = java.sql.Date.valueOf(String.valueOf(payDate));
+        bill.numberOfDaysToPayBill = Integer.parseInt(payDay);
+
+        // Amount of day and month
         int monthHire = 0, dayHire = 0;
 
         if (startDate.getDayOfMonth() == payDate.getDayOfMonth())
@@ -182,38 +257,11 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         }else
             dayHire = (int) ChronoUnit.DAYS.between(startDate, payDate);
 
-//        int[] startDate = new int[]{Integer.parseInt(Arrays.toString(mainGuest.getCreateDate().split("/")))};
-//
-//        monthHire = date.getMonthValue() - startDate[1];
-//        if (monthHire > 1){
-//            startDate[0] = Integer.parseInt(payDay);
-//            if (startDate[0] >= date.getDayOfMonth()) startDate[1] = date.getMonthValue()-1;
-//            else startDate[1] = date.getMonthValue();
-//            startDate[2] = date.getYear();
-//
-//            if (startDate[1] == 0) {
-//                startDate[1] = 12;
-//                startDate[2] -= 1;
-//            } else if (startDate[1] == 13) {
-//                startDate[1] = 1;
-//                startDate[2] +=1;
-//            }
-//        }
-//        LocalDate dateStart = LocalDate.of(startDate[2], startDate[1], startDate[0]);
-//        if (startDate[0] <= date.getDayOfMonth() ){
-//            dayHire = date.getDayOfMonth() - startDate[0];
-//        }else {
-//            monthHire -= 1;
-//            dayHire = (int) ChronoUnit.DAYS.between(dateStart, date);
-//        }
 
-
-//        binding.txtPayDate.setText(datePay);
         String txtDayHire = dayHire + " ngày";
         String txtMonthHire = monthHire + " tháng, ";
         binding.txtDayHire.setText(txtDayHire);
         binding.txtMonthHire.setText(txtMonthHire);
-
 
 
         //Set price of room
@@ -228,6 +276,9 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     }
 
     private String toStringFromInt(int value) {
+        return value + "";
+    }
+    private String toStringFromLong(long value){
         return value + "";
     }
 

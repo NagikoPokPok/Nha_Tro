@@ -1,6 +1,5 @@
 package edu.poly.nhtr.presenters;
 
-import android.icu.text.Collator;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,13 +11,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.utilities.Constants;
@@ -101,7 +101,10 @@ public class RoomMakeBillPresenter {
                                     @Override
                                     public void onGetServiceFromFirebase(RoomService roomService) {
                                         roomServices.add(roomService);
-                                        callback.onGetRoomServiceFromFirebase(roomServices);
+                                        if (roomService.getService().getFee_base() == 0){
+
+                                        }else
+                                            callback.onGetRoomServiceFromFirebase(roomServices);
                                     }
                                 });
 
@@ -144,6 +147,60 @@ public class RoomMakeBillPresenter {
 
     }
 
+    public void setQuantityToServiceWithIndex(List<RoomService> roomServices, RoomBill bill, OnGetQuantityForServiceWithIndexListener callback) {
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_INDEX)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomServices.get(0).getRoomId())
+                .whereEqualTo(Constants.KEY_MONTH, bill.month)
+                .whereEqualTo(Constants.KEY_YEAR, bill.year)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
+                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                            for (RoomService roomService : roomServices){
+                                if (roomService.getService().getFee_base() == 0 ){
+                                    Log.e("IndexService", "InSetIndex " );
+                                    int quantity = 0, oldIndex =0, newIndex =0;
+                                    if (roomService.getServiceName().equalsIgnoreCase("điện")){
+                                        oldIndex = Integer.parseInt(document.getString(Constants.KEY_ELECTRICITY_INDEX_OLD));
+                                        newIndex = Integer.parseInt(document.getString(Constants.KEY_ELECTRICITY_INDEX_NEW));
+                                        Log.e("IndexService", "Electric " + newIndex);
+                                    } else if (roomService.getServiceName().equalsIgnoreCase("nước") && Boolean.TRUE.equals(task.getResult().getDocuments().get(0).getBoolean(Constants.KEY_WATER_IS_INDEX))) {
+                                        oldIndex = Integer.parseInt(document.getString(Constants.KEY_WATER_INDEX_OLD));
+                                        newIndex = Integer.parseInt(document.getString(Constants.KEY_WATER_INDEX_NEW));
+                                        Log.e("IndexService", "Water " + newIndex);
+                                    }
+                                    quantity = newIndex-oldIndex;
+                                    if (quantity == 0) quantity = 404;
+                                    roomService.setQuantity(quantity);
+                                }
+                            }
+                            callback.onGetQuantityForServiceWithIndex();
+                        }
+                    }
+                });
+
+    }
+
+    public void updateBill(RoomBill bill) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put(Constants.KEY_DATE_MAKE_BILL, bill.dateCreateBill);
+        data.put(Constants.KEY_DATE_PAY_BILL, bill.datePayBill);
+
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
+                .document(bill.billID)
+                .update(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+
+                        }
+                    }
+                });
+    }
+
 
     public interface OnGetRoomFromFirebaseListener{
         void onGetRoomFromFirebase(Room room);
@@ -157,4 +214,8 @@ public class RoomMakeBillPresenter {
     public interface OnGetServiceFromFirebaseListener{
         void onGetServiceFromFirebase(RoomService roomService);
     }
+    public interface OnGetQuantityForServiceWithIndexListener{
+        void onGetQuantityForServiceWithIndex();
+    }
+
 }

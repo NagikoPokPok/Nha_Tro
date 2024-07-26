@@ -132,6 +132,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         //Load data of service
         if(!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) {
             services = ServiceUtils.addAvailableService(preferenceManager.getString(Constants.KEY_HOME_ID), getContext());
+            Log.e("ServiceInService", services.size()+"");
             setRecyclerViewData();
         }
         else {

@@ -78,13 +78,15 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
                 if (roomServices.isEmpty()){
                     setAutoRequiredService();
                 }else {
-                    services = presenter.getAvailableService(homeId, roomServices, new RoomServicePresenter.OnGetAvailableServiceListener() {
+                    presenter.getAvailableService(homeId, roomServices, new RoomServicePresenter.OnGetAvailableServiceListener() {
                         @Override
-                        public void onGetAvailableService(List<Service> services) {
+                        public void onGetAvailableService(List<Service> servicesList) {
+                            if (services == null) services = new ArrayList<>();
+                            services.clear();
+                            services.addAll(servicesList);
                             setRecyclerView();
                         }
                     });
-                    setRecyclerView();
                 }
 
                 Log.e("roomIdFragment", roomId);
@@ -99,11 +101,10 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
     }
 
     private void setAutoRequiredService() {
-
             presenter.setNewRoomServiceAuto(homeId, roomId, new RoomServicePresenter.OnRoomServiceAutoSetListener() {
                 @Override
                 public void onRoomServiceAutoSet() {
-                    roomServices = presenter.getRoomServices(roomId, new RoomServicePresenter.OnGetRoomServiceListener() {
+                    presenter.getRoomServices(roomId, new RoomServicePresenter.OnGetRoomServiceListener() {
                         @Override
                         public void onGetRoomService(List<RoomService> listRoomService) {
                             roomServices.clear();

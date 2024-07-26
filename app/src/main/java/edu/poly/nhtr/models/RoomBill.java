@@ -3,6 +3,7 @@ package edu.poly.nhtr.models;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 
 public class RoomBill implements Serializable {
@@ -11,7 +12,8 @@ public class RoomBill implements Serializable {
     public String getBillID() {
         return billID;
     }
-    public Date dateCreateBill, datePayBill;
+    public Date dateCreateBill;
+    public Date datePayBill;
     public int month, year;
     public int numberOfDaysToPayBill;
     public boolean isNotPayBill, isPayedBill, isDelayPayBill;
@@ -22,6 +24,7 @@ public class RoomBill implements Serializable {
     public String reasonForAddOrMinusMoney;
     public String userID, roomID, roomName;
     public boolean isWaterIsIndex;
+    public List<PlusOrMinusMoney> plusOrMinusMoneyList;
 
     public long getTotalOfMoneyNeededPay() {
         return totalOfMoneyNeededPay;

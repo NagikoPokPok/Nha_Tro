@@ -1,12 +1,15 @@
 package edu.poly.nhtr.Adapter;
 
+import android.icu.text.Collator;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import edu.poly.nhtr.databinding.ItemServiceInMakeBillBinding;
 import edu.poly.nhtr.models.RoomService;
@@ -18,6 +21,7 @@ public class ServiceInMakeBillAdapter extends RecyclerView.Adapter<ServiceInMake
 
     public ServiceInMakeBillAdapter(List<RoomService> roomServices) {
         this.roomServices = roomServices;
+        roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
     }
 
     @NonNull
