@@ -69,9 +69,11 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         checkBoxSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 for (int i = 0; i < getItemCount(); i++) {
-                    isVisible[i] = true;
-                    if (itemList.get(i) instanceof Guest) {
-                        selectList.add((Guest) itemList.get(i));
+                    if (!(itemList.get(i) instanceof MainGuest)) { // Exclude MainGuest
+                        isVisible[i] = true;
+                        if (itemList.get(i) instanceof Guest) {
+                            selectList.add((Guest) itemList.get(i));
+                        }
                     }
                 }
                 notifyDataSetChanged();
@@ -153,8 +155,12 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    // Hàm chọn hết check box trừ Main Guest
     private void toggleAllCheckboxes(boolean show) {
-        Arrays.fill(isVisible, show);
+        for (int i = 0; i < isVisible.length; i++) {
+            if (!((itemList.get(i)) instanceof MainGuest))
+                isVisible[i] = show;
+        }
     }
 
     @Override
@@ -163,7 +169,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setGuestList(List<Object> guests) {
-        // Sort the list to ensure MainGuest always appears first
+        // Sắp xếp danh sách khách để Main Guest luôn ở đầu
         List<Object> sortedList = new ArrayList<>();
         List<MainGuest> mainGuests = new ArrayList<>();
         List<Guest> regularGuests = new ArrayList<>();
@@ -180,7 +186,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         sortedList.addAll(regularGuests);
 
         this.itemList = sortedList;
-        this.isVisible = new boolean[itemList.size()]; // Initialize isVisible array with the correct size
+        this.isVisible = new boolean[itemList.size()];
         notifyDataSetChanged();
     }
 

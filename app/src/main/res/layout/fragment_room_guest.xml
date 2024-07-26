@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_add_guest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/layout_delete_all" />
 
     <ProgressBar
         android:id="@+id/progressBar"
