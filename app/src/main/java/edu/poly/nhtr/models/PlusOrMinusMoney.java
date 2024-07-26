@@ -15,6 +15,9 @@ public class PlusOrMinusMoney {
         this.stt = stt;
     }
 
+    public PlusOrMinusMoney() {
+    }
+
     public String getTitle() {
         return title;
     }

@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import edu.poly.nhtr.R;
 public class CustomSpinnerAdapter extends BaseAdapter {
     private final Context context;
     private final String[] items;
-    private int selectedPosition = -1;
+    private int selectedPosition = 1;
     private int dropDownResource;
 
     public CustomSpinnerAdapter(Context context, String[] items) {
@@ -45,22 +46,21 @@ public class CustomSpinnerAdapter extends BaseAdapter {
         TextView text = convertView.findViewById(R.id.text);
         ImageView checkmark = convertView.findViewById(R.id.checkmark_spinner);
 
-        text.setText(items[position]);
-//        if (position == selectedPosition) {
-//            checkmark.setVisibility(View.VISIBLE);
-//            checkmark.setColorFilter(context.getResources().getColor(android.R.color.holo_green_light));
-//        } else {
-////            checkmark.setVisibility(View.GONE);
-//            checkmark.setVisibility(View.VISIBLE);
-//            checkmark.setColorFilter(context.getResources().getColor(android.R.color.darker_gray));
-//        }
+        if (position != 0){
+            text.setText(items[position]);
+        }else {
+            position = selectedPosition;
+            text.setText(items[position]);
+        }
 
         return convertView;
     }
 
     public void setSelectedPosition(int position) {
-        selectedPosition = position;
-        notifyDataSetChanged();
+        if (position != 0){
+            selectedPosition = position;
+            notifyDataSetChanged();
+        }
 
 
     }
@@ -83,10 +83,19 @@ public class CustomSpinnerAdapter extends BaseAdapter {
             checkmark.setColorFilter(context.getResources().getColor(android.R.color.darker_gray));
         }
 
+        if (position == 0){
+            text.setTextColor(Color.GRAY);
+        }
+
         return convertView;
     }
 
     public void setDropDownViewResource(int resource) {
         this.dropDownResource = resource;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return position != 0;
     }
 }

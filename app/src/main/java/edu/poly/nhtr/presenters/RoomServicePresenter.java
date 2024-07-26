@@ -34,7 +34,7 @@ public class RoomServicePresenter {
         this.listener = listener;
     }
 
-    public List<RoomService> getRoomServices(String roomId, OnGetRoomServiceListener callback) {
+    public void getRoomServices(String roomId, OnGetRoomServiceListener callback) {
         List<RoomService> roomServices = new ArrayList<>();
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION)
@@ -98,7 +98,6 @@ public class RoomServicePresenter {
                     }
                 });
 
-        return roomServices;
     }
 
     private void getNumberOfGuest(String roomId, OnGetGuestListener callback) {

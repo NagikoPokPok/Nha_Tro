@@ -18,8 +18,10 @@
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
+        android:text="hello"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/checkmark_spinner"
         android:layout_marginStart="8dp"
+        style="@style/TEXT_LIGHT_2"
         android:textSize="16sp"/>
 </RelativeLayout>

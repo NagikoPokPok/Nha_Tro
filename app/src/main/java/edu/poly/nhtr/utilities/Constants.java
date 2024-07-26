@@ -148,6 +148,8 @@ public class Constants {
     public static final String KEY_CBX_IS_DELAY_PAY_BILL = "cbxIsDelayPayBill";
     public static final String KEY_CBX_IS_NOT_GIVE_BILL = "cbxIsNotGiveBill";
 
+    public static final String KEY_TIME_LIVED = "timeLived";
+    public static final String KEY_MONEY_PLUS_OR_MINUS = "moneyPlusOrMinus";
 
 
 }

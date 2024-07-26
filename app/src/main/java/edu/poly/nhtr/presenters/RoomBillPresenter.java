@@ -1,5 +1,7 @@
 package edu.poly.nhtr.presenters;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,6 +20,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,6 +29,7 @@ import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Notification;
+import edu.poly.nhtr.models.PlusOrMinusMoney;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.utilities.Constants;
@@ -157,6 +161,25 @@ public class RoomBillPresenter {
         bill.totalOfMoneyNeededPay = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY_NEEDED_PAY)).intValue();
         bill.numberOfDaysLived = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_DAYS_LIVED)).intValue();
         bill.reasonForAddOrMinusMoney = document.getString(Constants.KEY_REASON_OF_ADD_OR_MINUS);
+
+        // Chuyển đổi danh sách từ HashMap sang danh sách PlusOrMinusMoney
+        List<Map<String, Object>> plusOrMinusMoneyListData = (List<Map<String, Object>>) document.get(Constants.KEY_MONEY_PLUS_OR_MINUS);
+        List<PlusOrMinusMoney> plusOrMinusMoneyList = new ArrayList<>();
+
+        if (plusOrMinusMoneyListData != null) {
+            for (Map<String, Object> item : plusOrMinusMoneyListData) {
+                PlusOrMinusMoney money = new PlusOrMinusMoney();
+                money.setStt((int) ((Number) item.get("stt")).longValue());
+                money.setReason((String) item.get("reason"));
+                money.setPlus((Boolean) item.get("plus")); // Assuming there's a 'plus' field
+                money.setMoney((int) ((Number) item.get("money")).longValue());
+                money.setTitle((String) item.get("title"));
+                plusOrMinusMoneyList.add(money);
+            }
+        }
+
+        bill.setPlusOrMinusMoneyList(plusOrMinusMoneyList);
+        bill.setTimeLived(document.getString(Constants.KEY_TIME_LIVED));
         return bill;
     }
 

@@ -24,7 +24,25 @@ public class RoomBill implements Serializable {
     public String reasonForAddOrMinusMoney;
     public String userID, roomID, roomName;
     public boolean isWaterIsIndex;
-    public List<PlusOrMinusMoney> plusOrMinusMoneyList;
+
+    // List object to save info of money plus or minus and this reason (28-37). Time live (39-46)
+    private List<PlusOrMinusMoney> plusOrMinusMoneyList;
+    private String timeLived;
+    public List<PlusOrMinusMoney> getPlusOrMinusMoneyList() {
+        return plusOrMinusMoneyList;
+    }
+
+    public void setPlusOrMinusMoneyList(List<PlusOrMinusMoney> plusOrMinusMoneyList) {
+        this.plusOrMinusMoneyList = plusOrMinusMoneyList;
+    }
+
+    public String getTimeLived() {
+        return timeLived;
+    }
+
+    public void setTimeLived(String timeLived) {
+        this.timeLived = timeLived;
+    }
 
     public long getTotalOfMoneyNeededPay() {
         return totalOfMoneyNeededPay;
@@ -113,4 +131,6 @@ public class RoomBill implements Serializable {
     public boolean isWaterIsIndex() {
         return isWaterIsIndex;
     }
+
+
 }

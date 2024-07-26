@@ -108,15 +108,11 @@ public class ServiceFragment extends Fragment implements ServiceListener {
                         if(task.isSuccessful()){
                             DocumentSnapshot document = task.getResult();
                             if(document.exists()) {
-                                if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null){
+                                if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null)
                                     preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE));
-                                    Log.e("isHaveServiceDoc", document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE).toString()+" document");
-                                }
                                 else preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                                Log.e("isHaveService", "exists");
                             }else
                                 preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                            Log.e("isHaveService", "Access successfully");
                         }
                         else Log.e("isHaveService", "Don't access");
 
@@ -525,7 +521,6 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 // Chặn tất cả các sự kiện touch
-                Log.d("TouchIntercept", "Touch event intercepted: " + e.toString());
                 return true;
             }
 
@@ -540,7 +535,6 @@ public class ServiceFragment extends Fragment implements ServiceListener {
             }
         });
         recyclerApplyFor.setOnTouchListener((v, event) -> {
-            Log.d("TouchIntercept", "Touch event intercepted: " + event.toString());
             return true; // Chặn tất cả các sự kiện touch
         });
     }

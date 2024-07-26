@@ -9,6 +9,7 @@ public class RoomService {
     private Room room;
     private Service service;
     private int quantity;
+    private String oldIndex, newIndex;
 
     public RoomService(String roomServiceId, String roomId, String serviceId) {
         this.roomServiceId = roomServiceId;
@@ -73,4 +74,19 @@ public class RoomService {
         this.quantity = quantity;
     }
 
+    public String getOldIndex() {
+        return oldIndex;
+    }
+
+    public void setOldIndex(String oldIndex) {
+        this.oldIndex = oldIndex;
+    }
+
+    public String getNewIndex() {
+        return newIndex;
+    }
+
+    public void setNewIndex(String newIndex) {
+        this.newIndex = newIndex;
+    }
 }

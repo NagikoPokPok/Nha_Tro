@@ -13,7 +13,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.MainGuest;
@@ -35,17 +34,14 @@ public class RoomMakeBillPresenter {
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOMS)
                 .document(roomId)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            room[0] = new Room(
-                                    document.getString(Constants.KEY_NAME_ROOM),
-                                    document.getString(Constants.KEY_PRICE),
-                                    document.getString(Constants.KEY_DESCRIBE)
-                            );
-                        }
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot document = task.getResult();
+                        room[0] = new Room(
+                                document.getString(Constants.KEY_NAME_ROOM),
+                                document.getString(Constants.KEY_PRICE),
+                                document.getString(Constants.KEY_DESCRIBE)
+                        );
                     }
                 });
         return room[0];
@@ -55,23 +51,20 @@ public class RoomMakeBillPresenter {
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
-                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                            MainGuest mainGuest = new MainGuest(
-                                    document.getString(Constants.KEY_CONTRACT_CREATED_DATE),
-                                    document.getString(Constants.KEY_CONTRACT_EXPIRATION_DATE),
-                                    document.getString(Constants.KEY_CONTRACT_PAY_DATE),
-                                    Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)),
-                                    Math.toIntExact(document.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)),
-                                    Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_ROOM_PRICE)),
-                                    document.getString(Constants.KEY_GUEST_PHONE)
-                            );
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        MainGuest mainGuest = new MainGuest(
+                                document.getString(Constants.KEY_CONTRACT_CREATED_DATE),
+                                document.getString(Constants.KEY_CONTRACT_EXPIRATION_DATE),
+                                document.getString(Constants.KEY_CONTRACT_PAY_DATE),
+                                Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)),
+                                Math.toIntExact(document.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)),
+                                Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_ROOM_PRICE)),
+                                document.getString(Constants.KEY_GUEST_PHONE)
+                        );
 
-                            callback.onGetContractFromFirebase(mainGuest);
-                        }
+                        callback.onGetContractFromFirebase(mainGuest);
                     }
                 });
     }
@@ -101,10 +94,7 @@ public class RoomMakeBillPresenter {
                                     @Override
                                     public void onGetServiceFromFirebase(RoomService roomService) {
                                         roomServices.add(roomService);
-                                        if (roomService.getService().getFee_base() == 0){
-
-                                        }else
-                                            callback.onGetRoomServiceFromFirebase(roomServices);
+                                        callback.onGetRoomServiceFromFirebase(roomServices);
                                     }
                                 });
 
@@ -183,10 +173,21 @@ public class RoomMakeBillPresenter {
 
     }
 
+
+
     public void updateBill(RoomBill bill) {
         HashMap<String, Object> data = new HashMap<>();
+
         data.put(Constants.KEY_DATE_MAKE_BILL, bill.dateCreateBill);
         data.put(Constants.KEY_DATE_PAY_BILL, bill.datePayBill);
+        data.put(Constants.KEY_TIME_LIVED, bill.getTimeLived());
+
+        data.put(Constants.KEY_MONEY_OF_ROOM, bill.moneyOfRoom);
+        data.put(Constants.KEY_MONEY_OF_SERVICE, bill.moneyOfService);
+        data.put(Constants.KEY_MONEY_OF_ADD_OR_MINUS, bill.moneyOfAddOrMinus);
+        data.put(Constants.KEY_TOTAL_OF_MONEY, bill.totalOfMoney);
+
+        data.put(Constants.KEY_MONEY_PLUS_OR_MINUS, bill.getPlusOrMinusMoneyList());
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
                 .document(bill.billID)
@@ -195,7 +196,7 @@ public class RoomMakeBillPresenter {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-
+                            listener.makeBillSuccessfully();
                         }
                     }
                 });

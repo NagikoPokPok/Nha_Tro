@@ -111,6 +111,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         binding.btnMakeBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
                 presenter.updateBill(bill);
             }
         });
@@ -190,6 +191,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         long total = totalMoney;
         if (plusOrMinusMoneyAdapter != null){
             total += plusOrMinusMoneyAdapter.getTotalMoney();
+            bill.moneyOfAddOrMinus = plusOrMinusMoneyAdapter.getTotalMoney();
         }
         binding.txtTotalMoney.setText(toStringFromLong(total));
         bill.totalOfMoney = total;
@@ -204,13 +206,13 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         // Ngày tạo-xuất hóa đơn
         String createBillDate = date.format(formatter);
-        String monthYear = "Tháng " + date.getMonthValue() + ", " + date.getYear();
+        String monthYear = "Tháng " + bill.month + ", " + bill.year;
 
         binding.txtMonthYear.setText(monthYear);
         binding.txtCreateBillDate.setText(createBillDate);
 
-        bill.month = date.getMonthValue();
-        bill.year = date.getYear();
+//        bill.month = date.getMonthValue();
+//        bill.year = date.getYear();
         bill.dateCreateBill = java.sql.Date.valueOf(String.valueOf(date));
 
         String txt_createContractDate = mainGuest.getCreateDate();
@@ -263,6 +265,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         binding.txtDayHire.setText(txtDayHire);
         binding.txtMonthHire.setText(txtMonthHire);
 
+        bill.setTimeLived(txtMonthHire+txtDayHire);
 
         //Set price of room
         String priceOfRoom = mainGuest.getRoomPrice()+"";
@@ -294,5 +297,11 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     @Override
     public void showToast(String message) {
         Toast.makeText(this.requireActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void makeBillSuccessfully() {
+        // Quay lại Fragment trước đó trong back stack
+        getParentFragmentManager().popBackStack();
     }
 }
