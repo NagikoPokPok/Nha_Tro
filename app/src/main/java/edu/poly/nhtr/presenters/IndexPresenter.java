@@ -476,7 +476,7 @@ public class IndexPresenter {
     }
 
 
-    public void getCurrentListIndex(String homeId, int month, int year) {
+    public void getCurrentListIndex(String homeId, int month, int year, OnGetCurrentListIndexes listener) {
         List<Index> indexList = new ArrayList<>();
 
         db.collection(Constants.KEY_COLLECTION_INDEX)
@@ -531,6 +531,7 @@ public class IndexPresenter {
                                             // Tăng biến đếm số lượng chỉ số đã được xử lý
                                             count.incrementAndGet();
                                             indexInterface.getListIndexes(indexList);
+                                            listener.onComplete(indexList);
 
 
                                         });
@@ -538,12 +539,18 @@ public class IndexPresenter {
                         } else {
                             Log.w("Firestore", "No indexes found for the given homeId.");
                             indexInterface.setIndexList(indexList); // Trả về danh sách trống
+                            listener.onComplete(indexList);
                         }
                     } else {
                         Log.w("Firestore", "Error getting documents.", task.getException());
                         indexInterface.setIndexList(indexList); // Trả về danh sách trống
+                        listener.onComplete(indexList);
                     }
                 });
+    }
+
+    public interface OnGetCurrentListIndexes{
+        void onComplete(List<Index> indexList);
     }
 
 

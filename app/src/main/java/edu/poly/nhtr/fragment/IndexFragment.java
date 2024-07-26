@@ -70,12 +70,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class IndexFragment extends Fragment implements IndexInterface,  SwipeRefreshLayout.OnRefreshListener {
+public class IndexFragment extends Fragment implements IndexInterface, SwipeRefreshLayout.OnRefreshListener {
     private IndexPresenter indexPresenter;
     private PreferenceManager preferenceManager;
     private FragmentIndexBinding binding;
@@ -109,7 +111,6 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
     private AlarmService alarmService;
     private String header, body;
     private Room room;
-
 
 
     @Override
@@ -152,7 +153,6 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         checkWaterIsIndexOrNot();
 
         binding.swipeRefreshFragment.setOnRefreshListener(this);
-
 
 
         return binding.getRoot();
@@ -252,11 +252,10 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         setupDialogWindow(binding1.getRoot().getLayoutParams());
 
         binding1.switchOnOffNotification.setChecked(preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, homeID));
-        if(binding1.switchOnOffNotification.isChecked())
-        {
+        if (binding1.switchOnOffNotification.isChecked()) {
             binding1.layoutSelectDay.setVisibility(View.VISIBLE);
             binding1.edtDay.setText(preferenceManager.getString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, homeID));
-        }else{
+        } else {
             binding1.layoutSelectDay.setVisibility(View.GONE);
         }
 
@@ -280,7 +279,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         });
 
         binding1.btnAddHome.setOnClickListener(v -> {
-            if(preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, homeID)) {
+            if (preferenceManager.getBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, homeID)) {
                 if (isDateAndTimeSelected(Objects.requireNonNull(binding1.edtDay.getText()).toString())) {
                     preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, binding1.switchOnOffNotification.isChecked(), homeID);
                     preferenceManager.putString(Constants.KEY_DATE_PUSH_NOTIFICATION_INDEX, binding1.edtDay.getText().toString(), homeID);
@@ -288,7 +287,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
                 } else {
                     showErrorMessage("Hãy chọn đủ ngày và giờ", R.id.layout_day);
                 }
-            }else{
+            } else {
                 dialog.dismiss();
             }
         });
@@ -363,7 +362,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
                     String formattedDay = String.format("%02d", dayOfMonth);
                     String formattedMonth = String.format("%02d", month + 1);
 
-                    binding1.edtDay.setText("ngày "+  formattedDay  + " vào lúc ");
+                    binding1.edtDay.setText("ngày " + formattedDay + " vào lúc ");
 
                     new TimePickerDialog(
                             requireContext(),
@@ -406,8 +405,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
     }
 
 
-    private void pushAlarm(LayoutDialogSettingNotificationIndexBinding binding1, AlarmCallback callback, Calendar calendar)
-    {
+    private void pushAlarm(LayoutDialogSettingNotificationIndexBinding binding1, AlarmCallback callback, Calendar calendar) {
         binding1.btnAddHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -419,7 +417,6 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         });
 
     }
-
 
 
     private interface AlarmCallback {
@@ -496,12 +493,21 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
     }
 
     private void setupFilterIndexes() {
+        String dateNow = binding.txtDateTime.getText().toString();
+        String[] parts = dateNow.split("/");
+        String month = parts[0];
+        String year = parts[1];
         binding.btnFilterIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 binding.btnFilterIndex.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
                 binding.frameRoundFilterIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
-                openFilterIndexDialog();
+                indexPresenter.getCurrentListIndex(homeID, Integer.parseInt(month), Integer.parseInt(year), new IndexPresenter.OnGetCurrentListIndexes() {
+                    @Override
+                    public void onComplete(List<Index> indexList) {
+                        openFilterIndexDialog(indexList);
+                    }
+                });
             }
         });
     }
@@ -513,7 +519,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         binding.layoutNoData.setVisibility(View.GONE);
     }
 
-    private void openFilterIndexDialog() {
+    private void openFilterIndexDialog(List<Index> indexList) {
         String dateNow = binding.txtDateTime.getText().toString();
         String[] parts = dateNow.split("/");
         String month = parts[0];
@@ -532,12 +538,105 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         dialog.setCancelable(true);
         dialog.show();
 
-        indexPresenter.getCurrentListIndex(homeID, Integer.parseInt(month), Integer.parseInt(year));
-
 
         AppCompatCheckBox cbxByWater1 = binding1.cbxFrom0To4M3;
         AppCompatCheckBox cbxByWater2 = binding1.cbxFrom4To8M3;
         AppCompatCheckBox cbxByWater3 = binding1.cbxFrom8ToMoreM3;
+
+        int range1Max, range2Max, range3Max;
+
+        // Bước 1: Tìm số lượng phòng lớn nhất
+        int maxIndex = 0;
+        for (Index index : indexList) {
+            int indexOfUsed = Integer.parseInt(index.getElectricityIndexNew()) - Integer.parseInt(index.getElectricityIndexOld());
+            if (indexOfUsed > maxIndex) {
+                maxIndex = indexOfUsed;
+            }
+        }
+
+        // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
+
+        if (maxIndex == 0) {
+            range1Max = range2Max = range3Max = 0;
+        } else {
+            range1Max = (int) Math.ceil((double) maxIndex / 3.0);  // Kích thước mỗi khoảng
+            range2Max = 2 * range1Max;
+            range3Max = maxIndex;
+        }
+
+        // Bước 3: Thiết lập văn bản và hiển thị các checkbox
+        binding1.cbxFrom0To150KWh.setText("Từ " + 0 + " - " + range1Max + " kWh");
+
+        if (range2Max > range1Max) {
+            if ((range1Max + 1) != range2Max) {
+                binding1.cbxFrom150To250KWh.setText("Từ " + (range1Max + 1) + " - " + range2Max + " kWh");
+            } else {
+                binding1.cbxFrom150To250KWh.setText("Từ " + (range1Max + 1) + " kWh");
+            }
+            binding1.cbxFrom150To250KWh.setVisibility(View.VISIBLE);
+        } else {
+            binding1.cbxFrom150To250KWh.setVisibility(View.GONE);
+        }
+
+        if (range3Max > range2Max) {
+            if ((range2Max + 1) != range3Max) {
+                binding1.cbxFrom250ToMoreKWh.setText("Từ " + (range2Max + 1) + " - " + range3Max + " kWh");
+            } else {
+                binding1.cbxFrom250ToMoreKWh.setText("Từ " + (range2Max + 1) + " kWh");
+            }
+            binding1.cbxFrom250ToMoreKWh.setVisibility(View.VISIBLE);
+        } else {
+            binding1.cbxFrom250ToMoreKWh.setVisibility(View.GONE);
+        }
+
+
+        int range4Max, range5Max, range6Max;
+
+        // Bước 1: Tìm số lượng phòng lớn nhất
+        int maxIndexOfWater = 0;
+        for (Index index : indexList) {
+            int indexOfUsed = Integer.parseInt(index.getWaterIndexNew()) - Integer.parseInt(index.getWaterIndexOld());
+            if (indexOfUsed > maxIndexOfWater) {
+                maxIndexOfWater = indexOfUsed;
+            }
+        }
+
+        // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
+
+        if (maxIndexOfWater == 0) {
+            range4Max = range5Max = range6Max = 0;
+        } else {
+            range4Max = (int) Math.ceil((double) maxIndexOfWater / 3.0);  // Kích thước mỗi khoảng
+            range5Max = 2 * range4Max;
+            range6Max = maxIndexOfWater;
+        }
+
+        // Bước 3: Thiết lập văn bản và hiển thị các checkbox
+        cbxByWater1.setText("Từ " + 0 + " - " + range4Max + " Khối");
+
+        if (range5Max > range4Max) {
+            if ((range4Max + 1) != range5Max) {
+                cbxByWater2.setText("Từ " + (range4Max + 1) + " - " + range5Max + " Khối");
+            } else {
+                cbxByWater2.setText("Từ " + (range4Max + 1) + " Khối");
+            }
+            cbxByWater2.setVisibility(View.VISIBLE);
+        } else {
+            cbxByWater2.setVisibility(View.GONE);
+        }
+
+        if (range6Max > range5Max) {
+            if ((range5Max + 1) != range6Max) {
+                cbxByWater3.setText("Từ " + (range5Max + 1) + " - " + range6Max + " Khối");
+            } else {
+                cbxByWater3.setText("Từ " + (range5Max + 1) + " Khối");
+            }
+            cbxByWater3.setVisibility(View.VISIBLE);
+        } else {
+            cbxByWater3.setVisibility(View.GONE);
+        }
+
+
         cbxByWater1.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1));
         cbxByWater2.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2));
         cbxByWater3.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3));
@@ -651,7 +750,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
                     binding.recyclerView.setVisibility(View.VISIBLE);
                     indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
                 } else {
-                    filterListHomes(); // After put status of checkboxes in preferences, check and add them into the list
+                    filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max); // After put status of checkboxes in preferences, check and add them into the list
                 }
 
                 // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
@@ -719,7 +818,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
                                     indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
                                 } else {
                                     // Update list homes after deleting some check boxes
-                                    filterListHomes();
+                                    filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max);
                                 }
 
                             }
@@ -777,7 +876,7 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         }
     }
 
-    private void filterListHomes() {
+    private void filterListHomes(int range1, int range2, int range3, int range4, int range5, int range6) {
         showButtonLoading(R.id.btn_confirm_apply);
         boolean filterByRoom1 = preferenceManager.getBoolean("cbxByElectricityIndex1");
         boolean filterByRoom2 = preferenceManager.getBoolean("cbxByElectricityIndex2");
@@ -786,35 +885,66 @@ public class IndexFragment extends Fragment implements IndexInterface,  SwipeRef
         boolean filterByWater2 = preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2);
         boolean filterByWater3 = preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3);
 
+        List<Index> filterIndexesByElectricity = new ArrayList<Index>();
+        List<Index> filterIndexesByWater = new ArrayList<Index>();
         List<Index> filteredIndexes = new ArrayList<>();
-        for (Index index : currentListIndexes) {
-            String indexElectricityOld = index.getElectricityIndexOld();
-            String indexElectricityNew = index.getElectricityIndexNew();
-            String indexWaterOld = index.getWaterIndexOld();
-            String indexWaterNew = index.getWaterIndexNew();
 
-            int electricityIndexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
-            int waterIndexUsed = Integer.parseInt(indexWaterNew) - Integer.parseInt(indexWaterOld);
+        if (filterByRoom1 || filterByRoom2 || filterByRoom3) {
+            for (Index index : currentListIndexes) {
+                String indexElectricityOld = index.getElectricityIndexOld();
+                String indexElectricityNew = index.getElectricityIndexNew();
 
+                int electricityIndexUsed = Integer.parseInt(indexElectricityNew) - Integer.parseInt(indexElectricityOld);
 
-            if (filterByRoom1 && electricityIndexUsed >= 0 && electricityIndexUsed <= 150) {
-                filteredIndexes.add(index);
-            } else if (filterByRoom2 && electricityIndexUsed > 150 && electricityIndexUsed <= 250) {
-                filteredIndexes.add(index);
-            } else if (filterByRoom3 && electricityIndexUsed > 250) {
-                filteredIndexes.add(index);
-            } else if (filterByWater1 && waterIndexUsed >= 0 && waterIndexUsed <= 4) {
-                filteredIndexes.add(index);
-            } else if (filterByWater2 && waterIndexUsed > 4 && waterIndexUsed <= 8) {
-                filteredIndexes.add(index);
-            } else if (filterByWater3 && waterIndexUsed > 8) {
-                filteredIndexes.add(index);
+                if (filterByRoom1 && electricityIndexUsed >= 0 && electricityIndexUsed <= range1) {
+                    filterIndexesByElectricity.add(index);
+                } else if (filterByRoom2 && electricityIndexUsed >= (range1 + 1) && electricityIndexUsed <= range2) {
+                    filterIndexesByElectricity.add(index);
+                } else if (filterByRoom3 && electricityIndexUsed >= (range2 + 1) && electricityIndexUsed <= range3) {
+                    filterIndexesByElectricity.add(index);
+                }
             }
         }
 
+        if (filterByWater1 || filterByWater2 || filterByWater3) {
+            for (Index index : currentListIndexes) {
+                String indexWaterOld = index.getWaterIndexOld();
+                String indexWaterNew = index.getWaterIndexNew();
+
+                int waterIndexUsed = Integer.parseInt(indexWaterNew) - Integer.parseInt(indexWaterOld);
+
+                if (filterByWater1 && waterIndexUsed >= 0 && waterIndexUsed <= range4) {
+                    filterIndexesByWater.add(index);
+                } else if (filterByWater2 && waterIndexUsed >= (range4+1) && waterIndexUsed <= range5) {
+                    filterIndexesByWater.add(index);
+                } else if (filterByWater3 && waterIndexUsed >= (range5+1) && waterIndexUsed <= range6) {
+                    filterIndexesByWater.add(index);
+                }
+            }
+
+        }
+
+        // Kết hợp kết quả lọc
+        if ((filterByRoom1 || filterByRoom2 || filterByRoom3) && (filterByWater1 || filterByWater2 || filterByWater3)) {
+            if (!filterIndexesByElectricity.isEmpty() && !filterIndexesByWater.isEmpty()) {
+                Set<Index> setElectricity = new HashSet<>(filterIndexesByElectricity);
+                Set<Index> setWater = new HashSet<>(filterIndexesByWater);
+                setElectricity.retainAll(setWater); // Giao của hai tập hợp
+                filteredIndexes.addAll(setElectricity);
+            }
+            // Nếu một trong hai danh sách rỗng, kết quả cuối cùng sẽ là rỗng
+        } else {
+            if (!filterIndexesByElectricity.isEmpty()) {
+                filteredIndexes.addAll(filterIndexesByElectricity);
+            }
+            if (!filterIndexesByWater.isEmpty()) {
+                filteredIndexes.addAll(filterIndexesByWater);
+            }
+        }
+
+
         indexPresenter.filterIndexes(filteredIndexes);
 
-        //setIndexList(filteredIndexes);
     }
 
     private void setDefaultBackground(ImageButton img) {
