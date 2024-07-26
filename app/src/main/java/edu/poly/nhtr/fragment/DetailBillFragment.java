@@ -1,5 +1,7 @@
 package edu.poly.nhtr.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -38,6 +40,16 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
+            String edt ="hello, how are u";
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_SENDTO);
+                i.setData(Uri.parse("smsto:0919300585"));
+                i.putExtra("smsbody",edt);
+                startActivity(i);
+            }
+        });
     }
 
     @Override

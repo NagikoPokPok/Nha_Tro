@@ -51,7 +51,7 @@
             app:iconTint="@color/black" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_make_bill"
+            android:id="@+id/btn_send_bill"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
