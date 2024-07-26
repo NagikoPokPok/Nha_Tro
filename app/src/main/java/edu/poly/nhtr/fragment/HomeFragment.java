@@ -47,15 +47,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -73,8 +70,6 @@ import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentHomeBinding;
 import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
-import edu.poly.nhtr.firebase.AccessToken;
-import edu.poly.nhtr.firebase.FcmNotificationSender;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.presenters.HomePresenter;
@@ -90,6 +85,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     private HomePresenter homePresenter;
     private Dialog dialog;
     private HomeAdapter homeAdapter;
+    private boolean isSelectAllChecked = false;
 
     public List<Home> getCurrentListHomes() {
         return currentListHomes;
@@ -123,8 +119,11 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
             @Override
             public void onComplete(List<Home> homeList) {
                 currentListHomes = homeList;
+
             }
         });
+
+        homeAdapter = new HomeAdapter(currentListHomes, this, this);
 
 
         editFonts();
@@ -148,8 +147,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.homesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext().getApplicationContext()));
 
 
-        homeAdapter = new HomeAdapter(currentListHomes, this, this);
-
         // Load user's information
         loadUserDetails();
 
@@ -168,6 +165,8 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         // Xử lý nút 3 chấm menu in Frame Top
         binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
 
+        setupLayoutDeleteHomes();
+
 
         customizeLayoutSearch();// Customize layout search
         setListenersForTools(); // Set listeners for sort and filter
@@ -177,11 +176,22 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
     }
 
+    private void setupLayoutDeleteHomes() {
+        binding.checkboxSelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSelectAllChecked = !isSelectAllChecked;
+                homeAdapter.isSelectAllChecked(isSelectAllChecked);
+            }
+        });
+
+    }
+
     @Override
     public void onRefresh() {
         // Load home information
         homePresenter.getHomes("init");
-
+        hideLayoutDeleteHomes();
         binding.edtSearchHome.clearFocus();
         binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
         binding.layoutTypeOfSortHome.setVisibility(View.GONE);
@@ -336,8 +346,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     }
 
 
-
-
     private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
         boolean isAnyChecked = false;
         for (AppCompatCheckBox checkBox : checkBoxList) {
@@ -469,8 +477,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         } else {
             cbxByRevenue3.setVisibility(View.GONE);
         }
-
-
 
 
         cbxByRoom1.setChecked(preferenceManager.getBoolean("cbxByRoom1"));
@@ -677,6 +683,72 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     @Override
     public void getListHomes(List<Home> listHomes) {
         setCurrentListHomes(listHomes);
+    }
+
+    @Override
+    public void showLayoutDeleteHomes() {
+        binding.layoutDeleteManyHomes.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void putListSelected(List<Home> listHomes) {
+        binding.txtDeleteHomeHere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleDeleteButtonClick(listHomes);
+            }
+        });
+
+        binding.txtCancelDeleteHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeAdapter.cancelDeleteAll();
+            }
+        });
+    }
+
+    private void handleDeleteButtonClick(List<Home> listHomes) {
+        if (listHomes.isEmpty()) {
+            showToast("Không có nhà nào được chọn!");
+        } else {
+            if (cannotDeleteHomes(listHomes)) {
+                openCannotDeleteListHomesDialog();
+            } else {
+                openDeleteListHomeDialog(listHomes);
+            }
+        }
+    }
+
+    private void openCannotDeleteListHomesDialog() {
+        setupDialog(R.layout.layout_dialog_cannot_delete_bill, Gravity.CENTER);
+
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        TextView txtTitle = dialog.findViewById(R.id.txt_title_of_cannot_delete);
+        TextView txtBody = dialog.findViewById(R.id.txt_body_of_cannot_delete);
+        txtTitle.setText("Không thể xoá nhà trọ ");
+        txtBody.setText("Nhà trọ này hiện đang có người ở, bạn không thể xóa ngay lập tức !");
+
+    }
+
+    private boolean cannotDeleteHomes(List<Home> listHomes) {
+        for (Home home : listHomes) {
+            if (home.numberOfRooms != home.numberOfRoomsAvailable) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void hideLayoutDeleteHomes() {
+        binding.layoutDeleteManyHomes.setVisibility(View.GONE);
     }
 
     private void openSortHomeDialog() {
@@ -1314,8 +1386,16 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 openUpdateHomeDialog(Gravity.CENTER, home);
                 return true;
             } else if (itemId == R.id.menu_delete) {
-                // Thực hiện hành động cho mục xóa
-                openDeleteHomeDialog(Gravity.CENTER, home);
+
+                if (home.numberOfRooms == home.numberOfRoomsAvailable) {
+                    // Thực hiện hành động cho mục xóa
+                    openDeleteHomeDialog(home);
+                } else {
+                    openCannotDeleteHomeDialog(home);
+
+                }
+
+
                 return true;
             }
             return false;
@@ -1333,7 +1413,24 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         popupMenu.show();
     }
 
-    private void openDeleteHomeDialog(int gravity, Home home) {
+    private void openCannotDeleteHomeDialog(Home home) {
+        setupDialog(R.layout.layout_dialog_cannot_delete_bill, Gravity.CENTER);
+
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        TextView txtTitle = dialog.findViewById(R.id.txt_title_of_cannot_delete);
+        TextView txtBody = dialog.findViewById(R.id.txt_body_of_cannot_delete);
+        txtTitle.setText("Không thể xoá nhà trọ " + home.getNameHome());
+        txtBody.setText("Nhà trọ này hiện đang có người ở, bạn không thể xóa ngay lập tức !");
+    }
+
+    private void openDeleteHomeDialog(Home home) {
 
         setupDialog(R.layout.layout_dialog_delete_home, Gravity.CENTER);
 
@@ -1553,23 +1650,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         }
     }
 
-
-    @Override
-    public void hideFrameTop() {
-        binding.frmTopMain.setVisibility(View.GONE);
-        binding.frmMenuTools.setVisibility(View.GONE);
-        binding.btnAddHome.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showFrameTop() {
-        binding.frmTopMain.setVisibility(View.VISIBLE);
-        binding.frmMenuTools.setVisibility(View.VISIBLE);
-        binding.btnAddHome.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void openDeleteListHomeDialog(List<Home> listHomes, ActionMode mode) {
+    public void openDeleteListHomeDialog(List<Home> listHomes) {
         dialog.setContentView(R.layout.layout_dialog_delete_home);
         Window window = dialog.getWindow();
         if (window != null) {
@@ -1590,14 +1671,10 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
         btn_cancel.setOnClickListener(v -> dialog.dismiss());
 
-        btn_delete_home.setOnClickListener(v -> homePresenter.deleteListHomes(listHomes, mode));
+        btn_delete_home.setOnClickListener(v -> homePresenter.deleteListHomes(listHomes));
     }
 
-    @Override
-    public void dialogAndModeClose(ActionMode mode) {
-        dialog.dismiss();
-        mode.finish();
-    }
+
 
 
     @Override

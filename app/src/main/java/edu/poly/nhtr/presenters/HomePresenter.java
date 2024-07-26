@@ -3,6 +3,9 @@ package edu.poly.nhtr.presenters;
 import android.view.ActionMode;
 import android.view.Gravity;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
@@ -310,6 +313,7 @@ public class HomePresenter {
                                     RoomBill bill = new RoomBill();
                                     bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
                                     bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();
+                                    bill.isPayedBill = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_PAYED_BILL));
                                     bill.totalOfMoney = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY)).intValue();
 
                                     // Cập nhật hóa đơn gần nhất
@@ -320,7 +324,7 @@ public class HomePresenter {
                                 }
 
                                 // Cộng tổng doanh thu cho hóa đơn gần nhất nếu nó đã được thanh toán
-                                if (latestBill != null) {
+                                if (latestBill != null && latestBill.isPayedBill()) {
                                     long currentSum = sum.getOrDefault(homeId, 0L);
                                     sum.put(homeId, currentSum + latestBill.totalOfMoney);
                                 }
@@ -338,7 +342,6 @@ public class HomePresenter {
     public interface OnGetRevenueOfMonthListener {
         void onGetRevenueOfMonthComplete(Map<String, Long> sum);
     }
-
 
 
     private void countRoomsAreAvailableForHomes(QuerySnapshot result, OnCountRoomsAvailableListener listener) {
@@ -399,13 +402,14 @@ public class HomePresenter {
         return homes;
     }
 
+
     private void updateHomesInDatabase(QuerySnapshot homesResult, Map<String, Integer> homeRoomCount, Map<String, Integer> roomsAreAvailable, Map<String, Integer> roomsAreDelayedPayBill, Map<String, Long> revenue) {
         for (QueryDocumentSnapshot document : homesResult) {
             String homeId = document.getId();
             int numberOfRooms = homeRoomCount.getOrDefault(homeId, 0);
             int numberOfRoomsAvailable = roomsAreAvailable.getOrDefault(homeId, 0);
             int numberOfRoomsAreDelayedPayBill = roomsAreDelayedPayBill.getOrDefault(homeId, 0);
-            long revenueOfMonth = revenue.getOrDefault(homeId,0L);
+            long revenueOfMonth = revenue.getOrDefault(homeId, 0L);
             Map<String, Object> updates = new HashMap<>();
             updates.put(Constants.KEY_NUMBER_OF_ROOMS, numberOfRooms);
             updates.put(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE, numberOfRoomsAvailable);
@@ -459,10 +463,18 @@ public class HomePresenter {
                                     .document(home.getIdHome())
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
-                                        getHomes("delete");
-                                        homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
-                                        homeListener.dialogClose();
-                                        homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                                        deleteListRoomsByHome(home.getIdHome(), new onCompleteDeleteListRooms() {
+                                            @Override
+                                            public void onComplete(boolean success) {
+                                                if(success) {
+                                                    getHomes("delete");
+                                                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                                                    homeListener.dialogClose();
+                                                    homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                                                }
+                                            }
+                                        });
+
                                     })
                                     .addOnFailureListener(e -> {
                                         homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
@@ -477,6 +489,41 @@ public class HomePresenter {
                         homeListener.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
+    }
+
+    private void deleteListRoomsByHome(String homeID, onCompleteDeleteListRooms listener) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_ROOMS)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            WriteBatch batch = database.batch();
+                            for (DocumentSnapshot document : task.getResult()) {
+                                batch.delete(document.getReference());
+                            }
+                            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> commitTask) {
+                                    if (commitTask.isSuccessful()) {
+                                        listener.onComplete(true);
+                                    } else {
+                                        listener.onComplete(false);
+                                    }
+                                }
+                            });
+                        } else {
+                            listener.onComplete(false);
+                        }
+                    }
+                });
+    }
+
+    // Interface for completion callback
+    public interface onCompleteDeleteListRooms {
+        void onComplete(boolean success);
     }
 
 
@@ -646,33 +693,56 @@ public class HomePresenter {
     }
 
 
-    public void deleteListHomes(List<Home> homesToDelete, ActionMode mode) {
+    public void deleteListHomes(List<Home> homesToDelete) {
         homeListener.showLoadingOfFunctions(R.id.btn_delete_home);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
         // Bắt đầu một batch mới
         WriteBatch batch = database.batch();
 
-        // Duyệt qua danh sách các home cần xóa và thêm thao tác xóa vào batch
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+
+        // Duyệt qua danh sách các home cần xóa
         for (Home home : homesToDelete) {
-            DocumentReference homeRef = database.collection(Constants.KEY_COLLECTION_HOMES).document(home.getIdHome());
-            batch.delete(homeRef); // Thêm thao tác xóa vào batch
+            String homeId = home.getIdHome();
+            DocumentReference homeRef = database.collection(Constants.KEY_COLLECTION_HOMES).document(homeId);
+
+            // Lấy danh sách các phòng liên quan đến home này
+            Task<QuerySnapshot> task = database.collection(Constants.KEY_COLLECTION_ROOMS)
+                    .whereEqualTo(Constants.KEY_HOME_ID, homeId)
+                    .get()
+                    .addOnCompleteListener(roomTask -> {
+                        if (roomTask.isSuccessful()) {
+                            for (DocumentSnapshot document : roomTask.getResult()) {
+                                batch.delete(document.getReference()); // Thêm thao tác xóa phòng vào batch
+                            }
+                            // Thêm thao tác xóa home vào batch
+                            batch.delete(homeRef);
+                        } else {
+                            homeListener.showToast("Lỗi khi lấy danh sách phòng: " + roomTask.getException().getMessage());
+                        }
+                    });
+
+            tasks.add(task);
         }
 
-        // Commit batch
-        batch.commit()
-                .addOnSuccessListener(aVoid -> {
-                    //homeListener.showToast("Xóa thành công " + homesToDelete.size() + " homes.");
-                    getHomes("init");
-                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
-                    homeListener.dialogAndModeClose(mode);
-                    homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
-                })
-                .addOnFailureListener(e -> {
-                    homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
-                    homeListener.showToast("Xóa homes thất bại: " + e.getMessage());
-                });
+        // Đợi tất cả các tác vụ lấy phòng hoàn thành trước khi commit batch
+        Tasks.whenAllComplete(tasks).addOnCompleteListener(task -> {
+            batch.commit()
+                    .addOnSuccessListener(aVoid -> {
+                        getHomes("init");
+                        homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                        homeListener.openDialogSuccess(R.layout.layout_dialog_delete_home_success);
+                        homeListener.hideLayoutDeleteHomes();
+                    })
+                    .addOnFailureListener(e -> {
+                        homeListener.hideLoadingOfFunctions(R.id.btn_delete_home);
+                        homeListener.showToast("Xóa homes thất bại: " + e.getMessage());
+                    });
+        });
     }
+
+
 
     public void sortHomes(String typeOfSort) {
         homeListener.showLoadingOfFunctions(R.id.btn_confirm_apply);

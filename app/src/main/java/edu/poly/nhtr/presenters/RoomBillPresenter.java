@@ -170,7 +170,6 @@ public class RoomBillPresenter {
     }
 
     public void deleteBill(RoomBill bill, OnDeleteBillCompleteListener listener) {
-        roomBillListener.showToast("On");
         roomBillListener.showButtonLoading(R.id.btn_confirm_delete_bill);
 
         if (bill.isPayedBill()) {
@@ -214,7 +213,6 @@ public class RoomBillPresenter {
                     listener.onComplete();
                 })
                 .addOnFailureListener(e -> {
-                    roomBillListener.showToast("Xóa notifications thất bại: " + e.getMessage());
                     listener.onComplete();
                 });
 

@@ -36,7 +36,21 @@ public class DetailBillPresenter {
                         DocumentSnapshot documentSnapshot = task.getResult();
                         if (documentSnapshot.exists()) {
                             // Lấy thông tin giá phòng từ documentSnapshot
-                            Long roomPrice = Long.valueOf(documentSnapshot.getString(Constants.KEY_PRICE)); // Giả sử field giá phòng là "price"
+                            String priceString = documentSnapshot.getString(Constants.KEY_PRICE);
+                            long roomPrice = 0;
+                            if (priceString != null) {
+                                // Loại bỏ các dấu chấm phân tách hàng nghìn
+                                priceString = priceString.replace(".", "");
+                                try {
+                                    roomPrice = Long.parseLong(priceString);
+                                    // Sử dụng roomPrice theo nhu cầu của bạn
+                                } catch (NumberFormatException e) {
+                                    // Xử lý lỗi khi chuỗi không phải là số hợp lệ
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                // Xử lý trường hợp chuỗi giá trị là null
+                            } // Giả sử field giá phòng là "price"
                             listener.onComplete(roomPrice);
                         } else {
                             // Document không tồn tại

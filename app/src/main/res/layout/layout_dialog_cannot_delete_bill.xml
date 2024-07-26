@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_white_corner_16"
-    android:layout_margin="16dp"
+    android:layout_margin="36dp"
     android:orientation="vertical"
     android:elevation="10dp"
     android:layout_gravity="center">
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="25dp">
+        android:padding="15dp">
 
         <FrameLayout
             android:id="@+id/frm_Image"
@@ -44,6 +44,7 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/txt_title_of_cannot_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Không thể xoá hoá đơn !"
@@ -54,7 +55,7 @@
             android:layout_marginTop="10dp"/>
 
         <TextView
-            android:id="@+id/txt_delete_home_success"
+            android:id="@+id/txt_body_of_cannot_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hoá đơn này chưa được thanh toán \n Bạn chỉ có thể xoá khi hoá đơn được thanh toán!"

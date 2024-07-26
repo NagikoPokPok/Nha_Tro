@@ -32,9 +32,8 @@ public interface HomeListener {
     void openConfirmUpdateHome(int gravity, String newNameHome, String newAddressHome, Home home);
     void showErrorMessage(String message, int id);
     void noHomeData();
-    void hideFrameTop();
-    void showFrameTop();
-    void openDeleteListHomeDialog(List<Home> listHomes, ActionMode mode);
-    void dialogAndModeClose(ActionMode mode);
     void getListHomes(List<Home> listHomes);
+    void showLayoutDeleteHomes();
+    void putListSelected(List<Home> listHomes);
+    void hideLayoutDeleteHomes();
 }

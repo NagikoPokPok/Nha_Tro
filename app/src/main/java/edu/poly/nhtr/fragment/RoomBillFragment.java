@@ -745,13 +745,11 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                 return true;
             } else if (itemId == R.id.menu_delete_bill) {
                 if (bill.isNotPayBill() || bill.isDelayPayBill()) {
-                    showToast("Không thể xoá hoá đơn này.");
                     showDialog(R.layout.layout_dialog_cannot_delete_bill);
                     return true;
                 }
 
-                if (!bill.isPayedBill() && !bill.isDelayPayBill() && !bill.isNotPayBill()) {
-                    showToast("Không thể xoá hoá đơn này.");
+                if (!bill.isPayedBill() && !bill.isDelayPayBill() && !bill.isNotPayBill()) {;
                     showDialog(R.layout.layout_dialog_cannot_delete_bill);
                     return true;
                 }
