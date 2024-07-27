@@ -248,7 +248,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="10dp"
             android:visibility="gone"
             />
@@ -256,7 +257,8 @@
         <LinearLayout
             android:id="@+id/layout_no_data"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
@@ -284,6 +286,25 @@
 
 
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_bill"
+            style="@style/BUTTON"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="10dp"
+            android:text="Thêm hoá đơn"
+            android:textSize="18sp"
+            app:backgroundTint="@null"
+            app:icon="@drawable/icon_add"
+            app:iconGravity="textStart"
+            app:iconSize="20dp"
+            android:layout_gravity="end"
+
+ />
+
 
     </LinearLayout>
 

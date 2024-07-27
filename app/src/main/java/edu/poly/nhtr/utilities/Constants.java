@@ -122,6 +122,7 @@ public class Constants {
     public static final String KEY_NOTIFICATION_OF_INDEX = "notificationOfIndex";
     public static final String KEY_NOTIFICATION_OF_BILL = "notificationOfBill";
     public static final String KEY_NOTIFICATION_IS_READ = "notificationIsRead";
+    public static final String KEY_NOTIFICATION_REQUEST_CODE = "notificationRequestCode";
 
 
     //Bill:

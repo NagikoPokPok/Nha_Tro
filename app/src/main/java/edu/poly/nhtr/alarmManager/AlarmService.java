@@ -108,11 +108,11 @@ public class AlarmService {
         return new Intent(context, AlarmReceiver.class);
     }
 
-    public void cancelRepetitiveAlarm() {
+    public void cancelRepetitiveAlarm(int requestCode) {
         Intent intent = getIntent().setAction(Constants.ACTION_SET_REPETITIVE_EXACT);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
-                0,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );

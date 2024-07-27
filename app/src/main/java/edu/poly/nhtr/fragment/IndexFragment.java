@@ -338,7 +338,8 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
             @Override
             public void onClick(View v) {
                 preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, false, homeID);
-                alarmService.cancelRepetitiveAlarm();
+                int requestCode = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, homeID));
+                alarmService.cancelRepetitiveAlarm(requestCode);
                 dialog.dismiss();
             }
         });
@@ -411,6 +412,7 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
             public void onClick(View v) {
                 preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, true, homeID);
                 int requestCode = generateRandomRequestCode();
+                preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode), homeID);
                 callback.onAlarmSet(calendar.getTimeInMillis(), requestCode);
                 dialog.dismiss();
             }
