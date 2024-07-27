@@ -106,57 +106,33 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
             showToast("Arguments are null");
         }
 
-        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-
-        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();;
-
-        roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
-            @Override
-            public void onComplete(String dayOfMakeBill) {
-                currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-                roomBillPresenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomBillPresenter.OnGetNotificationCompleteListener() {
-                    @Override
-                    public void onComplete(List<Notification> notificationList) {
-                        if (notificationList.isEmpty()) {
-                            int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-
-                            // Set alarm for reminding make bill
-                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
-
-                            // Set alarm for reminding give bill
-                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
-                        } else {
-                            Notification notification = notificationList.get(0);
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(notification.getDateObject());
-
-                            int day = calendar.get(Calendar.DAY_OF_MONTH);
-                            int month = calendar.get(Calendar.MONTH);
-                            int year = calendar.get(Calendar.YEAR);
-
-                            if (day == currentDay && month == currentMonth && year == currentYear) { // Check today have pushed notification or not
-                                return;
-                            }
-//                            else {
-////                                // Set alarm for reminding make bill
-////                                int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-////                                alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-////                                setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
-////
-////                                // Set alarm for reminding give bill
-////                                alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-////                                setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+//        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+//        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
 //
-//                            }
-                        }
-                    }
-                });
-            }
-        });
+//        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+//        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+//
+//        roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
+//            @Override
+//            public void onComplete(String dayOfMakeBill) {
+//                roomBillPresenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomBillPresenter.OnGetNotificationCompleteListener() {
+//                    @Override
+//                    public void onComplete(List<Notification> notificationList) {
+//                        if (notificationList.isEmpty()) {
+//                            int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+//
+//                            // Set alarm for reminding make bill
+//                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+//                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
+//
+//                            // Set alarm for reminding give bill
+//                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+//                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
         removeStatusOfCheckBoxFilterBill();
         setupRecyclerView();

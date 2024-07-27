@@ -40,14 +40,20 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 
 import edu.poly.nhtr.Adapter.GuestAdapter;
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentRoomGuestBinding;
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
+import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Notification;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomViewModel;
+import edu.poly.nhtr.presenters.RoomBillPresenter;
 import edu.poly.nhtr.presenters.RoomGuestPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -64,6 +70,10 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     private Dialog dialog;
     private RoomGuestInterface.Presenter presenter;
     private RoomViewModel roomViewModel;
+    private Room room;
+    private Home home;
+    private AlarmService alarmService;
+    private AlarmService alarmService2;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -116,7 +126,84 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
         });
 
+        // Retrieve the room object from the arguments
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            room = (Room) arguments.getSerializable("room");
+            home = (Home) arguments.getSerializable("home");
+            if (room != null && home != null) {
+                setAlarmForBill();
+            } else {
+                showToast("Room object is null");
+            }
+        } else {
+            showToast("Arguments are null");
+        }
+
+
+
         setListeners();
+    }
+
+    private void setAlarmForBill() {
+        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+
+        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+        presenter.getDayOfMakeBill(room.getRoomId(), new RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener() {
+            @Override
+            public void onComplete(String dayOfMakeBill) {
+                presenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomGuestPresenter.OnGetNotificationCompleteListener() {
+                    @Override
+                    public void onComplete(List<Notification> notificationList) {
+                        if (notificationList.isEmpty()) {
+                            int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+
+                            // Set alarm for reminding make bill
+                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
+
+                            // Set alarm for reminding give bill
+                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
+                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private int generateRandomRequestCode() {
+        Random random = new Random();
+        return random.nextInt(1000000); // Giới hạn số ngẫu nhiên trong khoảng 0 đến 9999
+    }
+
+    private interface AlarmCallback {
+        void onAlarmSet(long timeInMillis, int requestCode);
+    }
+
+    private void setAlarm(AlarmCallback callback, int day, int requestCode) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+
+        pushAlarm(callback, calendar, requestCode);
+    }
+
+    private void pushAlarm(AlarmCallback callback, Calendar calendar, int requestCode) {
+        callback.onAlarmSet(calendar.getTimeInMillis(), requestCode);
+        dialog.dismiss();
     }
 
     @Override

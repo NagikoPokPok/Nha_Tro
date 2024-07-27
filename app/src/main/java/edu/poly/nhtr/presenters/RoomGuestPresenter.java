@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
@@ -17,6 +19,7 @@ import com.google.firebase.firestore.WriteBatch;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +30,7 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.MainGuest;
+import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import timber.log.Timber;
@@ -36,6 +40,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
     private final RoomViewModel roomViewModel;
     private final FirebaseFirestore database;
     private int position = 0;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public RoomGuestPresenter(RoomGuestInterface.View view, RoomViewModel roomViewModel) {
         this.view = view;
@@ -256,6 +261,69 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
     }
 
     @Override
+    public void getDayOfMakeBill(String roomID, OnGetDayOfMakeBillCompleteListener listener) {
+        db.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+                                String contract = documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE);
+
+                                listener.onComplete(contract);
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void checkNotificationIsGiven(String roomID, String homeID, OnGetNotificationCompleteListener listener) {
+        List<Notification> notificationList = new ArrayList<Notification>();
+        db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                .whereEqualTo(Constants.KEY_HOME_ID, homeID)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                    Notification notification = new Notification();
+                                    notification.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                    notificationList.add(notification);
+                                }
+                            }
+                            notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
+                            listener.onComplete(notificationList);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onComplete(notificationList);
+                    }
+                });
+    }
+
+    public interface OnGetDayOfMakeBillCompleteListener {
+        void onComplete(String dayOfMakeBill);
+    }
+
+    @Override
     public void updateGuestInFirebase(Guest guest) {
         view.showLoadingOfFunctions(R.id.btn_add_new_guest);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -428,6 +496,11 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
     // Callback interface for date validation
     public interface OnDateValidationResult {
         void onResult(boolean isValid);
+    }
+
+
+    public interface OnGetNotificationCompleteListener {
+        void onComplete(List<Notification> notificationList);
     }
 
 }

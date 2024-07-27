@@ -7,6 +7,8 @@ import java.util.List;
 
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.Guest;
+import edu.poly.nhtr.presenters.RoomBillPresenter;
+import edu.poly.nhtr.presenters.RoomGuestPresenter;
 
 public interface RoomGuestInterface {
     interface View {
@@ -77,5 +79,8 @@ public interface RoomGuestInterface {
         void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor);
 
         void deleteListGuests(List<Guest> listGuest);
+
+        void getDayOfMakeBill(String roomID, RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener listener);
+        void checkNotificationIsGiven(String roomID, String homeID, RoomGuestPresenter.OnGetNotificationCompleteListener listener);
     }
 }
