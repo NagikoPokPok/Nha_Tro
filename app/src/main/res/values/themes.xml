@@ -213,6 +213,11 @@
         <item name="android:fontFamily">@font/inter_bold</item> <!-- Nếu bạn có một font tùy chỉnh -->
     </style>
 
+    <style name="CustomTextInputLayoutOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxStrokeWidthFocused">3dp</item>
+    </style>
+
 
     <string name="my_text">Bạn chưa có nhà trọ. \n<br />Hãy nhấn nút <b>+</b> để thêm nhà trọ.</string>
 

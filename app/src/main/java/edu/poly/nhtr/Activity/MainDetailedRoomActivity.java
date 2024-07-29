@@ -38,7 +38,7 @@ import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class MainDetailedRoomActivity extends AppCompatActivity {
+public class MainDetailedRoomActivity extends AppCompatActivity implements RoomContractFragment.OnFragmentInteractionListener  {
 
     private ActivityMainDetailedRoomBinding binding;
     private PreferenceManager preferenceManager;
@@ -47,6 +47,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
     private Home home;
     private String roomPrice;
     private int targetFragmentIndex = -1; // Default to no target
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,6 +250,12 @@ public class MainDetailedRoomActivity extends AppCompatActivity {
                         showRoomContractFragment();
                     }
                 });
+    }
+
+    @Override
+    public void onHideTabLayoutAndViewPager() {
+        binding.tabLayout.setVisibility(View.GONE);
+        binding.viewPager.setVisibility(View.GONE);
     }
 
     @Override

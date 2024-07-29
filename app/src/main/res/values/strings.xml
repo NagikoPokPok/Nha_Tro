@@ -232,5 +232,6 @@
     <string name="label_year">YEAR</string>
     <string name="nhap_o_day_de_xoa">Nhấn ở đây để xóa !</string>
     <string name="chon_tat_ca">Chọn tất cả</string>
+    <string name="quay_lai">Quay lại</string>
 
 </resources>
