@@ -6,6 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +30,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -39,8 +45,10 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentRoomBillBinding;
 import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
+import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
@@ -98,7 +106,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
             room = (Room) arguments.getSerializable("room");
             home = (Home) arguments.getSerializable("home");
             if (room != null && home != null) {
-                checkAndAddBillIfNeeded();
+                fetchBillList();
             } else {
                 showToast("Room object is null");
             }
@@ -139,10 +147,159 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         setupMonthPicker();
         setupDeleteManyBills();
         setupFilterBills();
+        setupBtnAddBill();
 
 
 
         return binding.getRoot();
+    }
+
+    private void setupBtnAddBill() {
+        binding.btnAddBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSelectMonthYearDialog();
+            }
+        });
+    }
+
+    private void openSelectMonthYearDialog() {
+        setupDialog(R.layout.layout_dialog_month_year_picker_room_bill);
+
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnOke = dialog.findViewById(R.id.btn_oke);
+        TextInputLayout layoutEdtMonth = dialog.findViewById(R.id.layout_edt_month);
+        TextInputLayout layoutEdtYear = dialog.findViewById(R.id.layout_edt_year);
+        TextInputEditText editTextMonth = dialog.findViewById(R.id.edt_month);
+        TextInputEditText editTextYear = dialog.findViewById(R.id.edt_year);
+
+        editTextMonth.setText(String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1));
+        editTextYear.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+
+        setupEditTexts(layoutEdtMonth, editTextMonth);
+        setupEditTexts(layoutEdtYear, editTextYear);
+        addTextWatcher(editTextMonth, layoutEdtMonth);
+        addTextWatcher(editTextYear, layoutEdtYear);
+
+        // Xử lý/ hiệu chỉnh màu nút button add home
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateButtonState(editTextMonth, editTextYear, btnOke);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+
+        // Thêm TextWatcher cho cả hai EditText
+        editTextMonth.addTextChangedListener(textWatcher);
+        editTextYear.addTextChangedListener(textWatcher);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnOke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String monthStr = editTextMonth.getText().toString().trim();
+                String yearStr = editTextYear.getText().toString().trim();
+
+                if (monthStr.isEmpty()) {
+                    showErrorMessage("Nhập tháng", layoutEdtMonth);
+                    return;
+                }
+                if (yearStr.isEmpty()) {
+                    showErrorMessage("Nhập năm", layoutEdtYear);
+                    return;
+                }
+
+                int month = Integer.parseInt(monthStr);
+                int year = Integer.parseInt(yearStr);
+
+                if (month < 1 || month > 12) {
+                    showErrorMessage("Giá trị tháng không hợp lệ", layoutEdtMonth);
+                    return;
+                }
+
+                if (year < 1900 || year > 2100) {
+                    showErrorMessage("Giá trị năm không phù hợp", layoutEdtYear);
+                }
+
+                roomBillPresenter.checkBillIsCreated(room, month, year, new RoomBillPresenter.OnCheckBillIsCreatedCompleteListener() {
+                    @Override
+                    public void onComplete(boolean isCreated) {
+                        if(isCreated)
+                        {
+                            showErrorMessage("Tháng này đã tạo hoá đơn", layoutEdtMonth);
+                        }else{
+                            roomBillPresenter.addBill(room, month, year);
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+
+
+    }
+
+    private void updateButtonState(EditText edtMonth, EditText edtYear, Button btn) {
+        String month = edtMonth.getText().toString().trim();
+        String year = edtYear.getText().toString().trim();
+        if (month.isEmpty() || year.isEmpty()) {
+            btn.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
+        } else {
+            btn.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
+        }
+    }
+
+    public void showErrorMessage(String message, TextInputLayout layout) {
+        layout.setError(message);
+    }
+
+    private void addTextWatcher(TextInputEditText editText, TextInputLayout layout) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String value = Objects.requireNonNull(editText.getText()).toString().trim();
+                if (!value.isEmpty()) {
+                    layout.setErrorEnabled(false);
+                    layout.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    private void setupEditTexts(TextInputLayout layout, TextInputEditText editText) {
+        setFocusChangeListener(editText, layout);
+    }
+
+    private void setFocusChangeListener(TextInputEditText editText, TextInputLayout layout) {
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                layout.setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
     }
 
     private int generateRandomRequestCode() {
@@ -181,7 +338,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     @Override
     public void onRefresh() {
         // Get list bill
-        checkAndAddBillIfNeeded();
+        fetchBillList();
         // Remove layout delete bills
         closeLayoutDeleteBills();
         // Remove layout filter bills
@@ -202,32 +359,32 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
 
 
-    private void checkAndAddBillIfNeeded() {
+//    private void checkAndAddBillIfNeeded() {
+//
+//        roomBillPresenter.checkContractIsCreated(room, new RoomBillPresenter.OnGetContractCompleteListener() {
+//            @Override
+//            public void onComplete(boolean isHave) {
+//                if (!isHave) {
+//                    return;
+//                }else {
+//                    checkAndHandleBillCreation();
+//                }
+//            }
+//        });
+//    }
 
-        roomBillPresenter.checkContractIsCreated(room, new RoomBillPresenter.OnGetContractCompleteListener() {
-            @Override
-            public void onComplete(boolean isHave) {
-                if (!isHave) {
-                    return;
-                }else {
-                    checkAndHandleBillCreation();
-                }
-            }
-        });
-    }
-
-    private void checkAndHandleBillCreation() {
-        roomBillPresenter.checkBillIsCreated(room, currentMonth + 1, currentYear, new RoomBillPresenter.OnCheckBillIsCreatedCompleteListener() {
-            @Override
-            public void onComplete(boolean isCreated) {
-                if (isCreated) {
-                    fetchBillList();
-                } else {
-                    roomBillPresenter.addBill(room);
-                }
-            }
-        });
-    }
+//    private void checkAndHandleBillCreation() {
+//        roomBillPresenter.checkBillIsCreated(room, currentMonth + 1, currentYear, new RoomBillPresenter.OnCheckBillIsCreatedCompleteListener() {
+//            @Override
+//            public void onComplete(boolean isCreated) {
+//                if (isCreated) {
+//                    fetchBillList();
+//                } else {
+//                    roomBillPresenter.addBill(room);
+//                }
+//            }
+//        });
+//    }
 
     private void fetchBillList() {
         roomBillPresenter.getBill(room, new RoomBillPresenter.OnGetBillCompleteListener() {
@@ -648,7 +805,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                 binding.txtDateTime.setText("");
                 binding.btnCancelMonthPicker.setVisibility(View.GONE);
                 // Get list bill
-                checkAndAddBillIfNeeded();
+                fetchBillList();
             }
         });
 
@@ -783,8 +940,10 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
     @Override
     public void showLayoutNoData() {
-        binding.recyclerView.setVisibility(View.GONE);
+        showToast("No data available");
         binding.layoutNoData.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -803,7 +962,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     @Override
     public void hideLoading() {
         binding.progressBar.setVisibility(View.GONE);
-        binding.recyclerView.setVisibility(View.VISIBLE);
+        //binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override

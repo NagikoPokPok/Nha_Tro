@@ -37,6 +37,7 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -50,6 +51,7 @@ import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.interfaces.RoomGuestInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomViewModel;
@@ -151,22 +153,45 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
         String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+
         presenter.getDayOfMakeBill(room.getRoomId(), new RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
-            public void onComplete(String dayOfMakeBill) {
+            public void onComplete(MainGuest mainGuest) {
                 presenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomGuestPresenter.OnGetNotificationCompleteListener() {
                     @Override
                     public void onComplete(List<Notification> notificationList) {
                         if (notificationList.isEmpty()) {
-                            int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
+                            int dayOfGiveBill = Integer.parseInt(mainGuest.getPayDate());
+                            String date = mainGuest.getGuestDateIn();
 
-                            // Set alarm for reminding make bill
+                            // Tách chuỗi dựa trên dấu gạch chéo "/"
+                            String[] dateParts = date.split("/");
+
+                            // Lấy từng phần tử của mảng
+                            String day = dateParts[0];
+                            String monthDateIn = dateParts[1];
+                            String yearDateIn = dateParts[2];  // Cần lấy năm nữa
+
+                            int dayDateInOfGuest = Integer.parseInt(day);
+                            int monthDateInOfGuest = Integer.parseInt(monthDateIn);
+                            int yearDateInOfGuest = Integer.parseInt(yearDateIn);
+
+                            int month;
+                            int year = yearDateInOfGuest;
+                            if (dayOfGiveBill <= dayDateInOfGuest) {
+                                month = monthDateInOfGuest + 1;
+                                if (month > 12) {
+                                    month = 1;
+                                    year++;
+                                }
+                            } else {
+                                month = monthDateInOfGuest;
+                            }
+
                             alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
-
-                            // Set alarm for reminding give bill
+                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, generateRandomRequestCode()); // requestCode 1
                             alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
+                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, generateRandomRequestCode()); // requestCode 2
                         }
                     }
                 });
@@ -183,16 +208,30 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         void onAlarmSet(long timeInMillis, int requestCode);
     }
 
-    private void setAlarm(AlarmCallback callback, int day, int requestCode) {
+//    private void setAlarm(AlarmCallback callback, int day, int month,  int requestCode) {
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.SECOND, 0);
+//        calendar.set(Calendar.MILLISECOND, 0);
+//
+//        int year = calendar.get(Calendar.YEAR);
+//
+//        calendar.set(Calendar.YEAR, year);
+//        calendar.set(Calendar.MONTH, month);
+//        calendar.set(Calendar.DAY_OF_MONTH, day);
+//
+//        calendar.set(Calendar.HOUR_OF_DAY, 0);
+//        calendar.set(Calendar.MINUTE, 0);
+//
+//        pushAlarm(callback, calendar, requestCode);
+//    }
+
+    private void setAlarm(AlarmCallback callback, int day, int month, int year, int requestCode) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-
         calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.MONTH, month - 1); // Vì tháng trong Calendar bắt đầu từ 0
         calendar.set(Calendar.DAY_OF_MONTH, day);
 
         calendar.set(Calendar.HOUR_OF_DAY, 0);

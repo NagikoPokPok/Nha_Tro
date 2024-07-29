@@ -14,7 +14,15 @@ public class MainGuest extends Guest {
     private String cccdImageBack;
     private String contractImageFront;
     private String contractImageBack;
+    public String guestDateIn;
 
+    public String getGuestDateIn() {
+        return guestDateIn;
+    }
+
+    public void setGuestDateIn(String guestDateIn) {
+        this.guestDateIn = guestDateIn;
+    }
 
     public MainGuest(int totalMembers, String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, // Change dateIn to String
                      String cccdNumber, String dateOfBirth, String gender, String createDate, double roomPrice,

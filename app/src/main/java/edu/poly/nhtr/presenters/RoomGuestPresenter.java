@@ -272,9 +272,12 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                             QuerySnapshot querySnapshot = task.getResult();
                             if (querySnapshot != null && !querySnapshot.isEmpty()) {
                                 DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
-                                String contract = documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE);
+                                MainGuest mainGuest = new MainGuest();
+                                mainGuest.setPayDate(documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE));
+                                mainGuest.setCreateDate(documentSnapshot.getString(Constants.KEY_CONTRACT_CREATED_DATE));
+                                mainGuest.setGuestDateIn(documentSnapshot.getString(Constants.KEY_GUEST_DATE_IN));
 
-                                listener.onComplete(contract);
+                                listener.onComplete(mainGuest);
                             }
                         }
                     }
@@ -320,7 +323,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
     }
 
     public interface OnGetDayOfMakeBillCompleteListener {
-        void onComplete(String dayOfMakeBill);
+        void onComplete(MainGuest mainGuest);
     }
 
     @Override

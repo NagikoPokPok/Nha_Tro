@@ -44,10 +44,10 @@ public class RoomBillPresenter {
         this.roomBillListener = roomBillListener;
     }
 
-    public void addBill(Room room) {
+    public void addBill(Room room, int month, int year) {
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
+        //int year = calendar.get(Calendar.YEAR);
+        //int month = calendar.get(Calendar.MONTH) + 1;
 
         Date dateMakeBill = new Date();
         Date datePayBill = new Date();
