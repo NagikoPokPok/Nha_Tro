@@ -12,15 +12,18 @@ import java.util.List;
 import java.util.Locale;
 
 import edu.poly.nhtr.databinding.ItemServiceInMakeBillBinding;
+import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.models.Service;
 
 public class ServiceInMakeBillAdapter extends RecyclerView.Adapter<ServiceInMakeBillAdapter.ViewHolder> {
 
     private final List<RoomService> roomServices;
+    private final RoomMakeBillListener listener;
 
-    public ServiceInMakeBillAdapter(List<RoomService> roomServices) {
+    public ServiceInMakeBillAdapter(List<RoomService> roomServices, RoomMakeBillListener listener) {
         this.roomServices = roomServices;
+        this.listener = listener;
         roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
     }
 

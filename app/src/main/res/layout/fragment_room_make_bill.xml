@@ -609,6 +609,17 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/txt_count_plus_or_minus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hiện có 3 khoản thêm/bớt"
+                        android:textSize="20sp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="9dp"
+                        android:visibility="gone"
+                        />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/plusOrMinusRecyclerView"
                         android:layout_width="match_parent"
@@ -637,6 +648,7 @@
                         android:layout_marginBottom="30dp"
                         android:visibility="visible"
                         />
+
                 </LinearLayout>
 
 

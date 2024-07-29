@@ -120,7 +120,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
     private void setOtherData() {
         // set adapter for service
-        ServiceInMakeBillAdapter serviceInMakeBillAdapter = new ServiceInMakeBillAdapter(roomServiceList);
+        ServiceInMakeBillAdapter serviceInMakeBillAdapter = new ServiceInMakeBillAdapter(roomServiceList, this);
         binding.serviceInBillRecyclerView.setAdapter(serviceInMakeBillAdapter);
         binding.serviceInBillRecyclerView.setVisibility(View.VISIBLE);
 
@@ -181,9 +181,14 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         if (plusOrMinusMoneyAdapter.getItemCount() == 0){
             binding.txtNullPlusOrMinus.setVisibility(View.VISIBLE);
             binding.plusOrMinusRecyclerView.setVisibility(View.GONE);
+            binding.txtCountPlusOrMinus.setVisibility(View.GONE);
         }else {
             binding.txtNullPlusOrMinus.setVisibility(View.GONE);
             binding.plusOrMinusRecyclerView.setVisibility(View.VISIBLE);
+            binding.txtCountPlusOrMinus.setVisibility(View.VISIBLE);
+
+            String countPlusOrMinus = "Hiện có " + plusOrMinusMoneyAdapter.getItemCount() + " khoản thêm/bớt";
+            binding.txtCountPlusOrMinus.setText(countPlusOrMinus);
         }
     }
 
@@ -241,12 +246,14 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             startDate = createContractDate;
         else
             startDate = payDate.minusMonths(1);
+        payDate.plusDays(Integer.parseInt(payDay));
 
         binding.txtDateStart.setText(startDate.format(formatter));
         binding.txtDateEnd.setText(payDate.format(formatter));
 
-        bill.datePayBill = java.sql.Date.valueOf(String.valueOf(payDate));
         bill.numberOfDaysToPayBill = Integer.parseInt(payDay);
+        bill.datePayBill = java.sql.Date.valueOf(String.valueOf(payDate));
+
 
         // Amount of day and month
         int monthHire = 0, dayHire = 0;
