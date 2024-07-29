@@ -411,8 +411,15 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
             @Override
             public void onClick(View v) {
                 preferenceManager.putBoolean(Constants.SWITCH_ON_OFF_NOTIFICATION_INDEX, true, homeID);
-                int requestCode = generateRandomRequestCode();
+                int requestCode;
+                String requestCodeStr = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, homeID);
+                if(requestCodeStr==null){
+                    requestCode = generateRandomRequestCode();
+                }else{
+                    requestCode = Integer.parseInt(requestCodeStr);
+                }
                 preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode), homeID);
+
                 callback.onAlarmSet(calendar.getTimeInMillis(), requestCode);
                 dialog.dismiss();
             }

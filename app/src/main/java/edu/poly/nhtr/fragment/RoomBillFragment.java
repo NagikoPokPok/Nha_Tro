@@ -211,6 +211,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         btnOke.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showButtonLoading(R.id.btn_oke);
                 String monthStr = editTextMonth.getText().toString().trim();
                 String yearStr = editTextYear.getText().toString().trim();
 
@@ -240,6 +241,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                     public void onComplete(boolean isCreated) {
                         if(isCreated)
                         {
+                            hideButtonLoading(R.id.btn_oke);
                             showErrorMessage("Tháng này đã tạo hoá đơn", layoutEdtMonth);
                         }else{
                             roomBillPresenter.addBill(room, month, year);
@@ -940,7 +942,6 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
     @Override
     public void showLayoutNoData() {
-        showToast("No data available");
         binding.layoutNoData.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.GONE);

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,6 +45,7 @@ public class RoomBillPresenter {
     }
 
     public void addBill(Room room, int month, int year) {
+        roomBillListener.showButtonLoading(R.id.btn_oke);
         Calendar calendar = Calendar.getInstance();
         //int year = calendar.get(Calendar.YEAR);
         //int month = calendar.get(Calendar.MONTH) + 1;
@@ -55,7 +57,14 @@ public class RoomBillPresenter {
 
         db.collection(Constants.KEY_COLLECTION_BILL)
                 .add(billInfo)
-                .addOnSuccessListener(documentReference -> getBill(room, roomBillListener::setBillList))
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        roomBillListener.hideButtonLoading(R.id.btn_oke);
+                        roomBillListener.closeDialog();
+                        getBill(room, roomBillListener::setBillList);
+                    }
+                })
                 .addOnFailureListener(e -> Timber.e(e, "Error adding bill for roomID: %s", room.getRoomId()));
     }
 
@@ -151,16 +160,26 @@ public class RoomBillPresenter {
                                 Timber.e(e, "Null value encountered in document %s", document.getId());
                             }
                         }
-                        billList.sort(Comparator.comparing(RoomBill::getYear).reversed()
-                                .thenComparing(RoomBill::getMonth).reversed());
+                        billList.sort((bill1, bill2) -> {
+                            int yearComparison = Integer.compare(bill2.getYear(), bill1.getYear());
+                            if (yearComparison != 0) {
+                                return yearComparison;
+                            } else {
+                                return Integer.compare(bill2.getMonth(), bill1.getMonth());
+                            }
+                        });
+
                         listener.onComplete(billList);
                     } else {
                         Timber.e(updateTask.getException(), "Error updating bills for roomID: %s", room.getRoomId());
                     }
                 });
+            }else{
+                listener.onComplete(billList);
             }
         } else {
             Timber.e(task.getException(), "Error getting bills for roomID: %s", room.getRoomId());
+            listener.onComplete(billList);
         }
     }
 
