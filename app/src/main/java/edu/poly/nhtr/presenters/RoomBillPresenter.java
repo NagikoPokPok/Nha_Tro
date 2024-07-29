@@ -1,19 +1,19 @@
 package edu.poly.nhtr.presenters;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,11 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.TimeUnit;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomBillListener;
-import edu.poly.nhtr.models.Index;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.PlusOrMinusMoney;
@@ -60,14 +59,25 @@ public class RoomBillPresenter {
                 .addOnFailureListener(e -> Timber.e(e, "Error adding bill for roomID: %s", room.getRoomId()));
     }
 
-    public void getBill(Room room, OnGetBillCompleteListener listener) {
-        roomBillListener.showLoading();
-        queryBills(room, listener);
-    }
+
 
     public void getBillByMonthYear(Room room, int month, int year, OnGetBillByMonthYearCompleteListener listener) {
         roomBillListener.showLoading();
         queryBillsByMonthYear(room, month, year, listener::onComplete);
+    }
+
+    private void queryBillsByMonthYear(Room room, int month, int year, OnGetBillCompleteListener listener) {
+        db.collection(Constants.KEY_COLLECTION_BILL)
+                .whereEqualTo(Constants.KEY_ROOM_ID, room.getRoomId())
+                .whereEqualTo(Constants.KEY_NAME_ROOM, room.getNameRoom())
+                .whereEqualTo(Constants.KEY_MONTH, month)
+                .whereEqualTo(Constants.KEY_YEAR, year)
+                .get()
+                .addOnCompleteListener(task -> handleQueryResult(task, room, listener))
+                .addOnFailureListener(e -> {
+                    Timber.e(e, "Error fetching bills for roomID: %s", room.getRoomId());
+                    listener.onComplete(new ArrayList<>());
+                });
     }
 
     private HashMap<String, Object> createBillInfo(Room room, int year, int month, Date dateMakeBill, Date datePayBill) {
@@ -94,6 +104,11 @@ public class RoomBillPresenter {
         return billInfo;
     }
 
+    public void getBill(Room room, OnGetBillCompleteListener listener) {
+        roomBillListener.showLoading();
+        queryBills(room, listener);
+    }
+
     private void queryBills(Room room, OnGetBillCompleteListener listener) {
         db.collection(Constants.KEY_COLLECTION_BILL)
                 .whereEqualTo(Constants.KEY_ROOM_ID, room.getRoomId())
@@ -106,19 +121,7 @@ public class RoomBillPresenter {
                 });
     }
 
-    private void queryBillsByMonthYear(Room room, int month, int year, OnGetBillCompleteListener listener) {
-        db.collection(Constants.KEY_COLLECTION_BILL)
-                .whereEqualTo(Constants.KEY_ROOM_ID, room.getRoomId())
-                .whereEqualTo(Constants.KEY_NAME_ROOM, room.getNameRoom())
-                .whereEqualTo(Constants.KEY_MONTH, month)
-                .whereEqualTo(Constants.KEY_YEAR, year)
-                .get()
-                .addOnCompleteListener(task -> handleQueryResult(task, room, listener))
-                .addOnFailureListener(e -> {
-                    Timber.e(e, "Error fetching bills for roomID: %s", room.getRoomId());
-                    listener.onComplete(new ArrayList<>());
-                });
-    }
+
 
 
     private void handleQueryResult(Task<QuerySnapshot> task, Room room, OnGetBillCompleteListener listener) {
@@ -126,17 +129,39 @@ public class RoomBillPresenter {
         if (task.isSuccessful()) {
             QuerySnapshot querySnapshot = task.getResult();
             if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                List<Task<Void>> updateTasks = new ArrayList<>();
+
                 for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                    RoomBill bill = createRoomBillFromDocument(document);
-                    billList.add(bill);
+                    // Kiểm tra nếu trường KEY_DATE_GIVE_BILL chưa tồn tại hoặc cần cập nhật
+                    if (!document.contains(Constants.KEY_DATE_GIVE_BILL)) {
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put(Constants.KEY_DATE_GIVE_BILL, new Date());
+                        updateTasks.add(document.getReference().update(updates));
+                    }
                 }
+
+                // Wait for all updates to complete
+                Tasks.whenAllSuccess(updateTasks).addOnCompleteListener(updateTask -> {
+                    if (updateTask.isSuccessful()) {
+                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                            try {
+                                RoomBill bill = createRoomBillFromDocument(document);
+                                billList.add(bill);
+                            } catch (NullPointerException e) {
+                                Timber.e(e, "Null value encountered in document %s", document.getId());
+                            }
+                        }
+                        billList.sort(Comparator.comparing(RoomBill::getYear).reversed()
+                                .thenComparing(RoomBill::getMonth).reversed());
+                        listener.onComplete(billList);
+                    } else {
+                        Timber.e(updateTask.getException(), "Error updating bills for roomID: %s", room.getRoomId());
+                    }
+                });
             }
         } else {
             Timber.e(task.getException(), "Error getting bills for roomID: %s", room.getRoomId());
         }
-        billList.sort(Comparator.comparing(RoomBill::getMonth).reversed());
-        billList.sort(Comparator.comparing(RoomBill::getYear).reversed());
-        listener.onComplete(billList);
     }
 
     private RoomBill createRoomBillFromDocument(DocumentSnapshot document) {
@@ -144,22 +169,38 @@ public class RoomBillPresenter {
         bill.billID = document.getId();
         bill.roomID = document.getString(Constants.KEY_ROOM_ID);
         bill.roomName = document.getString(Constants.KEY_NAME_ROOM);
-        bill.month = Objects.requireNonNull(document.getLong(Constants.KEY_MONTH)).intValue();
-        bill.year = Objects.requireNonNull(document.getLong(Constants.KEY_YEAR)).intValue();
-        bill.dateCreateBill = Objects.requireNonNull(document.getDate(Constants.KEY_DATE_MAKE_BILL));
-        bill.datePayBill = Objects.requireNonNull(document.getDate(Constants.KEY_DATE_PAY_BILL));
+
+        // Check and log for null values
+        Long monthValue = document.getLong(Constants.KEY_MONTH);
+        Long yearValue = document.getLong(Constants.KEY_YEAR);
+        Date dateCreateBillValue = document.getDate(Constants.KEY_DATE_MAKE_BILL);
+        Date datePayBillValue = document.getDate(Constants.KEY_DATE_PAY_BILL);
+        Date dayGiveBillValue = document.getDate(Constants.KEY_DATE_GIVE_BILL);
+        Long moneyOfRoomValue = document.getLong(Constants.KEY_MONEY_OF_ROOM);
+        Long moneyOfServiceValue = document.getLong(Constants.KEY_MONEY_OF_SERVICE);
+        Long moneyOfAddOrMinusValue = document.getLong(Constants.KEY_MONEY_OF_ADD_OR_MINUS);
+        Long totalOfMoneyValue = document.getLong(Constants.KEY_TOTAL_OF_MONEY);
+        Long totalOfMoneyNeededPayValue = document.getLong(Constants.KEY_TOTAL_OF_MONEY_NEEDED_PAY);
+        Long numberOfDaysLivedValue = document.getLong(Constants.KEY_NUMBER_OF_DAYS_LIVED);
+
+
+        bill.month = monthValue != null ? monthValue.intValue() : 0;
+        bill.year = yearValue != null ? yearValue.intValue() : 0;
+        bill.dateCreateBill = dateCreateBillValue != null ? dateCreateBillValue : new Date();
+        bill.datePayBill = datePayBillValue != null ? datePayBillValue : new Date();
+        bill.dayGiveBill = dayGiveBillValue != null ? dayGiveBillValue : new Date();
         bill.isNotPayBill = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_NOT_PAY_BILL));
         bill.isPayedBill = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_PAYED_BILL));
         bill.isDelayPayBill = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_DELAY_PAY_BILL));
         bill.isNotGiveBill = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_NOT_GIVE_BILL));
         bill.isMoneyOfAdd = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_MONEY_OF_ADD));
         bill.isMoneyOfMinus = Boolean.TRUE.equals(document.getBoolean(Constants.KEY_IS_MONEY_OF_MINUS));
-        bill.moneyOfRoom = Objects.requireNonNull(document.getLong(Constants.KEY_MONEY_OF_ROOM)).intValue();
-        bill.moneyOfService = Objects.requireNonNull(document.getLong(Constants.KEY_MONEY_OF_SERVICE)).intValue();
-        bill.moneyOfAddOrMinus = Objects.requireNonNull(document.getLong(Constants.KEY_MONEY_OF_ADD_OR_MINUS)).intValue();
-        bill.totalOfMoney = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY)).intValue();
-        bill.totalOfMoneyNeededPay = Objects.requireNonNull(document.getLong(Constants.KEY_TOTAL_OF_MONEY_NEEDED_PAY)).intValue();
-        bill.numberOfDaysLived = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_DAYS_LIVED)).intValue();
+        bill.moneyOfRoom = moneyOfRoomValue != null ? moneyOfRoomValue.intValue() : 0;
+        bill.moneyOfService = moneyOfServiceValue != null ? moneyOfServiceValue.intValue() : 0;
+        bill.moneyOfAddOrMinus = moneyOfAddOrMinusValue != null ? moneyOfAddOrMinusValue.intValue() : 0;
+        bill.totalOfMoney = totalOfMoneyValue != null ? totalOfMoneyValue.intValue() : 0;
+        bill.totalOfMoneyNeededPay = totalOfMoneyNeededPayValue != null ? totalOfMoneyNeededPayValue.intValue() : 0;
+        bill.numberOfDaysLived = numberOfDaysLivedValue != null ? numberOfDaysLivedValue.intValue() : 0;
         bill.reasonForAddOrMinusMoney = document.getString(Constants.KEY_REASON_OF_ADD_OR_MINUS);
 
         // Chuyển đổi danh sách từ HashMap sang danh sách PlusOrMinusMoney
@@ -180,8 +221,33 @@ public class RoomBillPresenter {
 
         bill.setPlusOrMinusMoneyList(plusOrMinusMoneyList);
         bill.setTimeLived(document.getString(Constants.KEY_TIME_LIVED));
+
+
+        // Update status of isDelayedPayBill
+        Date startDate = bill.getDayGiveBill();
+        Date endDate = new Date();
+        if (startDate.before(endDate)){
+            long daysBetween = calculateDaysBetween(startDate, endDate);
+            getContractByRoom(bill.roomID, new OnGetContractByRomListener() {
+                @Override
+                public void onComplete(MainGuest contract) {
+                    int daysUntilDueDate = contract.getDaysUntilDueDate();
+                    if(daysBetween > daysUntilDueDate && bill.isNotPayBill()){
+                        bill.isDelayPayBill = true;
+                    }
+                }
+            });
+        }
+
         return bill;
     }
+
+
+    public static long calculateDaysBetween(Date startDate, Date endDate) {
+        long diffInMillis = endDate.getTime() - startDate.getTime();
+        return TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+    }
+
 
     // Interface for the callback
     public interface OnGetBillCompleteListener {
@@ -255,7 +321,7 @@ public class RoomBillPresenter {
         }
     }
 
-    public void getDayOfMakeBill(String roomID, OnGetDayOfMakeBillCompleteListener listener) {
+    public void getContractByRoom(String roomID, OnGetContractByRomListener listener) {
 
         db.collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
@@ -267,7 +333,9 @@ public class RoomBillPresenter {
                             QuerySnapshot querySnapshot = task.getResult();
                             if (querySnapshot != null && !querySnapshot.isEmpty()) {
                                 DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
-                                String contract = documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE);
+                                MainGuest contract = new MainGuest();
+                                contract.setPayDate(documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE));
+                                contract.setDaysUntilDueDate(Math.toIntExact(documentSnapshot.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)));
 
                                 listener.onComplete(contract);
                             }
@@ -283,8 +351,8 @@ public class RoomBillPresenter {
 
     }
 
-    public interface OnGetDayOfMakeBillCompleteListener {
-        void onComplete(String dayOfMakeBill);
+    public interface OnGetContractByRomListener {
+        void onComplete(MainGuest contract);
     }
 
     public void checkNotificationIsGiven(String roomID, String homeID, OnGetNotificationCompleteListener listener) {

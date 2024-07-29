@@ -130,6 +130,7 @@ public class Constants {
     public static final String KEY_BILL_ID = "billID";
     public static final String KEY_DATE_MAKE_BILL = "dateMakeBill";
     public static final String KEY_DATE_PAY_BILL = "datePayBill";
+    public static final String KEY_DATE_GIVE_BILL = "dateGiveBill";
     public static final String KEY_IS_NOT_PAY_BILL = "isNotPayBill";
     public static final String KEY_IS_PAYED_BILL = "isPayedBill";
     public static final String KEY_IS_DELAY_PAY_BILL = "isDelayBill";

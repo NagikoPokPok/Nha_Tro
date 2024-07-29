@@ -882,10 +882,10 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                     return true;
                 }
 
-                if (!bill.isPayedBill() && !bill.isDelayPayBill() && !bill.isNotPayBill()) {;
-                    showDialog(R.layout.layout_dialog_cannot_delete_bill);
-                    return true;
-                }
+//                if (!bill.isPayedBill() && !bill.isDelayPayBill() && !bill.isNotPayBill()) {;
+//                    showDialog(R.layout.layout_dialog_cannot_delete_bill);
+//                    return true;
+//                }
 
                 openDialogConfirmDeleteBill(bill);
                 return true;

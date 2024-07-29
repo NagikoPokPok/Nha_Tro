@@ -12,7 +12,7 @@ public class RoomBill implements Serializable {
     public String getBillID() {
         return billID;
     }
-    public Date dateCreateBill;
+    public Date dateCreateBill, dayGiveBill;
     public Date datePayBill;
     public int month, year;
     public int numberOfDaysToPayBill;
@@ -34,6 +34,10 @@ public class RoomBill implements Serializable {
 
     public void setPlusOrMinusMoneyList(List<PlusOrMinusMoney> plusOrMinusMoneyList) {
         this.plusOrMinusMoneyList = plusOrMinusMoneyList;
+    }
+
+    public Date getDayGiveBill() {
+        return dayGiveBill;
     }
 
     public String getTimeLived() {
