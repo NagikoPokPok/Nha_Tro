@@ -76,8 +76,10 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
 
         if(bill.isNotPayBill || bill.isPayedBill || bill.isDelayPayBill || bill.isNotGiveBill){
             holder.binding.layoutStatusOfPay.setVisibility(View.VISIBLE);
+            holder.binding.btnMakeBill.setVisibility(View.GONE);
         }else{
-            holder.binding.layoutStatusOfPay.setVisibility(View.INVISIBLE);
+            holder.binding.layoutStatusOfPay.setVisibility(View.GONE);
+            holder.binding.btnMakeBill.setVisibility(View.VISIBLE);
         }
 
         if(bill.isNotPayBill()){
@@ -95,13 +97,6 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         }
 
 
-//        if(bill.isNotGiveBill()){
-//            holder.binding.imgStatusOfGiveBill.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorOrange));
-//            holder.binding.txtStatusOfGiveBill.setText("Chưa gửi phiếu");
-//        }else{
-//            holder.binding.layoutStatusOfGiveBill.setVisibility(View.INVISIBLE);
-//        }
-
         // Định dạng số tiền
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 
@@ -114,7 +109,7 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
             String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
             holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
         }else{
-            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm/ giảm:");
+            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
             holder.binding.moneyOfAddOrMinus.setText("0 VNĐ");
         }
 
@@ -128,8 +123,8 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         String totalOfMoney = numberFormat.format(bill.getTotalOfMoney()) + " VNĐ";
         holder.binding.totalMoney.setText(totalOfMoney);
 
-        String moneyLeftNeedToPay = numberFormat.format(bill.getTotalOfMoneyNeededPay()) + " VNĐ";
-        holder.binding.moneyLeftNeedToPay.setText(moneyLeftNeedToPay);
+//        String moneyLeftNeedToPay = numberFormat.format(bill.getTotalOfMoneyNeededPay()) + " VNĐ";
+//        holder.binding.moneyLeftNeedToPay.setText(moneyLeftNeedToPay);
 
         //Click button
         holder.binding.btnMakeBill.setOnClickListener(new View.OnClickListener() {

@@ -76,6 +76,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     private Home home;
     private AlarmService alarmService;
     private AlarmService alarmService2;
+    private int requestCode1, requestCode2;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -128,12 +129,22 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
         });
 
+
+
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
         if (arguments != null) {
             room = (Room) arguments.getSerializable("room");
             home = (Home) arguments.getSerializable("home");
             if (room != null && home != null) {
+                String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+                String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+
+                String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+                String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
+
+                alarmService = new AlarmService(requireContext(), home, room, header1, body1);
+                alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
                 setAlarmForBill();
             } else {
                 showToast("Room object is null");
@@ -144,15 +155,24 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
 
 
+
+
         setListeners();
+
+        binding.btnDeleteContract.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int requestCode1 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId()+"code1"));
+                alarmService.cancelRepetitiveAlarm(requestCode1);
+
+                int requestCode2 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId()+"code2"));
+                alarmService2.cancelRepetitiveAlarm(requestCode2);
+            }
+        });
     }
 
     private void setAlarmForBill() {
-        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
 
-        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
 
         presenter.getDayOfMakeBill(room.getRoomId(), new RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
@@ -188,10 +208,14 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                                 month = monthDateInOfGuest;
                             }
 
-                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, generateRandomRequestCode()); // requestCode 1
-                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, generateRandomRequestCode()); // requestCode 2
+
+                            requestCode1 = generateRandomRequestCode();
+                            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.roomId+"code1");
+                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, requestCode1); // requestCode 1
+
+                            requestCode2 = generateRandomRequestCode();
+                            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.roomId+"code2");
+                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2); // requestCode 2
                         }
                     }
                 });

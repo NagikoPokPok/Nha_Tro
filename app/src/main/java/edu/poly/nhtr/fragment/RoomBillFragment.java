@@ -876,7 +876,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
                 }
                 return true;
             } else if (itemId == R.id.menu_edit_bill) {
-                showToast("edit bill");
+                makeBillClick(bill);
                 return true;
             } else if (itemId == R.id.menu_delete_bill) {
                 if (bill.isNotPayBill() || bill.isDelayPayBill()) {
