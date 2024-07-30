@@ -322,6 +322,44 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                 });
     }
 
+    @Override
+    public void checkNotificationByHeader(String roomID, String header, String body, RoomGuestPresenter.OnGetNotificationByHeaderBody listener) {
+        List<Notification> notificationList = new ArrayList<Notification>();
+        db.collection(Constants.KEY_COLLECTION_NOTIFICATION)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .whereEqualTo(Constants.KEY_NOTIFICATION_HEADER, header)
+                .whereEqualTo(Constants.KEY_NOTIFICATION_BODY, body)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                    Notification notification = new Notification();
+                                    notification.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                                    notificationList.add(notification);
+                                }
+                            }
+                            notificationList.sort(Comparator.comparing(Notification::getDateObject).reversed());
+                            listener.onComplete(notificationList);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+    }
+
+    public interface  OnGetNotificationByHeaderBody{
+        void onComplete(List<Notification> notificationList);
+    }
+
     public interface OnGetDayOfMakeBillCompleteListener {
         void onComplete(MainGuest mainGuest);
     }

@@ -82,5 +82,6 @@ public interface RoomGuestInterface {
 
         void getDayOfMakeBill(String roomID, RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener listener);
         void checkNotificationIsGiven(String roomID, String homeID, RoomGuestPresenter.OnGetNotificationCompleteListener listener);
+        void checkNotificationByHeader(String roomID, String header, String body, RoomGuestPresenter.OnGetNotificationByHeaderBody listener);
     }
 }
