@@ -5,5 +5,9 @@ import edu.poly.nhtr.models.MainGuest;
 public interface GuestViewContractInterface {
     void displayContractData(MainGuest mainGuest);
     void showToast(String message);
+
+    void showNoDataFound();
+
+    void showError(String errorGettingMainGuestData);
 }
 
