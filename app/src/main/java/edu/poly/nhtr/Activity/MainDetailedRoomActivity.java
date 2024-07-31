@@ -3,20 +3,14 @@ package edu.poly.nhtr.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
@@ -26,8 +20,9 @@ import edu.poly.nhtr.Adapter.TabLayoutAdapter;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainDetailedRoomBinding;
 import edu.poly.nhtr.fragment.GuestAddContractFragment;
+import edu.poly.nhtr.fragment.GuestEditContractFragment;
+import edu.poly.nhtr.fragment.GuestViewContractFragment;
 import edu.poly.nhtr.fragment.RoomBillContainerFragment;
-import edu.poly.nhtr.fragment.RoomBillFragment;
 import edu.poly.nhtr.fragment.RoomContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestFragment;
@@ -131,9 +126,7 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
         binding.viewPager.setAdapter(tabLayoutAdapter);
 
         // Thiết lập TabLayout với ViewPager2
-        new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
-            tab.setText(titles.get(position));
-        }).attach();
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> tab.setText(titles.get(position))).attach();
 
         if (targetFragmentIndex >= 0) {
             binding.viewPager.setCurrentItem(targetFragmentIndex);
@@ -259,23 +252,42 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
     }
 
     @Override
+    public void showTabLayoutAndViewPager() {
+        binding.tabLayout.setVisibility(View.VISIBLE);
+        binding.viewPager.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onBackPressed() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
-        if (currentFragment instanceof GuestAddContractFragment ||
-                currentFragment instanceof RoomGuestContractFragment ||
-                currentFragment instanceof RoomGuestFragment) {
+        if (currentFragment instanceof GuestViewContractFragment ||
+                currentFragment instanceof GuestEditContractFragment) {
+            showTabLayoutAndViewPager();
+            super.onBackPressed();
+        } else if (currentFragment instanceof GuestAddContractFragment) {
             if (!hasMainGuest) {
                 Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             } else {
+                showTabLayoutAndViewPager();
+                super.onBackPressed();
+            }
+        } else if (currentFragment instanceof RoomGuestContractFragment) {
+            if (!hasMainGuest) {
+                Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            } else {
+                showTabLayoutAndViewPager();
                 super.onBackPressed();
             }
         } else {
             super.onBackPressed();
         }
     }
+
 
     public void showTabLayoutAndRoomGuestFragment() {
         showTabLayout();

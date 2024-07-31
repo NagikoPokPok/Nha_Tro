@@ -20,9 +20,7 @@
             android:id="@+id/layout_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +36,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="@string/tong_so_thanh_vien"
                 android:textSize="18sp"
@@ -60,6 +58,8 @@
                     android:id="@+id/edt_total_members"
                     android:layout_width="100dp"
                     android:layout_height="60dp"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -83,7 +83,9 @@
                 android:id="@+id/til_ten_khach"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="30dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ten_khach"
                 app:layout_constraintTop_toTopOf="@id/txt_ten_khach"
                 >
@@ -91,6 +93,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_ten_khach"
                     android:layout_width="match_parent"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:layout_height="wrap_content"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -101,6 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/so_dien_thoai"
                 android:textSize="18sp"
@@ -128,6 +133,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_dien_thoai"
                 app:layout_constraintTop_toTopOf="@id/txt_so_dien_thoai">
 
@@ -135,20 +142,22 @@
                     android:id="@+id/ccp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:layout_marginTop="20dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/CustomTextInputLayoutOutlinedBox"
                     android:id="@+id/til_so_dien_thoai"
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/ccp"
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_so_dien_thoai"
-
+                        android:clickable="false"
+                        android:focusable="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints=""
@@ -164,6 +173,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/cccd_cmnd"
                 android:textSize="18sp"
@@ -190,6 +200,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_cmnd_cccd"
                 app:layout_constraintTop_toTopOf="@id/txt_so_cmnd_cccd"
                 >
@@ -199,6 +211,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
+                    android:clickable="false"
+                    android:focusable="false"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -207,6 +221,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="@id/til_so_cccd_cmnd"
                 app:layout_constraintTop_toTopOf="@id/til_so_cccd_cmnd">
@@ -240,6 +255,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"
                     >
 
                     <!-- Guideline -->
@@ -266,7 +283,8 @@
                             android:id="@+id/edt_ngay_sinh"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="DD/mm/YYYY"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -286,8 +304,9 @@
                             android:id="@+id/edt_gioi_tinh"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Giới tính"
                             android:layout_marginEnd="1dp"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -315,6 +334,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_tao"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_tao">
 
@@ -329,8 +350,9 @@
                         android:id="@+id/edt_ngay_tao_hop_dong"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/dd_mm_yyyy"
                         android:autofillHints=""
+                        android:clickable="false"
+                        android:focusable="false"
                         android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -356,6 +378,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_vao"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_vao">
 
@@ -370,8 +394,9 @@
                         android:id="@+id/edt_ngay_vao_o"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/dd_mm_yyyy"
                         android:autofillHints=""
+                        android:clickable="false"
+                        android:focusable="false"
                         android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -392,38 +417,37 @@
 
             <!-- Khung điền giá phòng -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_gia_phong"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/til_gia_phong"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toStartOf="@id/txt_gia_phong"
+            app:layout_constraintTop_toBottomOf="@id/txt_gia_phong">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_gia_phong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:layout_constraintStart_toStartOf="@id/txt_gia_phong"
-                app:layout_constraintTop_toBottomOf="@id/txt_gia_phong">
+                android:inputType="number"
+                android:clickable="false"
+                android:focusable="false"
+                android:paddingEnd="60dp" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txt_d_thang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/d_thang"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_gia_phong"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:paddingEnd="60dp" />
-
-                    <TextView
-                        android:id="@+id/txt_d_thang"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_marginEnd="10dp"
-                        android:text="@string/d_thang"
-                        android:textColor="@color/colorTextBlack"
-                        android:textSize="16sp"/>
-                </FrameLayout>
-            </com.google.android.material.textfield.TextInputLayout>
 
 
 
@@ -446,6 +470,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_het_han_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_het_han_hop_dong">
 
@@ -460,8 +486,8 @@
                         android:id="@+id/edt_ngay_het_han_hop_dong"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/dd_mm_yyyy"
-                        android:autofillHints=""
+                        android:clickable="false"
+                        android:focusable="false"
                         android:inputType="date" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -475,6 +501,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_tra_tien_phong"
                 android:textSize="18sp"
@@ -526,6 +553,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginStart="10dp"
                 app:layout_constraintStart_toStartOf="@id/til_ngay_tra_tien_phong"
                 app:layout_constraintTop_toTopOf="@id/til_ngay_tra_tien_phong"
                 android:layout_marginTop="80dp">
@@ -546,6 +574,8 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:autofillHints=""
                     android:inputType="number"
                     android:textSize="18sp" />
@@ -567,7 +597,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/anh_mat_truoc_cccd"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -579,6 +609,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_anh_mat_truoc_cccd">
@@ -599,6 +631,8 @@
                     android:background="@drawable/round_back_add_image"
                     android:contentDescription="@string/khung_avatar"
                     android:padding="50dp"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:src="@drawable/icon_add_image" />
             </FrameLayout>
 
@@ -609,7 +643,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/anh_mat_sau_cccd"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -621,6 +655,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_anh_mat_sau_cccd">
@@ -641,6 +677,8 @@
                     android:background="@drawable/round_back_add_image"
                     android:contentDescription="@string/khung_avatar"
                     android:padding="50dp"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:src="@drawable/icon_add_image" />
             </FrameLayout>
 
@@ -685,6 +723,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginTop="8dp">
 
                     <!-- Khung điền ảnh mặt trước hợp đồng-->
@@ -709,6 +749,8 @@
                             android:background="@drawable/round_back_add_image"
                             android:contentDescription="@string/mat_truoc_hop_dong"
                             android:padding="50dp"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:src="@drawable/icon_add" />
                     </FrameLayout>
 
@@ -735,6 +777,8 @@
                             android:background="@drawable/round_back_add_image"
                             android:contentDescription="@string/mat_truoc_hop_dong"
                             android:padding="50dp"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:src="@drawable/icon_add" />
                     </FrameLayout>
                 </LinearLayout>

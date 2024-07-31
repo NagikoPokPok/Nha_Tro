@@ -1,26 +1,26 @@
 package edu.poly.nhtr.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Base64;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.google.android.material.textfield.TextInputEditText;
+import com.hbb20.CountryCodePicker;
 
 import java.text.DecimalFormat;
 
-import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestViewContractBinding;
 import edu.poly.nhtr.interfaces.GuestViewContractInterface;
 import edu.poly.nhtr.models.MainGuest;
@@ -28,12 +28,24 @@ import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.GuestViewContractPresenter;
 
 public class GuestViewContractFragment extends Fragment implements GuestViewContractInterface {
-    private static final String TAG = "GuestViewContractFragment";
     private TextInputEditText guestName, guestPhone, guestCCCD, dateOfBirth, gender, totalMembers, createDate, dateIn, roomPrice, expirationDate, payDate, daysUntilDueDate;
     private ImageView cccdImageFront, cccdImageBack, contractImageFront, contractImageBack;
     private GuestViewContractPresenter presenter;
     private FragmentGuestViewContractBinding binding;
     private Room room;
+    private Button btnReturn;
+    private CountryCodePicker ccp;
+    private RoomContractFragment.OnFragmentInteractionListener mListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof RoomContractFragment.OnFragmentInteractionListener) {
+            mListener = (RoomContractFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,12 +64,12 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
             room = (Room) arguments.getSerializable("room");
             if (room != null) {
                 String roomId = room.getRoomId();
-                Log.d(TAG, "Fetching contract data for room ID: " + roomId);
                 presenter.fetchContractData(roomId);
             } else {
                 showToast("Invalid room ID");
             }
         }
+        setListeners();
     }
 
     @Override
@@ -87,6 +99,19 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
         cccdImageBack = binding.imgCccdBack;
         contractImageFront = binding.imgContractFront;
         contractImageBack = binding.imgContractBack;
+        btnReturn = binding.btnReturn;
+    }
+
+    private void setListeners() {
+        ccp = binding.ccp;
+        ccp.setDefaultCountryUsingNameCode("VN");
+        ccp.resetToDefaultCountry();
+        btnReturn.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+            if (mListener != null) {
+                mListener.showTabLayoutAndViewPager();
+            }
+        });
     }
 
     private Bitmap decodeImage(String encodedImage) {
@@ -97,7 +122,6 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
     @Override
     public void displayContractData(MainGuest mainGuest) {
         if (mainGuest != null) {
-            Log.d(TAG, "Displaying contract data: " + mainGuest);
             guestName.setText(mainGuest.getNameGuest());
             guestPhone.setText(mainGuest.getPhoneGuest());
             guestCCCD.setText(mainGuest.getCccdNumber());
@@ -136,5 +160,17 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
     @Override
     public void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

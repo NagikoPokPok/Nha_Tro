@@ -27,6 +27,8 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
 
     public interface OnFragmentInteractionListener {
         void onHideTabLayoutAndViewPager();
+
+        void showTabLayoutAndViewPager();
     }
 
     private FragmentRoomContractBinding binding;

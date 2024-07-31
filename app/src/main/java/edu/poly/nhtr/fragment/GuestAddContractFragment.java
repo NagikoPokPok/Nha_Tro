@@ -618,7 +618,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             progressBar.setVisibility(View.VISIBLE);
             btnYes.setVisibility(View.INVISIBLE);
             new Handler().postDelayed(() -> {
-                clearInputFields();
+                // clearInputFields();
                 dialog.dismiss();
                 progressBar.setVisibility(View.INVISIBLE);
 
@@ -629,34 +629,34 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         dialog.show();
     }
 
-    private void clearInputFields() {
-        edtHoTen.setText("");
-        edtSoDienThoai.setText("");
-        edtSoCCCD.setText("");
-        edtNgaySinh.setText("");
-        edtGioiTinh.setText("");
-        edtTotalMembers.setText("");
-        edtNgayTao.setText("");
-        edtNgayVao.setText("");
-        edtNgayHetHan.setText("");
-        edtNgayTraTien.setText("");
-        edtHanThanhToan.setText("");
-
-        imgCCCDFront.setImageDrawable(null);
-        imgCCCDBack.setImageDrawable(null);
-        imgContractFront.setImageDrawable(null);
-        imgContractBack.setImageDrawable(null);
-
-        imgAddCCCDFront.setVisibility(View.VISIBLE);
-        imgAddCCCDBack.setVisibility(View.VISIBLE);
-        imgAddContractFront.setVisibility(View.VISIBLE);
-        imgAddContractBack.setVisibility(View.VISIBLE);
-
-        encodedCCCDFrontImage = null;
-        encodedCCCDBackImage = null;
-        encodedContractFrontImage = null;
-        encodedContractBackImage = null;
-    }
+//    private void clearInputFields() {
+//        edtHoTen.setText("");
+//        edtSoDienThoai.setText("");
+//        edtSoCCCD.setText("");
+//        edtNgaySinh.setText("");
+//        edtGioiTinh.setText("");
+//        edtTotalMembers.setText("");
+//        edtNgayTao.setText("");
+//        edtNgayVao.setText("");
+//        edtNgayHetHan.setText("");
+//        edtNgayTraTien.setText("");
+//        edtHanThanhToan.setText("");
+//
+//        imgCCCDFront.setImageDrawable(null);
+//        imgCCCDBack.setImageDrawable(null);
+//        imgContractFront.setImageDrawable(null);
+//        imgContractBack.setImageDrawable(null);
+//
+//        imgAddCCCDFront.setVisibility(View.VISIBLE);
+//        imgAddCCCDBack.setVisibility(View.VISIBLE);
+//        imgAddContractFront.setVisibility(View.VISIBLE);
+//        imgAddContractBack.setVisibility(View.VISIBLE);
+//
+//        encodedCCCDFrontImage = null;
+//        encodedCCCDBackImage = null;
+//        encodedContractFrontImage = null;
+//        encodedContractBackImage = null;
+//    }
 
 
 }
