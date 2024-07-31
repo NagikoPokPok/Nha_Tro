@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -14,10 +13,12 @@ import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.databinding.ItemPlusOrMinusMoneyBinding;
+import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.PlusOrMinusMoney;
 
 public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMoneyAdapter.ViewHolder> {
     private final List<PlusOrMinusMoney> plusOrMinusMoneyList;
+    RoomMakeBillListener listener;
     private final OnItemValueChangeListener callback;
     private final Handler handler = new Handler();
     private Runnable runnable;
@@ -30,9 +31,10 @@ public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMon
         void onItemValueChange();
     }
 
-    public PlusOrMinusMoneyAdapter(List<PlusOrMinusMoney> plusOrMinusMoneyList, OnItemValueChangeListener callback) {
+    public PlusOrMinusMoneyAdapter(List<PlusOrMinusMoney> plusOrMinusMoneyList, RoomMakeBillListener listener, OnItemValueChangeListener callback) {
         this.plusOrMinusMoneyList = plusOrMinusMoneyList;
         this.callback = callback;
+        this.listener = listener;
     }
 
     @NonNull
@@ -49,12 +51,12 @@ public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMon
         holder.binding.txtTitle.setText(plusOrMinusMoney.getTitle());
 
 
-        holder.binding.imgExit.setOnClickListener(v -> {
+        holder.binding.imgRemove.setOnClickListener(v -> {
             plusOrMinusMoneyList.remove(holder.getAdapterPosition());
-            notifyDataSetChanged();
             if (callback != null) {
                 callback.onItemValueChange();
             }
+            refreshUserInterface();
         });
         holder.binding.edtMoney.setText(String.valueOf(plusOrMinusMoney.getMoney()));
         holder.binding.edtMoney.addTextChangedListener(new TextWatcher() {
@@ -69,23 +71,20 @@ public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMon
                 if (runnable != null) {
                     handler.removeCallbacks(runnable);
                 }
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        int position = holder.getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            try {
-                                int newValue = Integer.parseInt(s.toString());
-                                plusOrMinusMoneyList.get(position).setMoney(newValue);
-                                if (callback != null) {
-                                    callback.onItemValueChange();
-                                }
-                            } catch (NumberFormatException e) {
-                                // Xử lý lỗi nếu giá trị không phải là số
-                                plusOrMinusMoneyList.get(position).setMoney(0); // Hoặc giá trị mặc định nào đó
-                                if (callback != null) {
-                                    callback.onItemValueChange();
-                                }
+                runnable = () -> {
+                    int position1 = holder.getAdapterPosition();
+                    if (position1 != RecyclerView.NO_POSITION) {
+                        try {
+                            int newValue = Integer.parseInt(s.toString());
+                            plusOrMinusMoneyList.get(position1).setMoney(newValue);
+                            if (callback != null) {
+                                callback.onItemValueChange();
+                            }
+                        } catch (NumberFormatException e) {
+                            // Xử lý lỗi nếu giá trị không phải là số
+                            plusOrMinusMoneyList.get(position1).setMoney(0); // Hoặc giá trị mặc định nào đó
+                            if (callback != null) {
+                                callback.onItemValueChange();
                             }
                         }
                     }
@@ -93,14 +92,11 @@ public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMon
                 handler.postDelayed(runnable, 1000); // Chờ 1 giây sau khi người dùng ngừng nhập
             }
         });
-        holder.binding.edtMoney.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && Objects.requireNonNull(holder.binding.edtMoney.getText()).toString().equals("0"))
-                    holder.binding.edtMoney.setText("");
-                if(!hasFocus && Objects.requireNonNull(holder.binding.edtMoney.getText()).toString().isEmpty())
-                    holder.binding.edtMoney.setText("0");
-            }
+        holder.binding.edtMoney.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus && Objects.requireNonNull(holder.binding.edtMoney.getText()).toString().equals("0"))
+                holder.binding.edtMoney.setText("");
+            if(!hasFocus && Objects.requireNonNull(holder.binding.edtMoney.getText()).toString().isEmpty())
+                holder.binding.edtMoney.setText("0");
         });
 
         holder.binding.edtReason.setText(plusOrMinusMoney.getReason());
@@ -116,24 +112,26 @@ public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMon
                 if (runnable != null) {
                     handler.removeCallbacks(runnable);
                 }
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        int position = holder.getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            try {
-                                String newValue = s.toString();
-                                plusOrMinusMoneyList.get(position).setReason(newValue);
-                            } catch (NumberFormatException e) {
-                                // Xử lý lỗi nếu giá trị không phải là số
-                                plusOrMinusMoneyList.get(position).setReason(""); // Hoặc giá trị mặc định nào đó
-                            }
+                runnable = () -> {
+                    int position12 = holder.getAdapterPosition();
+                    if (position12 != RecyclerView.NO_POSITION) {
+                        try {
+                            String newValue = s.toString();
+                            plusOrMinusMoneyList.get(position12).setReason(newValue);
+                        } catch (NumberFormatException e) {
+                            // Xử lý lỗi nếu giá trị không phải là số
+                            plusOrMinusMoneyList.get(position12).setReason(""); // Hoặc giá trị mặc định nào đó
                         }
                     }
                 };
                 handler.postDelayed(runnable, 1000); // Chờ 1 giây sau khi người dùng ngừng nhập
             }
         });
+    }
+
+    private void refreshUserInterface() {
+        notifyDataSetChanged();
+        listener.refreshPlusOrMinusMoney();
     }
 
     @Override
@@ -171,4 +169,39 @@ public class PlusOrMinusMoneyAdapter extends RecyclerView.Adapter<PlusOrMinusMon
         return totalMoney;
     }
 
+    public int getPlus(){
+        int quantity = 0;
+        for (PlusOrMinusMoney item : plusOrMinusMoneyList){
+            if (item.getPlus()) quantity ++;
+        }
+        return quantity;
+    }
+
+    public int getMinus(){
+        int quantity = 0;
+        for (PlusOrMinusMoney item : plusOrMinusMoneyList){
+            if (!item.getPlus()) quantity ++;
+        }
+        return quantity;
+    }
+
+    public long getTotalMoneyPlus(){
+        long totalMoney =0;
+        for (PlusOrMinusMoney item : plusOrMinusMoneyList){
+            if (item.getPlus()){
+                totalMoney += item.getMoney();
+            }
+        }
+        return totalMoney;
+    }
+
+    public long getTotalMoneyMinus(){
+        long totalMoney =0;
+        for (PlusOrMinusMoney item : plusOrMinusMoneyList){
+            if (!item.getPlus()){
+                totalMoney += item.getMoney();
+            }
+        }
+        return totalMoney;
+    }
 }

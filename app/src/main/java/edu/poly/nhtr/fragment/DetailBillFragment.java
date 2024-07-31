@@ -17,15 +17,18 @@ import android.widget.Toast;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import edu.poly.nhtr.Adapter.PlusOrMinusMoneyAdapter;
 import edu.poly.nhtr.Adapter.PlusOrMinusMoneyInDetailBillAdapter;
 import edu.poly.nhtr.Adapter.ServiceInDetailBillAdapter;
 import edu.poly.nhtr.databinding.FragmentDetailBillBinding;
 import edu.poly.nhtr.listeners.DetailBillListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.PlusOrMinusMoney;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.presenters.DetailBillPresenter;
@@ -124,8 +127,32 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
         else {
             binding.layoutMoneyPlusOrMinus.setVisibility(View.VISIBLE);
             binding.view1.setVisibility(View.VISIBLE);
-            PlusOrMinusMoneyInDetailBillAdapter adapter = new PlusOrMinusMoneyInDetailBillAdapter(bill.getPlusOrMinusMoneyList());
-            binding.plusOrMinusRecyclerView.setAdapter(adapter);
+            List<PlusOrMinusMoney> plusMoneyList = new ArrayList<>();
+            List<PlusOrMinusMoney> minusMoneyList = new ArrayList<>();
+            for (PlusOrMinusMoney item : bill.getPlusOrMinusMoneyList()){
+                if (item.getPlus()) plusMoneyList.add(item);
+                else minusMoneyList.add(item);
+            }
+            if (!plusMoneyList.isEmpty()){
+                PlusOrMinusMoneyInDetailBillAdapter plusAdapter = new PlusOrMinusMoneyInDetailBillAdapter(plusMoneyList);
+                binding.plusRecyclerView.setAdapter(plusAdapter);
+                binding.plusRecyclerView.setVisibility(View.VISIBLE);
+
+                String totalPlusMoney = "Tổng tiền cộng: " + bill.getTotalMoneyPlus();
+                binding.txtTotalPlusMoney.setText(totalPlusMoney);
+                binding.txtTotalPlusMoney.setVisibility(View.VISIBLE);
+            }
+            if (!minusMoneyList.isEmpty()){
+                PlusOrMinusMoneyInDetailBillAdapter minusAdapter = new PlusOrMinusMoneyInDetailBillAdapter(minusMoneyList);
+                binding.minusRecyclerView.setAdapter(minusAdapter);
+                binding.minusRecyclerView.setVisibility(View.VISIBLE);
+
+                String totalMinusMoney = "Tổng tiền trừ: " + bill.getTotalMoneyMinus();
+                binding.txtTotalMinusMoney.setText(totalMinusMoney);
+                binding.txtTotalMinusMoney.setVisibility(View.VISIBLE);
+            }
+//            PlusOrMinusMoneyInDetailBillAdapter adapter = new PlusOrMinusMoneyInDetailBillAdapter(bill.getPlusOrMinusMoneyList());
+//            binding.plusOrMinusRecyclerView.setAdapter(adapter);
         }
     }
 

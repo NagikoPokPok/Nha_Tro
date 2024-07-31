@@ -1,5 +1,7 @@
 package edu.poly.nhtr.presenters;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -240,6 +242,13 @@ public class RoomBillPresenter {
 
         bill.setPlusOrMinusMoneyList(plusOrMinusMoneyList);
         bill.setTimeLived(document.getString(Constants.KEY_TIME_LIVED));
+
+        try {
+            bill.setTotalMoneyPlus(document.getLong(Constants.KEY_TOTAL_MONEY_PLUS));
+            bill.setTotalMoneyMinus(document.getLong(Constants.KEY_TOTAL_MONEY_MINUS));
+        }catch (Exception e){
+            Log.e("RoomBillPresenter", "Null data");
+        }
 
 
         // Update status of isDelayedPayBill

@@ -415,7 +415,7 @@
                 android:padding="10dp">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/plusOrMinusRecyclerView"
+                    android:id="@+id/plusRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/khung"
@@ -423,9 +423,47 @@
                     android:orientation="vertical"
                     android:overScrollMode="never"
                     android:padding="10dp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/inter_medium"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="end"
+                    android:text="Tổng tiền cộng: "
+                    android:visibility="gone"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/minusRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/khung"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+
+                <TextView
+                    android:id="@+id/txt_total_plus_money"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/inter_medium"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="end"
+                    android:text="Tổng tiền trừ: "
+                    android:visibility="gone"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -436,6 +474,7 @@
                     android:layout_gravity="end|bottom">
 
                     <TextView
+                        android:id="@+id/txt_total_minus_money"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/inter_medium"

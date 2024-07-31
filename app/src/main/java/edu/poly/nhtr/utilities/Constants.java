@@ -155,6 +155,8 @@ public class Constants {
 
     public static final String KEY_TIME_LIVED = "timeLived";
     public static final String KEY_MONEY_PLUS_OR_MINUS = "moneyPlusOrMinus";
+    public static final String KEY_TOTAL_MONEY_PLUS = "totalMoneyPlus";
+    public static final String KEY_TOTAL_MONEY_MINUS = "totalMoneyMinus";
 
 
 }

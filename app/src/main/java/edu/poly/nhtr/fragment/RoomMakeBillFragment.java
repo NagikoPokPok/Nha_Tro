@@ -25,7 +25,6 @@ import edu.poly.nhtr.databinding.FragmentRoomMakeBillBinding;
 import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.PlusOrMinusMoney;
-import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.presenters.RoomMakeBillPresenter;
@@ -35,7 +34,6 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
     private String roomId;
     private FragmentRoomMakeBillBinding binding;
-    private Room room;
     private MainGuest mainGuest;
     private List<RoomService> roomServiceList;
     private RoomBill bill;
@@ -72,48 +70,31 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     }
 
     private void setData() {
-        room = presenter.getRoomFromFirebase(roomId);
-        presenter.getMainGuest(roomId, new RoomMakeBillPresenter.OnGetContractFromFirebaseListener() {
+        presenter.getMainGuest(roomId, mainGuest1 -> {
+            mainGuest = mainGuest1;
+            setDateTimeAndRoomPrice();
 
-            @Override
-            public void onGetContractFromFirebase(MainGuest mainGuest1) {
-                mainGuest = mainGuest1;
-                setDateTimeAndRoomPrice();
-                presenter.getListRoomService(roomId, new RoomMakeBillPresenter.OnGetRoomServiceFromFirebaseListener() {
-                    @Override
-                    public void onGetRoomServiceFromFirebase(List<RoomService> roomServices) {
-                        if (roomServiceList == null) roomServiceList = new ArrayList<>();
-                        roomServiceList.clear();
-                        roomServiceList.addAll(roomServices);
-                        roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
-                        presenter.setQuantityToServiceWithIndex(roomServices, bill, new RoomMakeBillPresenter.OnGetQuantityForServiceWithIndexListener() {
-                            @Override
-                            public void onGetQuantityForServiceWithIndex() {
-                                setOtherData();
-                            }
-                        });
-                    }
-                });
-            }
+            presenter.getListRoomService(roomId, roomServices -> {
+                if (roomServiceList == null) roomServiceList = new ArrayList<>();
+                roomServiceList.clear();
+                roomServiceList.addAll(roomServices);
+                roomServices.sort(Comparator.comparing(RoomService :: getServiceName, Collator.getInstance(new Locale("vi", "VN"))));
+
+                presenter.setQuantityToServiceWithIndex(roomServices, bill, this::setOtherData);
+            });
         });
 
     }
 
     private void setListener() {
-        binding.btnCancelMakeBill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Quay lại Fragment trước đó trong back stack
-                getParentFragmentManager().popBackStack();
-            }
+        binding.btnCancelMakeBill.setOnClickListener(v -> {
+            // Quay lại Fragment trước đó trong back stack
+            getParentFragmentManager().popBackStack();
         });
 
-        binding.btnMakeBill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
-                presenter.updateBill(bill);
-            }
+        binding.btnMakeBill.setOnClickListener(v -> {
+            bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
+            presenter.updateBill(bill);
         });
     }
 
@@ -122,7 +103,9 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         // set adapter for service
         ServiceInMakeBillAdapter serviceInMakeBillAdapter = new ServiceInMakeBillAdapter(roomServiceList, this);
         binding.serviceInBillRecyclerView.setAdapter(serviceInMakeBillAdapter);
-        binding.serviceInBillRecyclerView.setVisibility(View.VISIBLE);
+        if (roomServiceList.isEmpty())
+            showToast("null");
+        else binding.serviceInBillRecyclerView.setVisibility(View.VISIBLE);
 
 
 
@@ -137,47 +120,36 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
 
         // Set total money of bill
-        long totalMoney = 0;
-        totalMoney = totalOfService + bill.moneyOfRoom;
+        long totalMoney = totalOfService + bill.moneyOfRoom;
         setTotalMoney(totalMoney);
 
         // set adapter for plus or minus money
         List<PlusOrMinusMoney> plusOrMinusMoneyList = new ArrayList<>();
-        long finalTotalMoney = totalMoney;
-        plusOrMinusMoneyAdapter = new PlusOrMinusMoneyAdapter(plusOrMinusMoneyList, new PlusOrMinusMoneyAdapter.OnItemValueChangeListener() {
-            @Override
-            public void onItemValueChange() {
-                // Set total money plus or minus
-                setTotalMoney(finalTotalMoney);
-            }
+        plusOrMinusMoneyAdapter = new PlusOrMinusMoneyAdapter(plusOrMinusMoneyList, this, () -> {
+            // Set total money plus or minus
+            setTotalMoney(totalMoney);
         });
         binding.plusOrMinusRecyclerView.setAdapter(plusOrMinusMoneyAdapter);
 
         setVisibleOfPlusOrMinusRecycler();
 
         // set listener for button plus and minus
-        binding.btnPlusMoney.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                plusOrMinusMoneyAdapter.addPlusOrMinusMoney(true);
-                binding.btnPlusMoney.setChecked(false);
-                setVisibleOfPlusOrMinusRecycler();
-            }
+        binding.btnPlusMoney.setOnClickListener(v -> {
+            plusOrMinusMoneyAdapter.addPlusOrMinusMoney(true);
+            binding.btnPlusMoney.setChecked(false);
+            setVisibleOfPlusOrMinusRecycler();
         });
 
-        binding.btnMinusMoney.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                plusOrMinusMoneyAdapter.addPlusOrMinusMoney(false);
-                binding.btnMinusMoney.setChecked(false);
-                setVisibleOfPlusOrMinusRecycler();
-            }
+        binding.btnMinusMoney.setOnClickListener(v -> {
+            plusOrMinusMoneyAdapter.addPlusOrMinusMoney(false);
+            binding.btnMinusMoney.setChecked(false);
+            setVisibleOfPlusOrMinusRecycler();
         });
 
 
     }
 
-    private void setVisibleOfPlusOrMinusRecycler() {
+    public void setVisibleOfPlusOrMinusRecycler() {
         if (plusOrMinusMoneyAdapter.getItemCount() == 0){
             binding.txtNullPlusOrMinus.setVisibility(View.VISIBLE);
             binding.plusOrMinusRecyclerView.setVisibility(View.GONE);
@@ -197,6 +169,8 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         if (plusOrMinusMoneyAdapter != null){
             total += plusOrMinusMoneyAdapter.getTotalMoney();
             bill.moneyOfAddOrMinus = plusOrMinusMoneyAdapter.getTotalMoney();
+            bill.setTotalMoneyPlus(plusOrMinusMoneyAdapter.getTotalMoneyPlus());
+            bill.setTotalMoneyMinus(plusOrMinusMoneyAdapter.getTotalMoneyMinus());
         }
         binding.txtTotalMoney.setText(toStringFromLong(total));
         bill.totalOfMoney = total;
@@ -216,8 +190,6 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         binding.txtMonthYear.setText(monthYear);
         binding.txtCreateBillDate.setText(createBillDate);
 
-//        bill.month = date.getMonthValue();
-//        bill.year = date.getYear();
         bill.dateCreateBill = java.sql.Date.valueOf(String.valueOf(date));
 
         String txt_createContractDate = mainGuest.getCreateDate();
@@ -310,5 +282,10 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     public void makeBillSuccessfully() {
         // Quay lại Fragment trước đó trong back stack
         getParentFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void refreshPlusOrMinusMoney() {
+        setVisibleOfPlusOrMinusRecycler();
     }
 }

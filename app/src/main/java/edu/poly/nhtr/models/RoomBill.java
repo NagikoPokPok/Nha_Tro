@@ -1,7 +1,6 @@
 package edu.poly.nhtr.models;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +18,7 @@ public class RoomBill implements Serializable {
     public boolean isNotPayBill, isPayedBill, isDelayPayBill;
     public boolean isNotGiveBill;
     public long moneyOfRoom, moneyOfService, moneyOfAddOrMinus, totalOfMoney, totalOfMoneyNeededPay;
+    private long totalMoneyPlus, totalMoneyMinus;
     public boolean isMoneyOfAdd, isMoneyOfMinus;
     public int numberOfDaysLived;
     public String reasonForAddOrMinusMoney;
@@ -34,6 +34,22 @@ public class RoomBill implements Serializable {
 
     public void setPlusOrMinusMoneyList(List<PlusOrMinusMoney> plusOrMinusMoneyList) {
         this.plusOrMinusMoneyList = plusOrMinusMoneyList;
+    }
+
+    public long getTotalMoneyPlus() {
+        return totalMoneyPlus;
+    }
+
+    public void setTotalMoneyPlus(long totalMoneyPlus) {
+        this.totalMoneyPlus = totalMoneyPlus;
+    }
+
+    public long getTotalMoneyMinus() {
+        return totalMoneyMinus;
+    }
+
+    public void setTotalMoneyMinus(long totalMoneyMinus) {
+        this.totalMoneyMinus = totalMoneyMinus;
     }
 
     public Date getDayGiveBill() {
