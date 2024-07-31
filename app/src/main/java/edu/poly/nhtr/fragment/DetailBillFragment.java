@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -201,15 +202,30 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
 
     private void setListeners() {
         binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
-            String edt ="hello, how are u";
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_SENDTO);
-                i.setData(Uri.parse("smsto:0919300585"));
-                i.putExtra("smsbody",edt);
-                startActivity(i);
+            public void onClick(View v)
+            {
+                String phoneNumber = "0123456789";
+                String message = "Hello from my app!";
+
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+
+                Toast.makeText(getActivity(),
+                        "Tin nhắn đã được gửi!", Toast.LENGTH_SHORT).show();
             }
         });
+
+//        binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
+//            String edtsms = "0198300585";
+//
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + edtsms));
+//                startActivity(intent);
+//            }
+//        });
+
         binding.btnCancelViewBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
