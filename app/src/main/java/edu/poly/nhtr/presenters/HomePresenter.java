@@ -272,7 +272,7 @@ public class HomePresenter {
                                 }
 
                                 // Kiểm tra nếu hóa đơn gần nhất bị trễ
-                                if (latestBill.isPayedBill()) {
+                                if (latestBill.isDelayPayBill()) {
                                     count.put(homeId, count.getOrDefault(homeId, 0) + 1);
                                 }
                             }

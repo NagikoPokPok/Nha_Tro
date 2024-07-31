@@ -18,7 +18,7 @@ public class RoomBill implements Serializable {
     public boolean isNotPayBill, isPayedBill, isDelayPayBill;
     public boolean isNotGiveBill;
     public long moneyOfRoom, moneyOfService, moneyOfAddOrMinus, totalOfMoney, totalOfMoneyNeededPay;
-    private long totalMoneyPlus, totalMoneyMinus;
+    public long totalMoneyPlus, totalMoneyMinus;
     public boolean isMoneyOfAdd, isMoneyOfMinus;
     public int numberOfDaysLived;
     public String reasonForAddOrMinusMoney;

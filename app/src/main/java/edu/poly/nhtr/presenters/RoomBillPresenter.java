@@ -149,6 +149,8 @@ public class RoomBillPresenter {
                         updates.put(Constants.KEY_DATE_GIVE_BILL, new Date());
                         updateTasks.add(document.getReference().update(updates));
                     }
+
+
                 }
 
                 // Wait for all updates to complete
@@ -244,8 +246,13 @@ public class RoomBillPresenter {
         bill.setTimeLived(document.getString(Constants.KEY_TIME_LIVED));
 
         try {
-            bill.setTotalMoneyPlus(document.getLong(Constants.KEY_TOTAL_MONEY_PLUS));
-            bill.setTotalMoneyMinus(document.getLong(Constants.KEY_TOTAL_MONEY_MINUS));
+            Long totalMoneyPlus = document.getLong(Constants.KEY_TOTAL_MONEY_PLUS);
+            bill.totalMoneyPlus = totalMoneyPlus != null ? totalMoneyPlus : 0L;
+
+            Long totalMoneyMinus = document.getLong(Constants.KEY_TOTAL_MONEY_MINUS);
+            bill.totalMoneyMinus = totalMoneyMinus != null ? totalMoneyMinus : 0L;
+//            bill.setTotalMoneyPlus(document.getLong(Constants.KEY_TOTAL_MONEY_PLUS));
+//            bill.setTotalMoneyMinus(document.getLong(Constants.KEY_TOTAL_MONEY_MINUS));
         }catch (Exception e){
             Log.e("RoomBillPresenter", "Null data");
         }

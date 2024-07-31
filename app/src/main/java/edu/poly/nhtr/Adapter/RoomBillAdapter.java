@@ -100,18 +100,24 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         // Định dạng số tiền
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 
-        if(bill.isMoneyOfAdd()){
-            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
-            String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
-            holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
-        }else if(bill.isMoneyOfMinus()){
-            holder.binding.txtMoneyAddOrMinus.setText("Tiền giảm đi:");
-            String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
-            holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
-        }else{
-            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
-            holder.binding.moneyOfAddOrMinus.setText("0 VNĐ");
-        }
+//        if(bill.isMoneyOfAdd()){
+//            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
+//            String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
+//            holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
+//        }else if(bill.isMoneyOfMinus()){
+//            holder.binding.txtMoneyAddOrMinus.setText("Tiền giảm đi:");
+//            String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
+//            holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
+//        }else{
+//            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
+//            holder.binding.moneyOfAddOrMinus.setText("0 VNĐ");
+//        }
+
+        String totalMoneyOfPlus = numberFormat.format(bill.getTotalMoneyPlus()) + " VNĐ";
+        holder.binding.moneyOfAdd.setText(totalMoneyOfPlus);
+
+        String totalMoneyOfMinus = numberFormat.format(bill.getTotalMoneyMinus()) + " VNĐ";
+        holder.binding.moneyOfMinus.setText(totalMoneyOfMinus);
 
         String moneyOfRoom = numberFormat.format(bill.getMoneyOfRoom()) + " VNĐ";
         holder.binding.moneyOfRoom.setText(moneyOfRoom);

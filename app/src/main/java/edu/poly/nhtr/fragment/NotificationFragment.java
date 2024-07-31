@@ -98,6 +98,7 @@ public class NotificationFragment extends Fragment implements NotificationListen
         //Delete layout dropdown menu
         binding.spinner.clearFocus();
         binding.autoCompleteTxt.clearFocus();
+        binding.autoCompleteTxt.setText("");
 
         // Delete layout delete notifications
         closeLayoutDeleteNotification();
