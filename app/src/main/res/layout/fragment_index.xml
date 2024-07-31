@@ -558,7 +558,7 @@
             android:orientation="vertical"
             android:visibility="invisible"
             android:layout_below="@id/tableLayout"
-            android:layout_above="@id/button_layout">
+            >
 
 
             <ImageView
@@ -598,99 +598,46 @@
             android:layout_height="25dp"
             android:layout_below="@id/tableLayout"
             android:layout_above="@id/layout_setting_notification_index"
-            android:layout_marginStart="200dp"
-            android:visibility="gone"
+            android:visibility="visible"
+            android:layout_centerInParent="true"
+
             />
 
 
 
         <LinearLayout
             android:id="@+id/layout_setting_notification_index"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/background_date_time_index"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_above="@id/button_layout">
-
-
-            <ImageButton
-                android:id="@+id/btn_setting_notification_index"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/icon_settings"
-                android:contentDescription="Calendar"
-                android:backgroundTint="@color/colorPrimary" />
-        </LinearLayout>
-
-
-
-
-        <LinearLayout
-            android:id="@+id/button_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
             android:orientation="horizontal"
-            android:padding="5dp"
-            android:visibility="visible"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="10dp"
             >
 
-            <!--        <TextView-->
-            <!--            android:id="@+id/btn_previous_page"-->
-            <!--            android:layout_width="0dp"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_gravity="start|center_vertical"-->
-            <!--            android:layout_weight="1"-->
-            <!--            android:gravity="center"-->
-            <!--            android:text="Previous" />-->
-
-            <!--        <HorizontalScrollView-->
-            <!--            android:id="@+id/scroll"-->
-            <!--            android:layout_width="0dp"-->
-            <!--            android:layout_height="50dp"-->
-            <!--            android:layout_gravity="center_vertical"-->
-            <!--            android:layout_weight="3"-->
-            <!--            android:fillViewport="true"-->
-            <!--            android:scrollbars="none">-->
-
-            <!--            <LinearLayout-->
-            <!--                android:id="@+id/linear_scroll"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="35dp"-->
-            <!--                android:layout_gravity="center_vertical"-->
-            <!--                android:orientation="horizontal">-->
-
-            <!--            </LinearLayout>-->
-            <!--        </HorizontalScrollView>-->
-
-            <!--        <TextView-->
-            <!--            android:id="@+id/btn_next_page"-->
-            <!--            android:layout_width="0dp"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_gravity="center_vertical"-->
-            <!--            android:layout_weight="1"-->
-            <!--            android:gravity="center"-->
-            <!--            android:text="Next" />-->
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/setExact"
+                android:id="@+id/btn_setting_notification_index"
+                style="@style/BUTTON"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Set Exact"
-                style="@style/BUTTON"
-                app:backgroundTint="@null"/>
-
-            <Button
-                android:id="@+id/setRepetitive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set Repetitive Exact"
-                style="@style/BUTTON"
-                app:backgroundTint="@null"/>
+                android:text="Nhắc nhở"
+                android:textSize="18sp"
+                app:backgroundTint="@null"
+                app:icon="@drawable/icon_notification"
+                app:iconGravity="textStart"
+                app:iconSize="20dp"
+                android:layout_gravity="end"/>
         </LinearLayout>
+
+
+
+
+
 
 
     </RelativeLayout>
