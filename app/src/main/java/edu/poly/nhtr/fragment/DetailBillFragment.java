@@ -90,6 +90,12 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
 
         setInfoOfBill(bill);
 
+        if(bill.isPayedBill){
+            binding.txtStatusOfBill.setVisibility(View.VISIBLE);
+        }else{
+            binding.txtStatusOfBill.setVisibility(View.GONE);
+        }
+
 
         setListeners();
 
@@ -237,7 +243,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
         });
 
 
-        binding.btnCancelViewBill.setOnClickListener(new View.OnClickListener() {
+        binding.imgCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Quay lại Fragment trước đó trong back stack
