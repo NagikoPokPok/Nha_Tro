@@ -186,4 +186,16 @@ public class DetailBillPresenter {
     public interface OnGetServiceFromFirebaseListener{
         void onGetServiceFromFirebase(RoomService roomService);
     }
+    public void getPhoneNumber(String roomID){
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID,roomID)
+                .get()
+                .addOnCompleteListener(task->{
+                    if (task.isSuccessful()){
+                        task.getResult().getDocuments().get(0).getString(Constants.KEY_PHONE_NUMBER);
+                    }
+                });
+
+    }
 }

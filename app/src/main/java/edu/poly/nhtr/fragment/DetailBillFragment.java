@@ -8,13 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -23,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import edu.poly.nhtr.Adapter.PlusOrMinusMoneyAdapter;
 import edu.poly.nhtr.Adapter.PlusOrMinusMoneyInDetailBillAdapter;
 import edu.poly.nhtr.Adapter.ServiceInDetailBillAdapter;
 import edu.poly.nhtr.databinding.FragmentDetailBillBinding;
@@ -33,6 +33,7 @@ import edu.poly.nhtr.models.PlusOrMinusMoney;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.presenters.DetailBillPresenter;
+import edu.poly.nhtr.utilities.Constants;
 
 public class DetailBillFragment extends Fragment implements DetailBillListener{
 
@@ -47,6 +48,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        detailBillPresenter.getPhoneNumber(roomID);
 
     }
 
@@ -201,30 +203,35 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
 
 
     private void setListeners() {
-        binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                String phoneNumber = "0123456789";
-                String message = "Hello from my app!";
-
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-
-                Toast.makeText(getActivity(),
-                        "Tin nhắn đã được gửi!", Toast.LENGTH_SHORT).show();
-            }
-        });
 
 //        binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
-//            String edtsms = "0198300585";
-//
 //            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + edtsms));
-//                startActivity(intent);
+//            public void onClick(View v)
+//            {
+//                String phoneNumber = "0123456789";
+//                String message = "Hello from my app!";
+//
+//                SmsManager smsManager = SmsManager.getDefault();
+//                smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+//
+//                Toast.makeText(getActivity(),
+//                        "Tin nhắn đã được gửi!", Toast.LENGTH_SHORT).show();
 //            }
 //        });
+
+        binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
+            String message ="Thông tin hóa đơn tháng "+binding.txtMonthYearOfBill.getText().toString()+
+                    "\nTiền phòng: "+binding.txtPriceOfRoom.getText().toString()
+                    +"\nSố ngày ở: "+binding.numberOfDaysLived.getText().toString()
+                    +"\nTổng tiền dịch vụ: " +binding.txtTotalMoneyOfService.getText().toString()
+                    +"\nTổng tiền: "+binding.txtTotalMoneyOfBill.getText().toString();
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + Constants.KEY_PHONE_NUMBER.toString()));
+                intent.putExtra("smsbody", message);
+                startActivity(intent);
+            }
+        });
 
         binding.btnCancelViewBill.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +241,17 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
             }
         });
     }
+//    public void getPhoneNumber(){
+//        FirebaseFirestore database = FirebaseFirestore.getInstance();
+//        database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+//                .whereEqualTo(Constants.KEY_ROOM_ID,roomID)
+//                .get()
+//                .addOnCompleteListener(task->{
+//                    if (task.isSuccessful()){
+//                        task.getResult().getDocuments().get(0).getString(Constants.KEY_PHONE_NUMBER);
+//                    }
+//                });
+//    }
 
     public void showToast(String message) {
         Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();
