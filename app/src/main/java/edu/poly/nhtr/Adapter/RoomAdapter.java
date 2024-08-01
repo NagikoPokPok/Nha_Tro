@@ -201,7 +201,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             binding.txtOrdinalNumber.setText(String.valueOf(position + 1));
             binding.getRoot().setOnClickListener(v-> {roomListener.onRoomClick(room);});
 
-            String hoTen = binding.edtHoTen.getText().toString().trim();
+            String hoTen = binding.edtHoTen.getText().toString();
             if(hoTen.isEmpty()){
                 binding.layoutNameOfGuest.setVisibility(View.GONE);
                 binding.layoutPhoneNumberOfGuest.setVisibility(View.GONE);

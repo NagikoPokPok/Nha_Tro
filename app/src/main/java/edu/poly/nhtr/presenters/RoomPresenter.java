@@ -22,10 +22,12 @@ import java.util.Objects;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
 
 public class RoomPresenter {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private int position = 0;
 
     private final RoomListener roomListener;
@@ -106,30 +108,77 @@ public class RoomPresenter {
                 .whereEqualTo(Constants.KEY_HOME_ID, roomListener.getInfoHomeFromGoogleAccount())
                 .get()
                 .addOnCompleteListener(task -> {
+                    roomListener.hideLoading();
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<Room> rooms = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Room room = new Room();
+                            room.roomId = document.getId();
+                            room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
+                            room.price = document.getString(Constants.KEY_PRICE);
+                            room.describe = document.getString(Constants.KEY_DESCRIBE);
+                            room.status = document.getString(Constants.KEY_STATUS_PAID);
+                            room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
+                            rooms.add(room);
+                        }
+                        if (!rooms.isEmpty()) {
+                            updateInfoRooms(rooms, action);
 
-                        roomListener.hideLoading();
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            List<Room> rooms = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Room room = new Room();
-                                room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
-                                room.price = document.getString(Constants.KEY_PRICE);
-                                room.describe = document.getString(Constants.KEY_DESCRIBE);
-                                room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
-                                room.roomId = document.getId();
-                                rooms.add(room);
-                            }
-                            if (!rooms.isEmpty()) {
-                                roomListener.addRoom(rooms, action);
-                            } else {
-                                roomListener.addRoomFailed();
-                            }
                         } else {
                             roomListener.addRoomFailed();
                         }
-
+                    } else {
+                        roomListener.addRoomFailed();
+                    }
                 });
     }
+
+    private void updateInfoRooms(List<Room> rooms, String action) {
+        for (Room room : rooms) {
+            getNameGuest(room.roomId, new OnGetInfoOfMainGuest() {
+                @Override
+                public void onComplete(MainGuest mainGuest) {
+                    if (mainGuest != null) {
+                        room.nameUser = mainGuest.getNameGuest();
+                        room.phoneNumer = mainGuest.getPhoneGuest();
+                    }
+                    // Gọi addRoom hoặc addRoomFailed sau khi lấy thông tin cho tất cả các phòng
+                    if (room.equals(rooms.get(rooms.size() - 1))) {
+                        roomListener.addRoom(rooms, action);
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    private void getStatusOFBill()
+    {
+
+    }
+    private void getNameGuest(String roomID, OnGetInfoOfMainGuest listener) {
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        MainGuest mainGuest = new MainGuest();
+                        mainGuest.setPhoneGuest(task.getResult().getDocuments().get(0).getString(Constants.KEY_GUEST_PHONE));
+                        mainGuest.setNameGuest(task.getResult().getDocuments().get(0).getString(Constants.KEY_GUEST_NAME));
+                        listener.onComplete(mainGuest);
+                    } else {
+                        listener.onComplete(null);
+                        Log.e("GetNameGuest", "No contracts found or error occurred: ", task.getException());
+                    }
+                });
+    }
+
+    public interface OnGetInfoOfMainGuest {
+        void onComplete(MainGuest mainGuest);
+    }
+
 
     private Boolean isDuplicate(String fieldFromFirestore, String fieldFromRoom, String homeIdFromFirestore, Room room) {
         return fieldFromFirestore != null && fieldFromFirestore.equalsIgnoreCase(fieldFromRoom) && homeIdFromFirestore.equals(roomListener.getInfoHomeFromGoogleAccount());
