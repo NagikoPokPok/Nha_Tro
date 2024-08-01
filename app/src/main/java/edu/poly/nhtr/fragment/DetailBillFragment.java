@@ -48,7 +48,6 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        detailBillPresenter.getPhoneNumber(roomID);
 
     }
 
@@ -220,18 +219,33 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
 //        });
 
         binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
-            String message ="Thông tin hóa đơn tháng "+binding.txtMonthYearOfBill.getText().toString()+
-                    "\nTiền phòng: "+binding.txtPriceOfRoom.getText().toString()
-                    +"\nSố ngày ở: "+binding.numberOfDaysLived.getText().toString()
-                    +"\nTổng tiền dịch vụ: " +binding.txtTotalMoneyOfService.getText().toString()
-                    +"\nTổng tiền: "+binding.txtTotalMoneyOfBill.getText().toString();
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + Constants.KEY_PHONE_NUMBER.toString()));
-                intent.putExtra("smsbody", message);
-                startActivity(intent);
+                showToast("Give bill");
+                detailBillPresenter.getPhoneNumber(roomID, new DetailBillPresenter.OnGetPhoneNumber() {
+                    @Override
+                    public void onComplete(String phoneNumber) {
+                        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                            String phone = "0" + phoneNumber;
+                            // Xây dựng tin nhắn hóa đơn
+                            String message = "Thông tin hóa đơn tháng " + binding.txtMonthYearOfBill.getText().toString() +
+                                    "\nTiền phòng: " + binding.txtPriceOfRoom.getText().toString() +
+                                    "\nSố ngày ở: " + binding.numberOfDaysLived.getText().toString() +
+                                    "\nTổng tiền dịch vụ: " + binding.txtTotalMoneyOfService.getText().toString() +
+                                    "\nTổng tiền: " + binding.txtTotalMoneyOfBill.getText().toString();
+
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phone));
+                            intent.putExtra("sms_body", message);
+                            startActivity(intent);
+                        } else {
+                            // Xử lý khi không có số điện thoại
+                            Toast.makeText(v.getContext(), "Không tìm thấy số điện thoại chính cho phòng này.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
+
 
         binding.btnCancelViewBill.setOnClickListener(new View.OnClickListener() {
             @Override

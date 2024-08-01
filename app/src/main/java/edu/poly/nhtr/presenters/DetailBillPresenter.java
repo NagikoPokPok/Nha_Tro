@@ -75,9 +75,9 @@ public class DetailBillPresenter {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
+                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                             List<RoomService> roomServices = new ArrayList<>();
-                            for (DocumentSnapshot document : task.getResult()){
+                            for (DocumentSnapshot document : task.getResult()) {
                                 RoomService roomService = new RoomService(
                                         document.getId(),
                                         document.getString(Constants.KEY_ROOM_ID),
@@ -85,14 +85,14 @@ public class DetailBillPresenter {
                                 );
                                 try {
                                     roomService.setQuantity(Math.toIntExact(document.getLong(Constants.KEY_ROOM_SERVICE_QUANTITY)));
-                                }catch (Exception e){
+                                } catch (Exception e) {
 //                                    listener.showToast("Hãy cập nhật đầy đủ thông tin cho dịch vụ phòng");
                                     roomService.setQuantity(404);
                                 }
                                 setObjectServiceForListRoom(roomService, new RoomMakeBillPresenter.OnGetServiceFromFirebaseListener() {
                                     @Override
                                     public void onGetServiceFromFirebase(RoomService roomService) {
-                                        if (roomService.getService().getFee_base() == 0){
+                                        if (roomService.getService().getFee_base() == 0) {
                                             setQuantityToServiceWithIndex(roomService, bill, new RoomMakeBillPresenter.OnGetQuantityForServiceWithIndexListener() {
                                                 @Override
                                                 public void onGetQuantityForServiceWithIndex() {
@@ -100,7 +100,7 @@ public class DetailBillPresenter {
                                                     callback.onGetRoomServiceAndQuantity(roomServices);
                                                 }
                                             });
-                                        }else{
+                                        } else {
                                             roomServices.add(roomService);
                                             callback.onGetRoomServiceAndQuantity(roomServices);
                                         }
@@ -112,6 +112,7 @@ public class DetailBillPresenter {
                     }
                 });
     }
+
     private void setObjectServiceForListRoom(RoomService roomService, RoomMakeBillPresenter.OnGetServiceFromFirebaseListener callback) {
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_SERVICES)
@@ -120,7 +121,7 @@ public class DetailBillPresenter {
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             Service service = new Service(
                                     document.getString(Constants.KEY_SERVICE_PARENT_HOME_ID),
@@ -150,11 +151,11 @@ public class DetailBillPresenter {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
+                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                             DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                            Log.e("IndexServiceInDetailBill", "InSetIndex " );
-                            int quantity = 0, oldIndex =0, newIndex =0;
-                            if (roomService.getServiceName().equalsIgnoreCase("điện")){
+                            Log.e("IndexServiceInDetailBill", "InSetIndex ");
+                            int quantity = 0, oldIndex = 0, newIndex = 0;
+                            if (roomService.getServiceName().equalsIgnoreCase("điện")) {
                                 oldIndex = Integer.parseInt(document.getString(Constants.KEY_ELECTRICITY_INDEX_OLD));
                                 newIndex = Integer.parseInt(document.getString(Constants.KEY_ELECTRICITY_INDEX_NEW));
                                 Log.e("IndexServiceInDetailBill", "Electric " + newIndex);
@@ -163,7 +164,7 @@ public class DetailBillPresenter {
                                 newIndex = Integer.parseInt(document.getString(Constants.KEY_WATER_INDEX_NEW));
                                 Log.e("IndexServiceInDetailBill", "Water " + newIndex);
                             }
-                            quantity = newIndex-oldIndex;
+                            quantity = newIndex - oldIndex;
                             if (quantity == 0) quantity = 404;
 
                             roomService.setOldIndex(String.valueOf(oldIndex));
@@ -180,22 +181,42 @@ public class DetailBillPresenter {
         void onComplete(Long price);
     }
 
-    public interface OnGetRoomServiceAndQuantityListener{
+    public interface OnGetRoomServiceAndQuantityListener {
         void onGetRoomServiceAndQuantity(List<RoomService> roomServices);
     }
-    public interface OnGetServiceFromFirebaseListener{
+
+    public interface OnGetServiceFromFirebaseListener {
         void onGetServiceFromFirebase(RoomService roomService);
     }
-    public void getPhoneNumber(String roomID){
+
+    public void getPhoneNumber(String roomID, OnGetPhoneNumber listener) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_CONTRACTS)
-                .whereEqualTo(Constants.KEY_ROOM_ID,roomID)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
                 .get()
-                .addOnCompleteListener(task->{
-                    if (task.isSuccessful()){
-                        task.getResult().getDocuments().get(0).getString(Constants.KEY_PHONE_NUMBER);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            String phoneNumber = task.getResult().getDocuments().get(0).getString(Constants.KEY_GUEST_PHONE);
+                            if (phoneNumber != null) {
+                                listener.onComplete(phoneNumber);
+                            } else {
+                                listener.onComplete(null); // Không tìm thấy số điện thoại
+                                Log.e("GetPhoneNumber", "Phone number not found in document");
+                            }
+                        } else {
+                            listener.onComplete(null); // Không tìm thấy hợp đồng cho phòng này
+                            Log.e("GetPhoneNumber", "No contracts found for room ID: " + roomID);
+                        }
+                    } else {
+                        listener.onComplete(null); // Xử lý lỗi khi task không thành công
+                        Log.e("GetPhoneNumber", "Error getting documents: ", task.getException());
                     }
                 });
-
     }
+
+    public interface OnGetPhoneNumber {
+        void onComplete(String phoneNumber);
+    }
+
 }
