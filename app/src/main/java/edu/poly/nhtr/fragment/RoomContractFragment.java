@@ -116,6 +116,17 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void hideLoadingButton(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void closeDialog() {
+        dialog.dismiss();
+    }
+
     private void setListeners() {
         binding.btnCreateContract.setOnClickListener(v -> {
             if (listener != null) {
@@ -206,6 +217,7 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
         btnDeleteContract.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showButtonLoading(R.id.btn_confirm_delete_contract);
                 cancelRepetitiveAlarm();
                 presenter.deleteContract(room);
             }

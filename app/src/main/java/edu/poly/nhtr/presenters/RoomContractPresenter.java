@@ -73,6 +73,8 @@ public class RoomContractPresenter implements RoomContractInterface.Presenter {
                                     .document(guestId)
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
+                                        view.hideLoadingButton(R.id.btn_confirm_delete_contract);
+                                        view.closeDialog();
                                     })
                                     .addOnFailureListener(e -> {
                                         view.showToast("Xoá khách thất bại: " + e.getMessage());

@@ -14,6 +14,10 @@ public interface RoomContractInterface {
         void onContractPrinted();
 
         void showToast(String s);
+
+        void hideLoadingButton(int btnConfirmDeleteContract);
+
+        void closeDialog();
     }
 
     interface Presenter {
