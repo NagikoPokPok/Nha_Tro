@@ -5,10 +5,12 @@ import android.util.Patterns;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
+
 import edu.poly.nhtr.Class.PasswordHasher;
 import edu.poly.nhtr.utilities.Constants;
 
-public class User {
+public class User implements Serializable {
 
     public String name, email, password, confirmPassword, fcmToken;
 

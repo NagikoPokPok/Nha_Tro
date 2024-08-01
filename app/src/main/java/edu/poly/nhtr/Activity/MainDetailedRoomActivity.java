@@ -10,8 +10,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainDetailedRoomBinding;
 import edu.poly.nhtr.fragment.GuestAddContractFragment;
 import edu.poly.nhtr.fragment.GuestEditContractFragment;
+import edu.poly.nhtr.fragment.GuestPrintContractFragment;
 import edu.poly.nhtr.fragment.GuestViewContractFragment;
 import edu.poly.nhtr.fragment.RoomBillContainerFragment;
 import edu.poly.nhtr.fragment.RoomContractFragment;
@@ -33,7 +34,7 @@ import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class MainDetailedRoomActivity extends AppCompatActivity implements RoomContractFragment.OnFragmentInteractionListener  {
+public class MainDetailedRoomActivity extends AppCompatActivity implements RoomContractFragment.OnFragmentInteractionListener {
 
     private ActivityMainDetailedRoomBinding binding;
     private PreferenceManager preferenceManager;
@@ -169,7 +170,6 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
 //        });
 
 
-
     }
 
     private Fragment createFragmentForPosition(int position) {
@@ -262,7 +262,8 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         if (currentFragment instanceof GuestViewContractFragment ||
-                currentFragment instanceof GuestEditContractFragment) {
+                currentFragment instanceof GuestEditContractFragment ||
+                currentFragment instanceof GuestPrintContractFragment) {
             showTabLayoutAndViewPager();
             super.onBackPressed();
         } else if (currentFragment instanceof GuestAddContractFragment) {

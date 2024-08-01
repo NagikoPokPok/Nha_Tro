@@ -5,12 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +14,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
@@ -32,12 +31,6 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class RoomContractFragment extends Fragment implements RoomContractInterface.View {
-
-    public interface OnFragmentInteractionListener {
-        void onHideTabLayoutAndViewPager();
-
-        void showTabLayoutAndViewPager();
-    }
 
     private FragmentRoomContractBinding binding;
     private PreferenceManager preferenceManager;
@@ -57,7 +50,7 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -67,7 +60,6 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
         binding = FragmentRoomContractBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -146,7 +138,12 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
             }
             editContract();
         });
-        binding.btnPrintContract.setOnClickListener(v -> printContract());
+        binding.btnPrintContract.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onHideTabLayoutAndViewPager();
+            }
+            printContract();
+        });
         binding.btnDeleteContract.setOnClickListener(v -> {
 //            if (listener != null) {
 //                listener.onHideTabLayoutAndViewPager();
@@ -193,7 +190,16 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
     }
 
     private void printContract() {
-        presenter.printContract(room);
+        GuestPrintContractFragment guestPrintContractFragment = new GuestPrintContractFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
+        bundle.putString("room_price", roomPrice);
+        guestPrintContractFragment.setArguments(bundle);
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, guestPrintContractFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void deleteContract() {
@@ -261,5 +267,11 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
     @Override
     public void onContractPrinted() {
         Toast.makeText(requireContext(), "Contract printed successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onHideTabLayoutAndViewPager();
+
+        void showTabLayoutAndViewPager();
     }
 }

@@ -1,6 +1,8 @@
 package edu.poly.nhtr.models;
 
-public class MainGuest extends Guest {
+import java.io.Serializable;
+
+public class MainGuest extends Guest implements Serializable {
     private int totalMembers;
     private String cccdNumber;
     private String dateOfBirth; // Change to String to match input format

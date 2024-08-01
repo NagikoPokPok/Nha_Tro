@@ -5,10 +5,34 @@
     android:layout_height="match_parent"
     tools:context=".fragment.GuestPrintContractFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Button to download the contract -->
+        <Button
+            android:id="@+id/btn_print_contract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In Hợp Đồng" />
+
+        <!-- PDF viewer section (using a WebView to display the PDF) -->
+        <WebView
+            android:id="@+id/webview_pdf"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#f5f5f5" />
+
+    </LinearLayout>
+
+    <!-- ProgressBar to show loading state -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </FrameLayout>

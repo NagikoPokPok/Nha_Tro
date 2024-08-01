@@ -13,8 +13,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Objects;
-
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ActivityMainRoomBinding;
 import edu.poly.nhtr.fragment.IndexFragment;
@@ -89,16 +87,13 @@ public class MainRoomActivity extends AppCompatActivity {
             if (fragmentToLoad != null && fragmentToLoad.equals("IndexFragment")) {
                 replaceFragment(new IndexFragment(), "IndexFragment");
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_index);
-            }else if(fragmentToLoad != null && fragmentToLoad.equals("ServiceFragment"))
-            {
+            } else if (fragmentToLoad != null && fragmentToLoad.equals("ServiceFragment")) {
                 replaceFragment(new ServiceFragment(), "ServiceFragment");
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_index);
-            }else if(fragmentToLoad != null && fragmentToLoad.equals("StatisticFragment"))
-            {
+            } else if (fragmentToLoad != null && fragmentToLoad.equals("StatisticFragment")) {
                 replaceFragment(new StatisticFragment(), "StatisticFragment");
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_index);
-            }
-            else {
+            } else {
                 // Load RoomFragment (mặc định)
                 replaceFragment(new RoomFragment(), "RoomFragment");
                 binding.bottomNavigation.setSelectedItemId(R.id.menu_room);

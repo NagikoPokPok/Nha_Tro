@@ -18,7 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import edu.poly.nhtr.databinding.FragmentRoomGuestContractBinding;
+import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.User;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class RoomGuestContractFragment extends Fragment {
@@ -27,6 +29,8 @@ public class RoomGuestContractFragment extends Fragment {
     private PreferenceManager preferenceManager;
     private Room room;
     private String roomPrice;
+    private Home home;
+    private User user;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -43,6 +47,8 @@ public class RoomGuestContractFragment extends Fragment {
 
         if (getArguments() != null) {
             room = (Room) getArguments().getSerializable("room");
+            home = (Home) getArguments().getSerializable("home");
+            user = (User) getArguments().getSerializable("user");
             roomPrice = getArguments().getString("room_price");
             if (room != null) {
                 Log.d("RoomGuestContractFragment", "Room ID: " + room.getRoomId());
@@ -94,6 +100,8 @@ public class RoomGuestContractFragment extends Fragment {
             GuestAddContractFragment guestAddContractFragment = new GuestAddContractFragment();
             Bundle args = new Bundle();
             args.putSerializable("room", room);
+            args.putSerializable("home", home);
+            args.putSerializable("user", user);
             args.putString("room_price", roomPrice);
             guestAddContractFragment.setArguments(args);
             FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();

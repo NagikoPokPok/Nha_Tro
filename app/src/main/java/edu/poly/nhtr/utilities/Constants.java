@@ -96,6 +96,7 @@ public class Constants {
     public static final String KEY_GUEST_CCCD_IMAGE_FRONT = "guestCCCDImageFront";
     public static final String KEY_GUEST_CCCD_IMAGE_BACK = "guestCCCDImageBack";
     public static final String KEY_CONTRACT_STATUS = "contractStatus";
+    public static final String KEY_CONTRACT_ID = "contractId";
 
     // Guest
     public static final String KEY_COLLECTION_GUESTS = "guests";
