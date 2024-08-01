@@ -1,13 +1,20 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.Collator;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.time.LocalDate;
@@ -39,6 +46,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     private RoomBill bill;
     private RoomMakeBillPresenter presenter;
     private PlusOrMinusMoneyAdapter plusOrMinusMoneyAdapter;
+    private Dialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         binding = FragmentRoomMakeBillBinding.inflate(getLayoutInflater());
         presenter = new RoomMakeBillPresenter(this);
+        dialog = new Dialog(requireContext());
 
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
@@ -93,10 +102,54 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         });
 
         binding.btnMakeBill.setOnClickListener(v -> {
-            bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
-            presenter.updateBill(bill);
+
+            openConfirmMakeBillDialog();
         });
     }
+
+    private void openConfirmMakeBillDialog() {
+        setupDialog(R.layout.layout_dialog_confirm_make_bill);
+
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnConfirmMakeBill = dialog.findViewById(R.id.btn_confirm_make_bill);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnConfirmMakeBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showButtonLoading(R.id.btn_confirm_make_bill);
+                bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
+                presenter.updateBill(bill);
+            }
+        });
+    }
+
+    private void setupDialog(int layoutId) {
+        dialog.setContentView(layoutId);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
+    }
+
+    public void showButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.INVISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+    }
+
+
 
 
     private void setOtherData() {
@@ -287,5 +340,16 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     @Override
     public void refreshPlusOrMinusMoney() {
         setVisibleOfPlusOrMinusRecycler();
+    }
+
+    @Override
+    public void hideButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void closeDialog() {
+        dialog.dismiss();
     }
 }

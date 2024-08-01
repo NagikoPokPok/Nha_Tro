@@ -6,4 +6,6 @@ public interface RoomMakeBillListener {
     void makeBillSuccessfully();
 
     void refreshPlusOrMinusMoney();
+    void hideButtonLoading(int id);
+    void closeDialog();
 }

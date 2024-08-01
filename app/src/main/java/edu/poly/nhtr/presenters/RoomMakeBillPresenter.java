@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomMakeBillListener;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.RoomBill;
@@ -158,6 +159,9 @@ public class RoomMakeBillPresenter {
         data.put(Constants.KEY_TOTAL_MONEY_PLUS, bill.getTotalMoneyPlus());
         data.put(Constants.KEY_TOTAL_MONEY_MINUS, bill.getTotalMoneyMinus());
 
+        //Update status of bill
+        data.put(Constants.KEY_IS_NOT_GIVE_BILL, true);
+
         data.put(Constants.KEY_MONEY_PLUS_OR_MINUS, bill.getPlusOrMinusMoneyList());
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
@@ -165,6 +169,8 @@ public class RoomMakeBillPresenter {
                 .update(data)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()){
+                        listener.hideButtonLoading(R.id.btn_confirm_make_bill);
+                        listener.closeDialog();
                         listener.makeBillSuccessfully();
                     }
                 });

@@ -93,7 +93,7 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
             holder.binding.txtStatusOfPay.setText("Quá hạn thanh toán");
         }else if(bill.isNotGiveBill()){
             holder.binding.imgStatusOfPay.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorOrange));
-            holder.binding.txtStatusOfPay.setText("Chưa gửi phiếu");
+            holder.binding.txtStatusOfPay.setText("Chưa gửi hoá đơn");
         }
 
 
