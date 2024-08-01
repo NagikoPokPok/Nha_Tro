@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -51,48 +50,49 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
+        Log.d("MessagingService", "onMessageReceived called");
 
-
-        // Use this code when fcm using data structure
+        // Use this code when FCM using data structure
         Map<String, String> data = message.getData();
         String title = data.get("title");
         String body = data.get("body");
 
-        // Use this code when fcm using notification structure
-        //String title = Objects.requireNonNull(message.getNotification()).getTitle();
-        //String body = message.getNotification().getBody();
+        // Use this code when FCM using notification structure
+        // String title = Objects.requireNonNull(message.getNotification()).getTitle();
+        // String body = message.getNotification().getBody();
 
         preferenceManager = new PreferenceManager(this);
         String notificationID = preferenceManager.getString(Constants.KEY_NOTIFICATION_ID, getInfoUserFromGoogleAccount(this, preferenceManager));
         home = preferenceManager.getHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
-        if(home!=null) {
+        if (home != null) {
             room = preferenceManager.getRoom(Constants.KEY_COLLECTION_ROOMS, home.getIdHome());
         }
 
-        //removePreferences();
-
         buildNotification(title, body, notificationID, home, room);
-
-
     }
 
-    public String getInfoUserFromGoogleAccount(Context context, PreferenceManager preferenceManager) {
+    private String getInfoUserFromGoogleAccount(Context context, PreferenceManager preferenceManager) {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-        String currentUserId = "";
         if (account != null) {
-            currentUserId = account.getId();
+            return account.getId();
         } else {
-            currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+            return preferenceManager.getString(Constants.KEY_USER_ID, "");
         }
-        return currentUserId;
     }
 
     private void updateNewToken(String token) {
-        // Handle the new token here
+        Log.d("Token", "New token: " + token);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.putString(Constants.KEY_FCM_TOKEN, token);
     }
 
-
     private void buildNotification(String title, String body, String notificationID, Home home, Room room) {
+        // Ensure permission is granted
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            Log.e("Notification", "Notification permission not granted");
+            return;
+        }
+
         createNotificationChannel(this);
 
         PendingIntent resultPendingIntent = getResultPendingIntent(notificationID, home, room);
@@ -110,18 +110,8 @@ public class MessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
-        //notificationManager.notify(1001, builder.build());
-
-    }
-
-    private void removePreferences() {
-        preferenceManager.removeString(Constants.KEY_NOTIFICATION_ID,getInfoUserFromGoogleAccount(this, preferenceManager) );
-        preferenceManager.removeRoom(Constants.KEY_COLLECTION_ROOMS, home.idHome);
-        preferenceManager.removeHome(Constants.KEY_COLLECTION_HOMES, getInfoUserFromGoogleAccount(this, preferenceManager));
+        Log.d("Notification", "Notification built and sent");
     }
 
     private PendingIntent getResultPendingIntent(String notificationID, Home home, Room room) {
@@ -156,20 +146,18 @@ public class MessagingService extends FirebaseMessagingService {
         }
     }
 
-
-
     private void createNotificationChannel(Context context) {
-        CharSequence name = "Alarm Manager Channel";
-        String description = "Channel for Alarm Manager notifications";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.setDescription(description);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Alarm Manager Channel";
+            String description = "Channel for Alarm Manager notifications";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
 
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        if (notificationManager != null) {
-            notificationManager.createNotificationChannel(channel);
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
     }
-
-
 }

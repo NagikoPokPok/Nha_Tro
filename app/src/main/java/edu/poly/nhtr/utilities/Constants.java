@@ -125,6 +125,7 @@ public class Constants {
     public static final String KEY_NOTIFICATION_REQUEST_CODE = "notificationRequestCode";
     public static final String KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1 = "notificationDayPushNotification1";
     public static final String KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2 = "notificationDayPushNotification2";
+    public static final String KEY_NOTIFICATION_SET = "notificationSet";
 
 
 
