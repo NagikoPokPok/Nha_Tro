@@ -100,18 +100,6 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
         // Định dạng số tiền
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
 
-//        if(bill.isMoneyOfAdd()){
-//            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
-//            String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
-//            holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
-//        }else if(bill.isMoneyOfMinus()){
-//            holder.binding.txtMoneyAddOrMinus.setText("Tiền giảm đi:");
-//            String moneyOfAddOrMinus = numberFormat.format(bill.getMoneyOfAddOrMinus()) + " VNĐ";
-//            holder.binding.moneyOfAddOrMinus.setText(moneyOfAddOrMinus);
-//        }else{
-//            holder.binding.txtMoneyAddOrMinus.setText("Tiền cộng thêm:");
-//            holder.binding.moneyOfAddOrMinus.setText("0 VNĐ");
-//        }
 
         String totalMoneyOfPlus = numberFormat.format(bill.getTotalMoneyPlus()) + " VNĐ";
         holder.binding.moneyOfAdd.setText(totalMoneyOfPlus);
@@ -128,9 +116,6 @@ public class RoomBillAdapter extends RecyclerView.Adapter<RoomBillAdapter.ViewHo
 
         String totalOfMoney = numberFormat.format(bill.getTotalOfMoney()) + " VNĐ";
         holder.binding.totalMoney.setText(totalOfMoney);
-
-//        String moneyLeftNeedToPay = numberFormat.format(bill.getTotalOfMoneyNeededPay()) + " VNĐ";
-//        holder.binding.moneyLeftNeedToPay.setText(moneyLeftNeedToPay);
 
         //Click button
         holder.binding.btnMakeBill.setOnClickListener(new View.OnClickListener() {

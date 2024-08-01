@@ -1,6 +1,9 @@
 package edu.poly.nhtr.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,10 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +33,7 @@ import java.util.Locale;
 
 import edu.poly.nhtr.Adapter.PlusOrMinusMoneyInDetailBillAdapter;
 import edu.poly.nhtr.Adapter.ServiceInDetailBillAdapter;
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentDetailBillBinding;
 import edu.poly.nhtr.listeners.DetailBillListener;
 import edu.poly.nhtr.models.Home;
@@ -42,6 +50,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
     private String roomID;
     private RoomBill bill;
     private DetailBillPresenter detailBillPresenter;
+    private Dialog dialog;
 
 
     @Override
@@ -57,6 +66,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
         // Inflate the layout for this fragment
         binding = FragmentDetailBillBinding.inflate(inflater, container, false);
         detailBillPresenter = new DetailBillPresenter(this);
+        dialog = new Dialog(requireContext());
 
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
@@ -221,28 +231,8 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
         binding.btnSendBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("Give bill");
-                detailBillPresenter.getPhoneNumber(roomID, new DetailBillPresenter.OnGetPhoneNumber() {
-                    @Override
-                    public void onComplete(String phoneNumber) {
-                        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-                            String phone = "0" + phoneNumber;
-                            // Xây dựng tin nhắn hóa đơn
-                            String message = "Thông tin hóa đơn tháng " + binding.txtMonthYearOfBill.getText().toString() +
-                                    "\nTiền phòng: " + binding.txtPriceOfRoom.getText().toString() +
-                                    "\nSố ngày ở: " + binding.numberOfDaysLived.getText().toString() +
-                                    "\nTổng tiền dịch vụ: " + binding.txtTotalMoneyOfService.getText().toString() +
-                                    "\nTổng tiền: " + binding.txtTotalMoneyOfBill.getText().toString();
+                openConfirmGiveBillDialog();
 
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phone));
-                            intent.putExtra("sms_body", message);
-                            startActivity(intent);
-                        } else {
-                            // Xử lý khi không có số điện thoại
-                            Toast.makeText(v.getContext(), "Không tìm thấy số điện thoại chính cho phòng này.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
             }
         });
 
@@ -254,18 +244,124 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
                 getParentFragmentManager().popBackStack();
             }
         });
+
+        binding.btnMarkBillIsPaid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openConfirmPayedBill();
+            }
+        });
     }
-//    public void getPhoneNumber(){
-//        FirebaseFirestore database = FirebaseFirestore.getInstance();
-//        database.collection(Constants.KEY_COLLECTION_CONTRACTS)
-//                .whereEqualTo(Constants.KEY_ROOM_ID,roomID)
-//                .get()
-//                .addOnCompleteListener(task->{
-//                    if (task.isSuccessful()){
-//                        task.getResult().getDocuments().get(0).getString(Constants.KEY_PHONE_NUMBER);
-//                    }
-//                });
-//    }
+
+    private void openConfirmPayedBill() {
+        setupDialog(R.layout.layout_dialog_confirm_payed_bill);
+
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnConfirmPayedBill = dialog.findViewById(R.id.btn_confirm_payed_bill);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnConfirmPayedBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showButtonLoading(R.id.btn_confirm_payed_bill);
+                detailBillPresenter.updateStatusOfBillWhenPayedBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
+                    @Override
+                    public void onComplete() {
+                        hideButtonLoading(R.id.btn_confirm_payed_bill);
+                        dialog.dismiss();
+                        getParentFragmentManager().popBackStack();
+                    }
+                });
+            }
+        });
+    }
+
+    private void openConfirmGiveBillDialog() {
+        setupDialog(R.layout.layout_dialog_confirm_give_bill);
+
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnConfirmGiveBill = dialog.findViewById(R.id.btn_confirm_give_bill);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnConfirmGiveBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showButtonLoading(R.id.btn_confirm_give_bill);
+                detailBillPresenter.updateStatusOfBillWhenGiveBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
+                    @Override
+                    public void onComplete() {
+                        giveBill();
+                    }
+                });
+
+
+            }
+        });
+    }
+
+    private void giveBill(){
+        detailBillPresenter.getPhoneNumber(roomID, new DetailBillPresenter.OnGetPhoneNumber() {
+            @Override
+            public void onComplete(String phoneNumber) {
+                if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                    String phone = "0" + phoneNumber;
+                    // Xây dựng tin nhắn hóa đơn
+                    String message = "Thông tin hóa đơn tháng " + binding.txtMonthYearOfBill.getText().toString() +
+                            "\nTiền phòng: " + binding.txtPriceOfRoom.getText().toString() +
+                            "\nSố ngày ở: " + binding.numberOfDaysLived.getText().toString() +
+                            "\nTổng tiền dịch vụ: " + binding.txtTotalMoneyOfService.getText().toString() +
+                            "\nTổng tiền: " + binding.txtTotalMoneyOfBill.getText().toString();
+
+                    hideButtonLoading(R.id.btn_confirm_give_bill);
+                    dialog.dismiss();
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phone));
+                    intent.putExtra("sms_body", message);
+                    startActivity(intent);
+                } else {
+                    // Xử lý khi không có số điện thoại
+                    Toast.makeText(requireContext(), "Không tìm thấy số điện thoại chính cho phòng này.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void setupDialog(int layoutId) {
+        dialog.setContentView(layoutId);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            windowAttributes.gravity = Gravity.CENTER;
+            window.setAttributes(windowAttributes);
+            dialog.setCancelable(true);
+            dialog.show();
+        }
+    }
+
+    public void showButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.INVISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+    }
+
+    public void hideButtonLoading(int id) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+    }
+
 
     public void showToast(String message) {
         Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show();

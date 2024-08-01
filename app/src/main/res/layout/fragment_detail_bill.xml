@@ -51,7 +51,8 @@
             app:iconGravity="textStart"
             app:iconPadding="3dp"
             app:iconSize="24dp"
-            app:iconTint="@color/black" />
+            app:iconTint="@color/black"
+            android:visibility="gone"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_send_bill"
@@ -66,7 +67,7 @@
             android:paddingEnd="9dp"
             android:paddingBottom="12dp"
             android:text="Gửi tin nhắn"
-            android:textSize="20sp"
+            android:textSize="18sp"
             app:backgroundTint="@null"
             app:icon="@drawable/ic_mail"
             app:iconGravity="textStart"
@@ -86,15 +87,17 @@
             android:paddingEnd="9dp"
             android:paddingBottom="12dp"
             android:text="Xác nhận thanh toán"
-            android:textColor="@color/colorGreen"
-            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             app:backgroundTint="@null"
             app:icon="@drawable/ic_tick"
-            app:iconTint="@color/colorGreen"
+            app:iconTint="@color/white"
             app:iconGravity="textStart"
             app:iconSize="24dp"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
     </LinearLayout>
+
+
 
     <ScrollView
         android:id="@+id/frame_main"
@@ -109,10 +112,30 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <FrameLayout
+                android:id="@+id/frm_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/img_cancel"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_cancel"
+                    android:backgroundTint="@color/colorTextBlack"
+                    android:rotation="180"
+                    android:scaleType="fitXY"
+                    app:riv_oval="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="5dp"
+                    />
+
+
+            </FrameLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <TextView

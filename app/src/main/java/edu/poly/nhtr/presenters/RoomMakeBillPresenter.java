@@ -161,6 +161,9 @@ public class RoomMakeBillPresenter {
 
         //Update status of bill
         data.put(Constants.KEY_IS_NOT_GIVE_BILL, true);
+        data.put(Constants.KEY_IS_NOT_PAY_BILL, false);
+        data.put(Constants.KEY_IS_PAYED_BILL, false);
+        data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
 
         data.put(Constants.KEY_MONEY_PLUS_OR_MINUS, bill.getPlusOrMinusMoneyList());
 

@@ -11,8 +11,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.DetailBillListener;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.models.RoomService;
@@ -218,5 +220,50 @@ public class DetailBillPresenter {
     public interface OnGetPhoneNumber {
         void onComplete(String phoneNumber);
     }
+
+    public void updateStatusOfBillWhenGiveBill(RoomBill bill, OnUpdateStatusOfBill listener) {
+        HashMap<String, Object> data = new HashMap<>();
+
+        //Update status of bill
+        data.put(Constants.KEY_IS_NOT_PAY_BILL, true);
+        data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
+        data.put(Constants.KEY_IS_PAYED_BILL, false);
+        data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
+
+
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
+                .document(bill.billID)
+                .update(data)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        listener.onComplete();
+                    }
+                });
+    }
+
+    public interface OnUpdateStatusOfBill{
+        void onComplete();
+    }
+
+    public void updateStatusOfBillWhenPayedBill(RoomBill bill, OnUpdateStatusOfBill listener) {
+        HashMap<String, Object> data = new HashMap<>();
+
+        //Update status of bill
+        data.put(Constants.KEY_IS_PAYED_BILL, true);
+        data.put(Constants.KEY_IS_NOT_PAY_BILL, false);
+        data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
+        data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
+
+
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
+                .document(bill.billID)
+                .update(data)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        listener.onComplete();
+                    }
+                });
+    }
+
 
 }
