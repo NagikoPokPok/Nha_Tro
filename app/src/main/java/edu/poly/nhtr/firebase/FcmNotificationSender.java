@@ -1,6 +1,7 @@
 package edu.poly.nhtr.firebase;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -52,8 +53,10 @@ public class FcmNotificationSender {
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, postUrl, mainObj, response -> {
                 // Code run got response
+                Log.d("FCM", "Notification sent successfully");
             }, volleyError -> {
                 // Code run error
+                Log.e("FCM", "Error sending notification", volleyError);
             }) {
                 @NonNull
                 @Override

@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
@@ -46,6 +49,16 @@ public class PreferenceManager {
     public Integer getInt(String key)
     {
         return sharedPreferences.getInt(key, -1);
+    }
+
+    public void putSet(String key, Set<String> value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(key, value);
+        editor.apply();
+    }
+
+    public Set<String> getSet(String key) {
+        return sharedPreferences.getStringSet(key, new HashSet<>());
     }
     public void clear( )
     {

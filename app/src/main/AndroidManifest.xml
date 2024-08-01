@@ -16,6 +16,9 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
 
     <application
         android:allowBackup="true"
@@ -66,32 +69,49 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--        <service-->
+<!--            android:name=".firebase.MessagingService"-->
+<!--            android:exported="false"-->
+<!--            android:permission="TODO">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT"/>-->
+<!--                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>-->
+<!--                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
         <service
             android:name=".firebase.MessagingService"
-            android:exported="false"
-            android:permission="TODO">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
+
 
         <service android:name=".alarmManager.AlarmService" />
 
         <receiver android:name=".alarmManager.AlarmReceiver" />
 
 
+        <receiver
+            android:name=".alarmManager.BootReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
+        <!--        <receiver android:name=".alarmManager.AlarmReceiver"-->
+        <!--            android:exported="false"-->
+        <!--            android:permission="TODO">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="edu.poly.nhtr.ACTION_NOTIFICATION_RECEIVED" />-->
 
-<!--        <receiver android:name=".alarmManager.AlarmReceiver"-->
-<!--            android:exported="false"-->
-<!--            android:permission="TODO">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="edu.poly.nhtr.ACTION_NOTIFICATION_RECEIVED" />-->
-
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        <!--            </intent-filter>-->
+        <!--        </receiver>-->
 
 
 

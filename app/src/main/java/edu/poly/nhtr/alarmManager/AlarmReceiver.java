@@ -8,9 +8,13 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Toast;
@@ -35,10 +39,13 @@ import org.checkerframework.checker.units.qual.C;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import edu.poly.nhtr.Activity.MainActivity;
+import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.firebase.FcmNotificationSender;
@@ -52,21 +59,25 @@ import timber.log.Timber;
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "ALARM_MANAGER_CHANNEL";
     private PreferenceManager preferenceManager;
+    private static final String PREFS_NAME = "AlarmsPrefs"; // Đổi tên để phù hợp với SharedPreferences trong AlarmService
+    private static final String PREFS_KEY_ALARMS = "alarms";
+    private Home home;
+    private Room room;
+    private String header, body;
+    private int requestCode;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        int requestCode = intent.getIntExtra("requestCode", -1);
-        Home home = (Home) intent.getSerializableExtra("home");
-        Room room = (Room) intent.getSerializableExtra("room");
-        String header = (String) intent.getSerializableExtra("header");
-        String body = (String) intent.getSerializableExtra("body");
+        requestCode = intent.getIntExtra("requestCode", -1);
+        home = (Home) intent.getSerializableExtra("home");
+        room = (Room) intent.getSerializableExtra("room");
+        header = (String) intent.getSerializableExtra("header");
+        body = (String) intent.getSerializableExtra("body");
         if (home == null) return;
 
         preferenceManager = new PreferenceManager(context);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> notificationIndex = new HashMap<>();
-        //String header = "Nhập chỉ số cho nhà trọ " + home.getNameHome();
-        //String body = "Hôm nay là ngày bạn cần nhập thông tin chỉ số cho tất cả các phòng ở nhà trọ " + home.getNameHome();
 
         switch (Objects.requireNonNull(intent.getAction())) {
             case Constants.ACTION_SET_EXACT: // For bil
@@ -80,7 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 notificationIndex.put(Constants.KEY_TIMESTAMP, new Date());
 
                 if (Constants.ACTION_SET_REPETITIVE_EXACT.equals(intent.getAction()) && room==null) {
-                    setRepetitiveAlarm(new AlarmService(context, home, null, header, body), requestCode);
+                    setRepetitiveAlarm(new AlarmService(context, home, null, header, body), requestCode, context, preferenceManager);
                     notificationIndex.put(Constants.KEY_ROOM_ID, "");
                     notificationIndex.put(Constants.KEY_NAME_ROOM, "");
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_INDEX, true);
@@ -89,7 +100,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 }
 
                 if( room != null){
-                    setRepetitiveAlarm(new AlarmService(context, home, room, header, body), requestCode);
+                    setRepetitiveAlarm(new AlarmService(context, home, room, header, body), requestCode, context, preferenceManager);
                     notificationIndex.put(Constants.KEY_ROOM_ID, room.getRoomId());
                     notificationIndex.put(Constants.KEY_NAME_ROOM, room.getNameRoom());
                     notificationIndex.put(Constants.KEY_NOTIFICATION_OF_BILL, true);
@@ -200,13 +211,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         preferenceManager.putString(Constants.KEY_NOTIFICATION_ID, notificationID, getInfoUserFromGoogleAccount(context, preferenceManager));
         preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, getInfoUserFromGoogleAccount(context, preferenceManager));
 
-        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
-                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
-                header, body, context.getApplicationContext()
-        );
-        fcmNotificationSender.SendNotifications();
-
-        sendBadgeUpdateBroadcast(context);
+        buildNotification(context, header, body, notificationID, home, room);
+       sendBadgeUpdateBroadcast(context);
     }
 
     private void notifyUserWithRoom(String header, String body, Home home, Room room, String notificationID, Context context, PreferenceManager preferenceManager) {
@@ -214,11 +220,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, getInfoUserFromGoogleAccount(context, preferenceManager));
         preferenceManager.putRoom(Constants.KEY_COLLECTION_ROOMS, room, home.idHome);
 
-        FcmNotificationSender fcmNotificationSender = new FcmNotificationSender(
-                preferenceManager.getString(Constants.KEY_FCM_TOKEN),
-                header, body, context.getApplicationContext()
-        );
-        fcmNotificationSender.SendNotifications();
+
+        buildNotification(context, header, body, notificationID, home, room);
 
         sendBadgeUpdateBroadcast(context);
     }
@@ -228,18 +231,118 @@ public class AlarmReceiver extends BroadcastReceiver {
         context.getApplicationContext().sendBroadcast(intent);
     }
 
+    private void buildNotification(Context context, String title, String body, String notificationID, Home home, Room room) {
+        // Ensure permission is granted
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            Log.e("Notification", "Notification permission not granted");
+            return;
+        }
+
+        createNotificationChannel(context);
+
+        PendingIntent resultPendingIntent = getResultPendingIntent(context, notificationID, home, room);
+
+        // Convert drawable resource to Bitmap
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_home_for_app);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon_notification)
+                .setLargeIcon(largeIcon)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentIntent(resultPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+    }
+
+    private PendingIntent getResultPendingIntent(Context context, String notificationID, Home home, Room room) {
+        Intent resultIntent;
+        int requestCode = (int) System.currentTimeMillis(); // Unique request code for each PendingIntent
+
+        if (room == null) {
+            resultIntent = new Intent(context, MainRoomActivity.class);
+            resultIntent.putExtra("FRAGMENT_TO_LOAD", "IndexFragment");
+            resultIntent.putExtra("home", home);
+            resultIntent.putExtra("notification_document_id", notificationID);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addNextIntentWithParentStack(resultIntent);
+            return stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            Intent intentMainRoom = new Intent(context, MainRoomActivity.class);
+            intentMainRoom.putExtra("FRAGMENT_TO_LOAD", "HomeFragment");
+            intentMainRoom.putExtra("home", home);
+
+            Intent intentDetailedRoom = new Intent(context, MainDetailedRoomActivity.class);
+            intentDetailedRoom.putExtra("target_fragment_index", 2);
+            intentDetailedRoom.putExtra("room", room);
+            intentDetailedRoom.putExtra("notification_document_id", notificationID);
+            intentDetailedRoom.putExtra("home", home);
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addParentStack(MainDetailedRoomActivity.class);
+            stackBuilder.addNextIntent(intentMainRoom);
+            stackBuilder.addNextIntent(intentDetailedRoom);
+
+            return stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+    }
+
+    private void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Alarm Manager Channel";
+            String description = "Channel for Alarm Manager notifications";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
 
     private void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 
-    private void setRepetitiveAlarm(AlarmService alarmService, int requestCode) {
+    private void setRepetitiveAlarm(AlarmService alarmService, int requestCode, Context context, PreferenceManager preferenceManager) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
-        Timber.d("Set alarm for next month same time - %s", convertDate(cal.getTimeInMillis()));
+        Log.d("Set alarm for next month same time - %s", convertDate(cal.getTimeInMillis()));
         alarmService.setRepetitiveAlarm(cal.getTimeInMillis(),requestCode);
+
+        // Save data of alarm
+        saveAlarmData(home, room, header, body, requestCode, context, preferenceManager, cal.getTimeInMillis());
     }
+
+    private void saveAlarmData(Home home, Room room, String header, String body, int requestCode, Context context, PreferenceManager preferenceManager, long timeInMillis) {
+
+        String userID = getInfoUserFromGoogleAccount(context, preferenceManager);
+        preferenceManager.putHome(Constants.KEY_COLLECTION_HOMES, home, userID);
+        preferenceManager.putRoom(Constants.KEY_COLLECTION_ROOMS, room, home.getIdHome());
+
+
+        Set<String> alarms = preferenceManager.getSet(Constants.KEY_NOTIFICATION_SET);
+
+        // Xóa thông tin alarm cũ (nếu có)
+        alarms.removeIf(alarm -> alarm.contains(String.valueOf(requestCode)));
+
+        // Thêm alarm mới
+        if(room==null){
+            alarms.add(timeInMillis + "," + requestCode+ "," + home.getIdHome()+ "," + home.getNameHome()+ "," + null + "," + null + "," + header + "," + body + "," + userID);
+        }else{
+            alarms.add(timeInMillis + "," + requestCode+ "," + home.getIdHome()+ "," + home.getNameHome()+ "," +room.getRoomId() + "," + room.getNameRoom() + "," + header + "," + body + "," + userID);
+        }
+
+        preferenceManager.putSet(Constants.KEY_NOTIFICATION_SET, alarms);
+    }
+
 
     private String convertDate(long timeInMillis) {
         return DateFormat.format("dd/MM/yyyy hh:mm:ss", timeInMillis).toString();
