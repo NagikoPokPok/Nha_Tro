@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_margin="36dp"
+    android:orientation="vertical"
+    android:elevation="10dp"
+    android:layout_gravity="center"
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <FrameLayout
+            android:id="@+id/frm_Image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/img_delete"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/background_dialog_delete"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                app:riv_oval="true" />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_delete_outline"
+                android:backgroundTint="@color/white"
+                android:layout_gravity="center"/>
+
+
+        </FrameLayout>
+
+        <TextView
+            style="@style/TEXT_BOLD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@string/xac_nhan_xoa"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txt_confirm_delete"
+            style="@style/TEXT_MED"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Toàn bộ dữ liệu về hợp đồng và khách thuê sẽ bị xoá ! "
+            android:textColor="@color/colorTextBlack"
+            android:textSize="15sp" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/TEXT_MED_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/custom_button_cancel"
+                android:text="@string/huy"
+                android:textColor="@color/colorButton"
+                android:textSize="16sp"
+                app:backgroundTint="@null"
+                app:iconGravity="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm_delete_contract"
+                style="@style/TEXT_MED_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@drawable/custom_button_clicked"
+                android:text="@string/xac_nhan"
+                android:textSize="16sp"
+                app:backgroundTint="@color/colorButton"
+                app:iconGravity="textStart" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="-70dp"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
