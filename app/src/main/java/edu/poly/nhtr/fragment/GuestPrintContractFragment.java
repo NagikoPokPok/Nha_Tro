@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -45,6 +46,7 @@ import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
+import timber.log.Timber;
 
 public class GuestPrintContractFragment extends Fragment {
 
@@ -55,9 +57,10 @@ public class GuestPrintContractFragment extends Fragment {
     private Room room;
     private Home home;
     private FragmentGuestPrintContractBinding binding;
-    private RoomContractFragment.OnFragmentInteractionListener mListener;
     private PreferenceManager preferenceManager;
     private WebView webView;
+
+    private RoomContractFragment.OnFragmentInteractionListener mListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -65,7 +68,7 @@ public class GuestPrintContractFragment extends Fragment {
         if (context instanceof RoomContractFragment.OnFragmentInteractionListener) {
             mListener = (RoomContractFragment.OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -76,14 +79,12 @@ public class GuestPrintContractFragment extends Fragment {
         printContract = binding.btnPrintContract;
         progressBar = binding.progressBar;
         db = FirebaseFirestore.getInstance();
-
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         webView = binding.webviewPdf;
 
         Bundle arguments = getArguments();
@@ -108,7 +109,6 @@ public class GuestPrintContractFragment extends Fragment {
             showToast("Invalid arguments");
         }
     }
-
 
     private void showProgressBar(boolean show) {
         if (show) {
@@ -207,7 +207,12 @@ public class GuestPrintContractFragment extends Fragment {
                                                                 createPdf(path, fullName, cccdNumber, roomName, roomPrice, homeName, contractCreateDate, contractExpireDate, dateIn, gender, totalMembers, payDate);
                                                             }
 
-                                                            uploadPdfToFirebaseStorage(pdfFile);
+                                                            if (pdfFile.exists()) {
+                                                                uploadPdfToFirebaseStorage(pdfFile);
+                                                            } else {
+                                                                showToast("PDF file does not exist");
+                                                            }
+
                                                             showProgressBar(false);
                                                         } else {
                                                             showToast("Failed to fetch home data");
@@ -233,8 +238,6 @@ public class GuestPrintContractFragment extends Fragment {
                 });
     }
 
-
-
     private void createPdf(String path, String fullName, String idNumber, String roomName, String roomPrice, String homeName, String contractCreateDate, String contractExpireDate, String dateIn, String gender, Long totalMembers, String payDate) {
         try {
             PdfWriter writer = new PdfWriter(Files.newOutputStream(Paths.get(path)));
@@ -249,58 +252,107 @@ public class GuestPrintContractFragment extends Fragment {
                 font = PdfFontFactory.createFont();
             }
 
-            Text header = new Text("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐỘC LẬP - TỰ DO - HẠNH PHÚC")
+            Text header = new Text("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc")
                     .setFont(font)
-                    .setFontSize(14)
-                    .setBold();
-            Paragraph headerParagraph = new Paragraph(header)
                     .setTextAlignment(TextAlignment.CENTER)
-                    .setMarginBottom(20);
-            document.add(headerParagraph);
+                    .setBold()
+                    .setFontSize(14);
+            document.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER));
 
-            // Add contract details
-            document.add(new Paragraph("Tên người thuê: " + fullName).setFont(font));
-            document.add(new Paragraph("Số CMND/CCCD: " + idNumber).setFont(font));
-            document.add(new Paragraph("Tên phòng: " + roomName).setFont(font));
-            document.add(new Paragraph("Giá phòng: " + roomPrice).setFont(font));
-            document.add(new Paragraph("Tên nhà: " + homeName).setFont(font));
-            document.add(new Paragraph("Ngày ký hợp đồng: " + contractCreateDate).setFont(font));
-            document.add(new Paragraph("Ngày hết hạn hợp đồng: " + contractExpireDate).setFont(font));
-            document.add(new Paragraph("Ngày nhận phòng: " + dateIn).setFont(font));
-            document.add(new Paragraph("Giới tính: " + gender).setFont(font));
-            document.add(new Paragraph("Tổng số thành viên: " + totalMembers).setFont(font));
-            document.add(new Paragraph("Ngày thanh toán: " + payDate).setFont(font));
+            // Add tenant info
+            document.add(new Paragraph("\nHọ và tên người thuê: " + fullName)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("CCCD: " + idNumber)
+                    .setFont(font)
+                    .setFontSize(12));
+
+            // Add room info
+            document.add(new Paragraph("\nTên phòng: " + roomName)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("Giá phòng: " + roomPrice)
+                    .setFont(font)
+                    .setFontSize(12));
+
+            // Add home info
+            document.add(new Paragraph("\nTên nhà: " + homeName)
+                    .setFont(font)
+                    .setFontSize(12));
+
+            // Add contract dates
+            document.add(new Paragraph("\nNgày bắt đầu hợp đồng: " + contractCreateDate)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("Ngày hết hạn hợp đồng: " + contractExpireDate)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("Ngày vào ở: " + dateIn)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("Giới tính: " + gender)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("Tổng số thành viên: " + totalMembers)
+                    .setFont(font)
+                    .setFontSize(12));
+            document.add(new Paragraph("Ngày trả tiền: " + payDate)
+                    .setFont(font)
+                    .setFontSize(12));
 
             document.close();
         } catch (Exception e) {
-            e.printStackTrace();
-            showToast("Lỗi khi tạo PDF: " + e.getMessage());
+            Timber.tag("PDF Creation").e(e, "Error creating PDF");
         }
     }
 
-
     private void uploadPdfToFirebaseStorage(File pdfFile) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference pdfRef = storageRef.child("contracts/" + pdfFile.getName());
+        Uri fileUri = Uri.fromFile(pdfFile);
+        String storagePath = "contracts/" + pdfFile.getName();
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(storagePath);
 
-        Uri file = Uri.fromFile(pdfFile);
-        UploadTask uploadTask = pdfRef.putFile(file);
-
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            pdfRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                previewPdf(uri.toString());
-            });
-        }).addOnFailureListener(exception -> {
+        UploadTask uploadTask = storageRef.putFile(fileUri);
+        uploadTask.addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            String downloadUrl = uri.toString();
+            Timber.tag("PDF Upload").d("PDF uploaded successfully. Download URL: %s", downloadUrl);
+            showToast("PDF uploaded successfully");
+            showPdfInWebView(downloadUrl);
+            downloadPdf(downloadUrl, pdfFile.getName());
+        })).addOnFailureListener(exception -> {
+            Timber.tag("PDF Upload").e(exception, "Failed to upload PDF");
             showToast("Failed to upload PDF: " + exception.getMessage());
         });
     }
 
-    private void previewPdf(String url) {
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("https://docs.google.com/gview?embedded=true&url=" + url);
+    private void downloadPdf(String url, String fileName) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setTitle(fileName);
+        request.setDescription("Downloading PDF contract");
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+        DownloadManager downloadManager = (DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+        } else {
+            showToast("Failed to download PDF");
+        }
     }
 
 
+    private void showPdfInWebView(String url) {
+        webView.loadUrl("https://docs.google.com/viewer?url=" + url);
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }
