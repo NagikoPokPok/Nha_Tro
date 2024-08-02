@@ -37,6 +37,8 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -45,8 +47,6 @@ import edu.poly.nhtr.databinding.FragmentGuestPrintContractBinding;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
-import edu.poly.nhtr.utilities.PreferenceManager;
-import timber.log.Timber;
 
 public class GuestPrintContractFragment extends Fragment {
 
@@ -56,8 +56,8 @@ public class GuestPrintContractFragment extends Fragment {
     private static final int REQUEST_PERMISSION_CODE = 100;
     private Room room;
     private Home home;
+    private String pdfUrl;
     private FragmentGuestPrintContractBinding binding;
-    private PreferenceManager preferenceManager;
     private WebView webView;
 
     private RoomContractFragment.OnFragmentInteractionListener mListener;
@@ -75,7 +75,6 @@ public class GuestPrintContractFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentGuestPrintContractBinding.inflate(inflater, container, false);
-        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         printContract = binding.btnPrintContract;
         progressBar = binding.progressBar;
         db = FirebaseFirestore.getInstance();
@@ -86,6 +85,9 @@ public class GuestPrintContractFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView = binding.webviewPdf;
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -94,7 +96,7 @@ public class GuestPrintContractFragment extends Fragment {
             if (room != null && home != null) {
                 printContract.setOnClickListener(v -> {
                     if (checkPermissions()) {
-                        fetchDataAndDisplayPdf(room.getRoomId(), home.getIdHome());
+                        downloadPdf();
                     } else {
                         requestPermissions();
                     }
@@ -302,7 +304,6 @@ public class GuestPrintContractFragment extends Fragment {
 
             document.close();
         } catch (Exception e) {
-            Timber.tag("PDF Creation").e(e, "Error creating PDF");
         }
     }
 
@@ -311,37 +312,54 @@ public class GuestPrintContractFragment extends Fragment {
         String storagePath = "contracts/" + pdfFile.getName();
         StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(storagePath);
 
+        // Disable the "Print" button while the upload is in progress
+        printContract.setEnabled(false);
+
         UploadTask uploadTask = storageRef.putFile(fileUri);
         uploadTask.addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            String downloadUrl = uri.toString();
-            Timber.tag("PDF Upload").d("PDF uploaded successfully. Download URL: %s", downloadUrl);
+            pdfUrl = uri.toString(); // Save the URL
             showToast("PDF uploaded successfully");
-            showPdfInWebView(downloadUrl);
-            downloadPdf(downloadUrl, pdfFile.getName());
+            showPdfInWebView(pdfUrl);
+
+            // Enable the "Print" button after the upload is complete
+            printContract.setEnabled(true);
         })).addOnFailureListener(exception -> {
-            Timber.tag("PDF Upload").e(exception, "Failed to upload PDF");
             showToast("Failed to upload PDF: " + exception.getMessage());
+
+            // Enable the "Print" button even if the upload fails
+            printContract.setEnabled(true);
         });
     }
 
-    private void downloadPdf(String url, String fileName) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setTitle(fileName);
-        request.setDescription("Downloading PDF contract");
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 
-        DownloadManager downloadManager = (DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-        if (downloadManager != null) {
-            downloadManager.enqueue(request);
+    private void downloadPdf() {
+        if (pdfUrl != null) {
+            String fileName = Uri.parse(pdfUrl).getLastPathSegment();
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(pdfUrl));
+            request.setTitle(fileName);
+            request.setDescription("Downloading PDF contract");
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+            DownloadManager downloadManager = (DownloadManager) requireActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+            if (downloadManager != null) {
+                downloadManager.enqueue(request);
+            } else {
+                showToast("Failed to download PDF");
+            }
         } else {
-            showToast("Failed to download PDF");
+            showToast("No PDF to download");
         }
     }
 
 
     private void showPdfInWebView(String url) {
-        webView.loadUrl("https://docs.google.com/viewer?url=" + url);
+        try {
+            String encodedUrl = URLEncoder.encode(url, "UTF-8");
+            webView.loadUrl("https://docs.google.com/viewer?url=" + encodedUrl);
+        } catch (UnsupportedEncodingException e) {
+            showToast("Failed to load PDF in WebView: " + e.getMessage());
+        }
     }
 
     @Override

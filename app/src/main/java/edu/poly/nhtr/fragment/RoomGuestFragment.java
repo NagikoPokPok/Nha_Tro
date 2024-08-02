@@ -155,9 +155,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         }
 
 
-
-
-
         setListeners();
 
         binding.btnDeleteContract.setOnClickListener(new View.OnClickListener() {
