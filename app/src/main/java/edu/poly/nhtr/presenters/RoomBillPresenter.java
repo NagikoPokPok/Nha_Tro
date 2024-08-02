@@ -268,13 +268,37 @@ public class RoomBillPresenter {
                 public void onComplete(MainGuest contract) {
                     int daysUntilDueDate = contract.getDaysUntilDueDate();
                     if(daysBetween > daysUntilDueDate && bill.isNotPayBill()){
-                        bill.isDelayPayBill = true;
+                        updateStatusOfBillWhenDelayBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
                     }
                 }
             });
         }
 
         return bill;
+    }
+
+    public void updateStatusOfBillWhenDelayBill(RoomBill bill, DetailBillPresenter.OnUpdateStatusOfBill listener) {
+        HashMap<String, Object> data = new HashMap<>();
+
+        //Update status of bill
+        data.put(Constants.KEY_IS_NOT_PAY_BILL, false);
+        data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
+        data.put(Constants.KEY_IS_PAYED_BILL, false);
+        data.put(Constants.KEY_IS_DELAY_PAY_BILL, true);
+
+        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
+                .document(bill.billID)
+                .update(data)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        listener.onComplete();
+                    }
+                });
     }
 
 

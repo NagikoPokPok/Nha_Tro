@@ -163,7 +163,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         binding.btnDeleteContract.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("Delete contract => Cancel alarm");
                 int requestCode1 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId()+"code1"));
                 alarmService.cancelRepetitiveAlarm(requestCode1);
 
@@ -320,6 +319,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                             }
 
                             showToast(dayOfGiveBill+"  "+ month + " " + year);
+                            //showToast(String.valueOf(mainGuest.getDaysUntilDueDate()));
 
                             requestCode1 = generateRandomRequestCode();
                             preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.roomId+"code1");

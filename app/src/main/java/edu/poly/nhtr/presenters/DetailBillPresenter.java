@@ -11,6 +11,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -229,6 +231,10 @@ public class DetailBillPresenter {
         data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
         data.put(Constants.KEY_IS_PAYED_BILL, false);
         data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
+
+        Date currentDate = new Date();
+        data.put(Constants.KEY_DATE_GIVE_BILL, currentDate);
+
 
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)

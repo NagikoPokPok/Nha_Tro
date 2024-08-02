@@ -276,6 +276,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                 mainGuest.setPayDate(documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE));
                                 mainGuest.setCreateDate(documentSnapshot.getString(Constants.KEY_CONTRACT_CREATED_DATE));
                                 mainGuest.setGuestDateIn(documentSnapshot.getString(Constants.KEY_GUEST_DATE_IN));
+                                mainGuest.setDaysUntilDueDate(Math.toIntExact(documentSnapshot.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)));
 
                                 listener.onComplete(mainGuest);
                             }
