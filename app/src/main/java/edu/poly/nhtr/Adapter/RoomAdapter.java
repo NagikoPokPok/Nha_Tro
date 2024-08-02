@@ -1,6 +1,7 @@
 package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,13 +9,16 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import edu.poly.nhtr.Activity.MainViewModel;
 import edu.poly.nhtr.R;
@@ -213,6 +217,19 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 params.topMargin = 30;
                 // Áp dụng LayoutParams trở lại LinearLayout
                 binding.layoutPriceOfRoom.setLayoutParams(params);
+                binding.btnAddContract.setVisibility(View.VISIBLE);
+            } else{
+                binding.btnAddContract.setVisibility(View.GONE);
+            }
+
+            if (binding.edtTrangThaiThanhToan.getText().toString().equals("Đã thanh toán")) {
+                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#008000")); // Màu xanh lá cây
+            } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Chưa thanh toán")) {
+                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#0000FF")); // Màu xanh dương (primary)
+            } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Trễ hạn thanh toán")) {
+                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#FF0000")); // Màu đỏ
+            } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Chưa gửi hóa đơn")) {
+                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#000000")); // Màu đen
             }
 
             if(binding.txtDescribe.getText().length() == 0)

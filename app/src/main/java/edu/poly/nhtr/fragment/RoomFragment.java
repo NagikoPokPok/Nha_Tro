@@ -1246,5 +1246,9 @@ public class RoomFragment extends Fragment implements RoomListener {
 //            }
 //        });
 //    }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        roomPresenter.getRooms("init");
+    }
 }

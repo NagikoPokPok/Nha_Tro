@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
@@ -18,13 +19,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
+import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.utilities.Constants;
+import timber.log.Timber;
 
 public class RoomPresenter {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -108,7 +112,6 @@ public class RoomPresenter {
                 .whereEqualTo(Constants.KEY_HOME_ID, roomListener.getInfoHomeFromGoogleAccount())
                 .get()
                 .addOnCompleteListener(task -> {
-                    roomListener.hideLoading();
                     if (task.isSuccessful() && task.getResult() != null) {
                         List<Room> rooms = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
@@ -117,23 +120,26 @@ public class RoomPresenter {
                             room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
                             room.price = document.getString(Constants.KEY_PRICE);
                             room.describe = document.getString(Constants.KEY_DESCRIBE);
-                            room.status = document.getString(Constants.KEY_STATUS_PAID);
                             room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                             rooms.add(room);
                         }
                         if (!rooms.isEmpty()) {
                             updateInfoRooms(rooms, action);
-
                         } else {
                             roomListener.addRoomFailed();
+                            roomListener.hideLoading();
                         }
                     } else {
                         roomListener.addRoomFailed();
+                        roomListener.hideLoading();
                     }
                 });
     }
 
     private void updateInfoRooms(List<Room> rooms, String action) {
+        AtomicInteger completedRequests = new AtomicInteger(0); // Sử dụng AtomicInteger để đếm số yêu cầu đã hoàn thành
+        int totalRooms = rooms.size();
+
         for (Room room : rooms) {
             getNameGuest(room.roomId, new OnGetInfoOfMainGuest() {
                 @Override
@@ -141,22 +147,89 @@ public class RoomPresenter {
                     if (mainGuest != null) {
                         room.nameUser = mainGuest.getNameGuest();
                         room.phoneNumer = mainGuest.getPhoneGuest();
+                        room.numberOfMemberLiving=String.valueOf(mainGuest.getTotalMembers());
                     }
-                    // Gọi addRoom hoặc addRoomFailed sau khi lấy thông tin cho tất cả các phòng
-                    if (room.equals(rooms.get(rooms.size() - 1))) {
-                        roomListener.addRoom(rooms, action);
-                    }
+
+                    getStatusOFBill(room.roomId, new OnGetInfoOfBill() {
+                        @Override
+                        public void onComplete(RoomBill roomBill) {
+                            if (roomBill != null) {
+                                if (roomBill.isNotPayBill) {
+                                    room.status = "Chưa thanh toán";
+                                } else if (roomBill.isPayedBill) {
+                                    room.status = "Đã thanh toán";
+                                } else if (roomBill.isDelayPayBill) {
+                                    room.status = "Trễ hạn thanh toán";
+                                } else if (roomBill.isNotGiveBill){
+                                    room.status="Chưa gửi hóa đơn";
+                                }
+                            }
+
+                            // Đếm số yêu cầu đã hoàn thành
+                            if (completedRequests.incrementAndGet() == totalRooms) {
+                                // Khi tất cả các yêu cầu đã hoàn thành, kiểm tra và cập nhật giao diện
+                                if (!rooms.isEmpty()) {
+                                    roomListener.addRoom(rooms, action);
+                                } else {
+                                    roomListener.addRoomFailed();
+                                }
+                                roomListener.hideLoading();
+                            }
+                        }
+                    });
                 }
             });
         }
-
-
     }
 
-    private void getStatusOFBill()
-    {
-
+    private void getStatusOFBill(String roomID, OnGetInfoOfBill listener) {
+        List<RoomBill> billList = new ArrayList<>();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection(Constants.KEY_COLLECTION_BILL)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                            try {
+                                RoomBill bill = new RoomBill();
+                                bill.isPayedBill = document.getBoolean(Constants.KEY_IS_PAYED_BILL);
+                                bill.isDelayPayBill = document.getBoolean(Constants.KEY_IS_DELAY_PAY_BILL);
+                                bill.isNotPayBill = document.getBoolean(Constants.KEY_IS_NOT_PAY_BILL);
+                                bill.isNotGiveBill=document.getBoolean(Constants.KEY_IS_NOT_GIVE_BILL);
+                                bill.year = Math.toIntExact(document.getLong(Constants.KEY_YEAR));
+                                bill.month = Math.toIntExact(document.getLong(Constants.KEY_MONTH));
+                                billList.add(bill);
+                            } catch (NullPointerException e) {
+                                Log.e("GetStatusOFBill", "Null value encountered in document: " + document.getId(), e);
+                            }
+                        }
+                        if (!billList.isEmpty()) {
+                            billList.sort((bill1, bill2) -> {
+                                int yearComparison = Integer.compare(bill2.year, bill1.year);
+                                if (yearComparison != 0) {
+                                    return yearComparison;
+                                } else {
+                                    return Integer.compare(bill2.month, bill1.month);
+                                }
+                            });
+                            RoomBill latestBill = billList.get(0);
+                            listener.onComplete(latestBill);
+                        } else {
+                            listener.onComplete(null);
+                        }
+                    } else {
+                        listener.onComplete(null);
+                        Log.e("GetStatusOFBill", "Error getting documents: ", task.getException());
+                    }
+                });
     }
+
+    public interface OnGetInfoOfBill {
+        void onComplete(RoomBill roomBill);
+    }
+
     private void getNameGuest(String roomID, OnGetInfoOfMainGuest listener) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_CONTRACTS)
@@ -167,6 +240,7 @@ public class RoomPresenter {
                         MainGuest mainGuest = new MainGuest();
                         mainGuest.setPhoneGuest(task.getResult().getDocuments().get(0).getString(Constants.KEY_GUEST_PHONE));
                         mainGuest.setNameGuest(task.getResult().getDocuments().get(0).getString(Constants.KEY_GUEST_NAME));
+                        mainGuest.setTotalMembers(Math.toIntExact(task.getResult().getDocuments().get(0).getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)));
                         listener.onComplete(mainGuest);
                     } else {
                         listener.onComplete(null);
@@ -178,6 +252,8 @@ public class RoomPresenter {
     public interface OnGetInfoOfMainGuest {
         void onComplete(MainGuest mainGuest);
     }
+
+
 
 
     private Boolean isDuplicate(String fieldFromFirestore, String fieldFromRoom, String homeIdFromFirestore, Room room) {

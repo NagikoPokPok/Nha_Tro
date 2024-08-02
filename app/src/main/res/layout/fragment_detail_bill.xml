@@ -391,7 +391,6 @@
                     android:background="@drawable/khung"
                     android:clipToPadding="true"
                     android:orientation="vertical"
-                    android:overScrollMode="never"
                     android:padding="10dp"
                     android:visibility="visible"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

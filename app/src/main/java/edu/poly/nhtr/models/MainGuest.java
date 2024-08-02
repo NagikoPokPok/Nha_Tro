@@ -18,6 +18,8 @@ public class MainGuest extends Guest implements Serializable {
     private String contractImageBack;
     public String guestDateIn;
 
+
+
     public String getGuestDateIn() {
         return guestDateIn;
     }
