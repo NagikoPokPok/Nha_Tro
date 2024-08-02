@@ -14,9 +14,11 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -715,5 +717,41 @@ public class GuestEditContractPresenter {
         } else {
             textInputLayout.setError(null);
         }
+    }
+
+
+    public void getDayOfMakeBill(String roomID, OnGetDayOfMakeBillCompleteListener listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(Constants.KEY_COLLECTION_CONTRACTS)
+                .whereEqualTo(Constants.KEY_ROOM_ID, roomID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+                                MainGuest mainGuest = new MainGuest();
+                                mainGuest.setPayDate(documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE));
+                                mainGuest.setCreateDate(documentSnapshot.getString(Constants.KEY_CONTRACT_CREATED_DATE));
+                                mainGuest.setGuestDateIn(documentSnapshot.getString(Constants.KEY_GUEST_DATE_IN));
+                                mainGuest.setDaysUntilDueDate(Math.toIntExact(documentSnapshot.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)));
+
+                                listener.onComplete(mainGuest);
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    public interface OnGetDayOfMakeBillCompleteListener {
+        void onComplete(MainGuest mainGuest);
     }
 }

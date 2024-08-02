@@ -131,7 +131,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         });
 
 
-
         // Retrieve the room object from the arguments
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -160,107 +159,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         binding.btnDeleteContract.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int requestCode1 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId()+"code1"));
+                int requestCode1 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1"));
                 alarmService.cancelRepetitiveAlarm(requestCode1);
 
-                int requestCode2 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId()+"code2"));
+                int requestCode2 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code2"));
                 alarmService2.cancelRepetitiveAlarm(requestCode2);
-            }
-        });
-
-        binding.btnSetAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.getDayOfMakeBill(room.getRoomId(), new RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener() {
-                    @Override
-                    public void onComplete(MainGuest mainGuest) {
-                        Calendar calendar = Calendar.getInstance();
-                        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-                        int currentMonth = calendar.get(Calendar.MONTH) + 1;
-                        int currentYear = calendar.get(Calendar.YEAR);
-
-                        int dayOfGiveBill = Integer.parseInt(mainGuest.getPayDate());
-                        String date = mainGuest.getGuestDateIn();
-
-                        String[] dateParts = date.split("/");
-                        int dayDateInOfGuest = Integer.parseInt(dateParts[0]);
-                        int monthDateInOfGuest = Integer.parseInt(dateParts[1]);
-                        int yearDateInOfGuest = Integer.parseInt(dateParts[2]);
-
-                        int month = currentMonth;
-                        int year = currentYear;
-
-                        String str1 = preferenceManager.getString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1, room.getRoomId() + "code1");
-                        String str2 = preferenceManager.getString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2, room.getRoomId() + "code2");
-
-                        int previousDay1 = str1 != null ? Integer.parseInt(str1) : -1;
-                        int previousDay2 = str2 != null ? Integer.parseInt(str2) : -1;
-
-                        // Kiểm tra nếu ngày hóa đơn mới có hợp lệ
-                        if (dayOfGiveBill < 1 || dayOfGiveBill > getLastDayOfMonth(month, year)) {
-                            showToast("Ngày hóa đơn không hợp lệ");
-                            return;
-                        }
-
-                        // Kiểm tra nếu ngày hóa đơn mới xảy ra trước ngày hiện tại
-                        if (currentDay > dayOfGiveBill) {
-                            showToast("Ngày hóa đơn đã qua");
-                            return;
-                        }
-
-                        // Kiểm tra nếu ngày vào ở xảy ra sau ngày hiện tại
-                        if (yearDateInOfGuest < currentYear ||
-                                (yearDateInOfGuest == currentYear && monthDateInOfGuest < currentMonth) ||
-                                (yearDateInOfGuest == currentYear && monthDateInOfGuest == currentMonth && dayDateInOfGuest < currentDay)) {
-                            showToast("Khách đã vào ở");
-                            return;
-                        }
-
-                        // Kiểm tra nếu alarm mới là giống như alarm cũ
-                        if (dayOfGiveBill == previousDay2 || dayOfGiveBill - 1 == previousDay1) {
-                            showToast("Alarm đã được đặt");
-                            return;
-                        }
-
-                        // Kiểm tra và cập nhật tháng và năm nếu cần thiết
-                        if (currentDay >= dayOfGiveBill) {
-                            month = currentMonth + 1;
-                            if (month > 12) {
-                                month = 1;
-                                year++;
-                            }
-                        } else {
-                            if (previousDay2 >= dayOfGiveBill || previousDay1 == dayOfGiveBill) {
-                                month = currentMonth + 1;
-                                if (month > 12) {
-                                    month = 1;
-                                    year++;
-                                }
-                            }
-                        }
-
-                        // Đặt lại alarm cho ngày đầu tháng mới
-                        if (dayOfGiveBill == 1) {
-                            month = currentMonth == 12 ? 1 : currentMonth + 1;
-                            year = currentMonth == 12 ? currentYear + 1 : currentYear;
-                            showToast("Alarm sẽ được đặt lại cho ngày đầu tháng mới");
-                        }
-
-                        // Sinh mã yêu cầu cho alarm
-                        String requestCode1Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1");
-                        int requestCode1 = requestCode1Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode1Str);
-
-                        String requestCode2Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code2");
-                        int requestCode2 = requestCode2Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode2Str);
-
-                        // Đặt lại alarm với ngày giao hợp đồng mới
-                        preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.getRoomId() + "code1");
-                        setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, requestCode1);
-
-                        preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.getRoomId() + "code2");
-                        setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2);
-                    }
-                });
             }
         });
 
@@ -268,6 +171,8 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
 
     }
+
+
 
     // Hàm để lấy ngày cuối cùng của tháng
     private int getLastDayOfMonth(int month, int year) {
@@ -278,8 +183,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     private void setAlarmForBill() {
-
-
         presenter.getDayOfMakeBill(room.getRoomId(), new RoomGuestPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
             public void onComplete(MainGuest mainGuest) {
@@ -315,17 +218,17 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                                 month = monthDateInOfGuest;
                             }
 
-                            showToast(dayOfGiveBill+"  "+ month + " " + year);
+                            showToast(dayOfGiveBill + "  " + month + " " + year);
                             //showToast(String.valueOf(mainGuest.getDaysUntilDueDate()));
 
                             requestCode1 = generateRandomRequestCode();
-                            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.roomId+"code1");
-                            preferenceManager.putString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1, String.valueOf(dayOfGiveBill-1), room.roomId+"code1");
+                            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.roomId + "code1");
+                            preferenceManager.putString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1, String.valueOf(dayOfGiveBill - 1), room.roomId + "code1");
                             setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, requestCode1); // requestCode 1
 
                             requestCode2 = generateRandomRequestCode();
-                            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.roomId+"code2");
-                            preferenceManager.putString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2, String.valueOf(dayOfGiveBill), room.roomId+"code2");
+                            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.roomId + "code2");
+                            preferenceManager.putString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2, String.valueOf(dayOfGiveBill), room.roomId + "code2");
                             setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2); // requestCode 2
                         }
                     }
@@ -782,8 +685,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
-
-
 
 
     private void openUpdateGuestDialog(Guest guest) {

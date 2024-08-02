@@ -182,6 +182,7 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
         GuestEditContractFragment editContractFragment = new GuestEditContractFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
         editContractFragment.setArguments(bundle);
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, editContractFragment)
