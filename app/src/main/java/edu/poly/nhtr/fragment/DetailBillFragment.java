@@ -159,7 +159,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                 binding.plusRecyclerView.setAdapter(plusAdapter);
                 binding.plusRecyclerView.setVisibility(View.VISIBLE);
 
-                String totalPlusMoney = "Tổng tiền cộng: " + bill.getTotalMoneyPlus();
+                String totalPlusMoney = "Tổng tiền cộng: " + formatMoney(bill.getTotalMoneyPlus());
                 binding.txtTotalPlusMoney.setText(totalPlusMoney);
                 binding.txtTotalPlusMoney.setVisibility(View.VISIBLE);
             }
@@ -168,7 +168,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                 binding.minusRecyclerView.setAdapter(minusAdapter);
                 binding.minusRecyclerView.setVisibility(View.VISIBLE);
 
-                String totalMinusMoney = "Tổng tiền trừ: " + bill.getTotalMoneyMinus();
+                String totalMinusMoney = "Tổng tiền trừ: " + formatMoney(bill.getTotalMoneyMinus());
                 binding.txtTotalMinusMoney.setText(totalMinusMoney);
                 binding.txtTotalMinusMoney.setVisibility(View.VISIBLE);
             }

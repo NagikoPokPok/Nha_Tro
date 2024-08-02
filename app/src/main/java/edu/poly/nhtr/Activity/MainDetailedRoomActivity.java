@@ -303,4 +303,20 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
                 .replace(R.id.fragment_container, roomGuestFragment)
                 .commit();
     }
+
+    public void showTabLayoutEditRoomGuestFragment() {
+        showTabLayout();
+
+        RoomGuestFragment roomGuestFragment = new RoomGuestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
+        roomGuestFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, roomGuestFragment)
+                .commit();
+
+//        roomGuestFragment.onResume();
+    }
 }

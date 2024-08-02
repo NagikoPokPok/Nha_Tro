@@ -264,6 +264,8 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         // Nếu tg kết thúc hợp đồng không quá 5 ngày sau ngày thanh toán sẽ gộp bill
         if (ChronoUnit.DAYS.between(payDate, expirationContractDate) <=5)
             payDate = expirationContractDate;
+        payDate.plusDays(Integer.parseInt(payDay));
+
 
         // Ngày bắt đầu tính
         LocalDate startDate;
@@ -271,7 +273,9 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             startDate = createContractDate;
         else
             startDate = payDate.minusMonths(1);
-        payDate.plusDays(Integer.parseInt(payDay));
+
+
+        binding.txtPayDate.setText(payDate.format(formatter));
 
         binding.txtDateStart.setText(startDate.format(formatter));
         binding.txtDateEnd.setText(payDate.format(formatter));
