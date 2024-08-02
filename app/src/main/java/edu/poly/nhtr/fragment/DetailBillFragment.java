@@ -43,7 +43,7 @@ import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.presenters.DetailBillPresenter;
 import edu.poly.nhtr.utilities.Constants;
 
-public class DetailBillFragment extends Fragment implements DetailBillListener{
+public class DetailBillFragment extends Fragment implements DetailBillListener {
 
     private FragmentDetailBillBinding binding;
     private Home home;
@@ -90,17 +90,13 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
 
         setInfoOfBill(bill);
 
-        if(bill.isPayedBill){
+        if (bill.isPayedBill) {
             binding.txtStatusOfBill.setVisibility(View.VISIBLE);
-        }else{
-            binding.txtStatusOfBill.setVisibility(View.GONE);
-        }
-
-        if(bill.isDelayPayBill){
+        } else if (bill.isDelayPayBill) {
             binding.txtStatusOfBill.setText("Hoá đơn đã quá hạn thanh toán");
             binding.txtStatusOfBill.setTextColor(getResources().getColor(R.color.colorRed));
             binding.txtStatusOfBill.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             binding.txtStatusOfBill.setVisibility(View.GONE);
         }
 
@@ -146,34 +142,33 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
         });
 
         //Set data plus or minus money
-        if (bill.getPlusOrMinusMoneyList() == null){
+        if (bill.getPlusOrMinusMoneyList() == null) {
             binding.layoutMoneyPlusOrMinus.setVisibility(View.GONE);
             binding.view1.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             binding.layoutMoneyPlusOrMinus.setVisibility(View.VISIBLE);
             binding.view1.setVisibility(View.VISIBLE);
             List<PlusOrMinusMoney> plusMoneyList = new ArrayList<>();
             List<PlusOrMinusMoney> minusMoneyList = new ArrayList<>();
-            for (PlusOrMinusMoney item : bill.getPlusOrMinusMoneyList()){
+            for (PlusOrMinusMoney item : bill.getPlusOrMinusMoneyList()) {
                 if (item.getPlus()) plusMoneyList.add(item);
                 else minusMoneyList.add(item);
             }
-            if (!plusMoneyList.isEmpty()){
+            if (!plusMoneyList.isEmpty()) {
                 PlusOrMinusMoneyInDetailBillAdapter plusAdapter = new PlusOrMinusMoneyInDetailBillAdapter(plusMoneyList);
                 binding.plusRecyclerView.setAdapter(plusAdapter);
                 binding.plusRecyclerView.setVisibility(View.VISIBLE);
 
-                String totalPlusMoney = "Tổng tiền cộng: " + bill.getTotalMoneyPlus();
+                String totalPlusMoney = "Tổng tiền cộng: " + formatMoney(bill.getTotalMoneyPlus());
                 binding.txtTotalPlusMoney.setText(totalPlusMoney);
                 binding.txtTotalPlusMoney.setVisibility(View.VISIBLE);
             }
-            if (!minusMoneyList.isEmpty()){
+            if (!minusMoneyList.isEmpty()) {
                 PlusOrMinusMoneyInDetailBillAdapter minusAdapter = new PlusOrMinusMoneyInDetailBillAdapter(minusMoneyList);
                 binding.minusRecyclerView.setAdapter(minusAdapter);
                 binding.minusRecyclerView.setVisibility(View.VISIBLE);
 
-                String totalMinusMoney = "Tổng tiền trừ: " + bill.getTotalMoneyMinus();
+                String totalMinusMoney = "Tổng tiền trừ: " + formatMoney(bill.getTotalMoneyMinus());
                 binding.txtTotalMinusMoney.setText(totalMinusMoney);
                 binding.txtTotalMinusMoney.setVisibility(View.VISIBLE);
             }

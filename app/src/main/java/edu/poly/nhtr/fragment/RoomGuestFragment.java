@@ -155,9 +155,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         }
 
 
-
-
-
         setListeners();
 
         binding.btnDeleteContract.setOnClickListener(new View.OnClickListener() {
@@ -341,6 +338,36 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         Random random = new Random();
         return random.nextInt(1000000); // Giới hạn số ngẫu nhiên trong khoảng 0 đến 9999
     }
+
+    public void updateUI() {
+        roomViewModel = new ViewModelProvider(requireActivity()).get(RoomViewModel.class);
+
+        // Lấy danh sách khách từ ViewModel và cập nhật RecyclerView
+        roomViewModel.getGuests().observe(getViewLifecycleOwner(), guests -> {
+            if (guests != null && !guests.isEmpty()) {
+                List<Object> items = new ArrayList<>(guests);
+                adapter.setGuestList(items);
+                binding.progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                showNoDataFound();
+            }
+        });
+
+        // Lấy ra Room ID từ ViewModel và lấy danh sách khách theo Room ID
+        roomViewModel.getRoom().observe(getViewLifecycleOwner(), room -> {
+            if (room != null) {
+                String roomId = room.getRoomId();
+                preferenceManager.putString(Constants.PREF_KEY_ROOM_ID, roomId);
+                Timber.tag("RoomGuestFragment").d("Room ID: %s", roomId);
+                presenter.getGuests(roomId);
+            } else {
+                Timber.tag("RoomGuestFragment").e("Room object is null");
+                showError("Room data is not available");
+            }
+        });
+    }
+
 
     private interface AlarmCallback {
         void onAlarmSet(long timeInMillis, int requestCode);
@@ -977,6 +1004,22 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         popupMenu.inflate(R.menu.menu_edit_delete_guest);
         popupMenu.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Lấy danh sách khách từ ViewModel và cập nhật RecyclerView
+        roomViewModel.getGuests().observe(getViewLifecycleOwner(), guests -> {
+            if (guests != null && !guests.isEmpty()) {
+                List<Object> items = new ArrayList<>(guests);
+                adapter.setGuestList(items);
+                binding.progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                showNoDataFound();
+            }
+        });
     }
 
 }

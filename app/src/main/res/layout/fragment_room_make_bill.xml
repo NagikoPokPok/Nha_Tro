@@ -542,13 +542,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:baselineAligned="false"
+                    android:padding="5dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="10dp"
@@ -569,22 +568,27 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="5dp"
                             android:gravity="center"
                             android:text="Cộng thêm"
-                            android:textSize="20sp" />
+                            android:textSize="18sp"
+                            android:fontFamily="@font/inter_light"/>
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="(3)"
+
+                            android:background = "@drawable/background_date_time_index"
+                            android:text="3"
                             android:textSize="20sp"
-                            tools:ignore="NestedWeights" />
+                            android:textAlignment="center"
+                            android:layout_marginStart="5dp"
+                            android:padding="5dp"
+                            android:fontFamily="@font/inter_medium"/>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="20dp"
@@ -605,9 +609,22 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="5dp"
                             android:text="Giảm bớt"
-                            android:textSize="20sp" />
+                            android:textSize="18sp"
+                            android:fontFamily="@font/inter_light"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background = "@drawable/background_date_time_index"
+                            android:text="3"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            android:layout_marginStart="5dp"
+                            android:padding="5dp"
+                            android:fontFamily="@font/inter_medium"/>
                     </LinearLayout>
 
 
