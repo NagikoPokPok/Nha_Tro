@@ -35,6 +35,7 @@ public class RoomServicePresenter {
     }
 
     public void getRoomServices(String roomId, OnGetRoomServiceListener callback) {
+        listener.showLoading();
         List<RoomService> roomServices = new ArrayList<>();
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION)

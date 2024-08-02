@@ -74,9 +74,11 @@ public class NotificationFragment extends Fragment implements NotificationListen
     private MainActivity mainActivity;
     private OnNotificationReadListener listener;
     private MenuItem deleteNotificationsItem;
+    private boolean isLoadingFinished = false;
 
     @Override
     public void onRefresh() {
+        isLoadingFinished = false;
         // Get list notification
         notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
             @Override
@@ -103,12 +105,18 @@ public class NotificationFragment extends Fragment implements NotificationListen
         // Delete layout delete notifications
         closeLayoutDeleteNotification();
 
+        // Sử dụng Handler để kiểm tra trạng thái tải
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                binding.swipeRefreshFragment.setRefreshing(false);
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
             }
-        }, 2000);
+        }, 500); // Thời gian kiểm tra ban đầu
     }
 
     public interface OnNotificationReadListener {
@@ -426,6 +434,8 @@ public class NotificationFragment extends Fragment implements NotificationListen
     public void hideLoading() {
         binding.progressBar.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);
+
+        isLoadingFinished = true;
     }
 
     @Override

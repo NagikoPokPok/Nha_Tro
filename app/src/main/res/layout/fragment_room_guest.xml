@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout_room"
+    android:id="@+id/swipe_refresh_fragment"
+    style="@style/SCREEN_WHITE"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/SCREEN_WHITE"
     tools:context=".fragment.RoomGuestFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/guestsRecyclerView"
@@ -20,7 +23,7 @@
         android:overScrollMode="never"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/layout_btn"
+        app:layout_constraintBottom_toTopOf="@id/btn_add_guest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_delete_all" />
@@ -30,10 +33,10 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/layout_delete_all"
@@ -51,8 +54,8 @@
             android:id="@+id/layout_select_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/checkbox_select_all"
@@ -71,6 +74,7 @@
                 android:textSize="17sp" />
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/txt_cancel_delete_all"
             android:layout_width="wrap_content"
@@ -94,72 +98,25 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_guest"
+        style="@style/BUTTON"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/khach"
+        android:textSize="20sp"
+        app:backgroundTint="@null"
+        app:icon="@drawable/icon_add"
+        app:iconGravity="textStart"
+        app:iconSize="29dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_guest"
-            style="@style/BUTTON"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/khach"
-            android:textSize="20sp"
-            app:backgroundTint="@null"
-            app:icon="@drawable/icon_add"
-            app:iconGravity="textStart"
-            app:iconSize="29dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_delete_contract"
-            style="@style/BUTTON"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="20dp"
-            android:text="delete contract"
-            android:textSize="20sp"
-            app:backgroundTint="@null"
-            app:icon="@drawable/icon_add"
-            app:iconGravity="textStart"
-            app:iconSize="29dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_set_alarm"
-            style="@style/BUTTON"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="20dp"
-            android:text="set alarm"
-            android:textSize="20sp"
-            app:backgroundTint="@null"
-            app:icon="@drawable/icon_add"
-            app:iconGravity="textStart"
-            app:iconSize="29dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </LinearLayout>
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -76,6 +76,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     private AlarmService alarmService;
     private AlarmService alarmService2;
     private Home home;
+    private boolean isLoadingFinished = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,33 +115,6 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
             showToast("Arguments are null");
         }
 
-//        String header1 = "Sắp tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-//        String body1 = "Bạn cần lập hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-//
-//        String header2 = "Đã tới ngày gửi hoá đơn cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-//        String body2 = "Bạn cần gửi hoá đơn tháng này cho phòng " + room.getNameRoom() + " tại nhà trọ " + home.getNameHome();
-//
-//        roomBillPresenter.getDayOfMakeBill(room.getRoomId(), new RoomBillPresenter.OnGetDayOfMakeBillCompleteListener() {
-//            @Override
-//            public void onComplete(String dayOfMakeBill) {
-//                roomBillPresenter.checkNotificationIsGiven(room.getRoomId(), home.getIdHome(), new RoomBillPresenter.OnGetNotificationCompleteListener() {
-//                    @Override
-//                    public void onComplete(List<Notification> notificationList) {
-//                        if (notificationList.isEmpty()) {
-//                            int dayOfGiveBill = Integer.parseInt(dayOfMakeBill);
-//
-//                            // Set alarm for reminding make bill
-//                            alarmService = new AlarmService(requireContext(), home, room, header1, body1);
-//                            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, generateRandomRequestCode()); // requestCode 1
-//
-//                            // Set alarm for reminding give bill
-//                            alarmService2 = new AlarmService(requireContext(), home, room, header2, body2);
-//                            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, generateRandomRequestCode()); // requestCode 2
-//                        }
-//                    }
-//                });
-//            }
-//        });
 
         removeStatusOfCheckBoxFilterBill();
         setupRecyclerView();
@@ -339,6 +313,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
 
     @Override
     public void onRefresh() {
+        isLoadingFinished = false;
         // Get list bill
         fetchBillList();
         // Remove layout delete bills
@@ -350,12 +325,18 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         binding.btnCancelMonthPicker.setVisibility(View.GONE);
         removeStatusOfCheckBoxFilterBill();
 
+        // Sử dụng Handler để kiểm tra trạng thái tải
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                binding.swipeRefreshFragment.setRefreshing(false);
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
             }
-        }, 2000);
+        }, 500); // Thời gian kiểm tra ban đầu
     }
 
 
@@ -964,6 +945,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
     public void hideLoading() {
         binding.progressBar.setVisibility(View.GONE);
         //binding.recyclerView.setVisibility(View.VISIBLE);
+        isLoadingFinished = true;
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -31,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
@@ -61,7 +64,7 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 import timber.log.Timber;
 
-public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View {
+public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View , SwipeRefreshLayout.OnRefreshListener{
 
     private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
     private static final int FULL_DATE_LENGTH = 10; // dd/MM/yyyy
@@ -78,6 +81,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     private AlarmService alarmService2;
     private int requestCode1, requestCode2;
     private String header1, body1, header2, body2;
+    private boolean isLoadingFinished = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -103,6 +107,8 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
         dialog = new Dialog(requireActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
 
         // Lấy danh sách khách từ ViewModel và cập nhật RecyclerView
         roomViewModel.getGuests().observe(getViewLifecycleOwner(), guests -> {
@@ -155,20 +161,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
 
 
         setListeners();
-
-        binding.btnDeleteContract.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int requestCode1 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1"));
-                alarmService.cancelRepetitiveAlarm(requestCode1);
-
-                int requestCode2 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code2"));
-                alarmService2.cancelRepetitiveAlarm(requestCode2);
-            }
-        });
-
-
-
 
     }
 
@@ -237,6 +229,51 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         });
     }
 
+    @Override
+    public void onRefresh() {
+        isLoadingFinished = false;
+        // Lấy danh sách khách từ ViewModel và cập nhật RecyclerView
+        roomViewModel.getGuests().observe(getViewLifecycleOwner(), guests -> {
+            if (guests != null && !guests.isEmpty()) {
+
+                List<Object> items = new ArrayList<>(guests);
+                adapter.setGuestList(items);
+                binding.progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                showNoDataFound();
+            }
+        });
+
+        // Lấy ra Room ID từ ViewModel và lấy danh sách khách theo Room ID
+        roomViewModel.getRoom().observe(getViewLifecycleOwner(), room -> {
+            if (room != null) {
+                String roomId = room.getRoomId();
+                preferenceManager.putString(Constants.PREF_KEY_ROOM_ID, roomId);
+                Timber.tag("RoomGuestFragment").d("Room ID: %s", roomId);
+                presenter.getGuests(roomId);
+            } else {
+                Timber.tag("RoomGuestFragment").e("Room object is null");
+                showError("Room data is not available");
+            }
+        });
+
+        // Sử dụng Handler để kiểm tra trạng thái tải
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
+            }
+        }, 500); // Thời gian kiểm tra ban đầu
+
+
+    }
+
     private int generateRandomRequestCode() {
         Random random = new Random();
         return random.nextInt(1000000); // Giới hạn số ngẫu nhiên trong khoảng 0 đến 9999
@@ -270,6 +307,8 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
         });
     }
+
+
 
 
     private interface AlarmCallback {
@@ -383,11 +422,14 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     @Override
     public void showLoading() {
         binding.progressBar.setVisibility(View.VISIBLE);
+        binding.guestsRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void hideLoading() {
         binding.progressBar.setVisibility(View.INVISIBLE);
+        binding.guestsRecyclerView.setVisibility(View.VISIBLE);
+        isLoadingFinished = true;
     }
 
     @Override

@@ -86,6 +86,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     private Dialog dialog;
     private HomeAdapter homeAdapter;
     private boolean isSelectAllChecked = false;
+    private boolean isLoadingFinished = false;
 
     public List<Home> getCurrentListHomes() {
         return currentListHomes;
@@ -189,6 +190,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
     @Override
     public void onRefresh() {
+        isLoadingFinished = false;
         // Load home information
         homePresenter.getHomes("init");
         hideLayoutDeleteHomes();
@@ -198,12 +200,18 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         removeStatusOfCheckBoxFilterHome();
         preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
 
+        // Sử dụng Handler để kiểm tra trạng thái tải
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                binding.swipeRefreshFragment.setRefreshing(false);
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
             }
-        }, 2000);
+        }, 500); // Thời gian kiểm tra ban đầu
     }
 
 
@@ -1284,10 +1292,15 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         dialog.dismiss();
     }
 
+
+
     @Override
     public void hideLoading() {
         binding.homesRecyclerView.setVisibility(View.VISIBLE);
         binding.progressBar.setVisibility(View.INVISIBLE);
+
+        // Đặt cờ trạng thái tải về true
+        isLoadingFinished = true;
     }
 
     @Override

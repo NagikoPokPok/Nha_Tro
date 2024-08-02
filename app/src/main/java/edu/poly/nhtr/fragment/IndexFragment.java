@@ -111,6 +111,7 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
     private AlarmService alarmService;
     private String header, body;
     private Room room;
+    private boolean isLoadingFinished = false;
 
 
     @Override
@@ -192,6 +193,7 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
 
     @Override
     public void onRefresh() {
+        isLoadingFinished = false;
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
         // Get index
@@ -225,12 +227,18 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
         removeStatusOfCheckBoxFilterIndex();
 
 
+        // Sử dụng Handler để kiểm tra trạng thái tải
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                binding.swipeRefreshFragment.setRefreshing(false);
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
             }
-        }, 2000);
+        }, 500); // Thời gian kiểm tra ban đầu
     }
 
     private void setupAlarmService() {
@@ -1661,6 +1669,8 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
     public void hideLoading() {
         binding.progressBar.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);
+
+        isLoadingFinished = true;
     }
 
     @Override

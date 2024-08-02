@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -34,6 +36,7 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
@@ -58,7 +61,7 @@ import edu.poly.nhtr.presenters.RoomPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class RoomFragment extends Fragment implements RoomListener {
+public class RoomFragment extends Fragment implements RoomListener, SwipeRefreshLayout.OnRefreshListener {
 
     private View view;
 
@@ -69,6 +72,7 @@ public class RoomFragment extends Fragment implements RoomListener {
     private RoomAdapter roomAdapter;
     private List<Room> currentListRooms = new ArrayList<>();
     private Home home;
+    private boolean isLoadingFinished = false;
 
     public RoomFragment() {
     }
@@ -104,6 +108,8 @@ public class RoomFragment extends Fragment implements RoomListener {
             binding.edtSearchRoom.clearFocus();
             binding.rootLayoutRoom.requestFocus();
         });
+
+        binding.rootLayoutRoom.setOnRefreshListener(this);
 
 
 
@@ -454,10 +460,14 @@ public class RoomFragment extends Fragment implements RoomListener {
     @Override
     public void hideLoading() {
         binding.progressBar.setVisibility(View.INVISIBLE);
+        binding.roomsRecyclerView.setVisibility(View.VISIBLE);
+
+        isLoadingFinished = true;
     }
 
     @Override
     public void showLoading() {
+        binding.roomsRecyclerView.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -1250,5 +1260,24 @@ public class RoomFragment extends Fragment implements RoomListener {
     public void onResume() {
         super.onResume();
         roomPresenter.getRooms("init");
+    }
+
+    @Override
+    public void onRefresh() {
+        isLoadingFinished = false;
+        roomPresenter.getRooms("init");
+
+        // Sử dụng Handler để kiểm tra trạng thái tải
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isLoadingFinished) {
+                    binding.rootLayoutRoom.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
+            }
+        }, 500); // Thời gian kiểm tra ban đầu
     }
 }

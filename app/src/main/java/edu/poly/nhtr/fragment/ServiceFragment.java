@@ -11,7 +11,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.text.style.ClickableSpan;
 import android.util.Log;
@@ -60,7 +63,7 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 
-public class ServiceFragment extends Fragment implements ServiceListener {
+public class ServiceFragment extends Fragment implements ServiceListener, SwipeRefreshLayout.OnRefreshListener {
     private View view;
     private PreferenceManager preferenceManager;
     private ServiceAdapter.ViewHolder viewHolder;
@@ -71,6 +74,7 @@ public class ServiceFragment extends Fragment implements ServiceListener {
     private Dialog dialogConfirm;
     private List<Service> services;
     private List<Room> listRoom;
+    private boolean isLoadingFinished = false;
 
 
 
@@ -83,7 +87,6 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         Boolean isHomeHaveService = home.getHaveService();
 
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-        loadData();
 
         presenter = new ServicePresenter(this);
         binding = FragmentServiceBinding.inflate(getLayoutInflater());
@@ -91,13 +94,22 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         dialogChild = new Dialog(requireActivity());
         dialogConfirm = new Dialog(requireActivity());
 
+        loadData();
+
         listRoom = presenter.getListRoom(preferenceManager.getString(Constants.KEY_HOME_ID));
+
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
+
+
 
         setListener();
 
     }
 
     private void loadData() {
+
+        showLoading();
+
         //set Preference of KEY_HOME_IS_HAVE_SERVICE
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
                 .document(preferenceManager.getString(Constants.KEY_HOME_ID))
@@ -166,6 +178,9 @@ public class ServiceFragment extends Fragment implements ServiceListener {
 
         customPosition(binding.recyclerServiceUsed,3);
         customPosition(binding.recyclerServiceUnused,3);
+
+        hideLoading();
+
     }
 
     private void setListener() {
@@ -815,5 +830,36 @@ public class ServiceFragment extends Fragment implements ServiceListener {
         });
     }
 
+    public void showLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.layoutRecyclerView.setVisibility(View.GONE);
 
+    }
+
+
+    public void hideLoading() {
+        binding.progressBar.setVisibility(View.GONE);
+        binding.layoutRecyclerView.setVisibility(View.VISIBLE);
+        isLoadingFinished = true;
+    }
+
+
+    @Override
+    public void onRefresh() {
+        isLoadingFinished = false;
+
+        loadData();
+        // Sử dụng Handler để kiểm tra trạng thái tải
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
+            }
+        }, 500); // Thời gian kiểm tra ban đầu
+    }
 }

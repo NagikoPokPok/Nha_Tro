@@ -10,7 +10,10 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -46,7 +49,7 @@ import edu.poly.nhtr.presenters.RoomServicePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class RoomServiceFragment extends Fragment implements RoomServiceListener {
+public class RoomServiceFragment extends Fragment implements RoomServiceListener, SwipeRefreshLayout.OnRefreshListener {
     private PreferenceManager preferenceManager;
     private FragmentRoomServiceBinding binding;
     private Dialog dialog, dialogConfirm;
@@ -55,6 +58,7 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
     private List<Service> services;
     private String roomId, homeId;
     private Room room;
+    private boolean isLoadingFinished = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +97,8 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
             }
         });
         room = presenter.getRoom(roomId);
+
+        binding.swipeRefreshFragment.setOnRefreshListener(this);
 
 
         listener();
@@ -137,6 +143,8 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
                 serviceList.addAll(services); // Thêm các phần tử mới
                 buildRecyclerView(serviceList); // Gọi phương thức buildRecyclerView với danh sách đã được cập nhật
                 Log.e("serviceList", serviceList.size()+"s");
+
+                hideLoading();
             }
         });
     }
@@ -374,5 +382,59 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
         setRecyclerView();
     }
 
+    public void showLoading() {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.layoutRecyclerView.setVisibility(View.GONE);
 
+    }
+
+
+    public void hideLoading() {
+        binding.progressBar.setVisibility(View.GONE);
+        binding.layoutRecyclerView.setVisibility(View.VISIBLE);
+        isLoadingFinished = true;
+    }
+
+
+    @Override
+    public void onRefresh() {
+        isLoadingFinished = false;
+
+        presenter.getRoomServices(roomId, new RoomServicePresenter.OnGetRoomServiceListener() {
+            @Override
+            public void onGetRoomService(List<RoomService> listRoomService) {
+                roomServices.clear();
+                roomServices.addAll(listRoomService);
+                Log.e("roomService", "sl: "+roomServices.size());
+                if (roomServices.isEmpty()){
+                    setAutoRequiredService();
+                }else {
+                    presenter.getAvailableService(homeId, roomServices, new RoomServicePresenter.OnGetAvailableServiceListener() {
+                        @Override
+                        public void onGetAvailableService(List<Service> servicesList) {
+                            if (services == null) services = new ArrayList<>();
+                            services.clear();
+                            services.addAll(servicesList);
+                            setRecyclerView();
+                        }
+                    });
+                }
+
+                Log.e("roomIdFragment", roomId);
+            }
+        });
+
+        // Sử dụng Handler để kiểm tra trạng thái tải
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isLoadingFinished) {
+                    binding.swipeRefreshFragment.setRefreshing(false);
+                } else {
+                    // Kiểm tra lại sau một khoảng thời gian ngắn nếu cần thiết
+                    new Handler(Looper.getMainLooper()).postDelayed(this, 500);
+                }
+            }
+        }, 500); // Thời gian kiểm tra ban đầu
+    }
 }

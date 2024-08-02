@@ -24,4 +24,6 @@ public interface RoomServiceListener {
     void onChooseServiceClicked(Service service, int position);
 
     void updateDataBeforeAddSuccessfully(ServiceAdapter adapter);
+    void showLoading();
+    void hideLoading();
 }
