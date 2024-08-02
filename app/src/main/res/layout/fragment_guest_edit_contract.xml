@@ -20,9 +20,6 @@
             android:id="@+id/layout_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:autofillHints=""
             android:background="@color/white"
@@ -42,7 +39,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/tong_so_thanh_vien"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,8 +70,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginTop="60dp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 android:text="@string/ho_ten"
-                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@id/txt_tong_thanh_vien"
                 app:layout_constraintTop_toTopOf="@id/txt_tong_thanh_vien" />
 
@@ -97,6 +95,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ten_khach"
                 app:layout_constraintTop_toTopOf="@id/txt_ten_khach"
                 app:boxBackgroundMode="none">
@@ -116,9 +116,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 android:layout_weight="1"
                 android:text="@string/so_dien_thoai"
-                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@id/til_ten_khach"
                 app:layout_constraintTop_toTopOf="@id/til_ten_khach" />
 
@@ -143,6 +144,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_dien_thoai"
                 app:layout_constraintTop_toTopOf="@id/txt_so_dien_thoai">
 
@@ -179,7 +182,8 @@
                 android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/cccd_cmnd"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_so_dien_thoai"
                 app:layout_constraintTop_toTopOf="@id/layout_so_dien_thoai" />
 
@@ -202,6 +206,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_so_cmnd_cccd"
                 app:layout_constraintTop_toTopOf="@id/txt_so_cmnd_cccd"
                 app:boxBackgroundMode="none">
@@ -221,6 +227,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="@id/til_so_cccd_cmnd"
                 app:layout_constraintTop_toTopOf="@id/til_so_cccd_cmnd">
@@ -238,7 +246,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="10dp"
                         android:text="@string/ngay_sinh"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Giới tính -->
                     <TextView
@@ -248,7 +256,7 @@
                         android:layout_weight="1"
                         android:text="@string/gioi_tinh"
                         android:layout_gravity="center_vertical"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
 
@@ -335,7 +343,8 @@
                 android:layout_marginTop="120dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_tao"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_sinh_gioi_tinh"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_sinh_gioi_tinh" />
 
@@ -345,6 +354,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_tao"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_tao">
 
@@ -385,7 +396,8 @@
                 android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_vao_o"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_tao_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_tao_hop_dong" />
 
@@ -395,6 +407,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_vao"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_vao">
 
@@ -434,7 +448,8 @@
                 android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/gia_phong"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_vao_o"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_vao_o" />
 
@@ -444,6 +459,8 @@
                 android:id="@+id/til_gia_phong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_gia_phong"
                 app:layout_constraintTop_toBottomOf="@id/txt_gia_phong"
                 app:boxBackgroundMode="none">
@@ -484,7 +501,8 @@
                 android:layout_marginTop="80dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_het_han_hop_dong"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/til_gia_phong"
                 app:layout_constraintTop_toTopOf="@id/til_gia_phong" />
 
@@ -494,6 +512,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="@id/txt_ngay_het_han_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/txt_ngay_het_han_hop_dong">
 
@@ -534,7 +554,7 @@
                 android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_tra_tien_phong"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_het_han_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_het_han_hop_dong" />
 
@@ -574,7 +594,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="@string/hang_thang"
                 style="@style/TEXT_MED_2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_marginStart="8dp"
                 app:layout_constraintStart_toEndOf="@id/til_ngay_tra_tien_phong"
                 app:layout_constraintBaseline_toBaselineOf="@id/txt_ngay_tra_tien_phong" />
@@ -596,7 +616,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/han_thanh_toan"
                     android:layout_marginStart="10dp"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/edt_han_thanh_toan"
@@ -605,9 +625,10 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:autofillHints=""
                     android:inputType="number"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/txt_ngay_han_thanh_toan"
@@ -616,7 +637,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="80dp"
                     android:text="@string/ngay"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <!--Ảnh mặt trước CCCD-->
@@ -626,9 +647,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/anh_mat_truoc_cccd"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_han_thanh_toan" />
 
@@ -638,6 +659,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_anh_mat_truoc_cccd">
@@ -668,9 +691,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/anh_mat_sau_cccd"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_them_anh_cccd_truoc" />
 
@@ -680,6 +703,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_anh_mat_sau_cccd">
@@ -709,6 +734,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -727,7 +754,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/mat_truoc_hop_dong"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Mặt sau hợp đồng -->
                     <TextView
@@ -737,7 +764,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/mat_sau_hop_dong"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -805,7 +832,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
+                app:layout_constraintGuide_percent="0.45" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
 
             <!-- Guildline định vị nút theo chiều dọc -->
             <androidx.constraintlayout.widget.Guideline
@@ -821,7 +855,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="10dp"
                 android:text="@string/huy"
                 style="@style/BUTTON_2"
                 android:textSize="18sp"
@@ -836,11 +870,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="8dp"
                 android:text="@string/luu"
                 style="@style/BUTTON"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/guideline_vertical_end"
                 app:layout_constraintStart_toEndOf="@id/btn_cancel"
                 app:layout_constraintTop_toBottomOf="@id/layout_anh_hop_dong"
                 app:layout_constraintBottom_toTopOf="@id/guideline_bottom"/>
