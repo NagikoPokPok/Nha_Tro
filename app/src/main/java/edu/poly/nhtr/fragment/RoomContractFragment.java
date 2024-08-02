@@ -120,12 +120,6 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
     }
 
     private void setListeners() {
-        binding.btnCreateContract.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onHideTabLayoutAndViewPager();
-            }
-            openAddGuestContractFragment();
-        });
         binding.btnViewContract.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onHideTabLayoutAndViewPager();
@@ -150,19 +144,6 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
 //            }
             deleteContract();
         });
-    }
-
-    private void openAddGuestContractFragment() {
-        GuestAddContractFragment guestAddContractFragment = new GuestAddContractFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("room", room);
-        args.putString("room_price", roomPrice);
-        args.putSerializable("home", home);
-        guestAddContractFragment.setArguments(args);
-        FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, guestAddContractFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 
     private void viewContract() {

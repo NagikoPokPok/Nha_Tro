@@ -120,22 +120,22 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
                                     case IMAGE_SELECTION_CCCD_FRONT:
                                         imgCCCDFront.setImageBitmap(bitmap);
                                         imgAddCCCDFront.setVisibility(View.GONE);
-                                        encodedCCCDFrontImage = encodeImage(bitmap);
+                                        encodedCCCDFrontImage = encodeImageForCCCD(bitmap);
                                         break;
                                     case IMAGE_SELECTION_CCCD_BACK:
                                         imgCCCDBack.setImageBitmap(bitmap);
                                         imgAddCCCDBack.setVisibility(View.GONE);
-                                        encodedCCCDBackImage = encodeImage(bitmap);
+                                        encodedCCCDBackImage = encodeImageForCCCD(bitmap);
                                         break;
                                     case IMAGE_SELECTION_CONTRACT_FRONT:
                                         imgContractFront.setImageBitmap(bitmap);
                                         imgAddContractFront.setVisibility(View.GONE);
-                                        encodedContractFrontImage = encodeImage(bitmap);
+                                        encodedContractFrontImage = encodeImageForContract(bitmap);
                                         break;
                                     case IMAGE_SELECTION_CONTRACT_BACK:
                                         imgContractBack.setImageBitmap(bitmap);
                                         imgAddContractBack.setVisibility(View.GONE);
-                                        encodedContractBackImage = encodeImage(bitmap);
+                                        encodedContractBackImage = encodeImageForContract(bitmap);
                                         break;
                                 }
                             }
@@ -147,9 +147,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             });
     private AppCompatButton btnAddContract;
     private AppCompatButton btnCancel;
-    private Dialog dialog;
-    private Room room;
-    private Home home;
     private String roomPrice;
 
     @Override
@@ -170,14 +167,12 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter = new GuestAddContractPresenter(this, requireContext());
-        dialog = new Dialog(requireActivity());
 
         initializeViews();
 
         if (getArguments() != null) {
-            room = (Room) getArguments().getSerializable("room");
+            Room room = (Room) getArguments().getSerializable("room");
             roomPrice = getArguments().getString("room_price");
-            home = (Home) getArguments().getSerializable("home");
             if (room != null) {
                 Timber.tag("GuestAddContractFragment").d("Room ID: %s", room.getRoomId());
                 setListeners();
@@ -188,20 +183,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             Timber.tag("GuestAddContractFragment").e("Arguments are null");
         }
     }
-
-
-    private Room getRoomFromPreference() {
-        String roomId = preferenceManager.getString(Constants.KEY_ROOM_ID);
-
-        if (roomId != null && !roomId.isEmpty()) {
-            Room room = new Room();
-            room.setRoomId(roomId);
-            return room;
-        } else {
-            return null;
-        }
-    }
-
 
     @Override
     public void onDestroyView() {
@@ -394,15 +375,27 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         edtNgayTraTien.setAdapter(presenter.getDaysAdapter());
     }
 
-    private String encodeImage(Bitmap bitmap) {
-        int previewWidth = 250;
-        int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
+    private String encodeImage(Bitmap bitmap, int previewWidth, int previewHeight) {
         Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
+
+    private String encodeImageForCCCD(Bitmap bitmap) {
+        int previewWidth = 250;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        return encodeImage(bitmap, previewWidth, previewHeight);
+    }
+
+    private String encodeImageForContract(Bitmap bitmap) {
+        int previewWidth = 300;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        return encodeImage(bitmap, previewWidth, previewHeight);
+    }
+
+
 
     @Override
     public void showErrorMessage(String message) {
@@ -618,7 +611,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
             progressBar.setVisibility(View.VISIBLE);
             btnYes.setVisibility(View.INVISIBLE);
             new Handler().postDelayed(() -> {
-                // clearInputFields();
                 dialog.dismiss();
                 progressBar.setVisibility(View.INVISIBLE);
 
@@ -628,35 +620,5 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
         dialog.show();
     }
-
-//    private void clearInputFields() {
-//        edtHoTen.setText("");
-//        edtSoDienThoai.setText("");
-//        edtSoCCCD.setText("");
-//        edtNgaySinh.setText("");
-//        edtGioiTinh.setText("");
-//        edtTotalMembers.setText("");
-//        edtNgayTao.setText("");
-//        edtNgayVao.setText("");
-//        edtNgayHetHan.setText("");
-//        edtNgayTraTien.setText("");
-//        edtHanThanhToan.setText("");
-//
-//        imgCCCDFront.setImageDrawable(null);
-//        imgCCCDBack.setImageDrawable(null);
-//        imgContractFront.setImageDrawable(null);
-//        imgContractBack.setImageDrawable(null);
-//
-//        imgAddCCCDFront.setVisibility(View.VISIBLE);
-//        imgAddCCCDBack.setVisibility(View.VISIBLE);
-//        imgAddContractFront.setVisibility(View.VISIBLE);
-//        imgAddContractBack.setVisibility(View.VISIBLE);
-//
-//        encodedCCCDFrontImage = null;
-//        encodedCCCDBackImage = null;
-//        encodedContractFrontImage = null;
-//        encodedContractBackImage = null;
-//    }
-
 
 }

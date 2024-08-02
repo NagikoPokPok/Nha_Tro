@@ -39,7 +39,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="@string/tong_so_thanh_vien"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,7 +73,7 @@
                 android:layout_weight="1"
                 android:layout_marginTop="60dp"
                 android:text="@string/ho_ten"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/txt_tong_thanh_vien"
                 app:layout_constraintTop_toTopOf="@id/txt_tong_thanh_vien" />
 
@@ -108,7 +108,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/so_dien_thoai"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/til_ten_khach"
                 app:layout_constraintTop_toTopOf="@id/til_ten_khach" />
 
@@ -176,7 +176,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/cccd_cmnd"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_so_dien_thoai"
                 app:layout_constraintTop_toTopOf="@id/layout_so_dien_thoai" />
 
@@ -238,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/ngay_sinh"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Giới tính -->
                     <TextView
@@ -248,7 +248,7 @@
                         android:layout_weight="1"
                         android:text="@string/gioi_tinh"
                         android:layout_gravity="center_vertical"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -366,9 +366,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="90dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_vao_o"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_tao_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_tao_hop_dong" />
 
@@ -411,42 +412,50 @@
                 android:layout_marginTop="90dp"
                 android:layout_weight="1"
                 android:text="@string/gia_phong"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_vao_o"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_vao_o" />
 
-            <!-- Khung điền giá phòng -->
-            <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_gia_phong"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toStartOf="@id/txt_gia_phong"
-            app:layout_constraintTop_toBottomOf="@id/txt_gia_phong">
+            <!-- Khung điền giá phòng-->
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_gia_phong"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_gia_phong"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:clickable="false"
-                android:focusable="false"
-                android:paddingEnd="60dp" />
-
-            <TextView
-                android:id="@+id/txt_d_thang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/d_thang"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="16sp"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintStart_toStartOf="@id/txt_gia_phong"
+                app:layout_constraintTop_toBottomOf="@id/txt_gia_phong"
+                app:boxBackgroundMode="none">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_gia_phong"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints=""
+                        android:background="@drawable/bottom_outline"
+                        android:inputType="number"
+                        android:clickable="false"
+                        android:focusable="false"
+                        />
+
+                    <TextView
+                        android:id="@+id/txt_d_thang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/d_thang"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="16sp"/>
+                </RelativeLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
 
@@ -458,9 +467,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="70dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_het_han_hop_dong"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/til_gia_phong"
                 app:layout_constraintTop_toTopOf="@id/til_gia_phong" />
 
@@ -504,7 +514,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/ngay_tra_tien_phong"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@id/layout_ngay_het_han_hop_dong"
                 app:layout_constraintTop_toTopOf="@id/layout_ngay_het_han_hop_dong" />
 
@@ -542,7 +552,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="@string/hang_thang"
                 style="@style/TEXT_MED_2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_marginStart="8dp"
                 app:layout_constraintStart_toEndOf="@id/til_ngay_tra_tien_phong"
                 app:layout_constraintBaseline_toBaselineOf="@id/txt_ngay_tra_tien_phong" />
@@ -565,7 +575,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/han_thanh_toan"
                     android:layout_marginStart="10dp"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_han_thanh_toan"
@@ -576,6 +586,7 @@
                     android:layout_weight="1"
                     android:clickable="false"
                     android:focusable="false"
+                    android:gravity="center"
                     android:autofillHints=""
                     android:inputType="number"
                     android:textSize="18sp" />
@@ -587,7 +598,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="80dp"
                     android:text="@string/ngay"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <!--Ảnh mặt trước CCCD-->
@@ -596,10 +607,10 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:text="@string/anh_mat_truoc_cccd"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_han_thanh_toan" />
 
@@ -642,10 +653,10 @@
                 style="@style/TEXT_MED_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:text="@string/anh_mat_sau_cccd"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_them_anh_cccd_truoc" />
 
@@ -706,7 +717,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/mat_truoc_hop_dong"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Mặt sau hợp đồng -->
                     <TextView
@@ -716,7 +727,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="@string/mat_sau_hop_dong"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout

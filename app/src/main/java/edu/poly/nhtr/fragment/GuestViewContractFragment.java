@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.hbb20.CountryCodePicker;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.text.DecimalFormat;
 
@@ -29,13 +30,21 @@ import edu.poly.nhtr.presenters.GuestViewContractPresenter;
 
 public class GuestViewContractFragment extends Fragment implements GuestViewContractInterface {
     private TextInputEditText guestName, guestPhone, guestCCCD, dateOfBirth, gender, totalMembers, createDate, dateIn, roomPrice, expirationDate, payDate, daysUntilDueDate;
-    private ImageView cccdImageFront, cccdImageBack, contractImageFront, contractImageBack;
+    private RoundedImageView imgCCCDFront;
+    private RoundedImageView imgCCCDBack;
+    private ImageView imgAddCCCDFront;
+    private ImageView imgAddCCCDBack;
+    private RoundedImageView imgContractFront;
+    private RoundedImageView imgContractBack;
+    private ImageView imgAddContractFront;
+    private ImageView imgAddContractBack;
     private GuestViewContractPresenter presenter;
     private FragmentGuestViewContractBinding binding;
     private Room room;
     private Button btnReturn;
     private CountryCodePicker ccp;
     private RoomContractFragment.OnFragmentInteractionListener mListener;
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -95,10 +104,14 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
         expirationDate = binding.edtNgayHetHanHopDong;
         payDate = binding.edtNgayTraTienPhong;
         daysUntilDueDate = binding.edtHanThanhToan;
-        cccdImageFront = binding.imgCccdFront;
-        cccdImageBack = binding.imgCccdBack;
-        contractImageFront = binding.imgContractFront;
-        contractImageBack = binding.imgContractBack;
+        imgAddCCCDFront = binding.imgAddCccdFront;
+        imgAddCCCDBack = binding.imgAddCccdBack;
+        imgCCCDFront = binding.imgCccdFront;
+        imgCCCDBack = binding.imgCccdBack;
+        imgAddContractFront = binding.imgAddContractFront;
+        imgAddContractBack = binding.imgAddContractBack;
+        imgContractFront = binding.imgContractFront;
+        imgContractBack = binding.imgContractBack;
         btnReturn = binding.btnReturn;
     }
 
@@ -114,10 +127,30 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
         });
     }
 
-    private Bitmap decodeImage(String encodedImage) {
+    private Bitmap getConversionImageForCCCD(String encodedImage) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        int heightDp = 250;
+        int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
+
+        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+
+        return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
     }
+
+    private Bitmap getConversionImageForContract(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        int heightDp = 300;
+        int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
+
+        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+
+        return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
+    }
+
 
     @Override
     public void displayContractData(MainGuest mainGuest) {
@@ -135,17 +168,36 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
             payDate.setText(mainGuest.getPayDate());
             daysUntilDueDate.setText(String.valueOf(mainGuest.getDaysUntilDueDate()));
 
-            if (mainGuest.getCccdImageFront() != null) {
-                cccdImageFront.setImageBitmap(decodeImage(mainGuest.getCccdImageFront()));
+            // Set CCCD Front Image
+            if (mainGuest.getCccdImageFront() != null && !mainGuest.getCccdImageFront().isEmpty()) {
+                imgAddCCCDFront.setVisibility(View.GONE);
+                imgCCCDFront.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageFront()));
+            } else {
+                imgAddCCCDFront.setVisibility(View.VISIBLE);
             }
-            if (mainGuest.getCccdImageBack() != null) {
-                cccdImageBack.setImageBitmap(decodeImage(mainGuest.getCccdImageBack()));
+
+            // Set CCCD Back Image
+            if (mainGuest.getCccdImageBack() != null && !mainGuest.getCccdImageBack().isEmpty()) {
+                imgAddCCCDBack.setVisibility(View.GONE);
+                imgCCCDBack.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageBack()));
+            } else {
+                imgAddCCCDBack.setVisibility(View.VISIBLE);
             }
-            if (mainGuest.getContractImageFront() != null) {
-                contractImageFront.setImageBitmap(decodeImage(mainGuest.getContractImageFront()));
+
+            // Set Contract Front Image
+            if (mainGuest.getContractImageFront() != null && !mainGuest.getContractImageFront().isEmpty()) {
+                imgAddContractFront.setVisibility(View.GONE);
+                imgContractFront.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageFront()));
+            } else {
+                imgAddContractFront.setVisibility(View.VISIBLE);
             }
-            if (mainGuest.getContractImageBack() != null) {
-                contractImageBack.setImageBitmap(decodeImage(mainGuest.getContractImageBack()));
+
+            // Set Contract Back Image
+            if (mainGuest.getContractImageBack() != null && !mainGuest.getContractImageBack().isEmpty()) {
+                imgAddContractBack.setVisibility(View.GONE);
+                imgContractBack.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageBack()));
+            } else {
+                imgAddContractBack.setVisibility(View.VISIBLE);
             }
         } else {
             showToast("MainGuest data is null");
