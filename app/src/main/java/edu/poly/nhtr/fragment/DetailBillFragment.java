@@ -96,6 +96,14 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
             binding.txtStatusOfBill.setVisibility(View.GONE);
         }
 
+        if(bill.isDelayPayBill){
+            binding.txtStatusOfBill.setText("Hoá đơn đã quá hạn thanh toán");
+            binding.txtStatusOfBill.setTextColor(getResources().getColor(R.color.colorRed));
+            binding.txtStatusOfBill.setVisibility(View.VISIBLE);
+        }else{
+            binding.txtStatusOfBill.setVisibility(View.GONE);
+        }
+
 
         setListeners();
 
@@ -317,32 +325,48 @@ public class DetailBillFragment extends Fragment implements DetailBillListener{
         });
     }
 
-    private void giveBill(){
+    private void giveBill() {
         detailBillPresenter.getPhoneNumber(roomID, new DetailBillPresenter.OnGetPhoneNumber() {
             @Override
             public void onComplete(String phoneNumber) {
-                if (phoneNumber != null && !phoneNumber.isEmpty()) {
-                    String phone = "0" + phoneNumber;
-                    // Xây dựng tin nhắn hóa đơn
-                    String message = "Thông tin hóa đơn tháng " + binding.txtMonthYearOfBill.getText().toString() +
-                            "\nTiền phòng: " + binding.txtPriceOfRoom.getText().toString() +
-                            "\nSố ngày ở: " + binding.numberOfDaysLived.getText().toString() +
-                            "\nTổng tiền dịch vụ: " + binding.txtTotalMoneyOfService.getText().toString() +
-                            "\nTổng tiền: " + binding.txtTotalMoneyOfBill.getText().toString();
-
-                    hideButtonLoading(R.id.btn_confirm_give_bill);
-                    dialog.dismiss();
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phone));
-                    intent.putExtra("sms_body", message);
-                    startActivity(intent);
-                } else {
-                    // Xử lý khi không có số điện thoại
+                if (phoneNumber == null || phoneNumber.isEmpty()) {
                     Toast.makeText(requireContext(), "Không tìm thấy số điện thoại chính cho phòng này.", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                String phone = "0" + phoneNumber;
+                String monthYear = binding.txtMonthYearOfBill.getText().toString();
+                String roomPrice = binding.txtPriceOfRoom.getText().toString();
+                String numberOfDays = binding.numberOfDaysLived.getText().toString();
+                String totalServiceCost = binding.txtTotalMoneyOfService.getText().toString();
+                String totalBill = binding.txtTotalMoneyOfBill.getText().toString();
+
+                String message;
+                if (bill.isDelayPayBill) {
+                    message = "CẢNH BÁO: Bạn đã trễ thanh toán hoá đơn cho tháng " + monthYear + ". Vui lòng thanh toán hoá đơn!"
+                            + "\nThông tin hóa đơn tháng " + monthYear
+                            + "\nTiền phòng: " + roomPrice
+                            + "\nSố ngày ở: " + numberOfDays
+                            + "\nTổng tiền dịch vụ: " + totalServiceCost
+                            + "\nTổng tiền: " + totalBill;
+                } else {
+                    message = "Thông tin hóa đơn tháng " + monthYear
+                            + "\nTiền phòng: " + roomPrice
+                            + "\nSố ngày ở: " + numberOfDays
+                            + "\nTổng tiền dịch vụ: " + totalServiceCost
+                            + "\nTổng tiền: " + totalBill;
+                }
+
+                hideButtonLoading(R.id.btn_confirm_give_bill);
+                dialog.dismiss();
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phone));
+                intent.putExtra("sms_body", message);
+                startActivity(intent);
             }
         });
     }
+
 
     private void setupDialog(int layoutId) {
         dialog.setContentView(layoutId);

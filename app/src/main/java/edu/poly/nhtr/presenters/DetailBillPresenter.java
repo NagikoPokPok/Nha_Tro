@@ -226,28 +226,32 @@ public class DetailBillPresenter {
     public void updateStatusOfBillWhenGiveBill(RoomBill bill, OnUpdateStatusOfBill listener) {
         HashMap<String, Object> data = new HashMap<>();
 
-        //Update status of bill
-        data.put(Constants.KEY_IS_NOT_PAY_BILL, true);
-        data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
-        data.put(Constants.KEY_IS_PAYED_BILL, false);
-        data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
-
-        Date currentDate = new Date();
-        data.put(Constants.KEY_DATE_GIVE_BILL, currentDate);
-
-
+        if (bill.isDelayPayBill) {
+            data.put(Constants.KEY_IS_NOT_PAY_BILL, false);
+            data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
+            data.put(Constants.KEY_IS_PAYED_BILL, true);
+            data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
+        } else {
+            //Update status of bill
+            data.put(Constants.KEY_IS_NOT_PAY_BILL, true);
+            data.put(Constants.KEY_IS_NOT_GIVE_BILL, false);
+            data.put(Constants.KEY_IS_PAYED_BILL, false);
+            data.put(Constants.KEY_IS_DELAY_PAY_BILL, false);
+            Date currentDate = new Date();
+            data.put(Constants.KEY_DATE_GIVE_BILL, currentDate);
+        }
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_BILL)
                 .document(bill.billID)
                 .update(data)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         listener.onComplete();
                     }
                 });
     }
 
-    public interface OnUpdateStatusOfBill{
+    public interface OnUpdateStatusOfBill {
         void onComplete();
     }
 
@@ -265,7 +269,7 @@ public class DetailBillPresenter {
                 .document(bill.billID)
                 .update(data)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         listener.onComplete();
                     }
                 });
