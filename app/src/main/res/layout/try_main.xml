@@ -1,294 +1,402 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    >
+    tools:context=".fragment.RoomContractFragment">
 
     <LinearLayout
         android:id="@+id/layout_title_contract"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="15dp">
 
         <ImageView
             android:layout_width="25dp"
-            android:layout_height="3dp"
-            android:background="@drawable/custom_line"
-            android:rotation="90"
+            android:layout_height="5dp"
             android:layout_gravity="center"
-            />
+            android:background="@drawable/custom_line"
+            android:rotation="90" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thao tác quản lý hoá đơn"
-            android:fontFamily="@font/inter_medium"
-            android:textColor="@color/colorTextBlack"
-            android:textSize="18sp"
-            />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_medium"
+                android:text="Menu quản lý hợp đồng"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_light"
+                android:text="Các thao tác cơ bản cho việc quản lý hợp đồng"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/layout_title_contract"
         android:orientation="vertical"
-        android:layout_centerInParent="true"
-        >
+        android:padding="10dp">
 
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:padding="15dp">
+            android:background="@drawable/custom_shadow_cardview"
+            android:paddingBottom="3dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_create_contract"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/white"
                 app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorPrimary"
+                app:strokeColor="@color/colorGray"
                 app:strokeWidth="0.75dp"
-                android:padding="5dp"
-                android:backgroundTint="@color/white">
+                >
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                    android:layout_gravity="start"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
                     >
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/icon_new_contract"/>
-
-                    <TextView
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tạo mới hợp đồng"
-                        android:layout_marginTop="15dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorTextBlack"
-                        android:fontFamily="@font/inter_medium"
-                        android:textAlignment="center"/>
+                        android:background="@drawable/custom_backgroud_icon_menu_contract"
+                        android:padding="15dp"
+                        >
 
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_contract"
+                            android:backgroundTint="@color/white"/>
+                    </FrameLayout>
+
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Tạo mới hợp đồng"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"/>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/icon_right"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_gravity="center_vertical"/>
 
 
                 </LinearLayout>
 
 
-
             </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_shadow_cardview"
+            android:paddingBottom="3dp"
+            android:layout_marginTop="15dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_view_contract"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorPrimary"
-                app:strokeWidth="0.75dp"
-                android:padding="5dp"
-                android:layout_marginStart="20dp"
+                android:layout_gravity="center"
                 android:backgroundTint="@color/white"
+                app:cardCornerRadius="15dp"
+                app:strokeColor="@color/colorGray"
+                app:strokeWidth="0.75dp"
                 >
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                    android:layout_gravity="start"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
                     >
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/icon_view"/>
-
-                    <TextView
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xem hợp đồng"
-                        android:layout_marginTop="15dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorTextBlack"
-                        android:fontFamily="@font/inter_medium"/>
+                        android:background="@drawable/custom_backgroud_icon_menu_contract"
+                        android:padding="15dp"
+                        >
 
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_eye_view"
+                            android:backgroundTint="@color/white"/>
+                    </FrameLayout>
+
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Xem hợp đồng"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"/>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/icon_right"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_gravity="center_vertical"/>
 
 
                 </LinearLayout>
 
 
-
             </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="15dp">
+            android:background="@drawable/custom_shadow_cardview"
+            android:paddingBottom="3dp"
+            android:layout_marginTop="15dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_edit_contract"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/white"
                 app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorPrimary"
+                app:strokeColor="@color/colorGray"
                 app:strokeWidth="0.75dp"
-                android:padding="5dp"
-                android:backgroundTint="@color/white">
+                >
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                    android:layout_gravity="start"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
                     >
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/ic_edit"/>
-
-                    <TextView
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chỉnh sửa hợp đồng"
-                        android:layout_marginTop="15dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorTextBlack"
-                        android:fontFamily="@font/inter_medium"
-                        android:textAlignment="center"/>
+                        android:background="@drawable/custom_backgroud_icon_menu_contract"
+                        android:padding="15dp"
+                        >
 
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_edit"
+                            android:backgroundTint="@color/white"/>
+                    </FrameLayout>
+
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Chỉnh sửa hợp đồng"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"/>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/icon_right"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_gravity="center_vertical"/>
 
 
                 </LinearLayout>
 
 
-
             </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_shadow_cardview"
+            android:paddingBottom="3dp"
+            android:layout_marginTop="15dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_delete_contract"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorPrimary"
-                app:strokeWidth="0.75dp"
-                android:padding="5dp"
-                android:layout_marginStart="20dp"
+                android:layout_gravity="center"
                 android:backgroundTint="@color/white"
+                app:cardCornerRadius="15dp"
+                app:strokeColor="@color/colorGray"
+                app:strokeWidth="0.75dp"
                 >
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
+                    android:layout_gravity="start"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
                     >
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/ic_delete"
-                        />
-
-                    <TextView
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Xóa hợp đồng"
-                        android:layout_marginTop="15dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorTextBlack"
-                        android:fontFamily="@font/inter_medium"/>
+                        android:background="@drawable/custom_backgroud_icon_menu_contract"
+                        android:padding="15dp"
+                        >
 
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_delete"
+                            android:backgroundTint="@color/white"/>
+                    </FrameLayout>
+
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Xóa hợp đồng"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"/>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/icon_right"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_gravity="center_vertical"/>
 
 
                 </LinearLayout>
 
 
-
             </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-        </LinearLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btn_print_contract"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="15dp"
-            app:strokeColor="@color/colorPrimary"
-            app:strokeWidth="0.75dp"
-            android:padding="5dp"
-            android:layout_marginStart="20dp"
-            android:backgroundTint="@color/white"
-            android:layout_gravity="center"
-            >
+            android:background="@drawable/custom_shadow_cardview"
+            android:paddingBottom="3dp"
+            android:layout_marginTop="15dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_print_contract"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="15dp"
+                app:strokeColor="@color/colorGray"
+                app:strokeWidth="0.75dp"
                 >
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/icon_print"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="In hợp đồng"
-                    android:layout_marginTop="15dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorTextBlack"
-                    android:fontFamily="@font/inter_medium"/>
+                    android:layout_gravity="start"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    >
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_backgroud_icon_menu_contract"
+                        android:padding="15dp"
+                        >
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/ic_print"
+                            android:backgroundTint="@color/white"/>
+                    </FrameLayout>
 
 
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="In hợp đồng"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="20dp"/>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/icon_right"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_gravity="center_vertical"/>
+
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
 
 
-        </com.google.android.material.card.MaterialCardView>
+
+
+
+
+
+
 
     </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
 
 
 </RelativeLayout>
