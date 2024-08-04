@@ -862,21 +862,36 @@ public class HomePresenter {
                                 home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
                                 home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
-                                home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
-                                home.numberOfRoomsAvailable = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE)).intValue();
-                                home.numberOfRoomsAreDelayedPayBill = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL)).intValue();
-                                home.revenueOfMonth = Objects.requireNonNull(document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME)).intValue();
+
+                                // Chuyển đổi từ Long thành Integer cho numberOfRooms
+                                Long numberOfRoomsLong = document.getLong(Constants.KEY_NUMBER_OF_ROOMS);
+                                home.numberOfRooms = numberOfRoomsLong != null ? numberOfRoomsLong.intValue() : 0;
+
+                                // Chuyển đổi từ Long thành Integer cho numberOfRoomsAvailable
+                                Long numberOfRoomsAvailableLong = document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE);
+                                home.numberOfRoomsAvailable = numberOfRoomsAvailableLong != null ? numberOfRoomsAvailableLong.intValue() : 0;
+
+                                // Chuyển đổi từ Long thành Integer cho numberOfRoomsAreDelayedPayBill
+                                Long numberOfRoomsAreDelayedPayBillLong = document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL);
+                                home.numberOfRoomsAreDelayedPayBill = numberOfRoomsAreDelayedPayBillLong != null ? numberOfRoomsAreDelayedPayBillLong.intValue() : 0;
+
+                                // Chuyển đổi từ Long thành Integer cho revenueOfMonth
+                                Long revenueOfMonthLong = document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME);
+                                home.revenueOfMonth = revenueOfMonthLong != null ? revenueOfMonthLong.intValue() : 0;
+
                                 homes.add(home);
                             }
 
+                            // Gọi phương thức getListHomes với danh sách homes đã lấy được
                             homeListener.getListHomes(homes);
                             listener.onComplete(homes);
-
                         } else {
+                            // Xử lý khi truy vấn không thành công hoặc kết quả là null
                             homeListener.addHomeFailed();
                         }
                     }
                 });
+
 
     }
 

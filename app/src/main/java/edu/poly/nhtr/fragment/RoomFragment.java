@@ -130,7 +130,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         roomPresenter.getRooms("init");
 
         roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, roomPresenter, this);
+            roomAdapter = new RoomAdapter(requireContext(),getCurrentListRooms(), this, roomPresenter, this);
         });
 
 
@@ -223,7 +223,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
             Home home = (Home) getArguments().getSerializable("home");
         }
         roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(getCurrentListRooms(), this, roomPresenter, this);
+            roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, roomPresenter, this);
         });
 
 
@@ -473,7 +473,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
 
     @Override
     public void addRoom(List<Room> rooms, String action) {
-        RoomAdapter roomAdapter = new RoomAdapter( rooms, this, roomPresenter, this);
+        RoomAdapter roomAdapter = new RoomAdapter(requireContext(), rooms, this, roomPresenter, this);
         binding.roomsRecyclerView.setAdapter(roomAdapter);
         if (Objects.equals(action, "init") || Objects.equals(action, "search")) {
             // Sắp xếp các homes theo thứ tự từ thời gian khi theem vào

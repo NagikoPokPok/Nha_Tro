@@ -45,8 +45,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     boolean[] isVisible;
 
-    public RoomAdapter(List<Room> rooms, RoomListener roomListener, RoomPresenter roomPresenter, RoomFragment roomFragment) {
-
+    public RoomAdapter(Context context, List<Room> rooms, RoomListener roomListener, RoomPresenter roomPresenter, RoomFragment roomFragment) {
+        this.context = context;
         this.rooms = rooms;
         this.roomListener = roomListener;
         this.roomPresenter = roomPresenter;
@@ -197,7 +197,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         void setRoomData(Room room, int position){
             binding.txtNameRoom.setText(room.nameRoom);
             binding.edtHoTen.setText(room.nameUser);
-            binding.edtSoDienThoai.setText(room.phoneNumer);
+
             binding.edtTrangThaiThanhToan.setText(room.status);
             binding.edtSoNguoiDangO.setText(room.numberOfMemberLiving);
             binding.txtPrice.setText(room.price);
@@ -220,16 +220,25 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 binding.btnAddContract.setVisibility(View.VISIBLE);
             } else{
                 binding.btnAddContract.setVisibility(View.GONE);
+
+                if (!room.phoneNumer.startsWith("0")) {
+                    room.phoneNumer = "0" + room.phoneNumer;
+                }
+                binding.edtSoDienThoai.setText(room.phoneNumer);
             }
 
+
+
             if (binding.edtTrangThaiThanhToan.getText().toString().equals("Đã thanh toán")) {
-                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#008000")); // Màu xanh lá cây
+                binding.edtTrangThaiThanhToan.setTextColor(context.getResources().getColor(R.color.colorGreen)); // Màu xanh lá cây
             } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Chưa thanh toán")) {
-                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#0000FF")); // Màu xanh dương (primary)
+                binding.edtTrangThaiThanhToan.setTextColor(context.getResources().getColor(R.color.colorOrange)); // Màu xanh dương (primary)
             } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Trễ hạn thanh toán")) {
-                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#FF0000")); // Màu đỏ
+                binding.edtTrangThaiThanhToan.setTextColor(context.getResources().getColor(R.color.colorRed)); // Màu đỏ
             } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Chưa gửi hóa đơn")) {
-                binding.edtTrangThaiThanhToan.setTextColor(Color.parseColor("#000000")); // Màu đen
+                binding.edtTrangThaiThanhToan.setTextColor(context.getResources().getColor(R.color.colorOrange)); // Màu đen
+            }else{
+                binding.layoutPaymentStatus.setVisibility(View.GONE);
             }
 
             if(binding.txtDescribe.getText().length() == 0)
