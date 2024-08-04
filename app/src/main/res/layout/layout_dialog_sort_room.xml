@@ -18,7 +18,7 @@
         android:background="@drawable/bg_yellow_corner_16_top"
         android:gravity="center"
         android:padding="12dp"
-        android:text="@string/bo_loc"
+        android:text="@string/Sap_xep"
         android:textSize="20sp" />
 
 

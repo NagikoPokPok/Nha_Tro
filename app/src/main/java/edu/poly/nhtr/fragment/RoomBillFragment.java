@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,11 +47,8 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentRoomBillBinding;
 import edu.poly.nhtr.databinding.ItemContainerInformationOfBillBinding;
-import edu.poly.nhtr.databinding.LayoutDialogDetailedIndexBinding;
 import edu.poly.nhtr.listeners.RoomBillListener;
 import edu.poly.nhtr.models.Home;
-import edu.poly.nhtr.models.Index;
-import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomBill;
 import edu.poly.nhtr.presenters.RoomBillPresenter;
@@ -396,21 +395,31 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         binding.layoutFilterBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.btnFilterBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                binding.frameRoundFilterBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
-                openDialogFilterBills();
-
+                clickFilterBill();
             }
         });
 
         binding.btnFilterBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.btnFilterBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                binding.frameRoundFilterBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
-                openDialogFilterBills();
+                clickFilterBill();
             }
         });
+    }
+
+    private void clickFilterBill() {
+        changeBackgroundOfFrameButton(binding.frameRoundFilterBill, binding.btnFilterBill);
+        openDialogFilterBills();
+    }
+
+    private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.custom_btn_sort));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+    }
+
+    private void removeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
     }
 
     private void openDialogFilterBills() {
@@ -455,6 +464,9 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(binding.layoutTypeOfFilterBill.getVisibility() == View.GONE){
+                    removeBackgroundOfFrameButton(binding.frameRoundFilterBill, binding.btnFilterBill);
+                }
                 dialog.dismiss();
             }
         });
@@ -683,20 +695,14 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         binding.layoutDeleteBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.btnDeleteBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                binding.frameRoundDeleteBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
-                roomBillAdapter.isDeleteChecked(true);
-                binding.layoutDeleteManyBills.setVisibility(View.VISIBLE);
+                clickDeleteBill();
             }
         });
 
         binding.btnDeleteBill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.btnDeleteBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                binding.frameRoundDeleteBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
-                roomBillAdapter.isDeleteChecked(true);
-                binding.layoutDeleteManyBills.setVisibility(View.VISIBLE);
+                clickDeleteBill();
             }
         });
 
@@ -741,6 +747,13 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         });
 
 
+    }
+
+    private void clickDeleteBill(){
+
+        changeBackgroundOfFrameButton(binding.frameRoundDeleteBill, binding.btnDeleteBill);
+        roomBillAdapter.isDeleteChecked(true);
+        binding.layoutDeleteManyBills.setVisibility(View.VISIBLE);
     }
 
     private void openDialogConfirmDeleteListBills(List<RoomBill> billList) {

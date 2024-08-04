@@ -723,7 +723,9 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
                 binding1.btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        closeLayoutFilterIndexes();
+                        if(binding.layoutTypeOfFilterIndex.getVisibility() == View.GONE){
+                            removeBackgroundOfFrameButton(binding.frameRoundFilterIndex, binding.btnFilterIndex);
+                        }
                         dialog.dismiss();
                     }
                 });

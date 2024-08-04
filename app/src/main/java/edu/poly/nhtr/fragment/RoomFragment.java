@@ -25,6 +25,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -41,6 +42,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -939,6 +941,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         binding.btnCancelSortRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
                 binding.layoutTypeOfSortRoom.setVisibility(View.GONE);
                 preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
                 roomPresenter.getRooms("init");
@@ -949,6 +952,9 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(binding.layoutTypeOfSortRoom.getVisibility() == View.GONE){
+                    removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
+                }
                 dialog.dismiss();
             }
         });
@@ -1122,6 +1128,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
                                     // If no filter left in the list -> Set GONE
                                     binding.layoutTypeOfFilterRoom.setVisibility(View.GONE);
                                     binding.layoutNoRoom.setVisibility(View.GONE);
+                                    removeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
                                     // And update list homes as initial
                                     roomPresenter.getRooms("init");
                                 }else {
@@ -1153,6 +1160,9 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(binding.layoutTypeOfFilterRoom.getVisibility() == View.GONE){
+                    removeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
+                }
                 dialog.dismiss();
             }
         });
@@ -1209,32 +1219,56 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         binding.btnSortRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSortRoomDialog();
+                clickSortRoom();
             }
         });
 
         binding.imgSortRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openSortRoomDialog();
+                clickSortRoom();
             }
         });
 
         binding.btnFilterRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFilterRoomDialog();
+                clickFilterRoom();
             }
         });
 
         binding.imgFilterRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFilterRoomDialog();
+                clickFilterRoom();
             }
         });
 
     }
+
+    private void clickSortRoom(){
+        removeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
+        changeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
+        openSortRoomDialog();
+    }
+
+    private void clickFilterRoom(){
+        changeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
+        removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
+        openFilterRoomDialog();
+    }
+
+    private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.custom_btn_sort));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+    }
+
+    private void removeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
+    }
+
+
 //    private void setupDeleteRows() {
 //        binding.layoutDelete.setOnClickListener(v -> {
 //            binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
