@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -144,7 +145,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         homeListener.putListSelected(selectList);
 
         //roomListener.showToast("Call ");
-        CheckBox checkBoxSelectAll = fragment.requireView().findViewById(R.id.checkbox_select_all);
+        CheckBox checkBoxSelectAll = fragment.requireView().findViewById(R.id.checkbox_select_all_2);
 
         checkBoxSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -161,7 +162,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         });
 
-        TextView buttonCancelDelete = fragment.requireView().findViewById(R.id.txt_cancel_delete_home);
+        ImageButton buttonCancelDelete = fragment.requireView().findViewById(R.id.txt_cancel_delete_home_2);
         buttonCancelDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

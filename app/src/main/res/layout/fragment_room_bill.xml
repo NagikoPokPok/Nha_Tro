@@ -7,11 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".fragment.RoomBillFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layout_main_of_room_bill"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/layout_functions"
@@ -21,7 +20,9 @@
             android:gravity="end"
             android:orientation="horizontal"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
 
             <FrameLayout
                 android:id="@+id/layout_delete_bill"
@@ -115,60 +116,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layout_delete_many_bills"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="7dp"
-            android:visibility="gone">
 
-            <LinearLayout
-                android:id="@+id/layout_select_all"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <CheckBox
-                    android:id="@+id/checkbox_select_all"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/checkbox_selector_index"
-                    android:button="@null"
-                    android:visibility="visible" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Chọn tất cả"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/txt_cancel_delete_bill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
-                android:text="Huỷ"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_medium"/>
-
-            <TextView
-                android:id="@+id/txt_delete_bill_here"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="Nhấn ở đây để xoá !"
-                android:textColor="@color/colorOrange"
-                android:textSize="15sp" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_type_of_filter_bill"
@@ -179,7 +127,8 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_below="@id/layout_functions">
 
             <TextView
                 android:id="@+id/txt_title_filter_bill"
@@ -228,19 +177,22 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:layout_below="@id/layout_type_of_filter_bill"
+            android:layout_above="@id/btn_add_bill"
+            />
 
         <LinearLayout
             android:id="@+id/layout_no_data"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone"
+            android:layout_below="@id/recycler_view"
+            android:layout_above="@id/btn_add_bill">
 
             <ImageView
                 android:layout_width="100dp"
@@ -262,6 +214,128 @@
 
         </LinearLayout>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layout_delete_many_bills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="6dp"
+            app:strokeColor="@color/colorGray"
+            app:strokeWidth="0.25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:orientation="horizontal"
+                android:padding="10dp"
+
+                >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="start"
+                    >
+
+                    <CheckBox
+                        android:id="@+id/checkbox_select_all"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/checkbox_selector_index"
+                        android:button="@null"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chọn tất cả"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextBlack"
+                        android:layout_marginTop="5dp"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/txt_delete_bill_here"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_delete"
+                        android:backgroundTint="@color/colorButton"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xoá"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextBlack"
+                        android:layout_marginTop="5dp"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/txt_cancel_delete_bill"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_cancel"
+                        android:backgroundTint="@color/colorRed"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Huỷ xoá"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextBlack"
+                        android:layout_marginTop="5dp"/>
+
+
+                </LinearLayout>
+
+
+
+
+
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_bill"
             style="@style/BUTTON"
@@ -276,8 +350,10 @@
             app:icon="@drawable/icon_add"
             app:iconGravity="textStart"
             app:iconSize="20dp"
-            android:layout_gravity="end"/>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

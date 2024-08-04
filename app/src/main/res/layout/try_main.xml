@@ -1,140 +1,434 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    style="@style/SCREEN_WHITE"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.RoomContractFragment">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".fragment.HomeFragment">
 
-    <LinearLayout
-        android:id="@+id/layout_title_contract"
+    <FrameLayout
+        android:id="@+id/frm_top_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="15dp">
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="5dp"
-            android:layout_gravity="center"
-            android:background="@drawable/custom_line"
-            android:rotation="90" />
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:background="@drawable/custom_main" />
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/frm_Image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_medium"
-                android:text="Menu quản lý hợp đồng"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="17sp" />
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/img_Profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/background_image"
+                android:scaleType="fitXY"
+                app:riv_oval="true" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_light"
-                android:text="Các thao tác cơ bản cho việc quản lý hợp đồng"
-                android:textColor="@color/colorTextBlack"
-                android:textSize="15sp" />
+            <ImageView
+                android:id="@+id/img_ava"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/khung_avatar"
+                android:padding="15dp"
+                android:src="@drawable/icon_user" />
 
-        </LinearLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/TEXT_BOLD_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="70dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/img_menu_edit_delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ic_menu"
+            android:backgroundTint="@color/white" />
 
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_fragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_title_contract"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/frm_top_main"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <FrameLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_shadow_cardview"
-            android:paddingBottom="3dp">
+            android:layout_height="match_parent">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btn_create_contract"
+            <FrameLayout
+                android:id="@+id/frm_menu_tools"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorGray"
-                app:strokeWidth="0.75dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:foregroundGravity="center"
+                android:padding="10dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    >
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
 
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_backgroud_icon_menu_contract"
-                        android:padding="15dp"
-                        >
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:background="@drawable/ic_contract"
-                            android:backgroundTint="@color/white"/>
-                    </FrameLayout>
-
-
-
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/ll_search_home"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Tạo mới hợp đồng"
-                        android:textColor="@color/colorTextBlack"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"/>
+                        android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/icon_right"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_gravity="center_vertical"/>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layout_search_home"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_light"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/colorGray"
+                            android:textSize="15sp"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusBottomEnd="20dp"
+                            app:boxCornerRadiusBottomStart="20dp"
+                            app:boxCornerRadiusTopEnd="20dp"
+                            app:boxCornerRadiusTopStart="20dp"
+                            app:cursorColor="@color/colorPrimary"
+                            app:endIconDrawable="@drawable/ic_search_orange"
+                            app:endIconTint="@color/colorButton"
+                            app:hintEnabled="false">
 
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edt_search_home"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/tim_kiem_nha_tro"
+                                android:imeOptions="actionGo"
+                                android:paddingStart="20dp"
+                                android:paddingEnd="50dp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/btn_filter_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="10dp">
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/frame_round_filter_home"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/background_delete_index_normal"
+                            android:scaleType="fitXY"
+                            app:riv_oval="true" />
+
+                        <ImageButton
+                            android:id="@+id/img_filter_home"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_filter_index"
+                            android:backgroundTint="@color/colorGray" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/btn_sort_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp">
+
+                        <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/frame_round_sort_home"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/background_delete_index_normal"
+                            android:scaleType="fitXY"
+                            app:riv_oval="true" />
+
+                        <ImageButton
+                            android:id="@+id/img_sort_home"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/icon_sort"
+                            android:backgroundTint="@color/colorGray" />
+
+                    </FrameLayout>
 
                 </LinearLayout>
 
 
-            </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
+            </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_shadow_cardview"
-            android:paddingBottom="3dp"
-            android:layout_marginTop="15dp">
+
+
+
+            <LinearLayout
+                android:id="@+id/layout_type_of_sort_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
+                app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_title_sort_filter_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text=""
+                    android:textSize="15sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:background="@drawable/bg_sort_filter_home"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/txt_type_of_sort_filter_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:text=""
+                        android:textSize="15sp"
+                        android:fontFamily="@font/inter_bold"
+                        android:textColor="@color/colorTextBlack"/>
+
+                    <ImageView
+                        android:id="@+id/btn_cancel_sort_home"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginEnd="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_cancel" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_type_of_filter_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="5dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/homesRecyclerView"
+                app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_title_filter_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:text="Lọc theo:  "
+                    android:textSize="15sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"/>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/list_type_of_filter_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexWrap="wrap"
+                    android:orientation="horizontal">
+                </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+
+                <ImageView
+                    android:id="@+id/img_add_home"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/img_add_home"
+                    android:visibility="gone" />
+
+
+                <TextView
+                    android:id="@+id/txt_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_no_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/frm_menu_tools">
+
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/img_no_data" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Không có dữ liệu !"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="18sp" />
+
+
+            </LinearLayout>
+
+            <!-- Barrier -->
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="layout_type_of_sort_home, layout_type_of_filter_home" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                android:visibility="invisible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/btn_add_home"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier" />
+
+            <FrameLayout
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="@id/frm_menu_tools"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <ProgressBar
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/colorPrimary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đang tải dữ liệu..."
+                    android:layout_gravity="center"
+                    android:layout_marginTop="40dp"
+                    android:fontFamily="@font/inter_medium"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="14sp"/>
+
+            </FrameLayout>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btn_view_contract"
+                android:id="@+id/layout_delete_many_homes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="15dp"
+                app:cardElevation="6dp"
                 app:strokeColor="@color/colorGray"
-                app:strokeWidth="0.75dp"
+                app:strokeWidth="0.25dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 >
 
                 <LinearLayout
@@ -143,260 +437,131 @@
                     android:layout_gravity="start"
                     android:orientation="horizontal"
                     android:padding="10dp"
+
                     >
 
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_backgroud_icon_menu_contract"
-                        android:padding="15dp"
-                        >
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:background="@drawable/ic_eye_view"
-                            android:backgroundTint="@color/white"/>
-                    </FrameLayout>
-
-
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Xem hợp đồng"
-                        android:textColor="@color/colorTextBlack"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"/>
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/icon_right"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_gravity="center_vertical"/>
-
-
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_shadow_cardview"
-            android:paddingBottom="3dp"
-            android:layout_marginTop="15dp">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btn_edit_contract"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorGray"
-                app:strokeWidth="0.75dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    >
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_backgroud_icon_menu_contract"
-                        android:padding="15dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="start"
                         >
 
-                        <ImageView
+                        <CheckBox
+                            android:id="@+id/checkbox_select_all"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:background="@drawable/ic_edit"
-                            android:backgroundTint="@color/white"/>
-                    </FrameLayout>
+                            android:layout_gravity="center"
+                            android:background="@drawable/checkbox_selector_index"
+                            android:button="@null"
+                            android:visibility="visible" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chọn tất cả"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/colorTextBlack"
+                            android:layout_marginTop="5dp"/>
 
 
+                    </LinearLayout>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Chỉnh sửa hợp đồng"
-                        android:textColor="@color/colorTextBlack"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"/>
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/icon_right"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_gravity="center_vertical"/>
-
-
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_shadow_cardview"
-            android:paddingBottom="3dp"
-            android:layout_marginTop="15dp">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btn_delete_contract"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorGray"
-                app:strokeWidth="0.75dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    >
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_backgroud_icon_menu_contract"
-                        android:padding="15dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="center"
                         >
 
-                        <ImageView
+                        <ImageButton
+                            android:id="@+id/txt_delete_home_here"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:background="@drawable/ic_delete"
-                            android:backgroundTint="@color/white"/>
-                    </FrameLayout>
+                            android:backgroundTint="@color/colorButton"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Xoá"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/colorTextBlack"
+                            android:layout_marginTop="5dp"/>
 
 
+                    </LinearLayout>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="Xóa hợp đồng"
-                        android:textColor="@color/colorTextBlack"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"/>
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/icon_right"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_gravity="center_vertical"/>
-
-
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_shadow_cardview"
-            android:paddingBottom="3dp"
-            android:layout_marginTop="15dp">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btn_print_contract"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="15dp"
-                app:strokeColor="@color/colorGray"
-                app:strokeWidth="0.75dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    >
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_backgroud_icon_menu_contract"
-                        android:padding="15dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_gravity="end"
                         >
 
-                        <ImageView
+                        <ImageButton
+                            android:id="@+id/txt_cancel_delete_home"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:background="@drawable/ic_print"
-                            android:backgroundTint="@color/white"/>
-                    </FrameLayout>
+                            android:background="@drawable/ic_cancel"
+                            android:backgroundTint="@color/colorRed"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Huỷ xoá"
+                            android:fontFamily="@font/inter_medium"
+                            android:textSize="14sp"
+                            android:textColor="@color/colorTextBlack"
+                            android:layout_marginTop="5dp"/>
+
+
+                    </LinearLayout>
 
 
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
-                        android:text="In hợp đồng"
-                        android:textColor="@color/colorTextBlack"
-                        android:textSize="18sp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="20dp"/>
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:background="@drawable/icon_right"
-                        android:backgroundTint="@color/colorPrimary"
-                        android:layout_gravity="center_vertical"/>
 
 
                 </LinearLayout>
 
 
             </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_home"
+                style="@style/BUTTON"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/them_nha_tro"
+                android:textSize="18sp"
+                app:backgroundTint="@null"
+                app:icon="@drawable/icon_add"
+                app:iconGravity="textStart"
+                app:iconSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.90"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 
 
-
-
-
-
-
-
-    </LinearLayout>
-
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

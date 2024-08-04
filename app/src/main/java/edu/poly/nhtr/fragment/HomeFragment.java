@@ -178,7 +178,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     }
 
     private void setupLayoutDeleteHomes() {
-        binding.checkboxSelectAll.setOnClickListener(new View.OnClickListener() {
+        binding.checkboxSelectAll2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isSelectAllChecked = !isSelectAllChecked;
@@ -722,19 +722,19 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
     @Override
     public void showLayoutDeleteHomes() {
-        binding.layoutDeleteManyHomes.setVisibility(View.VISIBLE);
+        binding.layoutDeleteManyHomes2.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void putListSelected(List<Home> listHomes) {
-        binding.txtDeleteHomeHere.setOnClickListener(new View.OnClickListener() {
+        binding.txtDeleteHomeHere2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleDeleteButtonClick(listHomes);
             }
         });
 
-        binding.txtCancelDeleteHome.setOnClickListener(new View.OnClickListener() {
+        binding.txtCancelDeleteHome2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 homeAdapter.cancelDeleteAll();
@@ -783,7 +783,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
     @Override
     public void hideLayoutDeleteHomes() {
-        binding.layoutDeleteManyHomes.setVisibility(View.GONE);
+        binding.layoutDeleteManyHomes2.setVisibility(View.GONE);
     }
 
     private void openSortHomeDialog() {
