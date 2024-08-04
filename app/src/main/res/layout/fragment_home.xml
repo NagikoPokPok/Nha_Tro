@@ -96,7 +96,7 @@
                 android:layout_marginTop="5dp"
                 android:foregroundGravity="center"
                 android:padding="10dp"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -154,9 +154,10 @@
                         android:layout_marginStart="10dp">
 
                         <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/frame_round_filter_home"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:background="@drawable/custom_btn_sort"
+                            android:background="@drawable/background_delete_index_normal"
                             android:scaleType="fitXY"
                             app:riv_oval="true" />
 
@@ -165,8 +166,8 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/icon_filter"
-                            android:backgroundTint="@color/white" />
+                            android:background="@drawable/ic_filter_index"
+                            android:backgroundTint="@color/colorGray" />
 
                     </FrameLayout>
 
@@ -178,9 +179,10 @@
                         android:layout_marginStart="5dp">
 
                         <com.makeramen.roundedimageview.RoundedImageView
+                            android:id="@+id/frame_round_sort_home"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:background="@drawable/custom_btn_sort"
+                            android:background="@drawable/background_delete_index_normal"
                             android:scaleType="fitXY"
                             app:riv_oval="true" />
 
@@ -190,7 +192,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center"
                             android:background="@drawable/icon_sort"
-                            android:backgroundTint="@color/white" />
+                            android:backgroundTint="@color/colorGray" />
 
                     </FrameLayout>
 

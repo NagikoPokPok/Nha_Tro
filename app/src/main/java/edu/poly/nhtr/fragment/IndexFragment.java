@@ -196,6 +196,14 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
         isLoadingFinished = false;
         currentMonth = Calendar.getInstance().get(Calendar.MONTH);
         currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        resetAllIcons();
+
+        //Delete layout delete index
+        closeLayoutDeleteManyRows();
+
+        // Delete layout filter index
+        closeLayoutFilterIndexes();
         // Get index
         indexPresenter.checkWaterIsIndexOrNot(new IndexPresenter.OnCheckWaterIsIndexCompleteListener() {
             @Override
@@ -211,11 +219,7 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
             }
         });
 
-        //Delete layout delete index
-        closeLayoutDeleteManyRows();
 
-        // Delete layout filter index
-        closeLayoutFilterIndexes();
 
         // Set date time default
         String monthYear = (currentMonth + 1) + "/" + currentYear;
@@ -240,6 +244,7 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
             }
         }, 500); // Thời gian kiểm tra ban đầu
     }
+
 
     private void setupAlarmService() {
         LayoutDialogSettingNotificationIndexBinding binding1 = LayoutDialogSettingNotificationIndexBinding.inflate(getLayoutInflater());

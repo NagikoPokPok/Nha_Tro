@@ -7,7 +7,7 @@
     android:background="@drawable/bg_white_corner_16"
     android:elevation="10dp"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
+    android:paddingBottom="15dp"
     android:layout_margin="30dp">
 
 

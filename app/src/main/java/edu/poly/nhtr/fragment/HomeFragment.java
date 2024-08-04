@@ -29,6 +29,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -55,6 +56,7 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -200,6 +202,10 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         removeStatusOfCheckBoxFilterHome();
         preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
 
+        //Remove background of frame buttons
+        removeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
+        removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
+
         // Sử dụng Handler để kiểm tra trạng thái tải
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -238,6 +244,8 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.btnSortHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
+                changeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
                 openSortHomeDialog();
             }
         });
@@ -245,6 +253,8 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.imgSortHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
+                changeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
                 openSortHomeDialog();
             }
         });
@@ -252,6 +262,8 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
+                changeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
                 homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
                     @Override
                     public void onComplete(List<Home> homeList) {
@@ -265,6 +277,8 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
+                changeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
                 homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
                     @Override
                     public void onComplete(List<Home> homeList) {
@@ -275,6 +289,16 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
             }
         });
 
+    }
+
+    private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.custom_btn_sort));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+    }
+
+    private void removeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
     }
 
 
@@ -649,6 +673,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                                 }
 
                                 if (binding.listTypeOfFilterHome.getChildCount() == 0) {
+                                    removeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
                                     // If no filter left in the list -> Set GONE
                                     binding.layoutTypeOfFilterHome.setVisibility(View.GONE);
                                     binding.layoutNoData.setVisibility(View.GONE);
@@ -683,6 +708,9 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (binding.layoutTypeOfFilterHome.getVisibility() == View.GONE) {
+                    removeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
+                }
                 dialog.dismiss();
             }
         });
@@ -848,6 +876,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.btnCancelSortHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
                 binding.layoutTypeOfSortHome.setVisibility(View.GONE);
                 preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
                 homePresenter.getHomes("init");
@@ -858,6 +887,31 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                boolean isChecked = false;
+//
+//                RadioGroup radioGroup = dialog.findViewById(R.id.radio_group_sort_home);
+//
+//                // Duyệt qua tất cả các RadioButton trong RadioGroup
+//                for (int i = 0; i < radioGroup.getChildCount(); i++) {
+//                    View view = radioGroup.getChildAt(i);
+//                    if (view instanceof RadioButton) {
+//                        RadioButton radioButton = (RadioButton) view;
+//                        if (radioButton.isChecked()) {
+//                            isChecked = true; // Nếu có bất kỳ RadioButton nào không được chọn
+//                            break; // Thoát khỏi vòng lặp
+//                        }
+//                    }
+//                }
+//
+//                if (!isChecked) { // If no radio button is checked
+//                    removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
+//                }
+
+                if (binding.layoutTypeOfSortHome.getVisibility() == View.GONE) {
+                    removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
+                }
+
+
                 dialog.dismiss();
             }
         });
@@ -1293,7 +1347,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     }
 
 
-
     @Override
     public void hideLoading() {
         binding.homesRecyclerView.setVisibility(View.VISIBLE);
@@ -1686,8 +1739,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
         btn_delete_home.setOnClickListener(v -> homePresenter.deleteListHomes(listHomes));
     }
-
-
 
 
     @Override
