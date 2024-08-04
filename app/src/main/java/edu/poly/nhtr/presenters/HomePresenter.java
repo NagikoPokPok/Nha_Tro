@@ -229,6 +229,7 @@ public class HomePresenter {
                                     updateHomesInDatabase(homesTask.getResult(), homeRoomCount, countRoomsAreAvailable, countRoomsAreDelayedPayBill, revenueOfMonth);
                                     homes.sort(Comparator.comparing(home -> home.dateObject));
                                     homeListener.hideLoading();
+                                    homeListener.getListHomes(homes);
                                     homeListener.addHome(homes, action);
                                 });
                             });
@@ -881,6 +882,8 @@ public class HomePresenter {
 
                                 homes.add(home);
                             }
+
+                            homes.sort(Comparator.comparing(home -> home.dateObject));
 
                             // Gọi phương thức getListHomes với danh sách homes đã lấy được
                             homeListener.getListHomes(homes);

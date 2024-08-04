@@ -118,13 +118,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
             }
         });
 
-        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
-            @Override
-            public void onComplete(List<Home> homeList) {
-                currentListHomes = homeList;
 
-            }
-        });
 
         homeAdapter = new HomeAdapter(currentListHomes, this, this);
 
@@ -132,6 +126,13 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         editFonts();
         // Load home information
         homePresenter.getHomes("init");
+
+        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+            @Override
+            public void onComplete(List<Home> homeList) {
+                currentListHomes = homeList;
+            }
+        });
 
         // Refresh layout
         binding.swipeRefreshFragment.setOnRefreshListener(this);
@@ -241,6 +242,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     }
 
     private void setListenersForTools() {
+
         binding.btnSortHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -262,33 +264,32 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         binding.btnFilterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
-                changeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
-                homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
-                    @Override
-                    public void onComplete(List<Home> homeList) {
-                        currentListHomes = homeList;
-                        openFilterHomeDialog(homeList);
-                    }
-                });
+                clickFilterHome();
             }
         });
 
         binding.imgFilterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
-                changeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
-                homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
-                    @Override
-                    public void onComplete(List<Home> homeList) {
-                        currentListHomes = homeList;
-                        openFilterHomeDialog(homeList);
-                    }
-                });
+                clickFilterHome();
             }
         });
 
+    }
+
+    private void clickFilterHome()
+    {
+        removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortHome);
+        changeBackgroundOfFrameButton(binding.frameRoundFilterHome, binding.imgFilterHome);
+//        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
+//            @Override
+//            public void onComplete(List<Home> homeList) {
+//                currentListHomes = homeList;
+//                openFilterHomeDialog(homeList);
+//            }
+//        });
+
+        openFilterHomeDialog(currentListHomes);
     }
 
     private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {

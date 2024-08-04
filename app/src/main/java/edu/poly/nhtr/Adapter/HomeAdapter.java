@@ -38,6 +38,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     ArrayList<Home> selectList = new ArrayList<>();
     boolean[] isVisible;
 
+    public List<Home> getHomes() {
+        return homes;
+    }
+
     public HomeAdapter(List<Home> homes, HomeListener homeListener, HomeFragment homeFragment) {
         this.homes = homes;
         this.homeListener = homeListener;
