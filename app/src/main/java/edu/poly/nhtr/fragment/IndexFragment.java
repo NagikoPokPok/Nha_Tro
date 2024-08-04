@@ -67,6 +67,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -515,23 +516,32 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
     }
 
     private void setupFilterIndexes() {
-        String dateNow = binding.txtDateTime.getText().toString();
-        String[] parts = dateNow.split("/");
-        String month = parts[0];
-        String year = parts[1];
         binding.btnFilterIndex.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.btnFilterIndex.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-                binding.frameRoundFilterIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
-                indexPresenter.getCurrentListIndex(homeID, Integer.parseInt(month), Integer.parseInt(year), new IndexPresenter.OnGetCurrentListIndexes() {
-                    @Override
-                    public void onComplete(List<Index> indexList) {
-                        openFilterIndexDialog(indexList);
-                    }
-                });
+                changeBackgroundOfFrameButton(binding.frameRoundFilterIndex, binding.btnFilterIndex);
+                String dateNow = binding.txtDateTime.getText().toString();
+                String[] parts = dateNow.split("/");
+                String month = parts[0];
+                String year = parts[1];
+//                binding.btnFilterIndex.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+//                binding.frameRoundFilterIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
+
+                openFilterIndexDialog(month, year);
             }
         });
+    }
+
+
+
+    private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.custom_btn_sort));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.white));
+    }
+
+    private void removeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
+        roundedImageView.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
+        imageButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
     }
 
     private void closeLayoutFilterIndexes() {
@@ -541,331 +551,350 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
         binding.layoutNoData.setVisibility(View.GONE);
     }
 
-    private void openFilterIndexDialog(List<Index> indexList) {
-        String dateNow = binding.txtDateTime.getText().toString();
-        String[] parts = dateNow.split("/");
-        String month = parts[0];
-        String year = parts[1];
+    private void hideLoadingFilterDialog(LayoutDialogFilterIndexBinding binding1)
+    {
+        binding1.progressBarOfFilter.setVisibility(View.GONE);
+        binding1.layoutCheckBox.setVisibility(View.VISIBLE);
+        binding1.layoutButtons.setVisibility(View.VISIBLE);
+    }
+
+    private void openFilterIndexDialog(String month, String year) {
 
         LayoutDialogFilterIndexBinding binding1 = LayoutDialogFilterIndexBinding.inflate(getLayoutInflater());
         dialog.setContentView(binding1.getRoot());
         setupDialogWindow(binding1.getRoot().getLayoutParams());
-
-        if (!waterIsIndex) {
-            binding1.txtWaterIndex.setVisibility(View.GONE);
-            binding1.cbxFrom0To4M3.setVisibility(View.GONE);
-            binding1.cbxFrom4To8M3.setVisibility(View.GONE);
-            binding1.cbxFrom8ToMoreM3.setVisibility(View.GONE);
-        }
         dialog.setCancelable(true);
         dialog.show();
 
 
-        AppCompatCheckBox cbxByWater1 = binding1.cbxFrom0To4M3;
-        AppCompatCheckBox cbxByWater2 = binding1.cbxFrom4To8M3;
-        AppCompatCheckBox cbxByWater3 = binding1.cbxFrom8ToMoreM3;
-
-        int range1Max, range2Max, range3Max;
-
-        // Bước 1: Tìm số lượng phòng lớn nhất
-        int maxIndex = 0;
-        for (Index index : indexList) {
-            int indexOfUsed = Integer.parseInt(index.getElectricityIndexNew()) - Integer.parseInt(index.getElectricityIndexOld());
-            if (indexOfUsed > maxIndex) {
-                maxIndex = indexOfUsed;
-            }
-        }
-
-        // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
-
-        if (maxIndex == 0) {
-            range1Max = range2Max = range3Max = 0;
-        } else {
-            range1Max = (int) Math.ceil((double) maxIndex / 3.0);  // Kích thước mỗi khoảng
-            range2Max = 2 * range1Max;
-            range3Max = maxIndex;
-        }
-
-        // Bước 3: Thiết lập văn bản và hiển thị các checkbox
-        binding1.cbxFrom0To150KWh.setText("Từ " + 0 + " - " + range1Max + " kWh");
-
-        if (range2Max > range1Max) {
-            if ((range1Max + 1) != range2Max) {
-                binding1.cbxFrom150To250KWh.setText("Từ " + (range1Max + 1) + " - " + range2Max + " kWh");
-            } else {
-                binding1.cbxFrom150To250KWh.setText("Từ " + (range1Max + 1) + " kWh");
-            }
-            binding1.cbxFrom150To250KWh.setVisibility(View.VISIBLE);
-        } else {
-            binding1.cbxFrom150To250KWh.setVisibility(View.GONE);
-        }
-
-        if (range3Max > range2Max) {
-            if ((range2Max + 1) != range3Max) {
-                binding1.cbxFrom250ToMoreKWh.setText("Từ " + (range2Max + 1) + " - " + range3Max + " kWh");
-            } else {
-                binding1.cbxFrom250ToMoreKWh.setText("Từ " + (range2Max + 1) + " kWh");
-            }
-            binding1.cbxFrom250ToMoreKWh.setVisibility(View.VISIBLE);
-        } else {
-            binding1.cbxFrom250ToMoreKWh.setVisibility(View.GONE);
-        }
-
-
-        int range4Max, range5Max, range6Max;
-
-        // Bước 1: Tìm số lượng phòng lớn nhất
-        int maxIndexOfWater = 0;
-        for (Index index : indexList) {
-            int indexOfUsed = Integer.parseInt(index.getWaterIndexNew()) - Integer.parseInt(index.getWaterIndexOld());
-            if (indexOfUsed > maxIndexOfWater) {
-                maxIndexOfWater = indexOfUsed;
-            }
-        }
-
-        // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
-
-        if (maxIndexOfWater == 0) {
-            range4Max = range5Max = range6Max = 0;
-        } else {
-            range4Max = (int) Math.ceil((double) maxIndexOfWater / 3.0);  // Kích thước mỗi khoảng
-            range5Max = 2 * range4Max;
-            range6Max = maxIndexOfWater;
-        }
-
-        // Bước 3: Thiết lập văn bản và hiển thị các checkbox
-        cbxByWater1.setText("Từ " + 0 + " - " + range4Max + " Khối");
-
-        if (range5Max > range4Max) {
-            if ((range4Max + 1) != range5Max) {
-                cbxByWater2.setText("Từ " + (range4Max + 1) + " - " + range5Max + " Khối");
-            } else {
-                cbxByWater2.setText("Từ " + (range4Max + 1) + " Khối");
-            }
-            cbxByWater2.setVisibility(View.VISIBLE);
-        } else {
-            cbxByWater2.setVisibility(View.GONE);
-        }
-
-        if (range6Max > range5Max) {
-            if ((range5Max + 1) != range6Max) {
-                cbxByWater3.setText("Từ " + (range5Max + 1) + " - " + range6Max + " Khối");
-            } else {
-                cbxByWater3.setText("Từ " + (range5Max + 1) + " Khối");
-            }
-            cbxByWater3.setVisibility(View.VISIBLE);
-        } else {
-            cbxByWater3.setVisibility(View.GONE);
-        }
-
-
-        cbxByWater1.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1));
-        cbxByWater2.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2));
-        cbxByWater3.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3));
-
-
-        binding1.cbxFrom0To150KWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex1"));
-        binding1.cbxFrom150To250KWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex2"));
-        binding1.cbxFrom250ToMoreKWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex3"));
-
-
-        // Add CheckBoxes to a list
-        List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
-        checkBoxList.add(binding1.cbxFrom0To150KWh);
-        checkBoxList.add(binding1.cbxFrom150To250KWh);
-        checkBoxList.add(binding1.cbxFrom250ToMoreKWh);
-        if (waterIsIndex) {
-            checkBoxList.add(cbxByWater1);
-            checkBoxList.add(cbxByWater2);
-            checkBoxList.add(cbxByWater3);
-        }
-
-        customizeButtonApplyInDialogHaveCheckBox(binding1.btnConfirmApply, checkBoxList);
-
-        // Create a method to check the state of all checkboxes
-        View.OnClickListener checkBoxListener = new View.OnClickListener() {
+        indexPresenter.getCurrentListIndex(homeID, Integer.parseInt(month), Integer.parseInt(year), new IndexPresenter.OnGetCurrentListIndexes() {
             @Override
-            public void onClick(View v) {
+            public void onComplete(List<Index> indexList) {
+
+                hideLoadingFilterDialog(binding1);
+
+                if (!waterIsIndex) {
+                    binding1.txtWaterIndex.setVisibility(View.GONE);
+                    binding1.cbxFrom0To4M3.setVisibility(View.GONE);
+                    binding1.cbxFrom4To8M3.setVisibility(View.GONE);
+                    binding1.cbxFrom8ToMoreM3.setVisibility(View.GONE);
+                }
+
+
+                AppCompatCheckBox cbxByWater1 = binding1.cbxFrom0To4M3;
+                AppCompatCheckBox cbxByWater2 = binding1.cbxFrom4To8M3;
+                AppCompatCheckBox cbxByWater3 = binding1.cbxFrom8ToMoreM3;
+
+                int range1Max, range2Max, range3Max;
+
+                // Bước 1: Tìm số lượng phòng lớn nhất
+                int maxIndex = 0;
+                for (Index index : indexList) {
+                    int indexOfUsed = Integer.parseInt(index.getElectricityIndexNew()) - Integer.parseInt(index.getElectricityIndexOld());
+                    if (indexOfUsed > maxIndex) {
+                        maxIndex = indexOfUsed;
+                    }
+                }
+
+                // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
+
+                if (maxIndex == 0) {
+                    range1Max = range2Max = range3Max = 0;
+                } else {
+                    range1Max = (int) Math.ceil((double) maxIndex / 3.0);  // Kích thước mỗi khoảng
+                    range2Max = 2 * range1Max;
+                    range3Max = maxIndex;
+                }
+
+                // Bước 3: Thiết lập văn bản và hiển thị các checkbox
+                binding1.cbxFrom0To150KWh.setText("Từ " + 0 + " - " + range1Max + " kWh");
+
+                if (range2Max > range1Max) {
+                    if ((range1Max + 1) != range2Max) {
+                        binding1.cbxFrom150To250KWh.setText("Từ " + (range1Max + 1) + " - " + range2Max + " kWh");
+                    } else {
+                        binding1.cbxFrom150To250KWh.setText("Từ " + (range1Max + 1) + " kWh");
+                    }
+                    binding1.cbxFrom150To250KWh.setVisibility(View.VISIBLE);
+                } else {
+                    binding1.cbxFrom150To250KWh.setVisibility(View.GONE);
+                }
+
+                if (range3Max > range2Max) {
+                    if ((range2Max + 1) != range3Max) {
+                        binding1.cbxFrom250ToMoreKWh.setText("Từ " + (range2Max + 1) + " - " + range3Max + " kWh");
+                    } else {
+                        binding1.cbxFrom250ToMoreKWh.setText("Từ " + (range2Max + 1) + " kWh");
+                    }
+                    binding1.cbxFrom250ToMoreKWh.setVisibility(View.VISIBLE);
+                } else {
+                    binding1.cbxFrom250ToMoreKWh.setVisibility(View.GONE);
+                }
+
+
+                int range4Max, range5Max, range6Max;
+
+                // Bước 1: Tìm số lượng phòng lớn nhất
+                int maxIndexOfWater = 0;
+                for (Index index : indexList) {
+                    int indexOfUsed = Integer.parseInt(index.getWaterIndexNew()) - Integer.parseInt(index.getWaterIndexOld());
+                    if (indexOfUsed > maxIndexOfWater) {
+                        maxIndexOfWater = indexOfUsed;
+                    }
+                }
+
+                // Bước 2: Chia số lượng phòng lớn nhất thành ba khoảng
+
+                if (maxIndexOfWater == 0) {
+                    range4Max = range5Max = range6Max = 0;
+                } else {
+                    range4Max = (int) Math.ceil((double) maxIndexOfWater / 3.0);  // Kích thước mỗi khoảng
+                    range5Max = 2 * range4Max;
+                    range6Max = maxIndexOfWater;
+                }
+
+                // Bước 3: Thiết lập văn bản và hiển thị các checkbox
+                cbxByWater1.setText("Từ " + 0 + " - " + range4Max + " Khối");
+
+                if (range5Max > range4Max) {
+                    if ((range4Max + 1) != range5Max) {
+                        cbxByWater2.setText("Từ " + (range4Max + 1) + " - " + range5Max + " Khối");
+                    } else {
+                        cbxByWater2.setText("Từ " + (range4Max + 1) + " Khối");
+                    }
+                    cbxByWater2.setVisibility(View.VISIBLE);
+                } else {
+                    cbxByWater2.setVisibility(View.GONE);
+                }
+
+                if (range6Max > range5Max) {
+                    if ((range5Max + 1) != range6Max) {
+                        cbxByWater3.setText("Từ " + (range5Max + 1) + " - " + range6Max + " Khối");
+                    } else {
+                        cbxByWater3.setText("Từ " + (range5Max + 1) + " Khối");
+                    }
+                    cbxByWater3.setVisibility(View.VISIBLE);
+                } else {
+                    cbxByWater3.setVisibility(View.GONE);
+                }
+
+
+                cbxByWater1.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1));
+                cbxByWater2.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2));
+                cbxByWater3.setChecked(preferenceManager.getBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3));
+
+
+                binding1.cbxFrom0To150KWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex1"));
+                binding1.cbxFrom150To250KWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex2"));
+                binding1.cbxFrom250ToMoreKWh.setChecked(preferenceManager.getBoolean("cbxByElectricityIndex3"));
+
+
+                // Add CheckBoxes to a list
+                List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
+                checkBoxList.add(binding1.cbxFrom0To150KWh);
+                checkBoxList.add(binding1.cbxFrom150To250KWh);
+                checkBoxList.add(binding1.cbxFrom250ToMoreKWh);
+                if (waterIsIndex) {
+                    checkBoxList.add(cbxByWater1);
+                    checkBoxList.add(cbxByWater2);
+                    checkBoxList.add(cbxByWater3);
+                }
+
                 customizeButtonApplyInDialogHaveCheckBox(binding1.btnConfirmApply, checkBoxList);
-            }
-        };
 
-        // Set the listener to all checkboxes
-        binding1.cbxFrom0To150KWh.setOnClickListener(checkBoxListener);
-        binding1.cbxFrom150To250KWh.setOnClickListener(checkBoxListener);
-        binding1.cbxFrom250ToMoreKWh.setOnClickListener(checkBoxListener);
-        if (waterIsIndex) {
-            cbxByWater1.setOnClickListener(checkBoxListener);
-            cbxByWater2.setOnClickListener(checkBoxListener);
-            cbxByWater3.setOnClickListener(checkBoxListener);
-        }
+                // Create a method to check the state of all checkboxes
+                View.OnClickListener checkBoxListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        customizeButtonApplyInDialogHaveCheckBox(binding1.btnConfirmApply, checkBoxList);
+                    }
+                };
 
-        binding1.btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeLayoutFilterIndexes();
-                dialog.dismiss();
-            }
-        });
-
-        binding1.btnConfirmApply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.layoutTypeOfFilterIndex.setVisibility(View.VISIBLE);
-                List<String> selectedOptions = new ArrayList<>();
-
-                // Check which CheckBoxes are selected and save their state
-                boolean filterByIndex1 = binding1.cbxFrom0To150KWh.isChecked();
-                boolean filterByIndex2 = binding1.cbxFrom150To250KWh.isChecked();
-                boolean filterByIndex3 = binding1.cbxFrom250ToMoreKWh.isChecked();
-                boolean filterByWaterIndex1 = cbxByWater1.isChecked();
-                boolean filterByWaterIndex2 = cbxByWater2.isChecked();
-                boolean filterByWaterIndex3 = cbxByWater3.isChecked();
-
-
-                if (filterByIndex1) {
-                    selectedOptions.add(binding1.cbxFrom0To150KWh.getText().toString());
-                    preferenceManager.putBoolean("cbxByElectricityIndex1", true);
-                } else {
-                    preferenceManager.putBoolean("cbxByElectricityIndex1", false);
-                    removeFromListAndSave(binding1.cbxFrom0To150KWh.getText().toString());
-                }
-                if (filterByIndex2) {
-                    selectedOptions.add(binding1.cbxFrom150To250KWh.getText().toString());
-                    preferenceManager.putBoolean("cbxByElectricityIndex2", true);
-                } else {
-                    preferenceManager.putBoolean("cbxByElectricityIndex2", false);
-                    removeFromListAndSave(binding1.cbxFrom150To250KWh.getText().toString());
-                }
-                if (filterByIndex3) {
-                    selectedOptions.add(binding1.cbxFrom250ToMoreKWh.getText().toString());
-                    preferenceManager.putBoolean("cbxByElectricityIndex3", true);
-                } else {
-                    preferenceManager.putBoolean("cbxByElectricityIndex3", false);
-                    removeFromListAndSave(binding1.cbxFrom250ToMoreKWh.getText().toString());
-                }
-                if (filterByWaterIndex1) {
-                    selectedOptions.add(cbxByWater1.getText().toString());
-                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1, true);
-                } else {
-                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1, false);
-                    removeFromListAndSave(cbxByWater1.getText().toString());
-                }
-                if (filterByWaterIndex2) {
-                    selectedOptions.add(cbxByWater2.getText().toString());
-                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2, true);
-                } else {
-                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2, false);
-                    removeFromListAndSave(cbxByWater2.getText().toString());
-                }
-                if (filterByWaterIndex3) {
-                    selectedOptions.add(cbxByWater3.getText().toString());
-                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3, true);
-                } else {
-                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3, false);
-                    removeFromListAndSave(cbxByWater3.getText().toString());
+                // Set the listener to all checkboxes
+                binding1.cbxFrom0To150KWh.setOnClickListener(checkBoxListener);
+                binding1.cbxFrom150To250KWh.setOnClickListener(checkBoxListener);
+                binding1.cbxFrom250ToMoreKWh.setOnClickListener(checkBoxListener);
+                if (waterIsIndex) {
+                    cbxByWater1.setOnClickListener(checkBoxListener);
+                    cbxByWater2.setOnClickListener(checkBoxListener);
+                    cbxByWater3.setOnClickListener(checkBoxListener);
                 }
 
-                // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
-                if (!filterByIndex1 && !filterByIndex2 && !filterByIndex3 && !filterByWaterIndex1 && !filterByWaterIndex2 && !filterByWaterIndex3) {
-                    closeLayoutFilterIndexes();
-                    binding.recyclerView.setVisibility(View.VISIBLE);
-                    indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
-                } else {
-                    filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max); // After put status of checkboxes in preferences, check and add them into the list
-                }
+                binding1.btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        closeLayoutFilterIndexes();
+                        dialog.dismiss();
+                    }
+                });
 
-                // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
-                for (String option : selectedOptions) {
-                    // Check if the checkbox is already in the listTypeOfFilterHome
-                    boolean alreadyExists = false;
-                    for (int i = 0; i < binding.listTypeOfFilterIndex.getChildCount(); i++) {
-                        View view = binding.listTypeOfFilterIndex.getChildAt(i);
-                        if (view instanceof LinearLayout) {
-                            TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
-                            if (textView.getText().toString().equals(option)) {
-                                alreadyExists = true;
-                                break;
+                binding1.btnConfirmApply.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        binding.layoutTypeOfFilterIndex.setVisibility(View.VISIBLE);
+                        List<String> selectedOptions = new ArrayList<>();
+
+                        // Check which CheckBoxes are selected and save their state
+                        boolean filterByIndex1 = binding1.cbxFrom0To150KWh.isChecked();
+                        boolean filterByIndex2 = binding1.cbxFrom150To250KWh.isChecked();
+                        boolean filterByIndex3 = binding1.cbxFrom250ToMoreKWh.isChecked();
+                        boolean filterByWaterIndex1 = cbxByWater1.isChecked();
+                        boolean filterByWaterIndex2 = cbxByWater2.isChecked();
+                        boolean filterByWaterIndex3 = cbxByWater3.isChecked();
+
+
+                        if (filterByIndex1) {
+                            selectedOptions.add(binding1.cbxFrom0To150KWh.getText().toString());
+                            preferenceManager.putBoolean("cbxByElectricityIndex1", true);
+                        } else {
+                            preferenceManager.putBoolean("cbxByElectricityIndex1", false);
+                            removeFromListAndSave(binding1.cbxFrom0To150KWh.getText().toString());
+                        }
+                        if (filterByIndex2) {
+                            selectedOptions.add(binding1.cbxFrom150To250KWh.getText().toString());
+                            preferenceManager.putBoolean("cbxByElectricityIndex2", true);
+                        } else {
+                            preferenceManager.putBoolean("cbxByElectricityIndex2", false);
+                            removeFromListAndSave(binding1.cbxFrom150To250KWh.getText().toString());
+                        }
+                        if (filterByIndex3) {
+                            selectedOptions.add(binding1.cbxFrom250ToMoreKWh.getText().toString());
+                            preferenceManager.putBoolean("cbxByElectricityIndex3", true);
+                        } else {
+                            preferenceManager.putBoolean("cbxByElectricityIndex3", false);
+                            removeFromListAndSave(binding1.cbxFrom250ToMoreKWh.getText().toString());
+                        }
+                        if (filterByWaterIndex1) {
+                            selectedOptions.add(cbxByWater1.getText().toString());
+                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1, true);
+                        } else {
+                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1, false);
+                            removeFromListAndSave(cbxByWater1.getText().toString());
+                        }
+                        if (filterByWaterIndex2) {
+                            selectedOptions.add(cbxByWater2.getText().toString());
+                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2, true);
+                        } else {
+                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2, false);
+                            removeFromListAndSave(cbxByWater2.getText().toString());
+                        }
+                        if (filterByWaterIndex3) {
+                            selectedOptions.add(cbxByWater3.getText().toString());
+                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3, true);
+                        } else {
+                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3, false);
+                            removeFromListAndSave(cbxByWater3.getText().toString());
+                        }
+
+                        // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
+                        if (!filterByIndex1 && !filterByIndex2 && !filterByIndex3 && !filterByWaterIndex1 && !filterByWaterIndex2 && !filterByWaterIndex3) {
+                            closeLayoutFilterIndexes();
+                            binding.recyclerView.setVisibility(View.VISIBLE);
+                            indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
+                        } else {
+                            filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max); // After put status of checkboxes in preferences, check and add them into the list
+                        }
+
+                        // Add selected options as LinearLayouts with TextView and ImageView to the main LinearLayout
+                        for (String option : selectedOptions) {
+                            // Check if the checkbox is already in the listTypeOfFilterHome
+                            boolean alreadyExists = false;
+                            for (int i = 0; i < binding.listTypeOfFilterIndex.getChildCount(); i++) {
+                                View view = binding.listTypeOfFilterIndex.getChildAt(i);
+                                if (view instanceof LinearLayout) {
+                                    TextView textView = view.findViewById(R.id.txt_type_of_filter_home);
+                                    if (textView.getText().toString().equals(option)) {
+                                        alreadyExists = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+
+                            // If the checkbox does not exist, add it to the listTypeOfFilterHome
+                            if (!alreadyExists) {
+
+                                // Inflate the layout containing the TextView and ImageView
+                                LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
+
+                                // Get references to the TextView and ImageView
+                                TextView txtTypeOfFilterHome = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
+                                ImageView iconCancel = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
+
+                                // Set the text for the TextView
+                                txtTypeOfFilterHome.setText(option);
+
+                                // Optionally set an OnClickListener for the ImageView to remove the filter
+                                iconCancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        // Remove the filter
+                                        binding.listTypeOfFilterIndex.removeView(filterItemLayout);
+
+                                        // Update SharedPreferences to uncheck the checkbox in the dialog
+                                        if (option.equals(binding1.cbxFrom0To150KWh.getText().toString())) {
+                                            preferenceManager.putBoolean("cbxByElectricityIndex1", false);
+                                            binding1.cbxFrom0To150KWh.setChecked(false);
+                                        } else if (option.equals(binding1.cbxFrom150To250KWh.getText().toString())) {
+                                            preferenceManager.putBoolean("cbxByElectricityIndex2", false);
+                                            binding1.cbxFrom150To250KWh.setChecked(false);
+                                        } else if (option.equals(binding1.cbxFrom250ToMoreKWh.getText().toString())) {
+                                            preferenceManager.putBoolean("cbxByElectricityIndex3", false);
+                                            binding1.cbxFrom250ToMoreKWh.setChecked(false);
+                                        } else if (option.equals(cbxByWater1.getText().toString())) {
+                                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1, false);
+                                            cbxByWater1.setChecked(false);
+                                        } else if (option.equals(cbxByWater2.getText().toString())) {
+                                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2, false);
+                                            cbxByWater2.setChecked(false);
+                                        } else if (option.equals(cbxByWater3.getText().toString())) {
+                                            preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3, false);
+                                            cbxByWater3.setChecked(false);
+                                        }
+
+                                        if (binding.listTypeOfFilterIndex.getChildCount() == 0) {
+                                            // If no filter left in the list -> Set GONE
+                                            closeLayoutFilterIndexes();
+                                            // And update list homes as initial
+                                            //binding.recyclerView.setVisibility(View.VISIBLE);
+                                            indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
+                                        } else {
+                                            // Update list homes after deleting some check boxes
+                                            filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max);
+                                        }
+
+                                    }
+                                });
+
+                                // Set layout parameters for filterItemLayout
+                                FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+                                        FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                                        (int) getResources().getDimension(R.dimen.filter_item_height) // Assuming filter_item_height is 40dp
+                                );
+                                int margin = (int) getResources().getDimension(R.dimen.filter_item_margin);
+                                params.setMargins(0, margin, margin, 0);
+                                filterItemLayout.setLayoutParams(params);
+
+
+                                // Add the inflated layout to the main LinearLayout
+                                binding.listTypeOfFilterIndex.addView(filterItemLayout);
                             }
                         }
+                        //dialog.dismiss();
                     }
-
-
-                    // If the checkbox does not exist, add it to the listTypeOfFilterHome
-                    if (!alreadyExists) {
-
-                        // Inflate the layout containing the TextView and ImageView
-                        LinearLayout filterItemLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.item_filter_home_layout, null);
-
-                        // Get references to the TextView and ImageView
-                        TextView txtTypeOfFilterHome = filterItemLayout.findViewById(R.id.txt_type_of_filter_home);
-                        ImageView iconCancel = filterItemLayout.findViewById(R.id.btn_cancel_filter_home);
-
-                        // Set the text for the TextView
-                        txtTypeOfFilterHome.setText(option);
-
-                        // Optionally set an OnClickListener for the ImageView to remove the filter
-                        iconCancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Remove the filter
-                                binding.listTypeOfFilterIndex.removeView(filterItemLayout);
-
-                                // Update SharedPreferences to uncheck the checkbox in the dialog
-                                if (option.equals(binding1.cbxFrom0To150KWh.getText().toString())) {
-                                    preferenceManager.putBoolean("cbxByElectricityIndex1", false);
-                                    binding1.cbxFrom0To150KWh.setChecked(false);
-                                } else if (option.equals(binding1.cbxFrom150To250KWh.getText().toString())) {
-                                    preferenceManager.putBoolean("cbxByElectricityIndex2", false);
-                                    binding1.cbxFrom150To250KWh.setChecked(false);
-                                } else if (option.equals(binding1.cbxFrom250ToMoreKWh.getText().toString())) {
-                                    preferenceManager.putBoolean("cbxByElectricityIndex3", false);
-                                    binding1.cbxFrom250ToMoreKWh.setChecked(false);
-                                } else if (option.equals(cbxByWater1.getText().toString())) {
-                                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_1, false);
-                                    cbxByWater1.setChecked(false);
-                                } else if (option.equals(cbxByWater2.getText().toString())) {
-                                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_2, false);
-                                    cbxByWater2.setChecked(false);
-                                } else if (option.equals(cbxByWater3.getText().toString())) {
-                                    preferenceManager.putBoolean(Constants.KEY_CBX_BY_WATER_INDEX_3, false);
-                                    cbxByWater3.setChecked(false);
-                                }
-
-                                if (binding.listTypeOfFilterIndex.getChildCount() == 0) {
-                                    // If no filter left in the list -> Set GONE
-                                    closeLayoutFilterIndexes();
-                                    // And update list homes as initial
-                                    //binding.recyclerView.setVisibility(View.VISIBLE);
-                                    indexPresenter.fetchIndexesByMonthAndYear(homeID, Integer.parseInt(month), Integer.parseInt(year), "init");
-                                } else {
-                                    // Update list homes after deleting some check boxes
-                                    filterListHomes(range1Max, range2Max, range3Max, range4Max, range5Max, range6Max);
-                                }
-
-                            }
-                        });
-
-                        // Set layout parameters for filterItemLayout
-                        FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                                FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                                (int) getResources().getDimension(R.dimen.filter_item_height) // Assuming filter_item_height is 40dp
-                        );
-                        int margin = (int) getResources().getDimension(R.dimen.filter_item_margin);
-                        params.setMargins(0, margin, margin, 0);
-                        filterItemLayout.setLayoutParams(params);
-
-
-                        // Add the inflated layout to the main LinearLayout
-                        binding.listTypeOfFilterIndex.addView(filterItemLayout);
-                    }
-                }
-                //dialog.dismiss();
+                });
             }
         });
+//        String dateNow = binding.txtDateTime.getText().toString();
+//        String[] parts = dateNow.split("/");
+//        String month = parts[0];
+//        String year = parts[1];
+
+
 
 
     }
+
 
     private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
         boolean isAnyChecked = false;
@@ -1454,8 +1483,9 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
 
     private void setupDeleteRows() {
         binding.btnDelete.setOnClickListener(v -> {
-            binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
-            binding.frameRoundDeleteIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
+            changeBackgroundOfFrameButton(binding.frameRoundDeleteIndex, binding.btnDelete);
+//            binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
+//            binding.frameRoundDeleteIndex.setBackground(getResources().getDrawable(R.drawable.background_delete_index_pressed));
             binding.layoutDeleteManyRows.setVisibility(View.VISIBLE);
             adapter.isDeleteClicked(true);
         });
@@ -1647,6 +1677,7 @@ public class IndexFragment extends Fragment implements IndexInterface, SwipeRefr
 
     @Override
     public void setIndexList(List<Index> indexList) {
+        currentListIndexes = indexList;
         list_index = indexList;
         if (adapter != null) {
             adapter.setIndexList(indexList);
