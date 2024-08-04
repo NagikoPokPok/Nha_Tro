@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -132,56 +134,54 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         showToast("Signing out ...");
         loading(true);
 
-        // Add a delay of 5 seconds
-        new android.os.Handler().postDelayed(() -> {
-            FirebaseAuth.getInstance().signOut();
-            PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
-            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
-            preferenceManager.removePreference(Constants.KEY_USER_ID);
-            preferenceManager.removePreference(Constants.KEY_NAME);
-            preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
-            preferenceManager.removePreference(Constants.KEY_ADDRESS);
+        // Kiểm tra nếu người dùng đăng nhập bằng tài khoản Google
+        if (FirebaseAuth.getInstance().getCurrentUser() != null &&
+                FirebaseAuth.getInstance().getCurrentUser().getProviderData().stream()
+                        .anyMatch(profile -> "google.com".equals(profile.getProviderId()))) {
 
-            SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("nightMode", false);
-            editor.apply();
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            // Đăng xuất tài khoản Google
+            GoogleSignIn.getClient(requireActivity(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
+                    .addOnCompleteListener(requireActivity(), task -> {
+                        // Đợi 2 giây trước khi thực hiện đăng xuất Firebase
+                        new android.os.Handler().postDelayed(() -> {
+                            FirebaseAuth.getInstance().signOut();
+                            completeLogout();
+                        }, 1000);
+                    })
+                    .addOnFailureListener(e -> {
+                        showToast("Unable to sign out");
+                        loading(false);
+                    });
 
-//            FirebaseFirestore database = FirebaseFirestore.getInstance();
-//            DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
-//                    .document(preferenceManager.getString(Constants.KEY_USER_ID));
-//            HashMap<String, Object> updates = new HashMap<>();
-//            updates.put(Constants.KEY_FCM_TOKEN, FieldValue.delete());
-//            documentReference.update(updates)
-//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            preferenceManager.clear();
-//                            Intent intent = new Intent(requireContext(), SignInActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            startActivity(intent);
-//                            requireActivity().finish();
-//                            loading(false);
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            showToast("Unable to sign out");
-//                        }
-//                    });
-
-
-
-            Intent intent = new Intent(requireContext(), SignInActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            requireActivity().finish();
-
-
-        }, 1000);
+        } else {
+            // Đăng xuất tài khoản thường
+            // Đợi 2 giây trước khi thực hiện đăng xuất
+            new android.os.Handler().postDelayed(this::completeLogout, 1000);
+        }
     }
+
+    private void completeLogout() {
+        PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, false);
+        preferenceManager.removePreference(Constants.KEY_USER_ID);
+        preferenceManager.removePreference(Constants.KEY_NAME);
+        preferenceManager.removePreference(Constants.KEY_PHONE_NUMBER);
+        preferenceManager.removePreference(Constants.KEY_ADDRESS);
+
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("nightMode", false);
+        editor.apply();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+        Intent intent = new Intent(requireContext(), SignInActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
+        loading(false);
+    }
+
+
 
     @Override
     public void switchModeTheme() {

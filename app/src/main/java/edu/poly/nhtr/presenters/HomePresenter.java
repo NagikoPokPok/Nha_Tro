@@ -766,10 +766,15 @@ public class HomePresenter {
                                 home.addressHome = document.getString(Constants.KEY_ADDRESS_HOME);
                                 home.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
                                 home.idHome = document.getId();
-                                home.numberOfRooms = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue(); // Chuyển đổi thành Integer
-                                home.numberOfRoomsAvailable = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE)).intValue();
-                                home.numberOfRoomsAreDelayedPayBill = Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL)).intValue();
-                                home.revenueOfMonth = Objects.requireNonNull(document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME)).intValue();
+                                home.numberOfRooms = document.getLong(Constants.KEY_NUMBER_OF_ROOMS) != null ?
+                                        Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS)).intValue() : 0;
+                                home.numberOfRoomsAvailable = document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE) != null ?
+                                        Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_AVAILABLE)).intValue() : 0;
+                                home.numberOfRoomsAreDelayedPayBill = document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL) != null ?
+                                        Objects.requireNonNull(document.getLong(Constants.KEY_NUMBER_OF_ROOMS_ARE_DELAYED_PAY_BILL)).intValue() : 0;
+                                home.revenueOfMonth = document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME) != null ?
+                                        Objects.requireNonNull(document.getLong(Constants.KEY_REVENUE_OF_MONTH_FOR_HOME)).intValue() : 0;
+
                                 homes.add(home);
                             }
                             // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng

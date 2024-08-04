@@ -110,12 +110,9 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
 
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
-        binding.rootLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.edtSearchHome.clearFocus();
-                binding.rootLayout.requestFocus();
-            }
+        binding.rootLayout.setOnClickListener(v -> {
+            binding.edtSearchHome.clearFocus();
+            binding.rootLayout.requestFocus();
         });
 
 
@@ -223,9 +220,14 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
 
     private void getToken() {
+        String userId = preferenceManager.getString(Constants.KEY_USER_ID);
+        if (userId == null || userId.isEmpty()) {
+            showToast("ID người dùng rỗng. Vui lòng đăng nhập lại");
+            return;
+        }
+
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
     }
-
 
     private void updateToken(String token) {
         preferenceManager.putString(Constants.KEY_FCM_TOKEN, token);
@@ -233,13 +235,9 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         DocumentReference documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
                 .document(preferenceManager.getString(Constants.KEY_USER_ID));
         documentReference.update(Constants.KEY_FCM_TOKEN, token)
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        showToast("Unable to update token");
-                    }
-                });
+                .addOnFailureListener(e -> showToast("Unable to update token"));
     }
+
 
     private void setListenersForTools() {
 
@@ -1132,7 +1130,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 binding.imgAva.setVisibility(View.INVISIBLE);
             } catch (Exception e) {
                 binding.imgAva.setVisibility(View.VISIBLE); // Nếu không có ảnh thì để mặc định
-                Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireActivity().getApplicationContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
             }
         } else {
             // Nếu không có ảnh, hiển thị ảnh mặc định và ẩn ảnh người dùng
@@ -1148,15 +1146,22 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
             String userName = account.getDisplayName();
             binding.name.setText(userName);
 
-            String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
-            new HomeFragment.DownloadImageTask(binding.imgProfile, binding.imgAva).execute(photoUrl);
+            if (account.getPhotoUrl() != null) {
+                String photoUrl = account.getPhotoUrl().toString();
+                new HomeFragment.DownloadImageTask(binding.imgProfile, binding.imgAva).execute(photoUrl);
+            } else {
+                binding.imgAva.setVisibility(View.VISIBLE);
+                binding.imgProfile.setVisibility(View.INVISIBLE);
+            }
         }
     }
+
 
 
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         private final ImageView imageView;
         private final ImageView imgAva;
+        private boolean loadFailed = false;
 
         public DownloadImageTask(ImageView imageView, ImageView imgAva) {
             this.imageView = imageView;
@@ -1170,6 +1175,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 InputStream in = new java.net.URL(imageUrl).openStream();
                 bitmap = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
+                loadFailed = true;
                 Log.e("Error", Objects.requireNonNull(e.getMessage()));
             }
             return bitmap;
@@ -1180,9 +1186,14 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 imageView.setImageBitmap(result);
                 imgAva.setVisibility(View.INVISIBLE);
                 imageView.setVisibility(View.VISIBLE);
+            } else if (loadFailed) {
+                imgAva.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
+                Toast.makeText(imageView.getContext(), "Không thể tải ảnh", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
 
     private Spannable customizeText(String s)  // Hàm set mau va font chu cho Text

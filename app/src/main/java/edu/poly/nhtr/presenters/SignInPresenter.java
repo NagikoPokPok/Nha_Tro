@@ -192,25 +192,39 @@ public class SignInPresenter {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            // Lưu thông tin người dùng vào Firestore
+                            HashMap<String, Object> userData = new HashMap<>();
+                            userData.put(Constants.KEY_USER_ID, user.getUid());  // Lưu User ID
+                            userData.put(Constants.KEY_NAME, user.getDisplayName());
+                            userData.put(Constants.KEY_EMAIL, user.getEmail());
+                            if (user.getPhotoUrl() != null) {
+                                userData.put(Constants.KEY_IMAGE, user.getPhotoUrl().toString());
+                            }
 
-                        // Lưu thông tin người dùng vào Firestore
-                        HashMap<String, Object> userData = new HashMap<>();
-                        userData.put(Constants.KEY_NAME, user.getDisplayName());
-                        userData.put(Constants.KEY_EMAIL, user.getEmail());
-                        userData.put(Constants.KEY_IMAGE, user.getPhotoUrl().toString());
-                        // Thêm các thông tin khác nếu cần
-
-                        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS)
-                                .document(user.getUid())
-                                .set(userData)
-                                .addOnSuccessListener(aVoid -> view.notifySignInSuccess())
-                                .addOnFailureListener(e -> view.showToast("Có sự cố xảy ra khi lưu thông tin người dùng"));
+                            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_USERS)
+                                    .document(user.getUid())
+                                    .set(userData)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Lưu thông tin vào PreferenceManager
+                                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                                        preferenceManager.putString(Constants.KEY_USER_ID, user.getUid());
+                                        preferenceManager.putString(Constants.KEY_NAME, user.getDisplayName());
+                                        preferenceManager.putString(Constants.KEY_EMAIL, user.getEmail());
+                                        if (user.getPhotoUrl() != null) {
+                                            preferenceManager.putString(Constants.KEY_IMAGE, user.getPhotoUrl().toString());
+                                        }
+                                        view.notifySignInSuccess();
+                                    })
+                                    .addOnFailureListener(e -> view.showToast("Có sự cố xảy ra khi lưu thông tin người dùng"));
+                        }
                     } else {
                         // Đăng nhập thất bại
                         view.showToast("Có sự cố xảy ra khi đăng nhập");
                     }
                 });
     }
+
 
 
 }
