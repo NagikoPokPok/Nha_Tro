@@ -1,15 +1,21 @@
 package edu.poly.nhtr.Activity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -103,74 +109,113 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
         binding.tabLayout.setVisibility(View.VISIBLE);
         binding.viewPager.setVisibility(View.VISIBLE);
 
-        // Tạo danh sách các lớp Fragment
-        List<Class<? extends Fragment>> fragmentClasses = new ArrayList<>();
-        List<String> titles = new ArrayList<>();
+        setupViewPagerAndTabLayout();
+        customizeTabAppearance();
+    }
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("room", room);
-        bundle.putSerializable("home", home);
+    private void setupViewPagerAndTabLayout() {
+        List<Class<? extends Fragment>> fragmentClasses = getFragmentClasses();
+        List<String> titles = getTabTitles();
 
-        // Thêm các lớp Fragment vào danh sách
-        fragmentClasses.add(RoomGuestFragment.class);
-        fragmentClasses.add(RoomServiceFragment.class);
-        fragmentClasses.add(RoomBillContainerFragment.class);
-        fragmentClasses.add(RoomContractFragment.class);
-
-        titles.add("Khách");
-        titles.add("Dịch vụ");
-        titles.add("Hóa đơn");
-        titles.add("Hợp đồng");
-
-        // Khởi tạo adapter với danh sách lớp Fragment và đối số
+        Bundle bundle = createFragmentArguments();
         TabLayoutAdapter tabLayoutAdapter = new TabLayoutAdapter(this, fragmentClasses, bundle);
         binding.viewPager.setAdapter(tabLayoutAdapter);
 
-        // Thiết lập TabLayout với ViewPager2
-        new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> tab.setText(titles.get(position))).attach();
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, position) -> {
+            if (position < titles.size()) {
+                tab.setText(titles.get(position));
+            }
+        }).attach();
 
         if (targetFragmentIndex >= 0) {
             binding.viewPager.setCurrentItem(targetFragmentIndex);
         }
-
-//        // Refresh fragments when switching tabs
-//        binding.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                tabLayoutAdapter.notifyItemChanged(position);
-//            }
-//        });
-
-//        binding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                if (tab != null) {
-//                    int position = tab.getPosition();
-//                    Toast.makeText(MainDetailedRoomActivity.this, position + "", Toast.LENGTH_SHORT).show();
-//
-//                    // Cập nhật ViewPager
-//                    binding.viewPager.setCurrentItem(position, false);
-//
-//                    // Tạo mới và thay thế fragment trong container
-//                    Fragment fragment = createFragmentForPosition(position);
-//                    replaceFragment(fragment);
-//                }
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//                // Implement if needed
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//                // Implement if needed
-//
-//            }
-//        });
-
-
     }
+
+    private List<Class<? extends Fragment>> getFragmentClasses() {
+        List<Class<? extends Fragment>> fragmentClasses = new ArrayList<>();
+        fragmentClasses.add(RoomGuestFragment.class);
+        fragmentClasses.add(RoomServiceFragment.class);
+        fragmentClasses.add(RoomBillContainerFragment.class);
+        fragmentClasses.add(RoomContractFragment.class);
+        return fragmentClasses;
+    }
+
+    private List<String> getTabTitles() {
+        List<String> titles = new ArrayList<>();
+        titles.add("Khách");
+        titles.add("Dịch vụ");
+        titles.add("Hóa đơn");
+        titles.add("Hợp đồng");
+        return titles;
+    }
+
+    private Bundle createFragmentArguments() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
+        return bundle;
+    }
+
+    private void customizeTabAppearance() {
+        TabLayout tabLayout = binding.tabLayout;
+        int colorGray = ContextCompat.getColor(this, R.color.colorGray);
+        int colorWhite = ContextCompat.getColor(this, R.color.white);
+        Typeface customFont = ResourcesCompat.getFont(this, R.font.inter_light);
+        Typeface customFontSelected = ResourcesCompat.getFont(this, R.font.inter_bold);
+
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                TextView tabTextView = createTabTextView(tab.getText(), i == tabLayout.getSelectedTabPosition(), customFont, customFontSelected, colorGray, colorWhite);
+                tab.setCustomView(tabTextView);
+            }
+        }
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getCustomView() instanceof TextView) {
+                    updateTabTextViewAppearance((TextView) tab.getCustomView(), customFontSelected, colorWhite, 16);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if (tab.getCustomView() instanceof TextView) {
+                    updateTabTextViewAppearance((TextView) tab.getCustomView(), customFont, colorGray, 15);
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Không cần làm gì khi tab được chọn lại
+            }
+        });
+    }
+
+    private TextView createTabTextView(CharSequence text, boolean isSelected, Typeface customFont, Typeface customFontSelected, int colorGray, int colorWhite) {
+        TextView tabTextView = new TextView(this);
+        tabTextView.setText(text);
+        tabTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        if (isSelected) {
+            tabTextView.setTextColor(colorWhite);
+            tabTextView.setTypeface(customFontSelected);
+            tabTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        } else {
+            tabTextView.setTextColor(colorGray);
+            tabTextView.setTypeface(customFont);
+            tabTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        }
+        return tabTextView;
+    }
+
+    private void updateTabTextViewAppearance(TextView textView, Typeface typeface, int color, int textSize) {
+        textView.setTextColor(color);
+        textView.setTypeface(typeface);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+    }
+
 
     private Fragment createFragmentForPosition(int position) {
         Fragment fragment = null;

@@ -19,18 +19,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="90dp"
-            android:background="@drawable/custom_main" />
+            android:background="@drawable/custom_main"
+            android:contentDescription="@null" />
 
         <FrameLayout
             android:id="@+id/frm_Image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp">
+            android:layout_gravity="start|center_vertical">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/img_Profile"
@@ -48,7 +48,6 @@
                 android:contentDescription="@string/khung_avatar"
                 android:padding="15dp"
                 android:src="@drawable/icon_user" />
-
         </FrameLayout>
 
         <TextView
@@ -56,25 +55,25 @@
             style="@style/TEXT_BOLD_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="90dp"
-            android:layout_marginTop="30dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="100dp"
             android:layout_marginEnd="70dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textSize="25sp" />
+            android:textSize="22sp"
+            android:text="Hieu"/>
 
         <ImageView
             android:id="@+id/img_menu_edit_delete"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="30dp"
+            android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="20dp"
             android:background="@drawable/ic_menu"
-            android:backgroundTint="@color/white" />
-
-
+            android:backgroundTint="@color/white"
+            android:contentDescription="@null" />
     </FrameLayout>
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_fragment"
