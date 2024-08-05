@@ -784,6 +784,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     @Override
     public void hideLayoutDeleteHomes() {
         binding.layoutDeleteManyHomes2.setVisibility(View.GONE);
+        binding.checkboxSelectAll2.setChecked(false);
     }
 
     private void openSortHomeDialog() {
@@ -1044,6 +1045,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                         if (viewHolder instanceof HomeAdapter.HomeViewHolder) {
                             HomeAdapter.HomeViewHolder homeViewHolder = (HomeAdapter.HomeViewHolder) viewHolder;
                             homeAdapter.performClick(homeViewHolder);
+                            binding.layoutDeleteManyHomes2.setVisibility(View.VISIBLE);
                         }
                     }
                 });
