@@ -383,14 +383,19 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
                 progressBar.setVisibility(View.INVISIBLE);
 
                 if (saveContractSuccessfully) {
-                    updateAlarm();  // Ensure updateAlarm is called first
+                    updateAlarm(new onUpdateAlarm() {
+                        @Override
+                        public void onComplete() {
+                            MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
+                            if (activity != null) {
+                                activity.showTabLayoutEditRoomGuestFragment();
+                            }
 
-                    MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
-                    if (activity != null) {
-                        activity.showTabLayoutEditRoomGuestFragment();
-                    }
+                            dialog.dismiss();  // Dismiss dialog after updateAlarm and other actions
+                        }
+                    });
 
-                    dialog.dismiss();  // Dismiss dialog after updateAlarm and other actions
+
                 } else {
                     dialog.dismiss();  // Dismiss dialog if save fails
                     Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
@@ -404,7 +409,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
     }
 
 
-    private void updateAlarm() {
+    private void updateAlarm(onUpdateAlarm listener) {
         presenter.getDayOfMakeBill(room.getRoomId(), new GuestEditContractPresenter.OnGetDayOfMakeBillCompleteListener() {
             @Override
             public void onComplete(MainGuest mainGuest) {
@@ -486,9 +491,17 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
 
                 preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.getRoomId() + "code2");
                 setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2);
+
+                listener.onComplete();
             }
         });
     }
+
+    public interface onUpdateAlarm{
+        void onComplete();
+    }
+
+
 
     // Hàm để lấy ngày cuối cùng của tháng
     private int getLastDayOfMonth2(int month, int year) {

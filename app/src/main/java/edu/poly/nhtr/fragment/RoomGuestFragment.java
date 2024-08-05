@@ -213,12 +213,18 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                             showToast(dayOfGiveBill + "  " + month + " " + year);
                             //showToast(String.valueOf(mainGuest.getDaysUntilDueDate()));
 
-                            requestCode1 = generateRandomRequestCode();
+                            // Sinh mã yêu cầu cho alarm
+                            String requestCode1Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1");
+                            int requestCode1 = requestCode1Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode1Str);
+
+                            String requestCode2Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code2");
+                            int requestCode2 = requestCode2Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode2Str);
+
                             preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.roomId + "code1");
                             preferenceManager.putString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1, String.valueOf(dayOfGiveBill - 1), room.roomId + "code1");
                             setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, requestCode1); // requestCode 1
 
-                            requestCode2 = generateRandomRequestCode();
+
                             preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.roomId + "code2");
                             preferenceManager.putString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2, String.valueOf(dayOfGiveBill), room.roomId + "code2");
                             setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2); // requestCode 2
