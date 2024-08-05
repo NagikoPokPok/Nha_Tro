@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +24,17 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
@@ -44,11 +49,13 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import edu.poly.nhtr.databinding.FragmentGuestPrintContractBinding;
+import edu.poly.nhtr.interfaces.GuestPrintContractInterface;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
+import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class GuestPrintContractFragment extends Fragment {
+public class GuestPrintContractFragment extends Fragment implements GuestPrintContractInterface {
 
     private FirebaseFirestore db;
     private Button printContract;
@@ -56,9 +63,11 @@ public class GuestPrintContractFragment extends Fragment {
     private static final int REQUEST_PERMISSION_CODE = 100;
     private Room room;
     private Home home;
+    // private String userID;
     private String pdfUrl;
     private FragmentGuestPrintContractBinding binding;
     private WebView webView;
+    private PreferenceManager preferenceManager;
 
     private RoomContractFragment.OnFragmentInteractionListener mListener;
 
@@ -85,6 +94,7 @@ public class GuestPrintContractFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         webView = binding.webviewPdf;
+        preferenceManager = new PreferenceManager(requireContext());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccessFromFileURLs(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -93,6 +103,8 @@ public class GuestPrintContractFragment extends Fragment {
         if (arguments != null) {
             room = (Room) arguments.getSerializable("room");
             home = (Home) arguments.getSerializable("home");
+            // userID = arguments.getString("userID");
+
             if (room != null && home != null) {
                 printContract.setOnClickListener(v -> {
                     if (checkPermissions()) {
@@ -163,9 +175,36 @@ public class GuestPrintContractFragment extends Fragment {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public String getInfoUserFromGoogleAccount() {
+        // Lấy thông tin người dùng từ tài khoản Google
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+        String currentUserId = "";
+
+        if (account != null) {
+            currentUserId = account.getId();
+        } else {
+            // Fallback to preference manager
+            currentUserId = preferenceManager.getString(Constants.KEY_USER_ID);
+        }
+
+        return currentUserId;
+    }
+
+
+
     private void fetchDataAndDisplayPdf(String roomId, String homeId) {
         showProgressBar(true);
 
+        // Lấy User ID từ Google Sign-In
+        String userID = getInfoUserFromGoogleAccount();
+        if (userID.isEmpty()) {
+            showToast("User ID is not available");
+            showProgressBar(false);
+            return;
+        }
+
+        // Truy vấn dữ liệu từ Firestore
         db.collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
                 .get()
@@ -193,31 +232,46 @@ public class GuestPrintContractFragment extends Fragment {
                                             String roomName = roomDoc.getString(Constants.KEY_NAME_ROOM);
                                             String roomPrice = roomDoc.getString(Constants.KEY_PRICE);
 
-                                            db.collection(Constants.KEY_COLLECTION_HOMES)
-                                                    .document(homeId)
+                                            db.collection(Constants.KEY_COLLECTION_USERS)
+                                                    .document(userID)
                                                     .get()
-                                                    .addOnCompleteListener(homeTask -> {
-                                                        if (homeTask.isSuccessful() && homeTask.getResult() != null) {
-                                                            DocumentSnapshot homeDoc = homeTask.getResult();
-                                                            String homeName = homeDoc.getString(Constants.KEY_NAME_HOME);
+                                                    .addOnCompleteListener(userTask -> {
+                                                        if (userTask.isSuccessful() && userTask.getResult() != null) {
+                                                            DocumentSnapshot userDoc = userTask.getResult();
+                                                            String userName = userDoc.getString(Constants.KEY_NAME);
+                                                            String userPhoneNumber = userDoc.getString(Constants.KEY_PHONE_NUMBER);
+                                                            String userAddress = userDoc.getString(Constants.KEY_ADDRESS);
 
-                                                            String fileName = "contract_" + roomId + ".pdf";
-                                                            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName;
-                                                            File pdfFile = new File(path);
+                                                            db.collection(Constants.KEY_COLLECTION_HOMES)
+                                                                    .document(homeId)
+                                                                    .get()
+                                                                    .addOnCompleteListener(homeTask -> {
+                                                                        if (homeTask.isSuccessful() && homeTask.getResult() != null) {
+                                                                            DocumentSnapshot homeDoc = homeTask.getResult();
+                                                                            String homeName = homeDoc.getString(Constants.KEY_NAME_HOME);
 
-                                                            if (!pdfFile.exists()) {
-                                                                createPdf(path, fullName, cccdNumber, roomName, roomPrice, homeName, contractCreateDate, contractExpireDate, dateIn, gender, totalMembers, payDate);
-                                                            }
+                                                                            String fileName = "contract_" + roomId + ".pdf";
+                                                                            String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName;
+                                                                            File pdfFile = new File(path);
 
-                                                            if (pdfFile.exists()) {
-                                                                uploadPdfToFirebaseStorage(pdfFile);
-                                                            } else {
-                                                                showToast("PDF file does not exist");
-                                                            }
+                                                                            if (!pdfFile.exists()) {
+                                                                                createPdf(path, fullName, cccdNumber, roomName, roomPrice, homeName, contractCreateDate, contractExpireDate, totalMembers, payDate, userName, userPhoneNumber, userAddress);
+                                                                            }
 
-                                                            showProgressBar(false);
+                                                                            if (pdfFile.exists()) {
+                                                                                uploadPdfToFirebaseStorage(pdfFile);
+                                                                            } else {
+                                                                                showToast("PDF file does not exist");
+                                                                            }
+
+                                                                            showProgressBar(false);
+                                                                        } else {
+                                                                            showToast("Failed to fetch home data");
+                                                                            showProgressBar(false);
+                                                                        }
+                                                                    });
                                                         } else {
-                                                            showToast("Failed to fetch home data");
+                                                            showToast("No user data found");
                                                             showProgressBar(false);
                                                         }
                                                     });
@@ -234,78 +288,137 @@ public class GuestPrintContractFragment extends Fragment {
                         showToast("Failed to fetch contract data");
                         showProgressBar(false);
                     }
-                }).addOnFailureListener(e -> {
-                    showToast("Lỗi khi tải dữ liệu: " + e.getMessage());
-                    showProgressBar(false);
                 });
     }
 
-    private void createPdf(String path, String fullName, String idNumber, String roomName, String roomPrice, String homeName, String contractCreateDate, String contractExpireDate, String dateIn, String gender, Long totalMembers, String payDate) {
-        try {
-            PdfWriter writer = new PdfWriter(Files.newOutputStream(Paths.get(path)));
-            com.itextpdf.kernel.pdf.PdfDocument pdfDoc = new com.itextpdf.kernel.pdf.PdfDocument(writer);
-            Document document = new Document(pdfDoc);
 
-            // Add header
-            PdfFont font;
-            try {
-                font = PdfFontFactory.createFont("assets/fonts/arial.ttf", "Identity-H", true);
-            } catch (Exception e) {
-                font = PdfFontFactory.createFont();
-            }
 
-            Text header = new Text("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập - Tự do - Hạnh phúc")
-                    .setFont(font)
-                    .setTextAlignment(TextAlignment.CENTER)
-                    .setBold()
-                    .setFontSize(14);
-            document.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER));
+    private static void createPdf(String path, String guestName, String guestCccd, String roomName, String roomPrice,
+                            String homeName, String contractCreateDate, String contractExpireDate, Long totalMembers, String payDate,
+                            String lessorName, String lessorPhone, String lessorAddress) {
+                        try {
+                            PdfWriter writer = new PdfWriter(Files.newOutputStream(Paths.get(path)));
+                            PdfDocument pdfDoc = new PdfDocument(writer);
+                            Document document = new Document(pdfDoc);
 
-            // Add tenant info
-            document.add(new Paragraph("\nHọ và tên người thuê: " + fullName)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("CCCD: " + idNumber)
-                    .setFont(font)
-                    .setFontSize(12));
+                            // Add header
+                            PdfFont font;
+                            font = PdfFontFactory.createFont("assets/fonts/arial_unicode_bold.ttf", "Identity-H", true);
 
-            // Add room info
-            document.add(new Paragraph("\nTên phòng: " + roomName)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("Giá phòng: " + roomPrice)
-                    .setFont(font)
-                    .setFontSize(12));
 
-            // Add home info
-            document.add(new Paragraph("\nTên nhà: " + homeName)
-                    .setFont(font)
-                    .setFontSize(12));
+                            // Nếu số điện thoại hoặc địa chỉ là null, thay thế bằng "...."
+                            lessorPhone = (lessorPhone == null) ? "...." : lessorPhone;
+                            lessorAddress = (lessorAddress == null) ? "...." : lessorAddress;
 
-            // Add contract dates
-            document.add(new Paragraph("\nNgày bắt đầu hợp đồng: " + contractCreateDate)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("Ngày hết hạn hợp đồng: " + contractExpireDate)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("Ngày vào ở: " + dateIn)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("Giới tính: " + gender)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("Tổng số thành viên: " + totalMembers)
-                    .setFont(font)
-                    .setFontSize(12));
-            document.add(new Paragraph("Ngày trả tiền: " + payDate)
-                    .setFont(font)
-                    .setFontSize(12));
+                            // Add title
+                            Text header = new Text("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập – Tự do – Hạnh phúc")
+                                    .setFont(font)
+                                    .setBold()
+                                    .setFontSize(14);
+                            document.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER));
 
-            document.close();
-        } catch (Exception e) {
-        }
-    }
+                            // Add contract title
+                            Text contractTitle = new Text("\nHỢP ĐỒNG THUÊ PHÒNG TRỌ")
+                                    .setFont(font)
+                                    .setBold()
+                                    .setFontSize(14);
+                            document.add(new Paragraph(contractTitle).setTextAlignment(TextAlignment.CENTER));
+
+                            // Add contract details
+                            document.add(new Paragraph("\nHôm nay ngày " + contractCreateDate.substring(0, 2) +
+                                    " tháng " + contractCreateDate.substring(3, 5) +
+                                    " năm " + contractCreateDate.substring(6) +
+                                    " tại căn nhà " + homeName +
+                                    ". Chúng tôi ký tên dưới đây gồm có:")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            // Add lessor info (Thông tin bên cho thuê)
+                            document.add(new Paragraph("\nBÊN CHO THUÊ PHÒNG TRỌ (gọi tắt là Bên A):")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Ông/bà " + lessorName)
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Số điện thoại: " + lessorPhone)
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("CMND/CCCD số " + lessorPhone + " cấp ngày .......... nơi cấp ................................")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Thường trú tại: " + lessorAddress)
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            // Add tenant info (Thông tin bên thuê)
+                            document.add(new Paragraph("\nBÊN THUÊ PHÒNG TRỌ (gọi tắt là Bên B):")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Ông/bà " + guestName)
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("CMND/CCCD số " + guestCccd + " cấp ngày .......... nơi cấp ................................")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Thường trú tại: ...............................................................................................")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            // Add contract terms (Điều khoản hợp đồng)
+                            document.add(new Paragraph("\n1. Nội dung thuê phòng trọ")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Bên A cho Bên B thuê 01 phòng trọ " + roomName +
+                                    " tại căn nhà " + homeName + ". Với thời hạn là: " + contractExpireDate +
+                                    " tháng giá thuê: " + roomPrice + " đồng. Chưa bao gồm chi phí: điện sinh hoạt nước.")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            document.add(new Paragraph("\n2. Trách nhiệm Bên A")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Đảm bảo căn nhà cho thuê không có tranh chấp khiếu kiện.\nĐăng ký với chính quyền địa phương về thủ tục cho thuê phòng trọ.")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            document.add(new Paragraph("\n3. Trách nhiệm Bên B")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Đặt cọc với số tiền là............................đồng (Bằng chữ ......................................) thanh toán tiền thuê phòng hàng tháng vào ngày " + payDate + " + tiền điện + nước.")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Đảm bảo các thiết bị và sửa chữa các hư hỏng trong phòng trong khi sử dụng. Nếu không sửa chữa thì khi trả phòng bên A sẽ trừ vào tiền đặt cọc giá trị cụ thể được tính theo giá thị trường.\nChỉ sử dụng phòng trọ vào mục đích ở với số lượng tối đa không quá " + totalMembers + " người (kể cả trẻ em); không chứa các thiết bị gây cháy nổ hàng cấm... cung cấp giấy tờ tùy thân để đăng ký tạm trú theo quy định giữ gìn an ninh trật tự nếp sống văn hóa đô thị; không tụ tập nhậu nhẹt cờ bạc và các hành vi vi phạm pháp luật khác.\nKhông được tự ý cải tạo kiếm trúc phòng hoặc trang trí ảnh hưởng tới tường cột nền... Nếu có nhu cầu trên phải trao đổi với bên A để được thống nhất.")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            document.add(new Paragraph("\n4. Điều khoản thực hiện")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("Hai bên nghiêm túc thực hiện những quy định trên trong thời hạn cho thuê nếu bên A lấy phòng phải báo cho bên B ít nhất 01 tháng hoặc ngược lại.\nSau thời hạn cho thuê ..... tháng nếu bên B có nhu cầu hai bên tiếp tục thương lượng giá thuê để gia hạn hợp đồng bằng miệng hoặc thực hiện như sau.")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            // Add signature fields (Phần chữ ký)
+                            document.add(new Paragraph("\nSố lần gia hạn\tThời gian gia hạn (tháng)\tTừ ngày\tĐến ngày\tGiá thuê/ tháng (triệu đồng)")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("\n\t1\t\t\t\t\t\n\t2\t\t\t\t\t")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            document.add(new Paragraph("\nBên B\t\t\t\t\t\t\t\t\t\t\t\tBên A")
+                                    .setFont(font)
+                                    .setFontSize(12));
+                            document.add(new Paragraph("(Ký ghi rõ họ tên)\t\t\t\t\t\t\t\t\t\t(Ký ghi rõ họ tên)")
+                                    .setFont(font)
+                                    .setFontSize(12));
+
+                            document.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
 
     private void uploadPdfToFirebaseStorage(File pdfFile) {
         Uri fileUri = Uri.fromFile(pdfFile);
