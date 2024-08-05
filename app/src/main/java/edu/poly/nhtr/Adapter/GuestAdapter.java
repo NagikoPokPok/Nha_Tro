@@ -214,8 +214,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             binding.imgStar.setVisibility(View.GONE);
             binding.txtOrdinalNumber.setVisibility(View.VISIBLE);
 
-            int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.greenText)
-                    : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
+            int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.colorGreen)
+                    : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.colorRed);
             binding.txtProfileStatus.setTextColor(color);
 
             binding.imgMenu.setOnClickListener(v -> {
@@ -242,8 +242,8 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             boolean isProfileComplete = mainGuest.isFileStatus();
             binding.txtProfileStatus.setText(isProfileComplete ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
 
-            int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.greenText)
-                    : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.redText);
+            int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.colorGreen)
+                    : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.colorRed);
             binding.txtProfileStatus.setTextColor(color);
 
             binding.imgStar.setVisibility(View.VISIBLE);

@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="15dp"
     android:id="@+id/container_guest"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="10dp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
     app:strokeColor="@color/black"
-    app:strokeWidth="1dp">
+    app:strokeWidth="0.75dp"
+    >
 
 
     <FrameLayout
@@ -28,7 +29,9 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:fontFamily="@font/inter_bold"
+            android:text="1"/>
 
         <!-- Star icon -->
         <ImageView
@@ -133,7 +136,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -198,7 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -218,7 +221,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_light"
+                android:fontFamily="@font/inter_medium"
                 android:text="Chưa cập nhật đầy đủ"
                 android:textColor="@color/colorRed"
                 android:textSize="15sp" />
