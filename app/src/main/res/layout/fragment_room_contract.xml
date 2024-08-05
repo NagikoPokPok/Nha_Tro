@@ -137,6 +137,7 @@
                 app:cardCornerRadius="15dp"
                 app:strokeColor="@color/colorGray"
                 app:strokeWidth="0.75dp"
+
                 >
 
                 <LinearLayout
@@ -260,7 +261,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/custom_shadow_cardview"
             android:paddingBottom="3dp"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="15dp"
+            >
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_print_contract"
@@ -271,6 +273,7 @@
                 app:cardCornerRadius="15dp"
                 app:strokeColor="@color/colorGray"
                 app:strokeWidth="0.75dp"
+
                 >
 
                 <LinearLayout
