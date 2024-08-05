@@ -141,7 +141,7 @@
                 android:fontFamily="@font/inter_medium"
                 android:text="Ho Quang Hieu"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -174,7 +174,7 @@
                 android:fontFamily="@font/inter_light"
                 android:text="0918300555"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -207,7 +207,7 @@
                 android:fontFamily="@font/inter_medium"
                 android:text="Đã thanh toán"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -240,7 +240,7 @@
                 android:fontFamily="@font/inter_light"
                 android:text="2"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -273,7 +273,7 @@
                 android:fontFamily="@font/inter_light"
                 android:text="1.500.000"
                 android:textColor="@color/colorTextBlack"
-                android:textSize="15dp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
@@ -312,7 +312,7 @@
             android:background="@drawable/background_button"
             android:fontFamily="@font/inter_bold"
             android:text="+  Tạo hợp đồng"
-            android:textSize="15dp"
+            android:textSize="15sp"
             app:backgroundTint="@null"
             />
 

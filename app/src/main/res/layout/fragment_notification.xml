@@ -56,16 +56,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/btn_cancel_month_picker"-->
-<!--                    android:layout_width="20dp"-->
-<!--                    android:layout_height="20dp"-->
-<!--                    android:layout_gravity="center_vertical"-->
-<!--                    -->
-<!--                    android:scaleType="centerInside"-->
-<!--                    android:background="@drawable/ic_cancel"-->
-<!--                    android:visibility="visible"-->
-<!--                    />-->
 
                 <LinearLayout
                     android:id="@+id/layout_select_all"
@@ -74,7 +64,8 @@
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="50dp"
+                    android:gravity="end"
+                    android:layout_marginEnd="10dp"
                     android:visibility="invisible">
 
                     <CheckBox
