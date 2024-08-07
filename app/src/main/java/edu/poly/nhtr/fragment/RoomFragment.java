@@ -1195,11 +1195,26 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         boolean filterByRoom4 = preferenceManager.getBoolean("cbxRoom4");
 
         List<Room> filteredNoMembers = new ArrayList<>();
+        List<Room> PayedBill = new ArrayList<>();
+        List<Room> NotYetPayBill = new ArrayList<>();
+        List<Room> OverDueDayBill = new ArrayList<>();
+        List<Room> NotSendBill = new ArrayList<>();
         for (Room room : currentListRooms) {
-//            if (filterByRoom4 && Integer.parseInt(room.numberOfMemberLiving) == 0 ) {
-//                filteredNoMembers.add(room);
-//            }
+                int numberOfMembers = Integer.parseInt(room.numberOfMemberLiving);
+                showToast(room.numberOfMemberLiving + "");
+                if (filterByRoom1 && numberOfMembers == 0) {
+                    filteredNoMembers.add(room);
+                }
+            if (filterByRoom2 && room.status.equals("Đã thanh toán")) {
+                PayedBill.add(room);
+            } else if (filterByRoom3 && room.status.equals("Chưa thanh toán")) {
+                NotYetPayBill.add(room);
+            } else if (filterByRoom4 && room.status.equals("Trễ hạn thanh toán")) {
+                OverDueDayBill.add(room);
+            }  
         }
+
+
 
         roomPresenter.filterRoom(filteredNoMembers);
     }
