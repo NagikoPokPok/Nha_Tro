@@ -242,15 +242,18 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             boolean isProfileComplete = mainGuest.isFileStatus();
             binding.txtProfileStatus.setText(isProfileComplete ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
 
+
             int color = isProfileComplete ? ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.colorGreen)
                     : ContextCompat.getColor(binding.txtProfileStatus.getContext(), R.color.colorRed);
             binding.txtProfileStatus.setTextColor(color);
-
+            binding.layoutContractOwner.setVisibility(View.VISIBLE);
             binding.imgStar.setVisibility(View.VISIBLE);
+            binding.txtOrdinalNumber.setVisibility(View.GONE);
 
-            // Disable the menu button for MainGuest
             binding.imgMenu.setOnClickListener(v -> {
-                view.showToast("Khách chính không thể xóa hoặc sửa thông tin. Hãy qua bên phần hợp đồng để thực hiện.");
+                binding.frmImage2.setVisibility(View.VISIBLE);
+                binding.frmImage.setVisibility(View.GONE);
+                view.openPopup(v, mainGuest, binding);
             });
         }
     }

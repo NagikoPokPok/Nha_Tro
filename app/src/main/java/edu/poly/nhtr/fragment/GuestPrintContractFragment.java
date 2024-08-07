@@ -48,6 +48,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestPrintContractBinding;
 import edu.poly.nhtr.interfaces.GuestPrintContractInterface;
 import edu.poly.nhtr.models.Home;
@@ -166,7 +167,7 @@ public class GuestPrintContractFragment extends Fragment implements GuestPrintCo
                     fetchDataAndDisplayPdf(room.getRoomId(), home.getIdHome());
                 }
             } else {
-                showToast("Permission denied");
+                showToast("Quyền truy cập bị từ chối");
             }
         }
     }
@@ -261,7 +262,7 @@ public class GuestPrintContractFragment extends Fragment implements GuestPrintCo
                                                                             if (pdfFile.exists()) {
                                                                                 uploadPdfToFirebaseStorage(pdfFile);
                                                                             } else {
-                                                                                showToast("PDF file does not exist");
+                                                                                showToast("File PDF không tồn tại");
                                                                             }
 
                                                                             showProgressBar(false);
@@ -311,11 +312,17 @@ public class GuestPrintContractFragment extends Fragment implements GuestPrintCo
                             lessorAddress = (lessorAddress == null) ? "...." : lessorAddress;
 
                             // Add title
-                            Text header = new Text("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nĐộc lập – Tự do – Hạnh phúc")
+                            Text header = new Text(R.string.Header_hop_dong + "\n")
                                     .setFont(font)
                                     .setBold()
                                     .setFontSize(14);
                             document.add(new Paragraph(header).setTextAlignment(TextAlignment.CENTER));
+
+                            Text header2 = new Text(R.string.Header_hop_dong_2 + "\n")
+                                    .setFont(font)
+                                    .setBold()
+                                    .setFontSize(14);
+                            document.add(new Paragraph(header2).setTextAlignment(TextAlignment.CENTER));
 
                             // Add contract title
                             Text contractTitle = new Text("\nHỢP ĐỒNG THUÊ PHÒNG TRỌ")

@@ -40,7 +40,7 @@ import edu.poly.nhtr.models.RoomViewModel;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class MainDetailedRoomActivity extends AppCompatActivity implements RoomContractFragment.OnFragmentInteractionListener {
+public class MainDetailedRoomActivity extends AppCompatActivity implements RoomContractFragment.OnFragmentInteractionListener, RoomGuestFragment.OnFragmentInteractionListener {
 
     private ActivityMainDetailedRoomBinding binding;
     private PreferenceManager preferenceManager;
@@ -364,4 +364,5 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
 
 //        roomGuestFragment.onResume();
     }
+
 }

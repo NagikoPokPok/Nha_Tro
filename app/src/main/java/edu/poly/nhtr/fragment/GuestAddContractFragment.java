@@ -42,14 +42,12 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Objects;
 
 import edu.poly.nhtr.Activity.MainDetailedRoomActivity;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentGuestAddContractBinding;
 import edu.poly.nhtr.listeners.MainGuestListener;
-import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.GuestAddContractPresenter;
@@ -311,10 +309,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         return preferenceManager.getString(Constants.KEY_HOME_ID);
     }
 
-    @Override
-    public void getListMainGuest(List<MainGuest> listContracts) {
-
-    }
 
     @Override
     public void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, String homeId, DocumentReference documentReference) {
@@ -340,25 +334,18 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     }
 
     @Override
-    public void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, DocumentReference documentReference) {
+    public void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, String cccdNumber, String cccdImageFront, String cccdImageBack, DocumentReference documentReference) {
         preferenceManager.putString(Constants.KEY_GUEST_NAME, documentReference.getId());
         preferenceManager.putString(Constants.KEY_GUEST_PHONE, phoneGuest);
         preferenceManager.putString(Constants.KEY_GUEST_DATE_IN, dateIn);
         preferenceManager.putString(Constants.KEY_CONTRACT_STATUS, status + "");
         preferenceManager.putString(Constants.KEY_ROOM_ID, roomId);
         preferenceManager.putString(Constants.KEY_HOME_ID, homeId);
+        preferenceManager.putString(Constants.KEY_GUEST_CCCD, cccdNumber);
+        preferenceManager.putString(Constants.KEY_GUEST_CCCD_IMAGE_FRONT, cccdImageFront);
+        preferenceManager.putString(Constants.KEY_GUEST_CCCD_IMAGE_BACK, cccdImageBack);
     }
 
-
-    @Override
-    public void onMainGuestsLoaded(List<MainGuest> mainGuests, String action) {
-
-    }
-
-    @Override
-    public void onMainGuestsLoadFailed() {
-
-    }
 
     @Override
     public void setUpDropDownMenuGender() {
@@ -396,7 +383,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
     }
 
 
-
     @Override
     public void showErrorMessage(String message) {
         Toast.makeText(requireContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -416,35 +402,6 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
 
     public void setRoomPrice() {
         edtTienPhong.setText(roomPrice);
-    }
-    @Override
-    public void setNameErrorMessage(String message) {
-        tilHoTen.setError(message);
-    }
-
-    @Override
-    public void setPhoneErrorMessage(String message) {
-        tilSoDienThoai.setError(message);
-    }
-
-    @Override
-    public void setCCCDNumberErrorMessage(String message) {
-        tilSoCCCD.setError(message);
-    }
-
-    @Override
-    public void setNameErrorEnabled(Boolean isEmpty) {
-        tilHoTen.setErrorEnabled(isEmpty);
-    }
-
-    @Override
-    public void setPhoneNumberlErrorEnabled(Boolean isEmpty) {
-        tilSoDienThoai.setErrorEnabled(isEmpty);
-    }
-
-    @Override
-    public void setCCCDNumberlErrorEnabled(Boolean isEmpty) {
-        tilSoCCCD.setErrorEnabled(isEmpty);
     }
 
     private String getStringFromEditText(TextInputEditText editText) {

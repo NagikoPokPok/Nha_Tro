@@ -292,6 +292,7 @@ public class GuestEditContractPresenter {
             }
         }
     }
+
     public Intent prepareImageSelection() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -735,7 +736,7 @@ public class GuestEditContractPresenter {
                                 MainGuest mainGuest = new MainGuest();
                                 mainGuest.setPayDate(documentSnapshot.getString(Constants.KEY_CONTRACT_PAY_DATE));
                                 mainGuest.setCreateDate(documentSnapshot.getString(Constants.KEY_CONTRACT_CREATED_DATE));
-                                mainGuest.setGuestDateIn(documentSnapshot.getString(Constants.KEY_GUEST_DATE_IN));
+                                mainGuest.setDateIn(documentSnapshot.getString(Constants.KEY_GUEST_DATE_IN));
                                 mainGuest.setDaysUntilDueDate(Math.toIntExact(documentSnapshot.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)));
 
                                 listener.onComplete(mainGuest);

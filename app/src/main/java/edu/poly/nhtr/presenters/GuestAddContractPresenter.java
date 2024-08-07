@@ -683,6 +683,9 @@ public class GuestAddContractPresenter {
         guest.put(Constants.KEY_CONTRACT_STATUS, mainGuest.isFileStatus());
         guest.put(Constants.KEY_ROOM_ID, mainGuestListener.getInfoRoomFromGoogleAccount());
         guest.put(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount());
+        guest.put(Constants.KEY_GUEST_CCCD, mainGuest.getCccdNumber());
+        guest.put(Constants.KEY_GUEST_CCCD_IMAGE_FRONT, mainGuest.getCccdImageFront());
+        guest.put(Constants.KEY_GUEST_CCCD_IMAGE_BACK, mainGuest.getCccdImageBack());
         guest.put(Constants.KEY_TIMESTAMP, new Date());
         guest.put(Constants.KEY_IS_MAIN_GUEST, true);
 
@@ -696,6 +699,9 @@ public class GuestAddContractPresenter {
                             mainGuest.isFileStatus(),
                             mainGuestListener.getInfoRoomFromGoogleAccount(),
                             mainGuestListener.getInfoHomeFromGoogleAccount(),
+                            mainGuest.getCccdNumber(),
+                            mainGuest.getCccdImageFront(),
+                            mainGuest.getCccdImageBack(),
                             documentReference
                     );
                     mainGuestListener.showToast("Thêm khách thành công");

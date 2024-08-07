@@ -419,7 +419,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
                 int currentYear = calendar.get(Calendar.YEAR);
 
                 int dayOfGiveBill = Integer.parseInt(mainGuest.getPayDate());
-                String date = mainGuest.getGuestDateIn();
+                String date = mainGuest.getDateIn();
 
                 String[] dateParts = date.split("/");
                 int dayDateInOfGuest = Integer.parseInt(dateParts[0]);

@@ -14,37 +14,22 @@ public interface MainGuestListener {
 
     String getInfoHomeFromGoogleAccount();
 
-    void getListMainGuest(List<MainGuest> listContracts);
 
-    void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, String homeId, DocumentReference documentReference);
-
-    void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, DocumentReference documentReference);
-
-    void onMainGuestsLoaded(List<MainGuest> mainGuests, String action);
-
-    void onMainGuestsLoadFailed();
     boolean isAdded2();
 
     void initializeViews();
 
+    void putContractInfoInPreferences(String nameGuest, String phoneGuest, String cccdNumber, String dateOfBirth, String gender, int totalMembers, String createDate, String dateIn, double roomPrice, String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack, String contractImageFront, String contractImageBack, boolean status, String roomId, String homeId, DocumentReference documentReference);
+
+    void putMainGuestInfoInPreferences(String nameGuest, String phoneGuest, String dateIn, boolean status, String roomId, String homeId, String cccdNumber, String cccdImageFront, String cccdImageBack, DocumentReference documentReference);
+
     void setUpDropDownMenuGender();
+
     void setUpDropDownMenuTotalMembers();
 
     void setUpDropDownMenuDays();
 
     void showErrorMessage(String message);
-
-    void setNameErrorMessage(String message);
-
-    void setPhoneErrorMessage(String message);
-
-    void setCCCDNumberErrorMessage(String message);
-
-    void setNameErrorEnabled(Boolean isEmpty);
-
-    void setPhoneNumberlErrorEnabled(Boolean isEmpty);
-
-    void setCCCDNumberlErrorEnabled(Boolean isEmpty);
 
     boolean saveContract();
 

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 public class MainGuest extends Guest implements Serializable {
     private int totalMembers;
-    private String cccdNumber;
     private String dateOfBirth; // Change to String to match input format
     private String gender;
     private String createDate; // Change to String to match input format
@@ -12,29 +11,16 @@ public class MainGuest extends Guest implements Serializable {
     private String expirationDate; // Change to String to match input format
     private String payDate; // Change to String to match input format
     private int daysUntilDueDate;
-    private String cccdImageFront;
-    private String cccdImageBack;
     private String contractImageFront;
     private String contractImageBack;
-    public String guestDateIn;
 
 
-
-    public String getGuestDateIn() {
-        return guestDateIn;
-    }
-
-    public void setGuestDateIn(String guestDateIn) {
-        this.guestDateIn = guestDateIn;
-    }
-
-    public MainGuest(int totalMembers, String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, // Change dateIn to String
+    public MainGuest(int totalMembers, String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, String dateIn,
                      String cccdNumber, String dateOfBirth, String gender, String createDate, double roomPrice,
                      String expirationDate, String payDate, int daysUntilDueDate, String cccdImageFront, String cccdImageBack,
                      String contractImageFront, String contractImageBack) {
-        super(idGuest, nameGuest, phoneGuest, fileStatus);
+        super(nameGuest, phoneGuest, idGuest, fileStatus, dateIn, cccdNumber, cccdImageFront, cccdImageBack);
         this.totalMembers = totalMembers;
-        this.cccdNumber = cccdNumber;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.createDate = createDate;
@@ -42,8 +28,6 @@ public class MainGuest extends Guest implements Serializable {
         this.expirationDate = expirationDate;
         this.payDate = payDate;
         this.daysUntilDueDate = daysUntilDueDate;
-        this.cccdImageFront = cccdImageFront;
-        this.cccdImageBack = cccdImageBack;
         this.contractImageFront = contractImageFront;
         this.contractImageBack = contractImageBack;
     }

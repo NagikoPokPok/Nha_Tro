@@ -6,7 +6,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginTop="15dp"
     android:id="@+id/container_guest"
-    android:layout_marginEnd="10dp"
+    android:layout_marginEnd="5dp"
     android:layout_marginBottom="10dp"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
@@ -18,6 +18,7 @@
     <FrameLayout
         android:layout_width="55dp"
         android:layout_height="55dp"
+        android:background="@drawable/sonhatro"
         android:layout_marginBottom="10dp">
 
         <!-- Ordinal number -->
@@ -25,7 +26,6 @@
             android:id="@+id/txt_ordinal_number"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/sonhatro"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -93,8 +93,37 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_menu" />
-
             </FrameLayout>
+
+            <!-- New Section: Người đại diện hợp đồng -->
+            <LinearLayout
+                android:id="@+id/layout_contract_owner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_name_guest"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                android:layout_marginStart="10dp">
+
+                <ImageView
+                    android:id="@+id/img_contract_owner"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/contract_owner"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/colorGreen" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Người đại diện hợp đồng"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_light"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/iv_check_box"
@@ -136,7 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <TextView

@@ -3,9 +3,9 @@
 
     <group>
         <item
-            android:id="@+id/menu_edit_guest"
-            android:icon="@drawable/icon_edit"
-            android:title="@string/chinh_sua" />
+            android:id="@+id/menu_view_guest"
+            android:icon="@drawable/icon_view"
+            android:title="@string/xem_chi_tiet_khach" />
     </group>
 
     <group>

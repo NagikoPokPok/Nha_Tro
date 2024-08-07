@@ -1,6 +1,7 @@
 package edu.poly.nhtr.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -40,7 +41,6 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -58,13 +58,12 @@ import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomViewModel;
-import edu.poly.nhtr.presenters.RoomBillPresenter;
 import edu.poly.nhtr.presenters.RoomGuestPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 import timber.log.Timber;
 
-public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View , SwipeRefreshLayout.OnRefreshListener{
+public class RoomGuestFragment extends Fragment implements RoomGuestInterface.View , SwipeRefreshLayout.OnRefreshListener {
 
     private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
     private static final int FULL_DATE_LENGTH = 10; // dd/MM/yyyy
@@ -82,6 +81,17 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     private int requestCode1, requestCode2;
     private String header1, body1, header2, body2;
     private boolean isLoadingFinished = false;
+    private OnFragmentInteractionListener listener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            listener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -184,7 +194,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                         if (notificationList.isEmpty()) {
 
                             int dayOfGiveBill = Integer.parseInt(mainGuest.getPayDate());
-                            String date = mainGuest.getGuestDateIn();
+                            String date = mainGuest.getDateIn();
 
                             // Tách chuỗi dựa trên dấu gạch chéo "/"
                             String[] dateParts = date.split("/");
@@ -734,209 +744,49 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
 
+    private void openViewGuestFragment(Guest guest) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("guest", guest);
+        bundle.putSerializable("room", room);
+        bundle.putSerializable("home", home);
 
-    private void openUpdateGuestDialog(Guest guest) {
+        RoomViewGuestFragment roomViewGuestFragment = new RoomViewGuestFragment();
+        roomViewGuestFragment.setArguments(bundle);
 
-        setUpDialog(R.layout.layout_dialog_update_guest);
-
-        // Ánh xạ ID
-        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
-        Button btnUpdateGuest = dialog.findViewById(R.id.btn_add_new_guest);
-        EditText edtNameGuest = dialog.findViewById(R.id.edt_name_guest);
-        EditText edtPhoneGuest = dialog.findViewById(R.id.edt_phone_number);
-        EditText edtDateIn = dialog.findViewById(R.id.edt_date_in);
-        TextView title = dialog.findViewById(R.id.txt_title_dialog_guest);
-        TextView txtNameGuest = dialog.findViewById(R.id.txt_name_guest);
-        TextView txtPhoneGuest = dialog.findViewById(R.id.txt_phone_number);
-        TextInputLayout layoutNameGuest = dialog.findViewById(R.id.layout_name_guest);
-        TextInputLayout layoutPhoneGuest = dialog.findViewById(R.id.layout_phone_number);
-        TextInputLayout layoutDateIn = dialog.findViewById(R.id.layout_date_in);
-        int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
-
-        //Hiện thông tin lên edt
-        edtNameGuest.setText(guest.getNameGuest());
-        edtPhoneGuest.setText(guest.getPhoneGuest());
-        edtDateIn.setText(guest.getDateIn());
-        title.setText("Chỉnh sửa thông tin khách");
-        btnUpdateGuest.setText("Cập nhật");
-        txtNameGuest.append(customizeText(" *"));
-        txtPhoneGuest.append(customizeText(" *"));
-        btnUpdateGuest.setBackground(getResources().getDrawable(R.drawable.custom_button_add));
-
-        edtNameGuest.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.handleNameChanged(s.toString(), layoutNameGuest, boxStrokeColor);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        edtPhoneGuest.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.handlePhoneChanged(s.toString(), layoutPhoneGuest, boxStrokeColor);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        edtDateIn.addTextChangedListener(new TextWatcher() {
-            private final Calendar cal = Calendar.getInstance();
-            private String current = "";
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().equals(current)) {
-                    String clean = s.toString().replaceAll("\\D", "");
-                    String cleanCurr = current.replaceAll("\\D", "");
-
-                    int c1 = clean.length();
-                    int sel = c1; // Selection position (Vị trí được chọn)
-
-                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
-
-                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
-                        sel++;
-                    }
-
-                    if (clean.equals(cleanCurr)) sel--;
-
-                    if (clean.length() < 8) {
-                        String ddmmyyyy = "DDMMYYYY";
-                        clean = clean + ddmmyyyy.substring(clean.length());
-                    } else {
-                        int day = Integer.parseInt(clean.substring(0, 2));
-                        int month = Integer.parseInt(clean.substring(2, 4));
-                        int year = Integer.parseInt(clean.substring(4, 8));
-
-                        if (month > 12) month = 12;
-                        cal.set(Calendar.MONTH, month - 1);
-                        year = Math.min(Math.max(year, 2000), 2100);
-                        cal.set(Calendar.YEAR, year);
-
-                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
-                        clean = String.format(Locale.getDefault(), "%02d%02d%04d", day, month, year);
-                    }
-
-                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
-                            clean.substring(2, 4),
-                            clean.substring(4, 8));
-
-                    sel = Math.max(sel, 0);
-                    current = clean;
-                    edtDateIn.setText(current);
-                    edtDateIn.setSelection(Math.min(sel, current.length()));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == REQUIRED_DATE_LENGTH) {
-                    presenter.handleCheckInDateChanged(s.toString(), preferenceManager.getString(Constants.KEY_ROOM_ID), layoutDateIn, boxStrokeColor);
-                } else {
-                    layoutDateIn.setError(null);
-                }
-            }
-        });
-
-
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateButtonState(edtNameGuest, edtPhoneGuest, btnUpdateGuest);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-
-        // Thêm TextWatcher cho cả hai EditText
-        edtNameGuest.addTextChangedListener(textWatcher);
-        edtPhoneGuest.addTextChangedListener(textWatcher);
-
-        // Xử lý sự kiện cho Button
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
-
-        btnUpdateGuest.setOnClickListener(v -> {
-
-            if (layoutNameGuest.getError() == null && layoutPhoneGuest.getError() == null) {
-                // Lấy dữ liệu
-                String newNameGuest = edtNameGuest.getText().toString().trim();
-                String newPhoneGuest = edtPhoneGuest.getText().toString().trim();
-                String newDateIn = edtDateIn.getText().toString().trim();
-
-                // Cập nhật dữ liệu
-                guest.setNameGuest(newNameGuest);
-                guest.setPhoneGuest(newPhoneGuest);
-                guest.setDateIn(newDateIn);
-                guest.setFileStatus(true);
-
-                presenter.updateGuestInFirebase(guest);
-            } else {
-                Toast.makeText(getContext(), "Please correct the errors before adding a guest", Toast.LENGTH_SHORT).show();
-            }
-        });
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, roomViewGuestFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void openDeleteGuestDialog(Guest guest) {
-
         setUpDialog(R.layout.layout_dialog_delete_guest);
 
-        // Ánh xạ ID
         TextView txtConfirmDeleteGuest = dialog.findViewById(R.id.txt_confirm_delete_guest);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel_delete_guest);
         Button btnDeleteGuest = dialog.findViewById(R.id.btn_delete_guest);
 
-        // Hiệu chỉnh TextView
         String text = " " + guest.getNameGuest() + " ?";
         txtConfirmDeleteGuest.append(text);
 
-        // Xử lý sự kiện cho Button
         btnCancel.setOnClickListener(v -> dialog.dismiss());
-
-
         btnDeleteGuest.setOnClickListener(v -> {
             presenter.deleteGuest(guest);
             dialog.dismiss();
         });
-
     }
+
 
     private void openMenuForEachRoom(View view, Guest guest, ItemContainerGuestBinding binding) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.menu_edit_guest) {
-                // Thực hiện hành động cho mục chỉnh sửa
-                openUpdateGuestDialog(guest);
+            if (itemId == R.id.menu_view_guest) {
+                if (listener != null) {
+                    listener.onHideTabLayoutAndViewPager();
+                }
+                openViewGuestFragment(guest);
                 return true;
             } else if (itemId == R.id.menu_delete_guest) {
                 // Thực hiện hành động cho mục xóa
@@ -951,7 +801,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             binding.frmImage.setVisibility(View.VISIBLE);
         });
 
-        popupMenu.inflate(R.menu.menu_edit_delete_guest);
+        popupMenu.inflate(R.menu.menu_view_guest);
         popupMenu.show();
     }
 
@@ -970,5 +820,17 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             }
         });
     }
+
+    public interface OnFragmentInteractionListener {
+        void onHideTabLayoutAndViewPager();
+        void showTabLayoutAndViewPager();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
 
 }

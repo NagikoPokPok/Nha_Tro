@@ -234,4 +234,8 @@
     <string name="chon_tat_ca">Chọn tất cả</string>
     <string name="quay_lai">Quay lại</string>
 
+    <string name="Header_hop_dong">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</string>
+    <string name="Header_hop_dong_2">Độc lập - Tự do - Hạnh phúc</string>
+    <string name="xem_chi_tiet_khach">Xem chi tiết khách</string>
+    <string name="thong_tin_khach">Thông tin khách</string>
 </resources>

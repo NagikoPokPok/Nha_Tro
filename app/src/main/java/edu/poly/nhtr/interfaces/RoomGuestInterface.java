@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.models.Guest;
+import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.presenters.RoomBillPresenter;
 import edu.poly.nhtr.presenters.RoomGuestPresenter;
 
@@ -42,6 +43,7 @@ public interface RoomGuestInterface {
         void enableAddGuestButton();
 
         void openPopup(android.view.View view, Guest guest, ItemContainerGuestBinding binding);
+
 
         void openDialogSuccess(int id);
 
