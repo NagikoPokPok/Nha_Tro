@@ -169,6 +169,7 @@ public class RoomPresenter {
                             if (completedRequests.incrementAndGet() == totalRooms) {
                                 // Khi tất cả các yêu cầu đã hoàn thành, kiểm tra và cập nhật giao diện
                                 if (!rooms.isEmpty()) {
+                                    roomListener.getListRooms(rooms);
                                     roomListener.addRoom(rooms, action);
                                 } else {
                                     roomListener.addRoomFailed();

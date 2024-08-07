@@ -80,8 +80,9 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     }
 
     public List<Room> getCurrentListRooms() {
-        return currentListRooms ;
+        return currentListRooms;
     }
+
     private boolean isCheckBoxClicked = false;
 
     public void setCurrentListRooms(List<Room> currentListRooms) {
@@ -114,14 +115,10 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         binding.rootLayoutRoom.setOnRefreshListener(this);
 
 
-
-
         editFonts();
 
         //Set preference
         preferenceManager = new PreferenceManager(requireContext().getApplicationContext());
-
-
 
 
         // Set up RecyclerView layout manager
@@ -131,9 +128,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         // Load room information
         roomPresenter.getRooms("init");
 
-        roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(requireContext(),getCurrentListRooms(), this, roomPresenter, this);
-        });
+        roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, roomPresenter, this);
 
 
         // Xử lý Dialog Thêm phòng trọ
@@ -224,9 +219,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
             // Nhận dữ liệu từ Bundle
             Home home = (Home) getArguments().getSerializable("home");
         }
-        roomPresenter.getListRooms(task -> {
-            roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, roomPresenter, this);
-        });
+        roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, roomPresenter, this);
 
 
         return binding.getRoot();
@@ -241,8 +234,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
                 // Thực hiện hành động cho mục chỉnh sửa
                 openUpdateRoomDialog(Gravity.CENTER, room);
                 return true;
-            }
-            else if (itemId == R.id.menu_delete) {
+            } else if (itemId == R.id.menu_delete) {
                 // Thực hiện hành động cho mục xóa
                 openDeleteRoomDialog(Gravity.CENTER, room);
                 return true;
@@ -365,7 +357,6 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         });
 
 
-
         // Xử lý/ hiệu chỉnh màu nút button add room
         TextWatcher textWatcher = new TextWatcher() {
             @Override
@@ -421,7 +412,6 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         text1.setSpan(new ForegroundColorSpan(Color.RED), 0, text1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text1;
     }
-
 
 
     @Override
@@ -490,8 +480,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         } else if (Objects.equals(action, "sort")) {
             //roomAdapter.addRoom(rooms);
             updateRecyclerView(roomAdapter, 0);
-        }
-        else if (Objects.equals(action, "update")) {
+        } else if (Objects.equals(action, "update")) {
             int position = roomPresenter.getPosition();
             roomAdapter.updateRoom(position);
             roomAdapter.notifyItemChanged(roomAdapter.getLastActionPosition());
@@ -516,6 +505,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         binding.frmMenuTools.setVisibility(View.VISIBLE);
         Log.d("RoomFragment", "Adapter set successfully");
     }
+
     private void updateRecyclerView(RoomAdapter roomAdapter, int position) {
         binding.roomsRecyclerView.setAdapter(roomAdapter);
         //binding.layoutNoData.setVisibility(View.GONE);
@@ -782,6 +772,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     @Override
     public void getListRooms(List<Room> listRoom) {
         setCurrentListRooms(listRoom);
+        showToast(listRoom.get(0).getNumberOfMemberLiving());
     }
 
     @Override
@@ -824,14 +815,14 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
             @Override
             public void onClick(View v) {
 
-                    roomPresenter.deleteListRooms(listRoom);
+                roomPresenter.deleteListRooms(listRoom);
 
             }
         });
 
-        }
+    }
 
-        @Override
+    @Override
     public void deleteListAll(List<Room> list) {
         binding.txtDeleteHere.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -856,13 +847,11 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
 
 
     private void openSortRoomDialog() {
-        if(binding.edtSearchRoom.isFocused())
-        {
+        if (binding.edtSearchRoom.isFocused()) {
             binding.edtSearchRoom.clearFocus();
             binding.edtSearchRoom.setText("");
             roomPresenter.getRooms("init");
-        }
-        else if(binding.layoutTypeOfFilterRoom.getVisibility() == View.VISIBLE) {
+        } else if (binding.layoutTypeOfFilterRoom.getVisibility() == View.VISIBLE) {
             removeStatusOfCheckBoxFilterRoom();
             binding.layoutTypeOfFilterRoom.setVisibility(View.GONE);
             roomPresenter.getRooms("init");
@@ -929,7 +918,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
                     binding.txtTypeOfSortFilterRoom.setText(selectedText);
                     roomPresenter.sortRooms("name_room");
 
-                }  else {
+                } else {
                     showToast("No option selected");
                 }
 
@@ -952,13 +941,14 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(binding.layoutTypeOfSortRoom.getVisibility() == View.GONE){
+                if (binding.layoutTypeOfSortRoom.getVisibility() == View.GONE) {
                     removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
                 }
                 dialog.dismiss();
             }
         });
     }
+
     public void removeStatusOfCheckBoxFilterRoom() {
         preferenceManager.removePreference("cbxRoom1");
         preferenceManager.removePreference("cbxRoom2");
@@ -967,13 +957,11 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     }
 
     private void openFilterRoomDialog() {
-        if(binding.edtSearchRoom.isFocused())
-        {
+        if (binding.edtSearchRoom.isFocused()) {
             binding.edtSearchRoom.clearFocus();
             binding.edtSearchRoom.setText("");
             roomPresenter.getRooms("init");
-        }
-        else if(binding.layoutTypeOfSortRoom.getVisibility() == View.VISIBLE) {
+        } else if (binding.layoutTypeOfSortRoom.getVisibility() == View.VISIBLE) {
             // Clear the selected RadioButton ID from SharedPreferences
             preferenceManager.removePreference(Constants.KEY_SELECTED_RADIO_BUTTON);
             binding.layoutTypeOfSortRoom.setVisibility(View.GONE);
@@ -996,7 +984,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxRoom2"));
         cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxRoom3"));
         cbxByRoom4.setChecked(preferenceManager.getBoolean("cbxRoom4"));
-        showToast(preferenceManager.getBoolean("cbxRoom4")+"");
+        showToast(preferenceManager.getBoolean("cbxRoom4") + "");
 
         // Add CheckBoxes to a list
         List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
@@ -1065,11 +1053,11 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
                 }
 
                 // If 3 check boxes are unchecked -> Hide layoutTypeOfFilterHomes
-                if(!filterByRoom1 && !filterByRoom2 && !filterByRoom3 &&!filterByRoom4) {
+                if (!filterByRoom1 && !filterByRoom2 && !filterByRoom3 && !filterByRoom4) {
                     binding.layoutNoRoom.setVisibility(View.GONE);
                     binding.layoutTypeOfFilterRoom.setVisibility(View.GONE);
                     roomPresenter.getRooms("init");
-                }else {
+                } else {
                     filterListRooms(); // After put status of checkboxes in preferences, check and add them into the list
                 }
 
@@ -1131,7 +1119,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
                                     removeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
                                     // And update list homes as initial
                                     roomPresenter.getRooms("init");
-                                }else {
+                                } else {
                                     // Update list homes after deleting some check boxes
                                     filterListRooms();
                                 }
@@ -1160,15 +1148,15 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(binding.layoutTypeOfFilterRoom.getVisibility() == View.GONE){
+                if (binding.layoutTypeOfFilterRoom.getVisibility() == View.GONE) {
                     removeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
                 }
                 dialog.dismiss();
             }
         });
     }
-    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList)
-    {
+
+    private void customizeButtonApplyInDialogHaveCheckBox(Button btnApply, List<AppCompatCheckBox> checkBoxList) {
         boolean isAnyChecked = false;
         for (AppCompatCheckBox checkBox : checkBoxList) {
             if (checkBox.isChecked()) {
@@ -1184,6 +1172,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
             btnApply.setBackground(getResources().getDrawable(R.drawable.custom_button_clicked));
         }
     }
+
     private void removeFromListAndSave(String option) { // Remove from listType
         for (int i = 0; i < binding.layoutTypeOfFilterRoom.getChildCount(); i++) {
             View view = binding.layoutTypeOfFilterRoom.getChildAt(i);
@@ -1197,8 +1186,8 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
             }
         }
     }
-    private void filterListRooms()
-    {
+
+    private void filterListRooms() {
         showLoadingOfFunctions(R.id.btn_confirm_apply);
         boolean filterByRoom1 = preferenceManager.getBoolean("cbxRoom1");
         boolean filterByRoom2 = preferenceManager.getBoolean("cbxRoom2");
@@ -1246,13 +1235,13 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
 
     }
 
-    private void clickSortRoom(){
+    private void clickSortRoom() {
         removeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
         changeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
         openSortRoomDialog();
     }
 
-    private void clickFilterRoom(){
+    private void clickFilterRoom() {
         changeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
         removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
         openFilterRoomDialog();
@@ -1269,7 +1258,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     }
 
 
-//    private void setupDeleteRows() {
+    //    private void setupDeleteRows() {
 //        binding.layoutDelete.setOnClickListener(v -> {
 //            binding.btnDelete.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
 //            binding.txtDelete.setTextColor(getResources().getColorStateList(R.color.colorPrimary));

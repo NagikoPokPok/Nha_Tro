@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -152,6 +155,22 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+//        binding.bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+//            // Update font and color when item is reselected
+//            for (int i = 0; i < binding.bottomNavigation.getMenu().size(); i++) {
+//                MenuItem menuItem = binding.bottomNavigation.getMenu().getItem(i);
+//                View view = menuItem.getActionView();
+//                if (view != null) {
+//                    TextView title = view.findViewById(R.id.nav_item_title);
+//                    if (menuItem.isChecked()) {
+//                        title.setTextAppearance(R.style.BottomNavTextAppearanceSelected);
+//                    } else {
+//                        title.setTextAppearance(R.style.BottomNavTextAppearance);
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void replaceFragment(Fragment fragment, String tag) {
