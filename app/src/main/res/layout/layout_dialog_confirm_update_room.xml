@@ -24,13 +24,20 @@
             android:layout_gravity="center">
 
             <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/img_Profile"
+                android:id="@+id/img_delete"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/background_image"
-                android:src="@drawable/ic_edit"
+                android:background="@drawable/background_dialog_delete"
+                android:padding="10dp"
                 android:scaleType="fitXY"
                 app:riv_oval="true" />
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_edit"
+                android:backgroundTint="@color/white"
+                android:layout_gravity="center"/>
 
 
         </FrameLayout>
