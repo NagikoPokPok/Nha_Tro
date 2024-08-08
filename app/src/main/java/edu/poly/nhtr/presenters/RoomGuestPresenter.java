@@ -79,7 +79,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                             List<Object> guests = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 if (document.contains(Constants.KEY_IS_MAIN_GUEST)) {
-                                    // This document is a MainGuest
                                     MainGuest mainGuest = new MainGuest();
                                     mainGuest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
                                     mainGuest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
@@ -89,7 +88,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                     mainGuest.setGuestId(document.getId());
                                     guests.add(mainGuest);
                                 } else {
-                                    // This document is a regular Guest
                                     Guest guest = new Guest();
                                     guest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
                                     guest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
@@ -100,6 +98,7 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                                     guests.add(guest);
                                 }
                             }
+                            // Sắp xếp lại danh sách nếu cần
                             roomViewModel.setGuests(guests);
                             if (guests.isEmpty()) {
                                 view.showNoDataFound();
@@ -111,8 +110,8 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                         }
                     }
                 });
-
     }
+
 
     private void checkRoomCapacity(String roomId, List<Object> guests) {
         database.collection(Constants.KEY_COLLECTION_CONTRACTS)
@@ -146,7 +145,6 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
         guests.put(Constants.KEY_HOME_ID, view.getInfoHomeFromGoogleAccount());
         guests.put(Constants.KEY_TIMESTAMP, new Date());
 
-        // Add guest to firebase
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
                 .add(guests)
                 .addOnSuccessListener(documentReference -> {
@@ -161,9 +159,13 @@ public class RoomGuestPresenter implements RoomGuestInterface.Presenter {
                     );
                     view.dialogClose();
                     view.showToast("Thêm khách thành công");
+
+                    // Tải lại danh sách khách sau khi thêm khách mới
+                    getGuests(view.getInfoRoomFromGoogleAccount());
                 })
-                .addOnFailureListener(e -> view.showToast("Thêm hợp đồng thất bại"));
+                .addOnFailureListener(e -> view.showToast("Thêm khách thất bại"));
     }
+
 
     @Override
     public void deleteGuest(Guest guest) {

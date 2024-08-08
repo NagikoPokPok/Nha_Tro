@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -141,8 +142,24 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
 
         if (getArguments() != null) {
             guest = (Guest) getArguments().getSerializable("guest");
+            int guestPosition = getArguments().getInt("guest_position", -1);
+
+            if (guestPosition != -1) {
+                binding.txtOrdinalNumber.setText(String.valueOf(guestPosition));
+            }
             if (guest != null) {
                 presenter.fetchGuestDetails(guest.getGuestId());
+                presenter.checkMainGuest(guest.getGuestId(), new RoomViewGuestPresenter.OnMainGuestCheckListener() {
+                    @Override
+                    public void onCheckCompleted(boolean isMainGuest) {
+                        updateContractOwnerSection(isMainGuest);
+                    }
+
+                    @Override
+                    public void onCheckFailed(Exception e) {
+                        showToast("Lỗi khi kiểm tra khách chính: " + e.getMessage());
+                    }
+                });
             }
         }
 
@@ -168,7 +185,21 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
                 });
             }
         });
+    }
+    private void updateContractOwnerSection(boolean isMainGuest) {
+        TextView txtOrdinalNumber = binding.txtOrdinalNumber;
+        ImageView imgStar = binding.imgStar;
+        TextView txtNguoiDaiDien = binding.txtNguoiDaiDien;
 
+        if (isMainGuest) {
+            txtOrdinalNumber.setVisibility(View.GONE);
+            imgStar.setVisibility(View.VISIBLE);
+            txtNguoiDaiDien.setVisibility(View.VISIBLE);
+        } else {
+            txtOrdinalNumber.setVisibility(View.VISIBLE);
+            imgStar.setVisibility(View.GONE);
+            txtNguoiDaiDien.setVisibility(View.GONE);
+        }
     }
 
     private void returnToPreviousFragment() {
@@ -298,7 +329,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
     public void disableMenuForMainGuest() {
         frmMenu.setEnabled(false);
         frmMenu.setAlpha(0.5f);
-        showToast("Chỉ có thể chỉnh sửa hoặc xóa MainGuest ở hợp đồng.");
+        showToast("Bạn chỉ có thể chỉnh sửa hoặc xóa chủ hợp đồng ở trang hợp đồng.");
     }
 
     @Override
@@ -327,7 +358,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         Button btnCancel = dialog.findViewById(R.id.btn_cancel_delete_guest);
         Button btnDeleteGuest = dialog.findViewById(R.id.btn_delete_guest);
 
-        String text = " " + guest.getNameGuest() + " ?";
+        String text = " " + guest.getNameGuest() + " không?";
         txtConfirmDeleteGuest.append(text);
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -352,7 +383,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
             return false;
         });
 
-        popupMenu.inflate(R.menu.menu_edit_delete);
+        popupMenu.inflate(R.menu.menu_edit_delete_guest);
         popupMenu.show();
     }
 

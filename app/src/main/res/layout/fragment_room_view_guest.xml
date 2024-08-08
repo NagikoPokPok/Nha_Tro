@@ -104,6 +104,7 @@
                 <FrameLayout
                     android:layout_width="55dp"
                     android:layout_height="55dp"
+                    android:background="@drawable/sonhatro"
                     android:layout_marginBottom="10dp">
 
                     <!-- Ordinal number -->
@@ -111,7 +112,6 @@
                         android:id="@+id/txt_ordinal_number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/sonhatro"
                         android:fontFamily="@font/inter_bold"
                         android:gravity="center"
                         android:text="1"
@@ -134,12 +134,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="20dp"
                     android:fontFamily="@font/inter_bold"
                     android:text="Người đại diện hợp đồng"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="18sp"
-                    android:visibility="gone" />
+                    android:textSize="16sp"
+                    android:visibility="visible" />
             </LinearLayout>
 
             <!-- Customer Information -->

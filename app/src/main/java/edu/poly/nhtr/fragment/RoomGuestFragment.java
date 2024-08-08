@@ -749,11 +749,12 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
 
-    private void openViewGuestFragment(Guest guest) {
+    private void openViewGuestFragment(Guest guest, int guestPosition) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("guest", guest);
         bundle.putSerializable("room", room);
         bundle.putSerializable("home", home);
+        bundle.putInt("guest_position", guestPosition);
 
         RoomViewGuestFragment roomViewGuestFragment = new RoomViewGuestFragment();
         roomViewGuestFragment.setArguments(bundle);
@@ -764,6 +765,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                 .commit();
     }
 
+
     private void openDeleteGuestDialog(Guest guest) {
         setUpDialog(R.layout.layout_dialog_delete_guest);
 
@@ -771,7 +773,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
         Button btnCancel = dialog.findViewById(R.id.btn_cancel_delete_guest);
         Button btnDeleteGuest = dialog.findViewById(R.id.btn_delete_guest);
 
-        String text = " " + guest.getNameGuest() + " ?";
+        String text = " " + guest.getNameGuest() + " không?";
         txtConfirmDeleteGuest.append(text);
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -790,7 +792,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                 if (listener != null) {
                     listener.onHideTabLayoutAndViewPager();
                 }
-                openViewGuestFragment(mainGuest);
+                openViewGuestFragment(mainGuest, adapter.getGuestPosition(mainGuest));
                 return true;
             }
             return false;
@@ -815,7 +817,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                 if (listener != null) {
                     listener.onHideTabLayoutAndViewPager();
                 }
-                openViewGuestFragment(guest);
+                openViewGuestFragment(guest, adapter.getGuestPosition(guest));
                 return true;
             } else if (itemId == R.id.menu_delete_guest) {
                 // Thực hiện hành động cho mục xóa

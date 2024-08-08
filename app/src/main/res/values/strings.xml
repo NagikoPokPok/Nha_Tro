@@ -238,4 +238,5 @@
     <string name="Header_hop_dong_2">Độc lập - Tự do - Hạnh phúc</string>
     <string name="xem_chi_tiet_khach">Xem chi tiết khách</string>
     <string name="thong_tin_khach">Thông tin khách</string>
+    <string name="ban_co_muon_xoa_vi_khach">Bạn có muốn xóa vị khách</string>
 </resources>

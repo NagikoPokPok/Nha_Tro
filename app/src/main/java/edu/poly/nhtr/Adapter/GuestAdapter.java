@@ -86,7 +86,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         view.deleteListAll(selectList);
 
-        // Set LongClickListener only for GuestViewHolder
         if (holder instanceof GuestViewHolder) {
             holder.itemView.setOnLongClickListener(v -> {
                 isEnabled = true;
@@ -173,7 +172,6 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setGuestList(List<Object> guests) {
-        // Sắp xếp danh sách khách để Main Guest luôn ở đầu
         List<Object> sortedList = new ArrayList<>();
         List<MainGuest> mainGuests = new ArrayList<>();
         List<Guest> regularGuests = new ArrayList<>();
@@ -194,6 +192,13 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public int getGuestPosition(Guest guest) {
+        int position = itemList.indexOf(guest);
+        return position != -1 ? position + 1 : -1; // Trả về vị trí cộng thêm 1 để khớp với ordinal number
+    }
+
+
+
     public static class GuestViewHolder extends RecyclerView.ViewHolder {
         ItemContainerGuestBinding binding;
 
@@ -210,7 +215,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             boolean isProfileComplete = guest.isFileStatus();
             binding.txtProfileStatus.setText(isProfileComplete ? "Đã cập nhật đầy đủ" : "Chưa cập nhật đầy đủ");
 
-            binding.txtOrdinalNumber.setText(String.valueOf(getAdapterPosition() + 1)); // Assuming position starts at 0
+            binding.txtOrdinalNumber.setText(String.valueOf(getAdapterPosition() + 1));
             binding.imgStar.setVisibility(View.GONE);
             binding.txtOrdinalNumber.setVisibility(View.VISIBLE);
 

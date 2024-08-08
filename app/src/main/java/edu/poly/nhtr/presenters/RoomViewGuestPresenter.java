@@ -3,6 +3,9 @@ package edu.poly.nhtr.presenters;
 import android.content.Intent;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -155,11 +158,7 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
     }
 
     private void updateGuestInfoInFirebase(Guest guest) {
-        HashMap<String, Object> updateInfo = new HashMap<>();
-        updateInfo.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
-        updateInfo.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
-        updateInfo.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
-        updateInfo.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
+        HashMap<String, Object> updateInfo = getStringObjectHashMap(guest);
 
         db.collection(Constants.KEY_COLLECTION_GUESTS)
                 .document(guest.getGuestId())
@@ -174,6 +173,18 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                     view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
                     view.showToast("Cập nhật thông tin khách thất bại");
                 });
+    }
+
+    private static @NonNull HashMap<String, Object> getStringObjectHashMap(Guest guest) {
+        HashMap<String, Object> updateInfo = new HashMap<>();
+        updateInfo.put(Constants.KEY_GUEST_NAME, guest.getNameGuest());
+        updateInfo.put(Constants.KEY_GUEST_PHONE, guest.getPhoneGuest());
+        updateInfo.put(Constants.KEY_GUEST_DATE_IN, guest.getDateIn());
+        updateInfo.put(Constants.KEY_GUEST_CCCD, guest.getCccdNumber());
+        updateInfo.put(Constants.KEY_GUEST_CCCD_IMAGE_FRONT, guest.getCccdImageFront());
+        updateInfo.put(Constants.KEY_GUEST_CCCD_IMAGE_BACK, guest.getCccdImageBack());
+        updateInfo.put(Constants.KEY_CONTRACT_STATUS, guest.isFileStatus());
+        return updateInfo;
     }
 
     @Override
