@@ -20,7 +20,6 @@ import java.util.Locale;
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.interfaces.RoomGuestViewInterface;
 import edu.poly.nhtr.models.Guest;
-import edu.poly.nhtr.models.MainGuest;
 import edu.poly.nhtr.utilities.Constants;
 
 public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter {
@@ -78,7 +77,7 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
 
 
     @Override
-    public void deleteGuest(Guest guest) {
+    public void deleteGuest(Guest guest, DeleteGuestCallback callback) {
         view.showLoadingOfFunctions(R.id.btn_delete_guest);
         db.collection(Constants.KEY_COLLECTION_GUESTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount())
@@ -96,10 +95,12 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                                         view.hideLoadingOfFunctions(R.id.btn_delete_guest);
                                         view.dialogClose();
                                         view.openDialogSuccess(R.layout.layout_dialog_delete_guest_success);
+                                        callback.onSuccess();
                                     })
                                     .addOnFailureListener(e -> {
                                         view.hideLoadingOfFunctions(R.id.btn_delete_guest);
                                         view.showToast("Xoá khách thất bại");
+                                        callback.onFailure(new Exception("Lỗi khi xóa khách"));
                                     });
                         } else {
                             view.hideLoadingOfFunctions(R.id.btn_delete_guest);
@@ -110,6 +111,7 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                         view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
+
     }
 
     private List<DocumentSnapshot> sortDocumentsByTimestamp(List<DocumentSnapshot> documents) {
@@ -135,7 +137,6 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
 
     @Override
     public void updateGuestInFirebase(Guest guest) {
-        view.showLoadingOfFunctions(R.id.btn_add_new_guest);
         db.collection(Constants.KEY_COLLECTION_GUESTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, view.getInfoRoomFromGoogleAccount())
                 .get()
@@ -147,11 +148,9 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                         if (found) {
                             updateGuestInfoInFirebase(guest);
                         } else {
-                            view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
                             view.showToast("Không tìm thấy khách");
                         }
                     } else {
-                        view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
                         view.showToast("Lỗi khi lấy tài liệu: " + task.getException());
                     }
                 });
@@ -165,12 +164,9 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                 .update(updateInfo)
                 .addOnSuccessListener(aVoid -> {
                     fetchGuestDetails(guest.getGuestId());
-                    view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
-                    view.dialogClose();
                     view.openDialogSuccess(R.layout.layout_dialog_update_guest_success);
                 })
                 .addOnFailureListener(e -> {
-                    view.hideLoadingOfFunctions(R.id.btn_add_new_guest);
                     view.showToast("Cập nhật thông tin khách thất bại");
                 });
     }
@@ -290,5 +286,10 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         return intent;
+    }
+
+    public interface DeleteGuestCallback {
+        void onSuccess();
+        void onFailure(Exception e);
     }
 }

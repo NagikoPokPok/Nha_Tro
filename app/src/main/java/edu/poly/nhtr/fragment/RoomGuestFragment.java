@@ -735,7 +735,7 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                 String name = edtNameGuest.getText().toString().trim();
                 String phone = edtPhoneGuest.getText().toString().trim();
                 String dateIn = edtDateIn.getText().toString().trim();
-                Guest guest = new Guest(name, phone, true, dateIn);
+                Guest guest = new Guest(name, phone, false, dateIn);
                 presenter.addGuestToFirebase(guest);
 
                 String roomId = preferenceManager.getString(Constants.PREF_KEY_ROOM_ID);

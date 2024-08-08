@@ -3,6 +3,7 @@ package edu.poly.nhtr.interfaces;
 import com.google.android.material.textfield.TextInputLayout;
 
 import edu.poly.nhtr.models.Guest;
+import edu.poly.nhtr.presenters.RoomViewGuestPresenter;
 
 public interface RoomGuestViewInterface {
     interface View {
@@ -26,7 +27,6 @@ public interface RoomGuestViewInterface {
 
         void hideLoading();
 
-        void showDeleteGuestDialog(Guest guest);
         void showSuccessDialog(int layoutId);
         void disableMenuForMainGuest();
         void showToast(String message);
@@ -35,8 +35,7 @@ public interface RoomGuestViewInterface {
     interface Presenter {
         void fetchGuestDetails(String guestId);
 
-
-        void deleteGuest(Guest guest);
+        void deleteGuest(Guest guest, RoomViewGuestPresenter.DeleteGuestCallback callback);
 
         void updateGuestInFirebase(Guest guest);
 

@@ -47,7 +47,7 @@ import edu.poly.nhtr.presenters.RoomViewGuestPresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInterface.View {
+public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInterface.View  {
 
     private RoomViewGuestPresenter presenter;
     private Dialog dialog;
@@ -137,7 +137,6 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         frmMenu = view.findViewById(R.id.frm_menu);
         imgCircleMenu = view.findViewById(R.id.img_circle_menu);
 
-        // Set fields to read-only
         setFieldsEnabled(false);
 
         if (getArguments() != null) {
@@ -185,8 +184,60 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
                 });
             }
         });
+
+        binding.btnSave.setOnClickListener(v -> {
+            if (guest != null) {
+                String name = edtTenKhach.getText().toString().trim();
+                String dateIn = edtNgayVao.getText().toString().trim();
+                String phone = edtSoDienThoai.getText().toString().trim();
+                String cccd = edtSoCCCD.getText().toString().trim();
+
+                boolean isNameEmpty = name.isEmpty();
+                boolean isDateInEmpty = dateIn.isEmpty();
+                boolean isPhoneEmpty = phone.isEmpty();
+                boolean isCccdEmpty = cccd.isEmpty();
+                boolean isCccdFrontEmpty = encodedCCCDFrontImage == null;
+                boolean isCccdBackEmpty = encodedCCCDBackImage == null;
+
+                // Validate fields and set errors
+                if (isNameEmpty) {
+                    edtTenKhach.setError("Tên khách không được để trống");
+                }
+
+                if (isDateInEmpty) {
+                    edtNgayVao.setError("Ngày vào không được để trống");
+                }
+
+                if (isPhoneEmpty) {
+                    edtSoDienThoai.setError("Số điện thoại không được để trống");
+                }
+
+                if (isCccdEmpty) {
+                    edtSoCCCD.setError("Số CCCD không được để trống");
+                }
+
+                // Determine guest status
+                boolean allFieldsComplete = !isNameEmpty && !isDateInEmpty && !isPhoneEmpty && !isCccdEmpty && !isCccdFrontEmpty && !isCccdBackEmpty;
+                guest.setFileStatus(allFieldsComplete);
+
+                // Only update fields that are not empty
+                if (!isNameEmpty) guest.setNameGuest(name);
+                if (!isDateInEmpty) guest.setDateIn(dateIn);
+                if (!isPhoneEmpty) guest.setPhoneGuest(phone);
+                if (!isCccdEmpty) guest.setCccdNumber(cccd);
+                if (!isCccdFrontEmpty) guest.setCccdImageFront(encodedCCCDFrontImage);
+                if (!isCccdBackEmpty) guest.setCccdImageBack(encodedCCCDBackImage);
+
+                presenter.updateGuestInFirebase(guest);
+            }
+        });
+
+        binding.btnCancel.setOnClickListener(v -> {
+            setFieldsEnabled(false);
+            setVisibilityOfButtons(View.GONE);
+        });
     }
-    private void updateContractOwnerSection(boolean isMainGuest) {
+        private void updateContractOwnerSection(boolean isMainGuest) {
         TextView txtOrdinalNumber = binding.txtOrdinalNumber;
         ImageView imgStar = binding.imgStar;
         TextView txtNguoiDaiDien = binding.txtNguoiDaiDien;
@@ -212,16 +263,23 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
     private void setFieldsEnabled(boolean enabled) {
         edtTenKhach.setClickable(enabled);
         edtTenKhach.setFocusable(enabled);
+        edtTenKhach.setFocusableInTouchMode(enabled);
         edtNgayVao.setClickable(enabled);
         edtNgayVao.setFocusable(enabled);
+        edtNgayVao.setFocusableInTouchMode(enabled);
         edtSoCCCD.setClickable(enabled);
         edtSoCCCD.setFocusable(enabled);
+        edtSoCCCD.setFocusableInTouchMode(enabled);
         edtSoDienThoai.setClickable(enabled);
         edtSoDienThoai.setFocusable(enabled);
-        edtTenKhach.setClickable(enabled);
-        edtTenKhach.setFocusable(enabled);
+        edtSoDienThoai.setFocusableInTouchMode(enabled);
     }
 
+
+    private void setVisibilityOfButtons(int visibility) {
+        binding.btnCancel.setVisibility(visibility);
+        binding.btnSave.setVisibility(visibility);
+    }
     @Override
     public void dialogClose() {
         dialog.dismiss();
@@ -289,24 +347,6 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         binding.progressBar.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void showDeleteGuestDialog(Guest guest) {
-        setUpDialog(R.layout.layout_dialog_delete_guest);
-
-        TextView txtConfirmDeleteGuest = dialog.findViewById(R.id.txt_confirm_delete_guest);
-        Button btnCancel = dialog.findViewById(R.id.btn_cancel_delete_guest);
-        Button btnDeleteGuest = dialog.findViewById(R.id.btn_delete_guest);
-
-        String text = " " + guest.getNameGuest() + " ?";
-        txtConfirmDeleteGuest.append(text);
-
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
-        btnDeleteGuest.setOnClickListener(v -> {
-            presenter.deleteGuest(guest);
-            dialog.dismiss();
-        });
-    }
-
     private String encodeImage(Bitmap bitmap) {
         int previewWidth = 250;
         int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
@@ -363,18 +403,35 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnDeleteGuest.setOnClickListener(v -> {
-            presenter.deleteGuest(guest);
-            dialog.dismiss();
+            presenter.deleteGuest(guest, new RoomViewGuestPresenter.DeleteGuestCallback() {
+                @Override
+                public void onSuccess() {
+                    dialog.dismiss();
+                    if (getFragmentManager() != null) {
+                        getFragmentManager().popBackStack();
+                    }
+                    mListener.showTabLayoutAndViewPager();
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    dialog.dismiss();
+                    showToast("Xóa khách thất bại: " + e.getMessage());
+                }
+            });
         });
     }
+
+
 
     private void openMenuForEachRoom(View view, Guest guest) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.menu_edit) {
+            if (itemId == R.id.menu_edit_guest) {
                 setFieldsEnabled(true);
+                setVisibilityOfButtons(View.VISIBLE);
                 return true;
             } else if (itemId == R.id.menu_delete_guest) {
                 openDeleteGuestDialog(guest);

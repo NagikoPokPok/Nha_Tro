@@ -180,9 +180,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edt_ten_khach"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false" />
+                            android:layout_height="wrap_content" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
@@ -363,17 +361,38 @@
                     android:src="@drawable/icon_add_image" />
             </FrameLayout>
 
-            <!-- Edit Button -->
-            <Button
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="@color/colorButton"
-                android:fontFamily="@font/inter_bold"
-                android:padding="12dp"
-                android:text="Chỉnh sửa"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <!-- Cancel Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/huy"
+                    style="@style/BUTTON_2"
+                    android:visibility="invisible"
+                    android:textSize="18sp" />
+
+                <!-- Save Button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_save"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/luu"
+                    style="@style/BUTTON"
+                    android:visibility="invisible"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
