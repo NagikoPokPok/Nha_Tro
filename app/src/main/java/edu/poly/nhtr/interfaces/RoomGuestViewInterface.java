@@ -41,7 +41,7 @@ public interface RoomGuestViewInterface {
 
         void handleNameChanged(String name, TextInputLayout textInputLayout, int boxStrokeColor);
 
-        void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor);
+        void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor, String guestId);
 
         void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor);
 

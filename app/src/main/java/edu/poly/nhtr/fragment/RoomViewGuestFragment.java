@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,9 +21,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +31,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,6 +41,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 import edu.poly.nhtr.R;
@@ -64,6 +70,8 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
     private RoomGuestFragment.OnFragmentInteractionListener mListener;
     private ImageView btnBack;
     private Guest guest;
+    private static final int REQUIRED_DATE_LENGTH = 8; // Độ dài chuỗi ngày tháng năm yêu cầu
+
 
     // Hàm truy cập thư viện để lấy ảnh
     public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -192,35 +200,16 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
                 String phone = edtSoDienThoai.getText().toString().trim();
                 String cccd = edtSoCCCD.getText().toString().trim();
 
-                boolean isNameEmpty = name.isEmpty();
-                boolean isDateInEmpty = dateIn.isEmpty();
-                boolean isPhoneEmpty = phone.isEmpty();
+                boolean isNameEmpty = binding.tilTenKhach.getError() != null;
+                boolean isDateInEmpty = binding.tilNgayVao.getError() != null;
+                boolean isPhoneEmpty = binding.tilSoDienThoai.getError() != null;
                 boolean isCccdEmpty = cccd.isEmpty();
                 boolean isCccdFrontEmpty = encodedCCCDFrontImage == null;
                 boolean isCccdBackEmpty = encodedCCCDBackImage == null;
 
-                // Validate fields and set errors
-                if (isNameEmpty) {
-                    edtTenKhach.setError("Tên khách không được để trống");
-                }
-
-                if (isDateInEmpty) {
-                    edtNgayVao.setError("Ngày vào không được để trống");
-                }
-
-                if (isPhoneEmpty) {
-                    edtSoDienThoai.setError("Số điện thoại không được để trống");
-                }
-
-                if (isCccdEmpty) {
-                    edtSoCCCD.setError("Số CCCD không được để trống");
-                }
-
-                // Determine guest status
                 boolean allFieldsComplete = !isNameEmpty && !isDateInEmpty && !isPhoneEmpty && !isCccdEmpty && !isCccdFrontEmpty && !isCccdBackEmpty;
                 guest.setFileStatus(allFieldsComplete);
 
-                // Only update fields that are not empty
                 if (!isNameEmpty) guest.setNameGuest(name);
                 if (!isDateInEmpty) guest.setDateIn(dateIn);
                 if (!isPhoneEmpty) guest.setPhoneGuest(phone);
@@ -228,7 +217,12 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
                 if (!isCccdFrontEmpty) guest.setCccdImageFront(encodedCCCDFrontImage);
                 if (!isCccdBackEmpty) guest.setCccdImageBack(encodedCCCDBackImage);
 
-                presenter.updateGuestInFirebase(guest);
+                if (!isNameEmpty && !isDateInEmpty && !isPhoneEmpty && !isCccdEmpty) {
+                    presenter.updateGuestInFirebase(guest);
+                    returnToPreviousFragment();
+                } else {
+                    showToast("Vui lòng hoàn thành các trường thông tin bắt buộc.");
+                }
             }
         });
 
@@ -237,7 +231,148 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
             setVisibilityOfButtons(View.GONE);
         });
     }
-        private void updateContractOwnerSection(boolean isMainGuest) {
+
+    private void setFieldsLogic() {
+
+        binding.imgAddCccdFront.setOnClickListener(v -> {
+            currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;
+            pickImage.launch(presenter.prepareImageSelection());
+        });
+        binding.imgAddCccdBack.setOnClickListener(v -> {
+            currentImageSelection = IMAGE_SELECTION_CCCD_BACK;
+            pickImage.launch(presenter.prepareImageSelection());
+        });
+        binding.imgCccdFront.setOnClickListener(v -> {
+            currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;
+            pickImage.launch(presenter.prepareImageSelection());
+        });
+        binding.imgCccdBack.setOnClickListener(v -> {
+            currentImageSelection = IMAGE_SELECTION_CCCD_BACK;
+            pickImage.launch(presenter.prepareImageSelection());
+        });
+
+        int boxStrokeColor = getResources().getColor(R.color.colorPrimary);
+
+        binding.edtTenKhach.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.handleNameChanged(s.toString(), binding.tilTenKhach, boxStrokeColor);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
+
+        binding.edtSoDienThoai.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                presenter.handlePhoneChanged(s.toString(), binding.tilSoDienThoai, boxStrokeColor, guest.getGuestId());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
+
+        binding.edtNgayVao.addTextChangedListener(new TextWatcher() {
+            private final Calendar cal = Calendar.getInstance();
+            private String current = "";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().equals(current)) {
+                    String clean = s.toString().replaceAll("\\D", "");
+                    String cleanCurr = current.replaceAll("\\D", "");
+
+                    int c1 = clean.length();
+                    int sel = c1;
+
+                    final int MAX_DAY_MONTH_FORMAT_LENGTH = 6;
+
+                    for (int i = 2; i < c1 && i < MAX_DAY_MONTH_FORMAT_LENGTH; i += 2) {
+                        sel++;
+                    }
+
+                    if (clean.equals(cleanCurr)) sel--;
+
+                    if (clean.length() < 8) {
+                        String ddmmyyyy = "DDMMYYYY";
+                        clean = clean + ddmmyyyy.substring(clean.length());
+                    } else {
+                        int day = Integer.parseInt(clean.substring(0, 2));
+                        int month = Integer.parseInt(clean.substring(2, 4));
+                        int year = Integer.parseInt(clean.substring(4, 8));
+
+                        if (month > 12) month = 12;
+                        cal.set(Calendar.MONTH, month - 1);
+                        year = Math.min(Math.max(year, 2000), 2100);
+                        cal.set(Calendar.YEAR, year);
+
+                        day = Math.min(day, cal.getActualMaximum(Calendar.DATE));
+                        clean = String.format(Locale.getDefault(), "%02d%02d%04d", day, month, year);
+                    }
+
+                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
+                            clean.substring(2, 4),
+                            clean.substring(4, 8));
+
+                    sel = Math.max(sel, 0);
+                    current = clean;
+                    binding.edtNgayVao.setText(current);
+                    binding.edtNgayVao.setSelection(Math.min(sel, current.length()));
+                }
+
+                if (s.length() == REQUIRED_DATE_LENGTH) {
+                    presenter.handleCheckInDateChanged(s.toString(), guest.getRoomId() , binding.tilNgayVao, boxStrokeColor);
+                } else {
+                    binding.tilNgayVao.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateButtonState(edtTenKhach, edtSoDienThoai, binding.btnSave);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+
+        binding.edtTenKhach.addTextChangedListener(textWatcher);
+        binding.edtSoDienThoai.addTextChangedListener(textWatcher);
+    }
+
+    private void updateContractOwnerSection(boolean isMainGuest) {
         TextView txtOrdinalNumber = binding.txtOrdinalNumber;
         ImageView imgStar = binding.imgStar;
         TextView txtNguoiDaiDien = binding.txtNguoiDaiDien;
@@ -313,18 +448,28 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
 
     @Override
     public void showGuestDetails(Guest guest) {
+        if (!isAdded()) return;  // Check if fragment is still attached
+
         edtTenKhach.setText(guest.getNameGuest());
         edtNgayVao.setText(guest.getDateIn());
         edtSoDienThoai.setText(guest.getPhoneGuest());
         edtSoCCCD.setText(guest.getCccdNumber());
-        binding.imgAddCccdFront.setOnClickListener(v -> {
-            currentImageSelection = IMAGE_SELECTION_CCCD_FRONT;
-            pickImage.launch(presenter.prepareImageSelection());
-        });
-        binding.imgAddCccdBack.setOnClickListener(v -> {
-            currentImageSelection = IMAGE_SELECTION_CCCD_BACK;
-            pickImage.launch(presenter.prepareImageSelection());
-        });
+
+        Bitmap frontImageBitmap = getConversionImageForCCCD(guest.getCccdImageFront());
+        if (frontImageBitmap != null) {
+            binding.imgAddCccdFront.setVisibility(View.GONE);
+            binding.imgCccdFront.setImageBitmap(frontImageBitmap);
+        } else {
+            binding.imgAddCccdFront.setVisibility(View.VISIBLE);
+        }
+
+        Bitmap backImageBitmap = getConversionImageForCCCD(guest.getCccdImageBack());
+        if (backImageBitmap != null) {
+            binding.imgAddCccdBack.setVisibility(View.GONE);
+            binding.imgCccdBack.setImageBitmap(backImageBitmap);
+        } else {
+            binding.imgAddCccdBack.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -347,6 +492,19 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         binding.progressBar.setVisibility(View.INVISIBLE);
     }
 
+    private void updateButtonState(EditText edtNameGuest, EditText edtPhoneGuest, AppCompatButton btnAdd) {
+        if (isAdded()) {
+            String name = edtNameGuest.getText().toString().trim();
+            String phone = edtPhoneGuest.getText().toString().trim();
+            if (name.isEmpty() || phone.isEmpty()) {
+                btnAdd.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_clicked, null));
+            } else {
+                btnAdd.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.custom_button_add, null));
+            }
+        }
+    }
+
+
     private String encodeImage(Bitmap bitmap) {
         int previewWidth = 250;
         int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
@@ -356,6 +514,24 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
+
+    private Bitmap getConversionImageForCCCD(String encodedImage) {
+        if (encodedImage == null || encodedImage.isEmpty()) {
+            // Trả về null nếu encodedImage rỗng
+            return null;
+        }
+
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        int heightDp = 250;
+        int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
+
+        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+
+        return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
+    }
+
 
     @Override
     public void showSuccessDialog(int layoutId) {
@@ -422,8 +598,6 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         });
     }
 
-
-
     private void openMenuForEachRoom(View view, Guest guest) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.setForceShowIcon(true);
@@ -431,6 +605,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
             int itemId = item.getItemId();
             if (itemId == R.id.menu_edit_guest) {
                 setFieldsEnabled(true);
+                setFieldsLogic();
                 setVisibilityOfButtons(View.VISIBLE);
                 return true;
             } else if (itemId == R.id.menu_delete_guest) {

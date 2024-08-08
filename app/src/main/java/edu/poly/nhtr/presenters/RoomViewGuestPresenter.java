@@ -203,7 +203,7 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
     }
 
     @Override
-    public void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor) {
+    public void handlePhoneChanged(String phone, TextInputLayout textInputLayout, int boxStrokeColor, String guestId) {
         if (textInputLayout == null) return;
 
         if (TextUtils.isEmpty(phone)) {
@@ -211,7 +211,7 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
         } else if (!isValidPhoneNumber(phone)) {
             textInputLayout.setError("Số điện thoại không hợp lệ");
         } else {
-            checkDuplicatePhoneNumber(phone, textInputLayout, boxStrokeColor);
+            checkDuplicatePhoneNumber(guestId, phone, textInputLayout, boxStrokeColor);
         }
     }
 
@@ -219,14 +219,23 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
         return target.length() == 10 && android.util.Patterns.PHONE.matcher(target).matches();
     }
 
-    private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout, int boxStrokeColor) {
+    private void checkDuplicatePhoneNumber(String guestId, String phone, TextInputLayout textInputLayout, int boxStrokeColor) {
         db.collection(Constants.KEY_COLLECTION_GUESTS)
                 .whereEqualTo(Constants.KEY_HOME_ID, view.getInfoHomeFromGoogleAccount())
                 .whereEqualTo(Constants.KEY_GUEST_PHONE, phone)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty()) {
+                        boolean isDuplicate = false;
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Kiểm tra xem số điện thoại đã tồn tại trong nhà trọ chưa
+                            if (!document.getId().equals(guestId)) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+
+                        if (isDuplicate) {
                             textInputLayout.setError("Số điện thoại đã tồn tại trong nhà trọ này");
                         } else {
                             textInputLayout.setError(null);
@@ -237,6 +246,7 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                     }
                 });
     }
+
 
     @Override
     public void handleCheckInDateChanged(String checkInDate, String roomId, TextInputLayout textInputLayout, int boxStrokeColor) {
