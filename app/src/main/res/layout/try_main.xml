@@ -11,6 +11,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/layout_delete_and_close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp">
@@ -253,14 +254,70 @@
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3" />
 
+            <LinearLayout
+                android:id="@+id/layout_add_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp">
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Huỷ"
+                    android:textColor="@color/colorButton"
+                    app:iconGravity="textStart"
+                    android:textSize="16sp"
+                    app:backgroundTint="@null"
+                    android:background="@drawable/custom_button_cancel"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/inter_medium"/>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_apply_service"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:text="Áp dụng"
+                        app:iconGravity="textStart"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/inter_medium"
+                        android:background="@drawable/custom_button_add"
+                        app:backgroundTint="@null"
+                        />
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar_of_apply"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+
+
+                </FrameLayout>
+
+
+            </LinearLayout>
+
 
             <LinearLayout
+                android:id="@+id/layout_main_buttons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:layout_marginBottom="5dp">
 
                 <FrameLayout
+                    android:id="@+id/frm_use_service"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
@@ -280,19 +337,21 @@
 
 
                     <ProgressBar
-                        android:id="@+id/progressBar"
+                        android:id="@+id/progress_bar_of_use"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center"
-                        android:visibility="invisible" />
+                        android:visibility="gone" />
                 </FrameLayout>
 
 
                 <FrameLayout
+                    android:id="@+id/frm_unused_service"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    >
 
                     <Button
                         android:id="@+id/btn_unused_service"
@@ -308,16 +367,19 @@
 
 
                     <ProgressBar
+                        android:id="@+id/progress_bar_of_unused"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center"
-                        android:visibility="invisible" />
+                        android:visibility="gone" />
                 </FrameLayout>
 
                 <FrameLayout
+                    android:id="@+id/frm_update_service"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    >
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_update_service"
@@ -332,10 +394,11 @@
                         app:iconGravity="textStart" />
 
                     <ProgressBar
+                        android:id="@+id/progress_bar_of_update"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center"
-                        android:visibility="invisible" />
+                        android:visibility="gone" />
 
                 </FrameLayout>
 

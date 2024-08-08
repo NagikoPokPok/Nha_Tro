@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import edu.poly.nhtr.R;
 import edu.poly.nhtr.listeners.ServiceListener;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.Service;
@@ -45,6 +46,7 @@ public class ServicePresenter {
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_SERVICES)
                 .add(serviceInfo)
                 .addOnSuccessListener(documentReference -> {
+                    listener.hideButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
                     listener.ShowToast("Thêm dịch vụ thành công");
                     listener.CloseDialog();
                     listener.addServiceSuccess(service);
@@ -85,8 +87,12 @@ public class ServicePresenter {
     public void deleteService(Service service) {
         if(service.getDeletable())
             removeFromFirebase(service);
-        else
+        else{
             listener.ShowToast("Dịch vụ này không thể xóa");
+            listener.dialogClosed();
+        }
+
+
     }
 
     public void updateStatusOfApplyToFirebase(Service service) {

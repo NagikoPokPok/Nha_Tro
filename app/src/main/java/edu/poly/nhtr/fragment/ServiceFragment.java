@@ -28,9 +28,12 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,7 +80,6 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     private boolean isLoadingFinished = false;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,16 +119,16 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if(document.exists()) {
-                                if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null)
+                            if (document.exists()) {
+                                if (document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE) != null)
                                     preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE));
-                                else preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                            }else
+                                else
+                                    preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
+                            } else
                                 preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                        }
-                        else Log.e("isHaveService", "Don't access");
+                        } else Log.e("isHaveService", "Don't access");
 
 
                         loadServicesData();
@@ -138,12 +140,11 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     private void loadServicesData() {
         //Load data of service
-        if(!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) {
+        if (!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) {
             services = ServiceUtils.addAvailableService(preferenceManager.getString(Constants.KEY_HOME_ID), getContext());
-            Log.e("ServiceInService", services.size()+"");
+            Log.e("ServiceInService", services.size() + "");
             setRecyclerViewData();
-        }
-        else {
+        } else {
             FirebaseFirestore data = FirebaseFirestore.getInstance();
             ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID), new ServiceUtils.OnServicesLoadedListener() {
                 @Override
@@ -176,8 +177,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         binding.recyclerServiceUnused.setVisibility(View.VISIBLE);
         Log.e("ServicesCountUnused", String.valueOf(ServiceUtils.unusedService(services).stream().count()));
 
-        customPosition(binding.recyclerServiceUsed,3);
-        customPosition(binding.recyclerServiceUnused,3);
+        customPosition(binding.recyclerServiceUsed, 3);
+        customPosition(binding.recyclerServiceUnused, 3);
 
         hideLoading();
 
@@ -197,13 +198,11 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         Button btn_continue = dialog.findViewById(R.id.btn_continue_addNewService);
 
 
-
-
         //Xử xí button cho dialog
         btn_cancel.setOnClickListener(v -> dialog.cancel());
 
         btn_continue.setOnClickListener(v -> {
-            if(isServiceNameValid(edt_name)){
+            if (isServiceNameValid(edt_name)) {
                 dialog.cancel();
                 //Xử lí ảnh
                 String encodeImage = ServiceUtils.encodedImage(((BitmapDrawable) image.getDrawable()).getBitmap());
@@ -222,11 +221,10 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     private boolean isServiceNameValid(EditText edt_name) {
 
-        if(edt_name.getText().toString().isEmpty()){
+        if (edt_name.getText().toString().isEmpty()) {
             edt_name.setError("Bạn phải điền tên dịch vụ");
             return false;
-        }
-        else if(isNameExist(edt_name.getText().toString())){
+        } else if (isNameExist(edt_name.getText().toString())) {
             edt_name.setError("Tên dịch vụ này đã tồn tại");
             return false;
         }
@@ -234,8 +232,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private boolean isNameExist(String nameService) {
-        for(Service service : services){
-            if(service.getName().equals(nameService)) return true;
+        for (Service service : services) {
+            if (service.getName().equals(nameService)) return true;
         }
         return false;
     }
@@ -255,7 +253,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private void openApplyServiceDialog(String name, String encodeImage) {
-        setupDialog(dialog, R.layout.service_dialog_apply_service, Gravity.CENTER);
+        setupDialog(dialog, R.layout.try_main, Gravity.CENTER);
 
         //Ánh xạ view
         ImageView image = dialog.findViewById(R.id.img_service);
@@ -270,6 +268,14 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         Button btn_apply = dialog.findViewById(R.id.btn_apply_service);
         TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
         TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
+
+        RelativeLayout layoutDeleteAndClose = dialog.findViewById(R.id.layout_delete_and_close);
+        LinearLayout layoutMainButtons = dialog.findViewById(R.id.layout_main_buttons);
+        LinearLayout layoutApplyService = dialog.findViewById(R.id.layout_add_service);
+
+
+        layoutMainButtons.setVisibility(View.GONE);
+        layoutDeleteAndClose.setVisibility(View.GONE);
 
         //Đổ dữ liệu cho dialog
         image.setImageBitmap(ServiceUtils.getConversionImage(encodeImage));
@@ -300,7 +306,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isServiceDetail(layout_fee, layout_unit)){
+                showButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
+                if (isServiceDetail(layout_fee, layout_unit)) {
                     int price = Integer.parseInt(edt_fee.getText().toString());
                     String idHomeParent = preferenceManager.getString(Constants.KEY_HOME_ID);
                     Service service = new Service(idHomeParent, name.toString(), encodeImage.toString(), price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), true, true);
@@ -309,6 +316,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 //                    presenter.ApplyServiceForRoom(name, listRoom, checkedStates);
 //                    presenter.applyServiceOfRoom(service, listRoom, checkedStates);
 
+                }else{
+                    hideButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
                 }
             }
 
@@ -334,8 +343,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
-                if(!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
+                if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
+                if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
             }
         });
 
@@ -343,10 +352,10 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 edt_note.setHint("");
-                if(!hasFocus && edt_note.getText().toString().isEmpty()) edt_note.setHint("Viết những lưu ý của bạn ta đây");
+                if (!hasFocus && edt_note.getText().toString().isEmpty())
+                    edt_note.setHint("Viết những lưu ý của bạn ta đây");
             }
         });
-
 
 
     }
@@ -357,16 +366,16 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         boolean isFeeNunber = false;
         boolean isTrue = true;
         int fee = 0;
-        if(!layoutFee.getEditText().getText().toString().isEmpty()){
+        if (!layoutFee.getEditText().getText().toString().isEmpty()) {
             try {
                 fee = Integer.parseInt(layoutFee.getEditText().getText().toString());
                 isFeeNunber = true;
-            }catch (Exception e){
+            } catch (Exception e) {
                 layoutFee.setError("Chỉ có thể nhập số");
                 isTrue = false;
             }
         }
-        if(layoutUnit.getEditText().getText().toString().isEmpty()){
+        if (layoutUnit.getEditText().getText().toString().isEmpty()) {
             layoutUnit.setError("Không được để trống đơn vị");
             isTrue = false;
         } else if (isFeeNunber && fee < 0) {
@@ -381,7 +390,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     private void setupDialog(Dialog dialog, int idLayout, int gravity) {
         dialog.setContentView(idLayout);
         Window window = dialog.getWindow();
-        if(window != null){
+        if (window != null) {
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             WindowManager.LayoutParams windowAttributes = window.getAttributes();
@@ -392,142 +401,153 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         }
     }
 
-    private void openUpdateServiceDialog(Service service, RecyclerView recyclerView, int position) {
-        setupDialog(dialog, R.layout.service_dialog_update_service, Gravity.CENTER);
-
-        //Ánh xạ view
-        ImageView exit = dialog.findViewById(R.id.img_exit);
-        ImageView image = dialog.findViewById(R.id.img_service);
-        TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
-        Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
-        EditText edt_unit = dialog.findViewById(R.id.edt_unit);
-        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
-        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
-        EditText edt_note = dialog.findViewById(R.id.edt_note);
-        View line = dialog.findViewById(R.id.view4);
-        TextView txt_title_apply_for = dialog.findViewById(R.id.txt_title_apply_for);
-        CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
-        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
-        Button btn_update = dialog.findViewById(R.id.btn_update_service);
-        TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
-        TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
-
-        // Set data for dialog
-        //Đổ dữ liệu cho dialog
-        txt_name.setText(service.getName());
-        image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
-        //Spinner
-        String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
-        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(service.getFee_base());
-
-        if(service.getFee_base()==3) edt_unit.setText(service.getUnit());
-        String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
-        txt_feeBase.setText(titleOfFee);
-        edt_fee.setText(""+service.getPrice());
-        edt_note.setText(service.getNote());
-
-        List<Boolean> checkedStatesPrevious = new ArrayList<>();
-        List<Boolean> checkedStatesAfter = new ArrayList<>();
-        if(service.getApply()){
-            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
-                @Override
-                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                    checkedStatesPrevious.clear();
-                    checkedStatesPrevious.addAll(checkedStates);
-                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
-                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
-                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")){
-                        setNonListenerToRecycler(recycler_applyFor);
-                    }
-                }
-            });
-        }else {
-            line.setVisibility(View.GONE);
-            txt_title_apply_for.setVisibility(View.GONE);
-        }
-
-//        presenter.setRecyclerViewOfApplyFor(recycler_applyFor, requireActivity().getApplicationContext(), listRoom, service);
-
-        //Xử lí button cho dialog
-        exit.setVisibility(View.VISIBLE);
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                recyclerView.post(() -> {
-                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-                    if(viewHolder!=null) viewHolder.itemView.performClick();
-                });
-            }
-        });
-
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isServiceDetail(layout_fee, layout_unit)){
-                    int price = 0;
-                    try {
-                        price = Integer.parseInt(edt_fee.getText().toString());
-                    }catch (Exception e){
-                        Log.e("price","Not Valid");
-                    }
-                    service.setFee_base(spinner.getSelectedItemPosition());
-                    service.setUnit(edt_unit.getText().toString());
-                    service.setPrice(price);
-                    service.setNote(edt_note.getText().toString());
-
-                    if (service.getApply()) presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
-
-                }
-            }
-
-        });
-
-        //Xử lí hành động cho spinner
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                adapter.setSelectedPosition(position);
-                setFeedbackForUnit(edt_unit, position);
-                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
-                txt_feeBase.setText(titleOfFee);
-            }
-
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-
-        //Xử lí các hành động cho editText khi được truy cập
-        edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
-                if(!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
-            }
-        });
-
-        edt_note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                edt_note.setHint("");
-                if(!hasFocus && edt_note.getText().toString().isEmpty()) edt_note.setHint("Viết những lưu ý của bạn ta đây");
-            }
-        });
-    }
+//    private void openUpdateServiceDialog(Service service, RecyclerView recyclerView, int position) {
+//        setupDialog(dialog, R.layout.try_main, Gravity.CENTER);
+//
+//
+//        //Ánh xạ view
+//        ImageView exit = dialog.findViewById(R.id.img_exit);
+//        ImageView image = dialog.findViewById(R.id.img_service);
+//        TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
+//        Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
+//        EditText edt_unit = dialog.findViewById(R.id.edt_unit);
+//        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
+//        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
+//        EditText edt_note = dialog.findViewById(R.id.edt_note);
+//        View line = dialog.findViewById(R.id.view4);
+//        TextView txt_title_apply_for = dialog.findViewById(R.id.txt_title_apply_for);
+//        CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+//        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+//        Button btn_update = dialog.findViewById(R.id.btn_update_service);
+//        TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
+//        TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
+//
+//        RelativeLayout layoutDeleteAndClose = dialog.findViewById(R.id.layout_delete_and_close);
+//        LinearLayout layoutMainButtons = dialog.findViewById(R.id.layout_main_buttons);
+//        LinearLayout layoutApplyService = dialog.findViewById(R.id.layout_add_service);
+//
+//
+//        layoutApplyService.setVisibility(View.GONE);
+//        layoutMainButtons.setVisibility(View.VISIBLE);
+//
+//
+//        // Set data for dialog
+//        //Đổ dữ liệu cho dialog
+//        txt_name.setText(service.getName());
+//        image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
+//        //Spinner
+//        String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
+//        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
+//        adapter.setDropDownViewResource(R.layout.spinner_item);
+//        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
+//        spinner.setAdapter(adapter);
+//        spinner.setSelection(service.getFee_base());
+//
+//        if (service.getFee_base() == 3) edt_unit.setText(service.getUnit());
+//        String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+//        txt_feeBase.setText(titleOfFee);
+//        edt_fee.setText("" + service.getPrice());
+//        edt_note.setText(service.getNote());
+//
+//        List<Boolean> checkedStatesPrevious = new ArrayList<>();
+//        List<Boolean> checkedStatesAfter = new ArrayList<>();
+//        if (service.getApply()) {
+//            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+//                @Override
+//                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
+//                    checkedStatesPrevious.clear();
+//                    checkedStatesPrevious.addAll(checkedStates);
+//                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
+//                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+//                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")) {
+//                        setNonListenerToRecycler(recycler_applyFor);
+//                    }
+//                }
+//            });
+//        } else {
+//            line.setVisibility(View.GONE);
+//            txt_title_apply_for.setVisibility(View.GONE);
+//        }
+//
+////        presenter.setRecyclerViewOfApplyFor(recycler_applyFor, requireActivity().getApplicationContext(), listRoom, service);
+//
+//        //Xử lí button cho dialog
+//        exit.setVisibility(View.VISIBLE);
+//        exit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//        btn_cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.cancel();
+//                recyclerView.post(() -> {
+//                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+//                    if (viewHolder != null) viewHolder.itemView.performClick();
+//                });
+//            }
+//        });
+//
+//        btn_update.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isServiceDetail(layout_fee, layout_unit)) {
+//                    int price = 0;
+//                    try {
+//                        price = Integer.parseInt(edt_fee.getText().toString());
+//                    } catch (Exception e) {
+//                        Log.e("price", "Not Valid");
+//                    }
+//                    service.setFee_base(spinner.getSelectedItemPosition());
+//                    service.setUnit(edt_unit.getText().toString());
+//                    service.setPrice(price);
+//                    service.setNote(edt_note.getText().toString());
+//
+//                    if (service.getApply())
+//                        presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
+//
+//                }
+//            }
+//
+//        });
+//
+//        //Xử lí hành động cho spinner
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                adapter.setSelectedPosition(position);
+//                setFeedbackForUnit(edt_unit, position);
+//                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+//                txt_feeBase.setText(titleOfFee);
+//            }
+//
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                // Do nothing
+//            }
+//        });
+//
+//        //Xử lí các hành động cho editText khi được truy cập
+//        edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
+//                if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
+//            }
+//        });
+//
+//        edt_note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                edt_note.setHint("");
+//                if (!hasFocus && edt_note.getText().toString().isEmpty())
+//                    edt_note.setHint("Viết những lưu ý của bạn ta đây");
+//            }
+//        });
+//    }
 
     private void setNonListenerToRecycler(CustomRecyclerView recyclerApplyFor) {
         recyclerApplyFor.setClickable(false);
@@ -590,20 +610,21 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         setupDialog(dialogConfirm, R.layout.service_dialog_confirm_delete_service, Gravity.CENTER);
 
         //Ánh xạ View
-        TextView edt_content_confrim = dialogConfirm.findViewById(R.id.txt_content_confirm);
-        Button btn_delete = dialogConfirm.findViewById(R.id.btn_delete_service);
+        TextView edt_content_confirm = dialogConfirm.findViewById(R.id.txt_content_confirm);
+        Button btn_delete = dialogConfirm.findViewById(R.id.btn_confirm_delete_service);
         Button btn_cancel = dialogConfirm.findViewById(R.id.btn_cancel);
 
         //Set data
-        edt_content_confrim.setText("Bạn có chắc là muốn xóa dịch vụ này?");
+        edt_content_confirm.setText("Bạn có chắc là muốn xóa dịch vụ này?");
 
         //Set listener
         btn_cancel.setOnClickListener(v -> dialogConfirm.dismiss());
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogConfirm.dismiss();
-                dialog.dismiss();
+                //showButtonLoading(R.id.btn_confirm_delete_service, R.id.progressBar_of_delete_service);
+                dialogConfirm.findViewById(R.id.btn_confirm_delete_service).setVisibility(View.INVISIBLE);
+                dialogConfirm.findViewById(R.id.progressBar_of_delete_service).setVisibility(View.VISIBLE);
                 presenter.deleteService(service);
 
             }
@@ -639,33 +660,57 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     @Override
     public void onServiceItemCLick(Service service, RecyclerView recyclerView, int position) {
-        //button apply service
-        Button use_service;
-
-        if(service.getApply()) setupDialog(dialog, R.layout.service_dialog_detail_service_used, Gravity.CENTER);
-        else setupDialog(dialog, R.layout.service_dialog_detail_service_unused, Gravity.CENTER);
+        setupDialog(dialog, R.layout.try_main, Gravity.CENTER);
 
 
-        //Ánh xạ id
+        //Ánh xạ view
         ImageView exit = dialog.findViewById(R.id.img_exit);
         ImageView image = dialog.findViewById(R.id.img_service);
         TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
         Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
         EditText edt_unit = dialog.findViewById(R.id.edt_unit);
-        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_fee = dialog.findViewById(R.id.edt_fee);
+        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
         EditText edt_note = dialog.findViewById(R.id.edt_note);
         View line = dialog.findViewById(R.id.view4);
         TextView txt_title_apply_for = dialog.findViewById(R.id.txt_title_apply_for);
         CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
-        Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_update = dialog.findViewById(R.id.btn_update_service);
+        Button btn_delete = dialog.findViewById(R.id.btn_delete_service);
+        Button btn_apply = dialog.findViewById(R.id.btn_apply_service);
+        Button btn_use = dialog.findViewById(R.id.btn_use_service);
+        Button btn_unused = dialog.findViewById(R.id.btn_unused_service);
+        TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
+        TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
+
+        FrameLayout frm_use = dialog.findViewById(R.id.frm_use_service);
+        FrameLayout frm_unused = dialog.findViewById(R.id.frm_unused_service);
+
+        RelativeLayout layoutDeleteAndClose = dialog.findViewById(R.id.layout_delete_and_close);
+        LinearLayout layoutMainButtons = dialog.findViewById(R.id.layout_main_buttons);
+        LinearLayout layoutApplyService = dialog.findViewById(R.id.layout_add_service);
+
+
+        layoutApplyService.setVisibility(View.GONE);
+        layoutMainButtons.setVisibility(View.VISIBLE);
+        layoutDeleteAndClose.setVisibility(View.VISIBLE);
+
+        if(service.getApply()){
+            frm_unused.setVisibility(View.VISIBLE);
+            frm_use.setVisibility(View.GONE);
+            btn_delete.setVisibility(View.GONE);
+        }else{
+            frm_unused.setVisibility(View.GONE);
+            frm_use.setVisibility(View.VISIBLE);
+            btn_delete.setVisibility(View.VISIBLE);
+        }
+
 
         // Set data for dialog
         //Đổ dữ liệu cho dialog
         txt_name.setText(service.getName());
         image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
-
         //Spinner
         String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
         CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items);
@@ -673,73 +718,148 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
         spinner.setAdapter(adapter);
         spinner.setSelection(service.getFee_base());
-        spinner.setEnabled(false);
 
-        edt_unit.setText(service.getUnit());
-
+        if (service.getFee_base() == 3) edt_unit.setText(service.getUnit());
         String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
         txt_feeBase.setText(titleOfFee);
-
-        String price = ""+service.getPrice();
-        edt_fee.setText(price);
-        edt_fee.setInputType(InputType.TYPE_NULL);
-        edt_fee.setFocusable(false);
-        edt_fee.setCursorVisible(false);
-
+        edt_fee.setText("" + service.getPrice());
         edt_note.setText(service.getNote());
-        edt_note.setHint("");
-        edt_note.setInputType(InputType.TYPE_NULL);
-        edt_note.setFocusable(false);
-        edt_note.setCursorVisible(false);
 
-        if(service.getApply()){
-            List<Boolean> checkedStates = new ArrayList<>();
-            presenter.setCheckedStates(checkedStates, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+        List<Boolean> checkedStatesPrevious = new ArrayList<>();
+        List<Boolean> checkedStatesAfter = new ArrayList<>();
+        if (service.getApply()) {
+            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
                 @Override
                 public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates);
-                    checkBoxAdapter.setIsClickable(false);
+                    checkedStatesPrevious.clear();
+                    checkedStatesPrevious.addAll(checkedStates);
+                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
                     setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
-                    setNonListenerToRecycler(recycler_applyFor);
+                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")) {
+                        setNonListenerToRecycler(recycler_applyFor);
+                    }
                 }
             });
-        }else {
+        } else {
             line.setVisibility(View.GONE);
             txt_title_apply_for.setVisibility(View.GONE);
         }
 
+//        presenter.setRecyclerViewOfApplyFor(recycler_applyFor, requireActivity().getApplicationContext(), listRoom, service);
+
         //Xử lí button cho dialog
         exit.setVisibility(View.VISIBLE);
-        //Nút bỏ sử dụng
-        if(service.getApply()){
-            if(service.isElectricOrWater()){
-                btn_delete.setEnabled(false);
-                btn_delete.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1B1B1")));
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
             }
-            else {
-                btn_delete.setOnClickListener(v -> {
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+                recyclerView.post(() -> {
+                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+                    if (viewHolder != null) viewHolder.itemView.performClick();
+                });
+            }
+        });
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
+                if (isServiceDetail(layout_fee, layout_unit)) {
+                    int price = 0;
+                    try {
+                        price = Integer.parseInt(edt_fee.getText().toString());
+                    } catch (Exception e) {
+                        Log.e("price", "Not Valid");
+                    }
+                    service.setFee_base(spinner.getSelectedItemPosition());
+                    service.setUnit(edt_unit.getText().toString());
+                    service.setPrice(price);
+                    service.setNote(edt_note.getText().toString());
+
+                    if (service.getApply())
+                        presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
+
+                }else{
+                    hideButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
+                }
+            }
+
+        });
+
+        //Xử lí hành động cho spinner
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedPosition(position);
+                setFeedbackForUnit(edt_unit, position);
+                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+                txt_feeBase.setText(titleOfFee);
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        //Xử lí các hành động cho editText khi được truy cập
+        edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
+                if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
+            }
+        });
+
+        edt_note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                edt_note.setHint("");
+                if (!hasFocus && edt_note.getText().toString().isEmpty())
+                    edt_note.setHint("Viết những lưu ý của bạn ta đây");
+            }
+        });
+
+
+        //If service is applied
+        if (service.getApply()) {
+            if (service.isElectricOrWater()) { // If service is electric or water
+                btn_unused.setEnabled(false);
+                btn_unused.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1B1B1")));
+            } else {
+                btn_unused.setOnClickListener(v -> {
+                    showButtonLoading(R.id.btn_unused_service, R.id.progress_bar_of_unused);
                     service.setApply(false);
                     presenter.updateStatusOfApplyToFirebase(service);
+                    hideButtonLoading(R.id.btn_unused_service, R.id.progress_bar_of_unused);
                     dialog.cancel();
                     setRecyclerViewData();
                 });
             }
 
 
-        }else{
+        } else { // Service is not applied
             //Ánh xạ id cho nút sử dụng và hiện nó lên
-            use_service = dialog.findViewById(R.id.btn_use_service);
-            use_service.setVisibility(View.VISIBLE);
             // Set listener
-            use_service.setOnClickListener(new View.OnClickListener() {
+            btn_use.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    showButtonLoading(R.id.btn_use_service, R.id.progress_bar_of_use);
                     service.setApply(true);
                     presenter.updateStatusOfApplyToFirebase(service);
+                    hideButtonLoading(R.id.btn_use_service, R.id.progress_bar_of_use);
                     dialog.cancel();
                     setRecyclerViewData();
                 }
             });
+
             btn_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -747,22 +867,6 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
                 }
             });
         }
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                openUpdateServiceDialog(service, recyclerView, position);
-            }
-
-        });
-
 
     }
 
@@ -786,6 +890,11 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     @Override
     public void deleteService(Service service) {
+        //hideButtonLoading(R.id.btn_confirm_delete_service, R.id.progress_bar);
+        dialogConfirm.findViewById(R.id.btn_confirm_delete_service).setVisibility(View.VISIBLE);
+        dialogConfirm.findViewById(R.id.progressBar_of_delete_service).setVisibility(View.INVISIBLE);
+        dialog.dismiss();
+        dialogConfirm.dismiss();
         services.remove(service);
         setRecyclerViewData();
     }
@@ -813,7 +922,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     @Override
     public void showResultUpdateStatusApply(Service service) {
-        if(service.getApply()) ShowToast("Đã sử dụng dịch vụ");
+        if (service.getApply()) ShowToast("Đã sử dụng dịch vụ");
         else ShowToast("Đã bỏ sử dụng dịch vụ");
     }
 
@@ -821,13 +930,31 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     public void showResultUpdateService(Service service, RecyclerView recyclerView, int position) {
         ShowToast("Cập nhật thông tin thành công");
         setRecyclerViewData();
+        hideButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
         dialog.cancel();
 
         // Mô phỏng sự kiện click vào phần tử tại vị trí position
-        recyclerView.post(() -> {
-            RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-            if(viewHolder!=null) viewHolder.itemView.performClick();
-        });
+//        recyclerView.post(() -> {
+//            RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+//            if (viewHolder != null) viewHolder.itemView.performClick();
+//        });
+    }
+
+    @Override
+    public void showButtonLoading(int id, int progress) {
+        dialog.findViewById(id).setVisibility(View.INVISIBLE);
+        dialog.findViewById(progress).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideButtonLoading(int id, int progress) {
+        dialog.findViewById(id).setVisibility(View.VISIBLE);
+        dialog.findViewById(progress).setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void dialogClosed() {
+        dialogConfirm.dismiss();
     }
 
     public void showLoading() {

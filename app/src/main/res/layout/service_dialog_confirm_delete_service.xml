@@ -1,63 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_gravity="center_vertical"
-    android:orientation="vertical">
-    <include layout="@layout/service_dialog_confirm"/>
+    android:background="@drawable/bg_white_corner_16"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="XÁC NHẬN TÁC VỤ"
+        style="@style/TEXT_BOLD_4"
+        android:textSize="24dp"
+        android:layout_gravity="center"/>
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="#756B68"
+        android:visibility="visible"/>
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_warning"
+        android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/txt_content_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:text="Bạn có chắc là muốn xóa dịch vụ này?"
+        style="@style/TEXT_MED_2"
+        android:textSize="15dp"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:text="Lưu ý tác vụ này sẽ không được hoàn tác"
+        style="@style/TEXT_3"
+        android:textSize="15dp"
+        android:layout_gravity="center"/>
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
-        android:layout_marginTop="-55dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginTop="15dp">
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="left"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/custom_button_cancel"
+            android:fontFamily="@font/inter_medium"
             android:text="Huỷ"
             android:textColor="@color/colorButton"
-            app:iconGravity="textStart"
             android:textSize="16sp"
             app:backgroundTint="@null"
-            android:background="@drawable/custom_button_cancel"
-            android:layout_marginEnd="20dp"
-            android:fontFamily="@font/inter_medium"/>
+            app:iconGravity="textStart" />
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_delete_service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Xóa"
-            app:iconGravity="textStart"
-            android:textSize="16sp"
-            android:fontFamily="@font/inter_medium"
-            android:background="@drawable/custom_button_add"
-            app:backgroundTint="@null"
-            />
+            <Button
+                android:id="@+id/btn_confirm_delete_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="Xóa"
+                app:iconGravity="textStart"
+                android:textSize="16sp"
+                android:fontFamily="@font/inter_medium"
+                android:background="@drawable/custom_button_add"
+                app:backgroundTint="@null"
+                />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:visibility="invisible"/>
-
-
-    </FrameLayout>
+            <ProgressBar
+                android:id="@+id/progressBar_of_delete_service"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"/>
 
 
-</LinearLayout>
+        </FrameLayout>
 
+
+    </LinearLayout>
 
 
 </LinearLayout>

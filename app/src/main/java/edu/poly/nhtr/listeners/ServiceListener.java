@@ -27,4 +27,9 @@ public interface ServiceListener {
     void showResultUpdateStatusApply(Service service);
 
     void showResultUpdateService(Service service, RecyclerView recyclerView, int position);
+
+    void showButtonLoading(int id, int progress);
+    void hideButtonLoading(int id, int progress);
+
+    void dialogClosed();
 }
