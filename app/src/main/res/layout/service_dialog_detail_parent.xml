@@ -22,7 +22,7 @@
             android:gravity="center"
             style="@style/TEXT_BOLD_3"
             android:text="Áp dụng"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
         <ImageView
             android:id="@+id/img_exit"
             android:layout_width="wrap_content"
@@ -238,6 +238,7 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/inter_medium"
                 />
+
             <edu.poly.nhtr.Class.CustomRecyclerView
                 android:id="@+id/recycler_apllyFor"
                 android:layout_width="match_parent"
@@ -247,7 +248,12 @@
                 android:overScrollMode="never"
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3"/>
+                app:spanCount="3"
+                android:scrollbars="none"
+                android:layout_marginBottom="15dp"
+                />
+
+
             <!--        <LinearLayout-->
             <!--            android:layout_width="match_parent"-->
             <!--            android:layout_height="wrap_content"-->
