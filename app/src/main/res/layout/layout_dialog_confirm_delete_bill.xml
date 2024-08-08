@@ -85,6 +85,10 @@
                 app:backgroundTint="@null"
                 app:iconGravity="textStart" />
 
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_confirm_delete_bill"
                 style="@style/TEXT_MED_3"
@@ -101,9 +105,10 @@
                 android:id="@+id/progressBar"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
+                android:layout_gravity="center"
                 android:visibility="invisible" />
+
+        </FrameLayout>
 
         </LinearLayout>
 

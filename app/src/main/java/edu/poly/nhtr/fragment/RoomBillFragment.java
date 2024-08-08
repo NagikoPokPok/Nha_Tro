@@ -789,6 +789,7 @@ public class RoomBillFragment extends Fragment implements RoomBillListener, Swip
         roomBillAdapter.isDeleteChecked(false);
         roomBillAdapter.isSelectAllChecked(false);
         binding.layoutDeleteManyBills.setVisibility(View.GONE);
+        binding.checkboxSelectAll.setChecked(false);
         binding.btnDeleteBill.setBackgroundTintList(getResources().getColorStateList(R.color.colorGray));
         binding.frameRoundDeleteBill.setBackground(getResources().getDrawable(R.drawable.background_delete_index_normal));
     }

@@ -50,6 +50,11 @@
                 android:layout_marginEnd="20dp"
                 android:fontFamily="@font/inter_medium"/>
 
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_yes_delete_contract"
                 android:layout_width="90dp"
@@ -69,9 +74,10 @@
                 android:id="@+id/progressBar"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-55dp"
+                android:layout_gravity="center"
                 android:visibility="invisible"/>
+
+            </FrameLayout>
 
         </LinearLayout>
 

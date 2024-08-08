@@ -73,8 +73,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:hint="@string/dd_mm_yyyy"
-                app:hintEnabled="false"
-                app:boxBackgroundMode="outline">
+                app:boxBackgroundMode="outline"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_day"
@@ -82,10 +82,10 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bottom_outline"
 
-                    android:padding="5dp"
-                    android:focusable="false"
                     android:clickable="true"
-                    android:inputType="none"/>
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:padding="5dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,9 +94,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:background="@drawable/icon_calendar"
                 android:backgroundTint="@color/colorPrimary"
-                android:contentDescription="TODO"
-                android:background="@drawable/icon_calendar" />
+                android:contentDescription="TODO" />
 
 
         </LinearLayout>
@@ -122,25 +122,30 @@
                 app:backgroundTint="@null"
                 app:iconGravity="textStart" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_home"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@drawable/custom_button_add"
-                android:fontFamily="@font/inter_medium"
-                android:textSize="16sp"
-                app:backgroundTint="@null"
-                app:iconGravity="textStart"
-                android:text="OK"/>
+                android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
-                android:visibility="invisible" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@drawable/custom_button_add"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="OK"
+                    android:textSize="16sp"
+                    app:backgroundTint="@null"
+                    app:iconGravity="textStart" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:visibility="invisible" />
+
+            </FrameLayout>
 
         </LinearLayout>
 

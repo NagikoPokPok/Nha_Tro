@@ -112,25 +112,33 @@
                 android:layout_marginEnd="20dp"
                 android:fontFamily="@font/inter_medium"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_home"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                android:fontFamily="@font/inter_medium"
-                android:background="@drawable/custom_button_clicked"
-                app:backgroundTint="@null"
-                />
+                android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
-                android:visibility="invisible"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    app:iconGravity="textStart"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:background="@drawable/custom_button_clicked"
+                    app:backgroundTint="@null"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    android:visibility="invisible"/>
+
+
+            </FrameLayout>
+
+
 
         </LinearLayout>
 

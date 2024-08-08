@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg_white_corner_16"
+    android:layout_gravity="center"
     android:layout_margin="16dp"
-    android:orientation="vertical"
+    android:background="@drawable/bg_white_corner_16"
     android:elevation="10dp"
-    android:layout_gravity="center">
-
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -38,53 +37,58 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/ic_tick"
-                android:backgroundTint="@color/white"/>
+                android:backgroundTint="@color/white" />
 
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/thao_tac_thanh_cong"
-            android:fontFamily="@font/inter_bold"
-            android:textSize="18sp"
-            android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="@string/thao_tac_thanh_cong"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/txt_confirm_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ban_da_cap_nhat_khach_thanh_cong"
-            android:fontFamily="@font/inter_medium"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextBlack"
             android:layout_gravity="center"
-            android:gravity="center"/>
+            android:fontFamily="@font/inter_medium"
+            android:gravity="center"
+            android:text="@string/ban_da_cap_nhat_khach_thanh_cong"
+            android:textColor="@color/colorTextBlack"
+            android:textSize="15sp" />
 
-
-        <Button
-            android:id="@+id/btn_cancel"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp"
-            android:text="@string/Dong_close"
-            android:textColor="@color/colorButton"
-            app:iconGravity="textStart"
-            android:textSize="16sp"
-            app:backgroundTint="@null"
-            android:background="@drawable/custom_button_cancel"
-            android:fontFamily="@font/inter_medium"/>
+            android:layout_marginTop="25dp">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:visibility="invisible"
-            android:layout_marginTop="-40dp"/>
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/custom_button_cancel"
+                android:fontFamily="@font/inter_medium"
+                android:text="@string/Dong_close"
+                android:textColor="@color/colorButton"
+                android:textSize="16sp"
+                app:backgroundTint="@null"
+                app:iconGravity="textStart" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:visibility="invisible" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

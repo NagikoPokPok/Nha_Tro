@@ -86,26 +86,30 @@
                 android:layout_marginEnd="20dp"
                 />
 
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete_home"
+                style="@style/TEXT_MED_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/xac_nhan"
-                app:iconGravity="textStart"
-                android:textSize="16sp"
-                style="@style/TEXT_MED_3"
                 android:background="@drawable/custom_button_clicked"
+                android:text="@string/xac_nhan"
+                android:textSize="16sp"
                 app:backgroundTint="@color/colorButton"
-                />
+                app:iconGravity="textStart" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="-70dp"
+                android:layout_gravity="center"
                 android:visibility="invisible"/>
+
+        </FrameLayout>
 
         </LinearLayout>
 
