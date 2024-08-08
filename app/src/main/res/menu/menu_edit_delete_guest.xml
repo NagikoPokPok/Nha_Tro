@@ -4,7 +4,7 @@
     <group>
         <item
             android:id="@+id/menu_edit_guest"
-            android:icon="@drawable/icon_edit"
+            android:icon="@drawable/ic_edit"
             android:title="@string/chinh_sua" />
     </group>
 

@@ -4,7 +4,7 @@
     <group>
         <item
             android:id="@+id/menu_view_guest"
-            android:icon="@drawable/icon_view"
+            android:icon="@drawable/ic_view"
             android:title="@string/xem_chi_tiet_khach" />
     </group>
 
