@@ -44,11 +44,35 @@ public class RoomViewGuestPresenter implements RoomGuestViewInterface.Presenter 
                         guest.setNameGuest(document.getString(Constants.KEY_GUEST_NAME));
                         guest.setPhoneGuest(document.getString(Constants.KEY_GUEST_PHONE));
                         guest.setDateIn(document.getString(Constants.KEY_GUEST_DATE_IN));
+                        guest.setCccdNumber(document.getString(Constants.KEY_GUEST_CCCD));
+                        guest.setCccdImageFront(document.getString(Constants.KEY_GUEST_CCCD_IMAGE_FRONT));
+                        guest.setCccdImageBack(document.getString(Constants.KEY_GUEST_CCCD_IMAGE_BACK));
                         guest.setFileStatus(document.getBoolean(Constants.KEY_CONTRACT_STATUS));
                         view.showGuestDetails(guest);
                     }
                 });
     }
+
+    public void checkMainGuest(String guestId, OnMainGuestCheckListener listener) {
+        db.collection(Constants.KEY_COLLECTION_GUESTS)
+                .document(guestId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
+                        Boolean isMainGuest = document.getBoolean(Constants.KEY_IS_MAIN_GUEST);
+                        listener.onCheckCompleted(isMainGuest != null && isMainGuest);
+                    } else {
+                        listener.onCheckFailed(task.getException());
+                    }
+                });
+    }
+
+    public interface OnMainGuestCheckListener {
+        void onCheckCompleted(boolean isMainGuest);
+        void onCheckFailed(Exception e);
+    }
+
 
     @Override
     public void deleteGuest(Guest guest) {

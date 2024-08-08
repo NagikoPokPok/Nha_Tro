@@ -40,7 +40,6 @@ import java.util.Objects;
 
 import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomViewGuestBinding;
-import edu.poly.nhtr.databinding.ItemContainerGuestBinding;
 import edu.poly.nhtr.interfaces.RoomGuestViewInterface;
 import edu.poly.nhtr.models.Guest;
 import edu.poly.nhtr.presenters.RoomViewGuestPresenter;
@@ -62,6 +61,8 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
     public String encodedCCCDBackImage;
     private int currentImageSelection;
     private RoomGuestFragment.OnFragmentInteractionListener mListener;
+    private ImageView btnBack;
+    private Guest guest;
 
     // Hàm truy cập thư viện để lấy ảnh
     public final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -139,18 +140,55 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         setFieldsEnabled(false);
 
         if (getArguments() != null) {
-            Guest guest = (Guest) getArguments().getSerializable("guest");
+            guest = (Guest) getArguments().getSerializable("guest");
             if (guest != null) {
                 presenter.fetchGuestDetails(guest.getGuestId());
             }
         }
+
+        btnBack = binding.btnBack;
+        btnBack.setOnClickListener(v -> returnToPreviousFragment());
+
+        frmMenu.setOnClickListener(v -> {
+            if (guest != null) {
+                presenter.checkMainGuest(guest.getGuestId(), new RoomViewGuestPresenter.OnMainGuestCheckListener() {
+                    @Override
+                    public void onCheckCompleted(boolean isMainGuest) {
+                        if (isMainGuest) {
+                            disableMenuForMainGuest();
+                        } else {
+                            openMenuForEachRoom(v, guest);
+                        }
+                    }
+
+                    @Override
+                    public void onCheckFailed(Exception e) {
+                        showToast("Lỗi khi kiểm tra khách chính: " + e.getMessage());
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void returnToPreviousFragment() {
+        if (getFragmentManager() != null) {
+            getFragmentManager().popBackStack();
+        }
+        mListener.showTabLayoutAndViewPager();
     }
 
     private void setFieldsEnabled(boolean enabled) {
         edtTenKhach.setClickable(enabled);
-        edtNgayVao.setEnabled(enabled);
-        edtSoDienThoai.setEnabled(enabled);
-        edtSoCCCD.setEnabled(enabled);
+        edtTenKhach.setFocusable(enabled);
+        edtNgayVao.setClickable(enabled);
+        edtNgayVao.setFocusable(enabled);
+        edtSoCCCD.setClickable(enabled);
+        edtSoCCCD.setFocusable(enabled);
+        edtSoDienThoai.setClickable(enabled);
+        edtSoDienThoai.setFocusable(enabled);
+        edtTenKhach.setClickable(enabled);
+        edtTenKhach.setFocusable(enabled);
     }
 
     @Override
@@ -259,7 +297,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
     @Override
     public void disableMenuForMainGuest() {
         frmMenu.setEnabled(false);
-        frmMenu.setAlpha(0.5f); // Make it visually disabled
+        frmMenu.setAlpha(0.5f);
         showToast("Chỉ có thể chỉnh sửa hoặc xóa MainGuest ở hợp đồng.");
     }
 
@@ -299,7 +337,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
         });
     }
 
-    private void openMenuForEachRoom(View view, Guest guest, ItemContainerGuestBinding binding) {
+    private void openMenuForEachRoom(View view, Guest guest) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         popupMenu.setForceShowIcon(true);
         popupMenu.setOnMenuItemClickListener(item -> {
@@ -312,11 +350,6 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
                 return true;
             }
             return false;
-        });
-
-        popupMenu.setOnDismissListener(menu -> {
-            binding.frmImage2.setVisibility(View.INVISIBLE);
-            binding.frmImage.setVisibility(View.VISIBLE);
         });
 
         popupMenu.inflate(R.menu.menu_edit_delete);

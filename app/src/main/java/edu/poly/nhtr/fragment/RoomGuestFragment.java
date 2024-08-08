@@ -466,6 +466,11 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
     }
 
     @Override
+    public void openPopupMainGuest(View view, MainGuest mainGuest, ItemContainerGuestBinding binding) {
+        openMenuForEachRoom(view, mainGuest, binding);
+    }
+
+    @Override
     public void openDialogSuccess(int id) {
         setUpDialog(id);
 
@@ -774,6 +779,30 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
             presenter.deleteGuest(guest);
             dialog.dismiss();
         });
+    }
+
+    private void openMenuForEachRoom(View view, MainGuest mainGuest, ItemContainerGuestBinding binding) {
+        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+        popupMenu.setForceShowIcon(true);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_view_guest) {
+                if (listener != null) {
+                    listener.onHideTabLayoutAndViewPager();
+                }
+                openViewGuestFragment(mainGuest);
+                return true;
+            }
+            return false;
+        });
+
+        popupMenu.setOnDismissListener(menu -> {
+            binding.frmImage2.setVisibility(View.INVISIBLE);
+            binding.frmImage.setVisibility(View.VISIBLE);
+        });
+
+        popupMenu.inflate(R.menu.menu_view_main_guest);
+        popupMenu.show();
     }
 
 

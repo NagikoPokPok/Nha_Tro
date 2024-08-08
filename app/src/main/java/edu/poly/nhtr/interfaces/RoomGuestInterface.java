@@ -1,5 +1,7 @@
 package edu.poly.nhtr.interfaces;
 
+import android.view.View;
+
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -44,6 +46,8 @@ public interface RoomGuestInterface {
 
         void openPopup(android.view.View view, Guest guest, ItemContainerGuestBinding binding);
 
+
+        void openPopupMainGuest(android.view.View view, MainGuest mainGuest, ItemContainerGuestBinding binding);
 
         void openDialogSuccess(int id);
 

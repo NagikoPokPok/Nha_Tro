@@ -253,7 +253,7 @@ public class GuestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             binding.imgMenu.setOnClickListener(v -> {
                 binding.frmImage2.setVisibility(View.VISIBLE);
                 binding.frmImage.setVisibility(View.GONE);
-                view.openPopup(v, mainGuest, binding);
+                view.openPopupMainGuest(v, mainGuest, binding);
             });
         }
     }
