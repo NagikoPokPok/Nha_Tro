@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         });
 
         // Xử lý nút 3 chấm menu in Frame Top
-        binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
+        //binding.imgMenuEditDelete.setOnClickListener(this::openMenu);
 
         setupLayoutDeleteHomes();
 

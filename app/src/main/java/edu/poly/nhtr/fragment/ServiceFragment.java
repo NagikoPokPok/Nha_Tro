@@ -16,7 +16,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,10 +28,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -253,7 +250,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private void openApplyServiceDialog(String name, String encodeImage) {
-        setupDialog(dialog, R.layout.try_main, Gravity.CENTER);
+        setupDialog(dialog, R.layout.main_service, Gravity.CENTER);
 
         //Ánh xạ view
         ImageView image = dialog.findViewById(R.id.img_service);
@@ -660,7 +657,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     @Override
     public void onServiceItemCLick(Service service, RecyclerView recyclerView, int position) {
-        setupDialog(dialog, R.layout.try_main, Gravity.CENTER);
+        setupDialog(dialog, R.layout.main_service, Gravity.CENTER);
 
 
         //Ánh xạ view

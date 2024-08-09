@@ -63,15 +63,15 @@
             android:textSize="22sp"
             android:text="Hieu"/>
 
-        <ImageView
-            android:id="@+id/img_menu_edit_delete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/ic_menu"
-            android:backgroundTint="@color/white"
-            android:contentDescription="@null" />
+<!--        <ImageView-->
+<!--            android:id="@+id/img_menu_edit_delete"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_gravity="end|center_vertical"-->
+<!--            android:layout_marginEnd="20dp"-->
+<!--            android:background="@drawable/ic_menu"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:contentDescription="@null" />-->
     </FrameLayout>
 
 

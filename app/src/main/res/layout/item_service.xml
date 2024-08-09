@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_view_service"
     android:layout_width="115dp"
-    android:layout_height="125dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="@color/white"
     android:layout_margin="3dp"
@@ -11,6 +11,7 @@
     app:cardElevation="4dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/colorGray">
+
     <ImageView
         android:id="@+id/status"
         android:layout_width="20dp"
@@ -49,8 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/colorButton"
-            android:text="3.500đ/KWh"/>
+            android:text="3.500đ/KWh" />
 
     </LinearLayout>
 
