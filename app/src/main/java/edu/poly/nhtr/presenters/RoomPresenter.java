@@ -116,6 +116,7 @@ public class RoomPresenter {
                 .whereEqualTo(Constants.KEY_HOME_ID, roomListener.getInfoHomeFromGoogleAccount())
                 .get()
                 .addOnCompleteListener(task -> {
+
                     if (task.isSuccessful() && task.getResult() != null) {
                         List<Room> rooms = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
