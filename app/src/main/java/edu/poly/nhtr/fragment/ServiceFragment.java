@@ -255,7 +255,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private void openApplyServiceDialog(String name, String encodeImage) {
-        setupDialog(dialog, R.layout.service_dialog_apply_service, Gravity.CENTER);
+        setupDialog(dialog, R.layout.main_service, Gravity.CENTER);
 
         //Ánh xạ view
         ImageView image = dialog.findViewById(R.id.img_service);
