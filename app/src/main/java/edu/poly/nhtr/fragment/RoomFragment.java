@@ -1216,13 +1216,13 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         List<Room> filteredNoMembers = new ArrayList<>();
         for (Room room : currentListRooms) {
                 int numberOfMembers = Integer.parseInt(room.numberOfMemberLiving);
-            if (filterByRoom1 && numberOfMembers == 0) {
+            if (filterByRoom4 && numberOfMembers == 0) {
                     filteredNoMembers.add(room);
-            } else if (filterByRoom2 && room.status.equals("Đã thanh toán")) {
+            } else if (filterByRoom1 && room.status.equals("Đã thanh toán")) {
                 filteredNoMembers.add(room);
-            } else if (filterByRoom3 && room.status.equals("Chưa thanh toán")) {
+            } else if (filterByRoom2 && room.status.equals("Chưa thanh toán")) {
                 filteredNoMembers.add(room);
-            } else if (filterByRoom4 && room.status.equals("Trễ hạn thanh toán")) {
+            } else if (filterByRoom3 && room.status.equals("Trễ hạn thanh toán")) {
                 filteredNoMembers.add(room);
             }
         }
