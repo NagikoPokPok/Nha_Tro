@@ -172,6 +172,8 @@ public class RoomPresenter {
                                 } else{
                                     room.status = "";
                                 }
+                            }else{
+                                room.status = "";
                             }
 
                             // Đếm số yêu cầu đã hoàn thành
