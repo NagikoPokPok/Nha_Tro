@@ -8,17 +8,16 @@
     android:id="@+id/container_guest"
     android:layout_marginEnd="5dp"
     android:layout_marginBottom="10dp"
-    android:backgroundTint="@color/white"
+    style="@style/SCREEN_CARD_WHITE_2"
     app:cardCornerRadius="15dp"
-    app:strokeColor="@color/black"
+    app:strokeColor="@color/stroke_color"
     app:strokeWidth="0.75dp"
     >
-
 
     <FrameLayout
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:background="@drawable/sonhatro"
+        style="@style/background_ordinal_number_home"
         android:layout_marginBottom="10dp">
 
         <!-- Ordinal number -->
@@ -27,10 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/white"
             android:textSize="20sp"
+            style="@style/TEXT_BOLD_3_2"
             android:visibility="visible"
-            android:fontFamily="@font/inter_bold"
             android:text="1"/>
 
         <!-- Star icon -->
@@ -62,12 +60,11 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="60dp"
+                style="@style/TEXT_MED_2"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_bold"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="Trần Quang Hiếu"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="18sp" />
 
             <FrameLayout
@@ -82,8 +79,7 @@
                     android:id="@+id/img_circle_menu"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/background_image"
-                    android:backgroundTint="@color/white"
+                    style="@style/SCREEN_CARD_WHITE_2"
                     android:scaleType="fitXY"
                     app:riv_oval="true" />
 
@@ -92,7 +88,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_menu" />
+                    style="@style/menu" />
             </FrameLayout>
 
             <!-- New Section: Người đại diện hợp đồng -->
@@ -119,9 +115,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Người đại diện hợp đồng"
-                    android:textColor="@color/colorTextBlack"
+                    style="@style/TEXT_LIGHT_2"
                     android:textSize="12sp"
-                    android:fontFamily="@font/inter_light"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
@@ -173,11 +168,10 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:layout_weight="1"
+                style="@style/TEXT_LIGHT_2"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
                 android:maxLines="1"
                 android:text="Số điện thoại :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -185,9 +179,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:text="0918300555"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15dp" />
 
         </LinearLayout>
@@ -206,10 +199,9 @@
                 android:layout_gravity="start"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:maxLines="1"
                 android:text="Ngày vào ở :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -217,9 +209,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:text="25/03/2024"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15dp" />
 
         </LinearLayout>
@@ -239,10 +230,9 @@
                 android:layout_gravity="start"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:maxLines="1"
                 android:text="Tình trạng hồ sơ :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView

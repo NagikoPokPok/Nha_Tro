@@ -313,20 +313,20 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
     private String encodeImage(Bitmap bitmap, int previewWidth, int previewHeight) {
         Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
     private String encodeImageForCCCD(Bitmap bitmap) {
         int previewWidth = 250;
-        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
         return encodeImage(bitmap, previewWidth, previewHeight);
     }
 
     private String encodeImageForContract(Bitmap bitmap) {
         int previewWidth = 300;
-        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
         return encodeImage(bitmap, previewWidth, previewHeight);
     }
     public void checkName() {
@@ -388,7 +388,6 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
 
                 } else {
                     dialog.dismiss();
-                    Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
                 }
             }, 2000);
         });

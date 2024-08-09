@@ -21,11 +21,10 @@
             android:layout_height="wrap_content"
             android:text="Báo cáo doanh thu các tháng năm "
             android:textSize="18sp"
-            android:fontFamily="@font/inter_bold"
+            style="@style/TEXT_BOLD_2"
             android:textAlignment="center"
             android:layout_marginTop="10dp"
-            android:visibility="visible"
-            android:textColor="@color/colorTextBlack"/>
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/txt_revenue_of_room"
@@ -33,11 +32,11 @@
             android:layout_height="wrap_content"
             android:text="Báo cáo doanh thu các phòng tháng "
             android:textSize="17sp"
-            android:fontFamily="@font/inter_bold"
+            style="@style/TEXT_BOLD_2"
             android:textAlignment="center"
             android:layout_marginTop="10dp"
             android:visibility="gone"
-            android:textColor="@color/colorTextBlack"/>
+            />
 
         <LinearLayout
             android:id="@+id/layout_date_time_for_month"
@@ -57,9 +56,9 @@
                 android:layout_gravity="center"
                 android:text="2024"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                style="@style/TEXT_BOLD_2"
                 android:textAlignment="center"
-                android:textColor="@color/colorTextBlack"/>
+                />
 
             <ImageButton
                 android:id="@+id/img_calendar_for_month"
@@ -90,9 +89,9 @@
                 android:layout_gravity="center"
                 android:text="2024"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                style="@style/TEXT_BOLD_2"
                 android:textAlignment="center"
-                android:textColor="@color/colorTextBlack"/>
+                />
 
             <ImageButton
                 android:id="@+id/img_calendar_for_room"
@@ -163,8 +162,7 @@
                     android:text="Tháng"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:fontFamily="@font/inter_medium"
-                    android:textColor="@color/colorTextBlack"/>
+                    style="@style/TEXT_MED_2"/>
 
                 <View
                     android:layout_width="1dp"
@@ -178,8 +176,7 @@
                     android:text="Doanh thu (VNĐ)"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
-                    android:fontFamily="@font/inter_medium"
-                    android:textColor="@color/colorTextBlack"/>
+                    style="@style/TEXT_MED_2"/>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -214,10 +211,10 @@
                 android:layout_gravity="start"
                 android:text="Đơn vị đo: Triệu VNĐ"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                style="@style/TEXT_BOLD_2"
                 android:background="@drawable/background_date_time_index"
                 android:padding="15dp"
-                android:textColor="@color/colorTextBlack"/>
+                />
 
             <TextView
                 android:id="@+id/txt_view_detailed_value"
@@ -236,16 +233,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_view_detailed_revenue_of_month"
-            style="@style/BACKGROUND_BUTTON"
+            style="@style/BACKGROUND_BUTTON_2"
             android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/inter_bold"
             android:gravity="center"
             android:text="Xem chi tiết doanh thu phòng"
             android:textSize="16sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/icon_right"
             app:iconGravity="textEnd"
             app:iconSize="26dp"
@@ -256,7 +250,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_view_detailed_revenue_of_room"
-            style="@style/BACKGROUND_BUTTON"
+            style="@style/BACKGROUND_BUTTON_2"
             android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -264,8 +258,6 @@
             android:gravity="center"
             android:text="Xem chi tiết doanh thu phòng"
             android:textSize="16sp"
-            android:textStyle="bold"
-            app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/ic_arrow_left"
             app:iconGravity="textStart"
             app:iconSize="26dp"
@@ -273,8 +265,6 @@
             android:layout_marginBottom="10dp"
             android:padding="10dp"
             android:visibility="gone"/>
-
-
     </LinearLayout>
 
 

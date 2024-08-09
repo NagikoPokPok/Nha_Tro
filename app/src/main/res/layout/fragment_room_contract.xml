@@ -28,17 +28,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_medium"
+                style="@style/TEXT_MED_2"
                 android:text="Menu quản lý hợp đồng"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="17sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:text="Các thao tác cơ bản cho việc quản lý hợp đồng"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -46,13 +44,18 @@
 
     </LinearLayout>
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_title_contract"
+        android:layout_marginTop="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layout_title_contract"
         android:orientation="vertical"
-        android:padding="10dp"
-        android:layout_marginTop="5dp">
+        android:padding="10dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -324,17 +327,7 @@
 
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
-
-
-
-
-
-
-
-
-
-
     </LinearLayout>
-
+    </ScrollView>
 
 </RelativeLayout>

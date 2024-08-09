@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    style="@style/SCREEN_WHITE">
 
     <FrameLayout
         android:id="@+id/progress_overlay"
@@ -79,8 +79,7 @@
                         android:id="@+id/img_circle_menu"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:background="@drawable/background_image"
-                        android:backgroundTint="@color/white"
+                        style="@style/SCREEN_WHITE"
                         android:scaleType="fitXY"
                         app:riv_oval="true" />
 
@@ -89,7 +88,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_menu" />
+                        style="@style/menu" />
                 </FrameLayout>
             </FrameLayout>
 
@@ -104,7 +103,7 @@
                 <FrameLayout
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:background="@drawable/sonhatro"
+                    style="@style/background_ordinal_number_home"
                     android:layout_marginBottom="10dp">
 
                     <!-- Ordinal number -->
@@ -112,7 +111,7 @@
                         android:id="@+id/txt_ordinal_number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:fontFamily="@font/inter_bold"
+                        style="@style/TEXT_BOLD_3_2"
                         android:gravity="center"
                         android:text="1"
                         android:textColor="@color/white"
@@ -135,9 +134,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="20dp"
-                    android:fontFamily="@font/inter_bold"
+                    style="@style/TEXT_BOLD_2"
                     android:text="Người đại diện hợp đồng"
-                    android:textColor="@color/colorTextBlack"
                     android:textSize="16sp"
                     android:visibility="visible" />
             </LinearLayout>
@@ -164,9 +162,8 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
+                        style="@style/TEXT_MED_2"
                         android:text="@string/ho_ten"
-                        android:textColor="@color/colorTextBlack"
                         android:textSize="16sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -197,9 +194,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
+                        style="@style/TEXT_MED_2"
                         android:text="Ngày vào ở:"
-                        android:textColor="@color/colorTextBlack"
                         android:textSize="16sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -231,9 +227,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
+                        style="@style/TEXT_MED_2"
                         android:text="Số điện thoại:"
-                        android:textColor="@color/colorTextBlack"
                         android:textSize="16sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -265,9 +260,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
-                        android:fontFamily="@font/inter_medium"
+                        style="@style/TEXT_MED_2"
                         android:text="Số CCCD:"
-                        android:textColor="@color/colorTextBlack"
                         android:textSize="16sp" />
 
                     <com.google.android.material.textfield.TextInputLayout

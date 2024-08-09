@@ -579,7 +579,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     private void setRecyclerViewApplySpeedy(CustomRecyclerView recyclerApplyFor, CustomListCheckBoxAdapter checkBoxAdapter) {
         recyclerApplyFor.setAdapter(checkBoxAdapter);
         recyclerApplyFor.setVisibility(View.VISIBLE);
-        recyclerApplyFor.setScrollEnabled(false);
+//        recyclerApplyFor.setScrollEnabled(false);
 
         //
 //        customPosition(recyclerApplyFor, 3);

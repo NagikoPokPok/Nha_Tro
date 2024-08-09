@@ -465,7 +465,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
                         activity.showTabLayoutAndRoomGuestFragment();
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
             }, 2000);
         });
