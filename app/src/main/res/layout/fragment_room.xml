@@ -180,64 +180,64 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_delete_all"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/roomsRecyclerView"
-        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="0dp">
+<!--    <LinearLayout-->
+<!--        android:id="@+id/layout_delete_all"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="10dp"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/roomsRecyclerView"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/frm_menu_tools"-->
+<!--        app:layout_constraintVertical_bias="0.0"-->
+<!--        tools:layout_editor_absoluteX="0dp">-->
 
-        <LinearLayout
-            android:id="@+id/layout_select_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/layout_select_all"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_gravity="center">-->
 
-            <CheckBox
-                android:id="@+id/checkbox_select_all"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/checkbox_selector_index"
-                android:button="@null"
-                android:visibility="visible" />
+<!--            <CheckBox-->
+<!--                android:id="@+id/checkbox_select_all"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:background="@drawable/checkbox_selector_index"-->
+<!--                android:button="@null"-->
+<!--                android:visibility="visible" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Chọn tất cả"
-                android:textSize="17sp" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="10dp"-->
+<!--                android:text="Chọn tất cả"-->
+<!--                android:textSize="17sp" />-->
 
-        </LinearLayout>
-        <TextView
-            android:id="@+id/txt_cancle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Hủy"
-            android:textColor="@color/colorOrange"
-            android:textSize="17sp" />
+<!--        </LinearLayout>-->
+<!--        <TextView-->
+<!--            android:id="@+id/txt_cancle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="end"-->
+<!--            android:text="Hủy"-->
+<!--            android:textColor="@color/colorOrange"-->
+<!--            android:textSize="17sp" />-->
 
 
-        <TextView
-            android:id="@+id/txt_delete_here"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Nhấn ở đây để xóa !"
-            android:textColor="@color/colorOrange"
-            android:textSize="17sp" />
+<!--        <TextView-->
+<!--            android:id="@+id/txt_delete_here"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="end"-->
+<!--            android:text="Nhấn ở đây để xóa !"-->
+<!--            android:textColor="@color/colorOrange"-->
+<!--            android:textSize="17sp" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/layout_type_of_filter_room"
@@ -392,6 +392,130 @@
                 android:textSize="14sp"/>
 
         </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layout_delete_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="6dp"
+            app:strokeColor="@color/colorGray"
+            app:strokeWidth="0.25dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:orientation="horizontal"
+                android:padding="10dp"
+
+                >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="start"
+                    >
+
+                    <CheckBox
+                        android:id="@+id/checkbox_select_all"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/checkbox_selector_index"
+                        android:button="@null"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chọn tất cả"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextBlack"
+                        android:layout_marginTop="5dp"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/txt_delete_here"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_delete"
+                        android:backgroundTint="@color/colorButton"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xoá"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextBlack"
+                        android:layout_marginTop="5dp"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/txt_cancle"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_cancel"
+                        android:backgroundTint="@color/colorRed"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Huỷ xoá"
+                        android:fontFamily="@font/inter_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextBlack"
+                        android:layout_marginTop="5dp"/>
+
+
+                </LinearLayout>
+
+
+
+
+
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
 
 
 

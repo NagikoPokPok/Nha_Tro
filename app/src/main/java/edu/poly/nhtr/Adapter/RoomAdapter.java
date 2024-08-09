@@ -28,7 +28,7 @@ import edu.poly.nhtr.listeners.RoomListener;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.RoomPresenter;
 
-public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder>  {
+public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder> {
     Context context;
     List<Room> rooms;
     private int lastActionPosition = 0;
@@ -96,7 +96,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                isEnabled=true;
+                isEnabled = true;
                 roomListener.setDelectAllUI();
                 holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
                 holder.binding.frmImage.setVisibility(View.GONE);
@@ -110,7 +110,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
     }
 
     public List<Room> getSelectList() {
-        roomListener.showToast(selectList.size()+"");
+        roomListener.showToast(selectList.size() + "");
         return selectList;
     }
 
@@ -138,7 +138,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             }
         });
 
-        if ( isVisible[position]) {
+        if (isVisible[position]) {
             holder.binding.frmImage.setVisibility(View.INVISIBLE);
             holder.binding.ivCheckBox.setVisibility(View.VISIBLE);
             holder.binding.ivCheckBox.setChecked(selectList.contains(rooms.get(position)));
@@ -149,25 +149,21 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         }
     }
 
-    public void cancelDeleteAll(){
-        if(rooms.size() == 0){
-            roomListener.cancelDelectAll();
-            roomListener.noRoomData();
-        } else {
-            isEnabled = false;
-            isSelectAll = false;
-            selectList.clear();
-            toggleAllCheckboxes(false);
-            roomPresenter.getRooms("init");
-            roomListener.cancelDelectAll();
-            updateList();
-        }
+    public void cancelDeleteAll() {
+        isEnabled = false;
+        isSelectAll = false;
+        selectList.clear();
+        toggleAllCheckboxes(false);
+        roomPresenter.getRooms("init");
+        roomListener.cancelDelectAll();
+        updateList();
     }
 
     @Override
     public int getItemCount() {
         return rooms.size();
     }
+
     public void ClickItem(RoomAdapter.RoomViewHolder holder) {
         Room s = rooms.get(holder.getAdapterPosition());
         if (!holder.binding.ivCheckBox.isChecked()) {
@@ -187,14 +183,15 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
     }
 
-    public class RoomViewHolder extends RecyclerView.ViewHolder{
+    public class RoomViewHolder extends RecyclerView.ViewHolder {
         public ItemContainerRoomBinding binding;
-        RoomViewHolder(ItemContainerRoomBinding itemContainerRoomBinding){
+
+        RoomViewHolder(ItemContainerRoomBinding itemContainerRoomBinding) {
             super(itemContainerRoomBinding.getRoot());
             this.binding = itemContainerRoomBinding;
-    }
+        }
 
-        void setRoomData(Room room, int position){
+        void setRoomData(Room room, int position) {
             binding.txtNameRoom.setText(room.nameRoom);
             binding.edtHoTen.setText(room.nameUser);
 
@@ -203,10 +200,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             binding.txtPrice.setText(room.price);
             binding.txtDescribe.setText(room.describe);
             binding.txtOrdinalNumber.setText(String.valueOf(position + 1));
-            binding.getRoot().setOnClickListener(v-> {roomListener.onRoomClick(room);});
+            binding.getRoot().setOnClickListener(v -> {
+                roomListener.onRoomClick(room);
+            });
 
             String hoTen = binding.edtHoTen.getText().toString();
-            if(hoTen.isEmpty()){
+            if (hoTen.isEmpty()) {
                 binding.layoutNameOfGuest.setVisibility(View.GONE);
                 binding.layoutPhoneNumberOfGuest.setVisibility(View.GONE);
                 binding.layoutPaymentStatus.setVisibility(View.GONE);
@@ -218,7 +217,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 // Áp dụng LayoutParams trở lại LinearLayout
                 binding.layoutPriceOfRoom.setLayoutParams(params);
                 binding.btnAddContract.setVisibility(View.VISIBLE);
-            } else{
+            } else {
                 binding.btnAddContract.setVisibility(View.GONE);
 
                 if (!room.phoneNumer.startsWith("0")) {
@@ -226,7 +225,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 }
                 binding.edtSoDienThoai.setText(room.phoneNumer);
             }
-
 
 
             if (binding.edtTrangThaiThanhToan.getText().toString().equals("Đã thanh toán")) {
@@ -237,12 +235,11 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 binding.edtTrangThaiThanhToan.setTextColor(context.getResources().getColor(R.color.colorRed)); // Màu đỏ
             } else if (binding.edtTrangThaiThanhToan.getText().toString().equals("Chưa gửi hóa đơn")) {
                 binding.edtTrangThaiThanhToan.setTextColor(context.getResources().getColor(R.color.colorOrange)); // Màu đen
-            }else{
+            } else {
                 binding.layoutPaymentStatus.setVisibility(View.GONE);
             }
 
-            if(binding.txtDescribe.getText().length() == 0)
-            {
+            if (binding.txtDescribe.getText().length() == 0) {
                 binding.lineOfItemRoom.setVisibility(View.GONE);
                 binding.txtDescribe.setVisibility(View.GONE);
                 // Tạo LayoutParams cho LinearLayout
@@ -253,25 +250,29 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
                 binding.layoutPriceOfRoom.setLayoutParams(params);
             }
 
-            binding.imgMenu.setOnClickListener(v-> {
+            binding.imgMenu.setOnClickListener(v -> {
                 binding.frmImage2.setVisibility(View.VISIBLE);
                 binding.frmImage.setVisibility(View.GONE);
                 roomListener.openPopup(v, room, binding);
             });
         }
-}
-    public void addRoom(List<Room>rooms) {
+    }
+
+    public void addRoom(List<Room> rooms) {
         lastActionPosition = rooms.size() - 1;
 
     }
+
     public void updateRoom(int position) {
         //homeList.set(position, home);
         lastActionPosition = position - 1;
 
     }
+
     public void removeRoom(int position) {
         lastActionPosition = position - 2;
     }
+
     public int getLastActionPosition() {
         return lastActionPosition;
     }
@@ -281,19 +282,20 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         isDeleteClicked = isClicked;
         notifyDataSetChanged();
     }
+
     public void isCheckBoxClicked(boolean isClicked) {
         notifyDataSetChanged();
         isCheckBoxClicked = isClicked;
         //notifyDataSetChanged();
     }
+
     public void updateList() {
         notifyDataSetChanged();
 
     }
 
-    public List<Room> checkList()
-    {
+    public List<Room> checkList() {
         notifyDataSetChanged();
-        return  selectList;
+        return selectList;
     }
 }

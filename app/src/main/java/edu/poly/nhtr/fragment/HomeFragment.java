@@ -215,7 +215,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 SharedPreferences prefs = requireContext().getSharedPreferences("AlarmsPrefs", Context.MODE_PRIVATE);
                 boolean isCancelled = prefs.getBoolean("alarm_cancelled_" + requestCode, false);
                 if (isCancelled) {
-                    showToast("Alarm with requestCode " + requestCode + " has been cancelled.");
                     continue;
                 }
 
