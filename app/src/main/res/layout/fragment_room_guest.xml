@@ -12,127 +12,244 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/guestsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:overScrollMode="never"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/btn_add_guest"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_delete_all" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/guestsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/btn_add_guest"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+             />
 
         <FrameLayout
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ProgressBar
                 android:layout_width="40dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:indeterminateTint="@color/colorPrimary"/>
+                android:indeterminateTint="@color/colorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đang tải dữ liệu..."
                 android:layout_gravity="center"
                 android:layout_marginTop="40dp"
                 android:fontFamily="@font/inter_medium"
+                android:text="Đang tải dữ liệu..."
                 android:textColor="@color/colorTextBlack"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_delete_all"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/guestsRecyclerView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="0dp">
+        <!--    <LinearLayout-->
+        <!--        android:id="@+id/layout_delete_all"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:orientation="horizontal"-->
+        <!--        android:padding="10dp"-->
+        <!--        android:visibility="visible"-->
+        <!--        app:layout_constraintBottom_toTopOf="@id/guestsRecyclerView"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:layout_constraintVertical_bias="0.0"-->
+        <!--        tools:layout_editor_absoluteX="0dp">-->
 
-        <LinearLayout
-            android:id="@+id/layout_select_all"
-            android:layout_width="wrap_content"
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/layout_select_all"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <CheckBox-->
+        <!--                android:id="@+id/checkbox_select_all"-->
+        <!--                android:layout_width="20dp"-->
+        <!--                android:layout_height="20dp"-->
+        <!--                android:layout_gravity="center_vertical"-->
+        <!--                android:background="@drawable/checkbox_selector_index"-->
+        <!--                android:button="@null"-->
+        <!--                android:visibility="visible" />-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="10dp"-->
+        <!--                android:text="Chọn tất cả"-->
+        <!--                android:textSize="17sp" />-->
+
+        <!--        </LinearLayout>-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/txt_cancel_delete_all"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:gravity="end"-->
+        <!--            android:text="Hủy"-->
+        <!--            android:textColor="@color/colorOrange"-->
+        <!--            android:textSize="17sp" />-->
+
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/txt_delete_here"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:gravity="end"-->
+        <!--            android:text="Nhấn ở đây để xóa !"-->
+        <!--            android:textColor="@color/colorOrange"-->
+        <!--            android:textSize="17sp" />-->
+
+        <!--    </LinearLayout>-->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layout_delete_all"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="@color/white"
+            android:visibility="gone"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeColor="@color/colorGray"
+            app:strokeWidth="0.25dp">
 
-            <CheckBox
-                android:id="@+id/checkbox_select_all"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/checkbox_selector_index"
-                android:button="@null"
-                android:visibility="visible" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="Chọn tất cả"
-                android:textSize="17sp" />
+                android:layout_gravity="start"
+                android:orientation="horizontal"
+                android:padding="10dp"
 
-        </LinearLayout>
+                >
 
-        <TextView
-            android:id="@+id/txt_cancel_delete_all"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/checkbox_select_all"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/checkbox_selector_index"
+                        android:button="@null"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Chọn tất cả"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/txt_delete_here"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_delete"
+                        android:backgroundTint="@color/colorButton" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Xoá"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/txt_cancel_delete_all"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/ic_cancel"
+                        android:backgroundTint="@color/colorRed" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Huỷ xoá"
+                        android:textColor="@color/colorTextBlack"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_guest"
+            style="@style/BUTTON"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Hủy"
-            android:textColor="@color/colorOrange"
-            android:textSize="17sp" />
-
-
-        <TextView
-            android:id="@+id/txt_delete_here"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="Nhấn ở đây để xóa !"
-            android:textColor="@color/colorOrange"
-            android:textSize="17sp" />
-
-    </LinearLayout>
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add_guest"
-        style="@style/BUTTON"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/khach"
-        android:textSize="20sp"
-        app:backgroundTint="@null"
-        app:icon="@drawable/icon_add"
-        app:iconGravity="textStart"
-        app:iconSize="29dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginBottom="20dp"
+            android:text="@string/khach"
+            android:textSize="20sp"
+            app:backgroundTint="@null"
+            app:icon="@drawable/icon_add"
+            app:iconGravity="textStart"
+            app:iconSize="29dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
