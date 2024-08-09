@@ -442,20 +442,17 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
 
             // Kiểm tra nếu ngày hóa đơn mới có hợp lệ
             if (dayOfGiveBill < 1 || dayOfGiveBill > getLastDayOfMonth2(month, year)) {
-                showToast("Ngày hóa đơn không hợp lệ");
                 return;
             }
 
             // Kiểm tra nếu ngày hóa đơn mới xảy ra trước ngày hiện tại
             if (currentDay > dayOfGiveBill) {
-                showToast("Ngày hóa đơn đã qua");
                 return;
             }
 
 
             // Kiểm tra nếu alarm mới là giống như alarm cũ
             if (dayOfGiveBill == previousDay2 || dayOfGiveBill - 1 == previousDay1) {
-                showToast("Alarm đã được đặt");
                 return;
             }
 
@@ -480,7 +477,6 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
             if (dayOfGiveBill == 1) {
                 month = currentMonth == 12 ? 1 : currentMonth + 1;
                 year = currentMonth == 12 ? currentYear + 1 : currentYear;
-                showToast("Alarm sẽ được đặt lại cho ngày đầu tháng mới");
             }
 
             // Sinh mã yêu cầu cho alarm
