@@ -254,13 +254,17 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         LocalDate expirationContractDate = LocalDate.parse(txt_expirationContractDate, formatter);
 
         // khởi tạo xuất hóa đơn
-        LocalDate payDate;
-        if (Integer.parseInt(payDay) > date.getDayOfMonth())
-            payDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), Integer.parseInt(payDay));
-        else if (date.getMonthValue() == 12)
-            payDate = LocalDate.of(date.getYear()+1, 1, Integer.parseInt(payDay));
+        LocalDate payDate = LocalDate.of(bill.getYear(), bill.getMonth(), Integer.parseInt(payDay));;
+        if (Integer.parseInt(payDay) > createContractDate.getDayOfMonth() && ChronoUnit.DAYS.between(payDate, createContractDate) <=5)
+            payDate.plusMonths(1);
         else
             payDate = LocalDate.of(date.getYear(), date.getMonthValue()+1, Integer.parseInt(payDay));
+//        if (Integer.parseInt(payDay) > date.getDayOfMonth())
+//            payDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), Integer.parseInt(payDay));
+//        else if (date.getMonthValue() == 12)
+//            payDate = LocalDate.of(date.getYear()+1, 1, Integer.parseInt(payDay));
+//        else
+//            payDate = LocalDate.of(date.getYear(), date.getMonthValue()+1, Integer.parseInt(payDay));
 
         // Nếu tg kết thúc hợp đồng không quá 5 ngày sau ngày thanh toán sẽ gộp bill
         if (ChronoUnit.DAYS.between(payDate, expirationContractDate) <=5)

@@ -587,7 +587,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private void setFeedbackForUnit(EditText edt_unit, int position) {
-        String text;
+        String text = edt_unit.getText().toString();
         edt_unit.setInputType(InputType.TYPE_NULL);
         edt_unit.setFocusable(false);
         edt_unit.setCursorVisible(false);
@@ -598,7 +598,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         } else if (position == 2) {
             text = "Người";
         } else {
-            text = "";
+//            text = "";
             edt_unit.setHint("Ví dụ: Xe, cái,...");
             edt_unit.setInputType(InputType.TYPE_CLASS_TEXT);
             edt_unit.setFocusable(true);
@@ -689,6 +689,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 //        spinner.setEnabled(false);
 
         edt_unit.setText(service.getUnit());
+
 
         String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
         txt_feeBase.setText(titleOfFee);
@@ -877,6 +878,9 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         spinner.setSelection(service.getFee_base());
 
         if (service.getFee_base() == 3) edt_unit.setText(service.getUnit());
+        Log.e("serviceFragment", "id " + service.getIdService());
+        Log.e("serviceFragment", "fee_base " + service.getFee_base());
+        Log.e("serviceFragment", "unit " + service.getUnit());
         String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
         txt_feeBase.setText(titleOfFee);
         edt_fee.setText("" + service.getPrice());
