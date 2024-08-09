@@ -72,8 +72,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
             public void onClick(View v) {
                 int adapterPosition = holder.getAdapterPosition();
                 if (adapterPosition != RecyclerView.NO_POSITION && serviceListener != null) {
-//                    serviceListener.onServiceItemCLick(services.get(adapterPosition), recyclerView, adapterPosition);
-                    serviceListener.onServiceClicked(services.get(adapterPosition), recyclerView, adapterPosition);
+                    serviceListener.onServiceItemCLick(services.get(adapterPosition), recyclerView, adapterPosition);
+//                    serviceListener.onServiceClicked(services.get(adapterPosition), recyclerView, adapterPosition);
                 } else if (adapterPosition != RecyclerView.NO_POSITION && roomServiceListener != null) {
 
                     RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
