@@ -335,6 +335,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                 String monthYear = binding.txtMonthYearOfBill.getText().toString();
                 String roomPrice = binding.txtPriceOfRoom.getText().toString();
                 String numberOfDays = binding.numberOfDaysLived.getText().toString();
+                String status = binding.txtStatusOfBill.getText().toString();
                 String totalServiceCost = binding.txtTotalMoneyOfService.getText().toString();
                 String totalBill = binding.txtTotalMoneyOfBill.getText().toString();
 
@@ -369,6 +370,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                             + "\nTổng tiền dịch vụ: " + totalServiceCost
                             + "\nCác khoản cộng thêm:\n" + plusMoneyMessage.toString()
                             + "\nCác khoản trừ:\n" + minusMoneyMessage.toString()
+                            + "\n Lý do cộng/trừ:" +status.toString()
                             + "\nTổng tiền: " + totalBill;
                 } else {
                     message = "Thông tin hóa đơn tháng " + monthYear
@@ -377,6 +379,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                             + "\nTổng tiền dịch vụ: " + totalServiceCost
                             + "\nCác khoản cộng thêm:\n" + plusMoneyMessage.toString()
                             + "\nCác khoản trừ:\n" + minusMoneyMessage.toString()
+                            + "\n Lý do cộng/trừ:" +status.toString()
                             + "\nTổng tiền: " + totalBill;
                 }
 

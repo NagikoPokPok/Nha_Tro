@@ -849,9 +849,24 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         mode.finish();
     }
 
+    @Override
+    public void openDiaLogCannotDelete() {
+        setupDialog(R.layout.layout_dialog_cannot_delete_bill, Gravity.CENTER);
+        TextView title = dialog.findViewById(R.id.txt_title_of_cannot_delete);
+        TextView body = dialog.findViewById(R.id.txt_body_of_cannot_delete);
+        Button cancel= dialog.findViewById(R.id.btn_cancel);
+        title.setText("Không thể xóa phòng trọ này");
+        body.setText("Phòng trọ hiện đang có người ở, không thể xóa ngay lập tức!");
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
 
     private void openSortRoomDialog() {
-
         if (binding.edtSearchRoom.isFocused()) {
             binding.edtSearchRoom.clearFocus();
             binding.edtSearchRoom.setText("");
@@ -961,8 +976,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         preferenceManager.removePreference("cbxRoom4");
     }
 
-    private void openFilterRoomDialog() {
-
+    private void openFilterRoomDialog(List<Room> currentListRooms) {
         if (binding.edtSearchRoom.isFocused()) {
             binding.edtSearchRoom.clearFocus();
             binding.edtSearchRoom.setText("");
@@ -990,6 +1004,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxRoom2"));
         cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxRoom3"));
         cbxByRoom4.setChecked(preferenceManager.getBoolean("cbxRoom4"));
+        showToast(preferenceManager.getBoolean("cbxRoom4") + "");
 
         // Add CheckBoxes to a list
         List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
@@ -1191,7 +1206,6 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
             }
         }
     }
-
     private void filterListRooms(List<Room> currentListRooms) {
         showLoadingOfFunctions(R.id.btn_confirm_apply);
         boolean filterByRoom1 = preferenceManager.getBoolean("cbxRoom1");
@@ -1199,23 +1213,19 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         boolean filterByRoom3 = preferenceManager.getBoolean("cbxRoom3");
         boolean filterByRoom4 = preferenceManager.getBoolean("cbxRoom4");
 
-
         List<Room> filteredNoMembers = new ArrayList<>();
         for (Room room : currentListRooms) {
-            showToast(room.getNumberOfMemberLiving());
-            int numberOfMembers = Integer.parseInt(room.getNumberOfMemberLiving());
-            if (filterByRoom4 && numberOfMembers == 0) {
+                int numberOfMembers = Integer.parseInt(room.numberOfMemberLiving);
+            if (filterByRoom1 && numberOfMembers == 0) {
+                    filteredNoMembers.add(room);
+            } else if (filterByRoom2 && room.status.equals("Đã thanh toán")) {
                 filteredNoMembers.add(room);
-            } else if (filterByRoom1 && room.getStatus().equals("Đã thanh toán")) {
+            } else if (filterByRoom3 && room.status.equals("Chưa thanh toán")) {
                 filteredNoMembers.add(room);
-            } else if (filterByRoom2 && room.getStatus().equals("Chưa thanh toán")) {
-                filteredNoMembers.add(room);
-            } else if (filterByRoom3 && room.getStatus().equals("Trễ hạn thanh toán")) {
+            } else if (filterByRoom4 && room.status.equals("Trễ hạn thanh toán")) {
                 filteredNoMembers.add(room);
             }
         }
-
-
         roomPresenter.filterRoom(filteredNoMembers);
     }
 
@@ -1259,7 +1269,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     private void clickFilterRoom() {
         changeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
         removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
-        openFilterRoomDialog();
+        openFilterRoomDialog(currentListRooms);
     }
 
     private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {

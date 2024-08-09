@@ -190,6 +190,13 @@
         <item name="android:background">@drawable/round_back_setting</item>
     </style>
 
+    <style name="BACKGROUND_BUTTON_2">
+        <item name="android:background">@drawable/round_back_night</item>
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <!--    Màu đường viền-->
     <color name="stroke_color">#000000</color>
 

@@ -43,4 +43,5 @@ public interface RoomListener {
     void openDeleteListDialog(List<Room> listRoom);
     void deleteListAll(List<Room> list);
     void dialogAndModeClose(ActionMode mode);
+    void openDiaLogCannotDelete();
 }
