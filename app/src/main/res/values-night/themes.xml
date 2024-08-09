@@ -41,6 +41,14 @@
         <item name="iconTint">@color/white</item>
     </style>
 
+    <!-- Button background -->
+    <style name="BUTTON_2">
+        <item name="android:background">@drawable/pressed_button_night_white</item>
+        <item name="android:textColor">@color/night_mode</item>
+        <item name="iconTint">@color/night_mode</item>
+        <item name="android:fontFamily">@font/inter_bold</item>
+    </style>
+
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
@@ -69,6 +77,13 @@
 
     <style name="BACKGROUND_BUTTON">
         <item name="android:background">@drawable/round_back_night</item>
+    </style>
+
+    <style name="BACKGROUND_BUTTON_2">
+        <item name="android:background">@drawable/round_back_night</item>
+        <item name="fontFamily">@font/inter_bold</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="imageViewLocation">

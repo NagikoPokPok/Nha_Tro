@@ -55,8 +55,7 @@
                     app:boxCornerRadiusTopEnd="20dp"
                     app:boxCornerRadiusTopStart="20dp"
                     app:cursorColor="@color/colorPrimary"
-                    app:endIconDrawable="@drawable/ic_search_orange"
-                    app:endIconTint="@color/colorButton"
+                    style="@style/iconSearch"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
