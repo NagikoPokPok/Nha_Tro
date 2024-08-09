@@ -575,6 +575,7 @@
                             android:fontFamily="@font/inter_light"/>
 
                         <TextView
+                            android:id="@+id/txt_count_plus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
 
@@ -615,6 +616,7 @@
                             android:fontFamily="@font/inter_light"/>
 
                         <TextView
+                            android:id="@+id/txt_count_minus"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

@@ -207,14 +207,19 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         if (plusOrMinusMoneyAdapter.getItemCount() == 0){
             binding.txtNullPlusOrMinus.setVisibility(View.VISIBLE);
             binding.plusOrMinusRecyclerView.setVisibility(View.GONE);
-            binding.txtCountPlusOrMinus.setVisibility(View.GONE);
+            binding.txtCountPlus.setVisibility(View.GONE);
+            binding.txtCountMinus.setVisibility(View.GONE);
         }else {
             binding.txtNullPlusOrMinus.setVisibility(View.GONE);
             binding.plusOrMinusRecyclerView.setVisibility(View.VISIBLE);
-            binding.txtCountPlusOrMinus.setVisibility(View.VISIBLE);
+            binding.txtCountPlus.setVisibility(View.VISIBLE);
+            binding.txtCountMinus.setVisibility(View.VISIBLE);
 
-            String countPlusOrMinus = "Hiện có " + plusOrMinusMoneyAdapter.getItemCount() + " khoản thêm/bớt";
-            binding.txtCountPlusOrMinus.setText(countPlusOrMinus);
+            binding.txtCountMinus.setText(toStringFromInt(plusOrMinusMoneyAdapter.getMinus()));
+            binding.txtCountPlus.setText(toStringFromInt(plusOrMinusMoneyAdapter.getPlus()));
+
+//            String countPlusOrMinus = "Hiện có " + plusOrMinusMoneyAdapter.getItemCount() + " khoản thêm/bớt";
+//            binding.txtCountPlusOrMinus.setText(countPlusOrMinus);
         }
     }
 
@@ -255,10 +260,10 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         // khởi tạo xuất hóa đơn
         LocalDate payDate = LocalDate.of(bill.getYear(), bill.getMonth(), Integer.parseInt(payDay));;
-        if (Integer.parseInt(payDay) > createContractDate.getDayOfMonth() && ChronoUnit.DAYS.between(payDate, createContractDate) <=5)
+        if (Integer.parseInt(payDay) > createContractDate.getDayOfMonth() && ChronoUnit.DAYS.between(createContractDate, payDate) <=5)
             payDate.plusMonths(1);
         else if (Integer.parseInt(payDay) <= createContractDate.getDayOfMonth()){
-            if (ChronoUnit.DAYS.between(payDate, createContractDate) <=5)
+            if (ChronoUnit.DAYS.between(createContractDate, payDate) <=5)
                 payDate.plusMonths(2);
             else
                 payDate.plusMonths(1);
@@ -281,10 +286,16 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         // Ngày bắt đầu tính
         LocalDate startDate;
-        if (ChronoUnit.DAYS.between(payDate, createContractDate) <= (createContractDate.lengthOfMonth() +5))
+        if (ChronoUnit.DAYS.between(createContractDate, payDate) <= (createContractDate.lengthOfMonth() + 5)){
             startDate = createContractDate;
-        else
+        }else {
             startDate = payDate.minusMonths(1);
+            startDate = startDate.withDayOfMonth(Integer.parseInt(payDay));
+        }
+//        if (ChronoUnit.DAYS.between(payDate, createContractDate) <= (createContractDate.lengthOfMonth() +5))
+//            startDate = createContractDate;
+//        else
+//            startDate = payDate.minusMonths(1);
 
 
         binding.txtPayDate.setText(payDate.format(formatter));
