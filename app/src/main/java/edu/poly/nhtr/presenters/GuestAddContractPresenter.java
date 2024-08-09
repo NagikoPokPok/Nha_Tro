@@ -93,114 +93,114 @@ public class GuestAddContractPresenter {
         });
     }
 
-    public void handleNameChanged(String name, TextInputLayout textInputLayout) {
-        if (textInputLayout == null) {
-            return;
-        }
-
-        if (TextUtils.isEmpty(name)) {
-            textInputLayout.setError("Không được bỏ trống");
-        } else if (!isValidName(name)) {
-            textInputLayout.setError("Tên không được chứa số hoặc ký tự đặc biệt");
-        } else {
-            textInputLayout.setError(null);
-        }
-    }
-
-    // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
-    private boolean isValidName(String name) {
-        String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỂưạảấầẩẫậắằẳẵặẹẻẽềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
-        return name.matches(regex);
-    }
-
-    // Sự kiện cho trường số điện thoại
-    public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp) {
-        if (textInputEditText == null || textInputLayout == null || ccp == null) {
-            return;
-        }
-
-        ccp.setDefaultCountryUsingNameCode("VN");
-        ccp.resetToDefaultCountry();
-        // Đăng ký EditText với CountryCodePicker
-        ccp.registerCarrierNumberEditText(textInputEditText);
-
-        // Add a TextWatcher to the EditText
-        textInputEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void handleNameChanged(String name, TextInputLayout textInputLayout) {
+            if (textInputLayout == null) {
+                return;
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+    
+            if (TextUtils.isEmpty(name)) {
+                textInputLayout.setError("Không được bỏ trống");
+            } else if (!isValidName(name)) {
+                textInputLayout.setError("Tên không được chứa số hoặc ký tự đặc biệt");
+            } else {
+                textInputLayout.setError(null);
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                handlePhoneNumberChanged(s.toString().trim(), textInputLayout, ccp);
+        }
+    
+        // Kiểm tra tên có chứa kí tự đặc biệt hoặc số không
+        private boolean isValidName(String name) {
+            String regex = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỂưạảấầẩẫậắằẳẵặẹẻẽềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\\s]+$";
+            return name.matches(regex);
+        }
+    
+        // Sự kiện cho trường số điện thoại
+        public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp) {
+            if (textInputEditText == null || textInputLayout == null || ccp == null) {
+                return;
             }
-        });
-    }
-
-    // Xử lý sự kiện khi số điện thoại thay đổi
-    public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp) {
-        if (textInputLayout == null) {
-            return;
+    
+            ccp.setDefaultCountryUsingNameCode("VN");
+            ccp.resetToDefaultCountry();
+            // Đăng ký EditText với CountryCodePicker
+            ccp.registerCarrierNumberEditText(textInputEditText);
+    
+            // Add a TextWatcher to the EditText
+            textInputEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+    
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+    
+                @Override
+                public void afterTextChanged(Editable s) {
+                    handlePhoneNumberChanged(s.toString().trim(), textInputLayout, ccp);
+                }
+            });
         }
-
-        if (TextUtils.isEmpty(phoneNumber)) {
-            textInputLayout.setError("Số điện thoại không được để trống");
-            return;
+    
+        // Xử lý sự kiện khi số điện thoại thay đổi
+        public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp) {
+            if (textInputLayout == null) {
+                return;
+            }
+    
+            if (TextUtils.isEmpty(phoneNumber)) {
+                textInputLayout.setError("Số điện thoại không được để trống");
+                return;
+            }
+    
+            // Validate phone number with CountryCodePicker
+            if (!ccp.isValidFullNumber()) {
+                textInputLayout.setError("Số điện thoại không hợp lệ");
+            } else {
+                checkDuplicatePhoneNumber(phoneNumber, textInputLayout);
+            }
         }
-
-        // Validate phone number with CountryCodePicker
-        if (!ccp.isValidFullNumber()) {
-            textInputLayout.setError("Số điện thoại không hợp lệ");
-        } else {
-            checkDuplicatePhoneNumber(phoneNumber, textInputLayout);
-        }
-    }
-
-    private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection(Constants.KEY_COLLECTION_GUESTS)
-                .whereEqualTo(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount())
-                .whereEqualTo(Constants.KEY_GUEST_PHONE, phone)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty()) {
-                            textInputLayout.setError("Số điện thoại đã tồn tại trong nhà trọ này");
+    
+        private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+    
+            db.collection(Constants.KEY_COLLECTION_GUESTS)
+                    .whereEqualTo(Constants.KEY_HOME_ID, mainGuestListener.getInfoHomeFromGoogleAccount())
+                    .whereEqualTo(Constants.KEY_GUEST_PHONE, phone)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if (!task.getResult().isEmpty()) {
+                                textInputLayout.setError("Số điện thoại đã tồn tại trong nhà trọ này");
+                            } else {
+                                textInputLayout.setError(null);
+                            }
                         } else {
-                            textInputLayout.setError(null);
+                            textInputLayout.setError("Có lỗi xảy ra khi kiểm tra số điện thoại");
                         }
-                    } else {
-                        textInputLayout.setError("Có lỗi xảy ra khi kiểm tra số điện thoại");
-                    }
-                });
-    }
-
-
-
-    // Sự kiện cho trường CCCD
-    public void setUpCCCDField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
-        textInputEditText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                handleCCCDNumberChanged(s.toString().trim(), textInputLayout);
-            }
-        });
-    }
+                    });
+        }
+    
+    
+    
+        // Sự kiện cho trường CCCD
+        public void setUpCCCDField(TextInputEditText textInputEditText, TextInputLayout textInputLayout) {
+            textInputEditText.addTextChangedListener(new TextWatcher() {
+    
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // Do nothing
+                }
+    
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+    
+                @Override
+                public void afterTextChanged(Editable s) {
+                    handleCCCDNumberChanged(s.toString().trim(), textInputLayout);
+                }
+            });
+        }
 
     // Xử lý sự kiện khi số CCCD thay đổi
     public void handleCCCDNumberChanged(String cccd, TextInputLayout textInputLayout) {

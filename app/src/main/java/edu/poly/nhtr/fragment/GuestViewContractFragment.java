@@ -38,11 +38,8 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
     private RoundedImageView imgContractBack;
     private ImageView imgAddContractFront;
     private ImageView imgAddContractBack;
-    private GuestViewContractPresenter presenter;
     private FragmentGuestViewContractBinding binding;
-    private Room room;
     private Button btnReturn;
-    private CountryCodePicker ccp;
     private RoomContractFragment.OnFragmentInteractionListener mListener;
 
 
@@ -52,12 +49,12 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
         if (context instanceof RoomContractFragment.OnFragmentInteractionListener) {
             mListener = (RoomContractFragment.OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString());
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentGuestViewContractBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -66,11 +63,11 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
-        presenter = new GuestViewContractPresenter(this);
+        GuestViewContractPresenter presenter = new GuestViewContractPresenter(this);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            room = (Room) arguments.getSerializable("room");
+            Room room = (Room) arguments.getSerializable("room");
             if (room != null) {
                 String roomId = room.getRoomId();
                 presenter.fetchContractData(roomId);
@@ -116,7 +113,7 @@ public class GuestViewContractFragment extends Fragment implements GuestViewCont
     }
 
     private void setListeners() {
-        ccp = binding.ccp;
+        CountryCodePicker ccp = binding.ccp;
         ccp.setDefaultCountryUsingNameCode("VN");
         ccp.resetToDefaultCountry();
         btnReturn.setOnClickListener(v -> {

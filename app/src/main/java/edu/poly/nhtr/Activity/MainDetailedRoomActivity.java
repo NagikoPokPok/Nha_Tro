@@ -34,6 +34,7 @@ import edu.poly.nhtr.fragment.RoomContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestContractFragment;
 import edu.poly.nhtr.fragment.RoomGuestFragment;
 import edu.poly.nhtr.fragment.RoomServiceFragment;
+import edu.poly.nhtr.fragment.RoomViewGuestFragment;
 import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomViewModel;
@@ -216,45 +217,35 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
     }
 
-
-    private Fragment createFragmentForPosition(int position) {
-        Fragment fragment = null;
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("room", room); // Thay đổi tên key nếu cần
-        bundle.putSerializable("home", home); // Thay đổi tên key nếu cần
-
-        switch (position) {
-            case 0:
-                fragment = new RoomGuestFragment();
-                break;
-            case 1:
-                fragment = new RoomServiceFragment();
-                break;
-            case 2:
-                fragment = new RoomBillContainerFragment();
-                break;
-            case 3:
-                fragment = new RoomContractFragment();
-                break;
-            default:
-                break;
-        }
-
-        if (fragment != null) {
-            fragment.setArguments(bundle); // Đặt Bundle cho fragment
-        }
-
-        return fragment;
-    }
-
-    private void replaceFragment(Fragment fragment) {
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
-            fragmentTransaction.commit();
-        }
-    }
+//    private Fragment createFragmentForPosition(int position) {
+//        Fragment fragment = null;
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("room", room); // Thay đổi tên key nếu cần
+//        bundle.putSerializable("home", home); // Thay đổi tên key nếu cần
+//
+//        switch (position) {
+//            case 0:
+//                fragment = new RoomGuestFragment();
+//                break;
+//            case 1:
+//                fragment = new RoomServiceFragment();
+//                break;
+//            case 2:
+//                fragment = new RoomBillContainerFragment();
+//                break;
+//            case 3:
+//                fragment = new RoomContractFragment();
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        if (fragment != null) {
+//            fragment.setArguments(bundle); // Đặt Bundle cho fragment
+//        }
+//
+//        return fragment;
+//    }
 
     private void showRoomContractFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -329,6 +320,10 @@ public class MainDetailedRoomActivity extends AppCompatActivity implements RoomC
                 showTabLayoutAndViewPager();
                 super.onBackPressed();
             }
+        } else if (currentFragment instanceof RoomViewGuestFragment) {
+            Intent intent = new Intent(MainDetailedRoomActivity.this, MainRoomActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         } else {
             super.onBackPressed();
         }

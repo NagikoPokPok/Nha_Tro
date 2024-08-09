@@ -94,22 +94,22 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
                                     case IMAGE_SELECTION_CCCD_FRONT:
                                         binding.imgCccdFront.setImageBitmap(bitmap);
                                         binding.imgAddCccdFront.setVisibility(View.GONE);
-                                        encodedCCCDFrontImage = encodeImage(bitmap);
+                                        encodedCCCDFrontImage = encodeImageForCCCD(bitmap);
                                         break;
                                     case IMAGE_SELECTION_CCCD_BACK:
                                         binding.imgCccdBack.setImageBitmap(bitmap);
                                         binding.imgAddCccdBack.setVisibility(View.GONE);
-                                        encodedCCCDBackImage = encodeImage(bitmap);
+                                        encodedCCCDBackImage = encodeImageForCCCD(bitmap);
                                         break;
                                     case IMAGE_SELECTION_CONTRACT_FRONT:
                                         binding.imgContractFront.setImageBitmap(bitmap);
                                         binding.imgAddContractFront.setVisibility(View.GONE);
-                                        encodedContractFrontImage = encodeImage(bitmap);
+                                        encodedContractFrontImage = encodeImageForContract(bitmap);
                                         break;
                                     case IMAGE_SELECTION_CONTRACT_BACK:
                                         binding.imgContractBack.setImageBitmap(bitmap);
                                         binding.imgAddContractBack.setVisibility(View.GONE);
-                                        encodedContractBackImage = encodeImage(bitmap);
+                                        encodedContractBackImage = encodeImageForContract(bitmap);
                                         break;
                                 }
                             }
@@ -162,7 +162,6 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         inflater.inflate(R.layout.fragment_guest_edit_contract, container, false);
         return binding.getRoot();
     }
@@ -185,16 +184,16 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
             binding.edtHanThanhToan.setText(String.valueOf(mainGuest.getDaysUntilDueDate()));
 
             if (mainGuest.getCccdImageFront() != null) {
-                binding.imgAddCccdFront.setImageBitmap(decodeImage(mainGuest.getCccdImageFront()));
+                binding.imgAddCccdFront.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageFront()));
             }
             if (mainGuest.getCccdImageBack() != null) {
-                binding.imgAddCccdBack.setImageBitmap(decodeImage(mainGuest.getCccdImageBack()));
+                binding.imgAddCccdBack.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageBack()));
             }
             if (mainGuest.getContractImageFront() != null) {
-                binding.imgAddContractFront.setImageBitmap(decodeImage(mainGuest.getContractImageFront()));
+                binding.imgAddContractFront.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageFront()));
             }
             if (mainGuest.getContractImageBack() != null) {
-                binding.imgAddContractBack.setImageBitmap(decodeImage(mainGuest.getContractImageBack()));
+                binding.imgAddContractBack.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageBack()));
             }
         } else {
             showToast("MainGuest data is null");
@@ -287,18 +286,48 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
         return formatter.format(price);
     }
 
-    private Bitmap decodeImage(String encodedImage) {
+    private Bitmap getConversionImageForCCCD(String encodedImage) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        int heightDp = 250;
+        int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
+
+        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+
+        return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
     }
-    private String encodeImage(Bitmap bitmap) {
-        int previewWidth = 250;
-        int previewHeight = bitmap.getHeight() + previewWidth / bitmap.getWidth();
+
+    private Bitmap getConversionImageForContract(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+        int heightDp = 300;
+        int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
+
+        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+
+        return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
+    }
+
+    private String encodeImage(Bitmap bitmap, int previewWidth, int previewHeight) {
         Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    private String encodeImageForCCCD(Bitmap bitmap) {
+        int previewWidth = 250;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        return encodeImage(bitmap, previewWidth, previewHeight);
+    }
+
+    private String encodeImageForContract(Bitmap bitmap) {
+        int previewWidth = 300;
+        int previewHeight = bitmap.getHeight() * previewWidth / bitmap.getWidth();
+        return encodeImage(bitmap, previewWidth, previewHeight);
     }
     public void checkName() {
         presenter.setUpNameField(binding.edtTenKhach, binding.tilTenKhach);
@@ -316,42 +345,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
         String roomPrice = String.valueOf(guestContract.getRoomPrice());
         binding.edtGiaPhong.setText(roomPrice);
     }
-    private void openCancelSaveDialog() {
-        final Dialog dialog = new Dialog(requireContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_confirm_cancel_save_contract);
 
-        Window window = dialog.getWindow();
-        if (window == null) {
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        windowAttributes.gravity = Gravity.CENTER;
-        window.setAttributes(windowAttributes);
-
-        MaterialButton btnNo = dialog.findViewById(R.id.btn_no_delete_contract);
-        MaterialButton btnYes = dialog.findViewById(R.id.btn_yes_delete_contract);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
-
-        btnNo.setOnClickListener(v -> dialog.dismiss());
-        btnYes.setOnClickListener(v -> {
-            progressBar.setVisibility(View.VISIBLE);
-            btnYes.setVisibility(View.INVISIBLE);
-            new Handler().postDelayed(() -> {
-                // clearInputFields();
-                dialog.dismiss();
-                progressBar.setVisibility(View.INVISIBLE);
-
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }, 1000);
-        });
-
-        dialog.show();
-    }
     private void openSaveDialog() {
         final Dialog dialog = new Dialog(requireContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -383,21 +377,17 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
                 progressBar.setVisibility(View.INVISIBLE);
 
                 if (saveContractSuccessfully) {
-                    updateAlarm(new onUpdateAlarm() {
-                        @Override
-                        public void onComplete() {
-                            MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
-                            if (activity != null) {
-                                activity.showTabLayoutEditRoomGuestFragment();
-                            }
-
-                            dialog.dismiss();  // Dismiss dialog after updateAlarm and other actions
+                    updateAlarm(() -> {
+                        MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
+                        if (activity != null) {
+                            activity.showTabLayoutEditRoomGuestFragment();
                         }
+
+                        dialog.dismiss();
                     });
 
-
                 } else {
-                    dialog.dismiss();  // Dismiss dialog if save fails
+                    dialog.dismiss();
                     Toast.makeText(requireContext(), "Lưu hợp đồng thất bại", Toast.LENGTH_SHORT).show();
                 }
             }, 2000);
@@ -561,7 +551,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
         return autoCompleteTextView.getText().toString().trim();
     }
 
-    private boolean saveContract() {
+    public boolean saveContract() {
         String nameGuest = getStringFromEditText(binding.edtTenKhach);
         String phoneGuest = getStringFromEditText(binding.edtSoDienThoai);
         String cccdNumber = getStringFromEditText(binding.edtSoCccdCmnd);
@@ -575,53 +565,54 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
         String roomPrice = getStringFromEditText(binding.edtGiaPhong).replace(".", "");
         String daysUntilDueDateStr = getStringFromEditText(binding.edtHanThanhToan);
 
-        System.out.println("Name Guest: " + nameGuest);
-        System.out.println("Phone Guest: " + phoneGuest);
-        System.out.println("CCCD Number: " + cccdNumber);
-        System.out.println("Date of Birth: " + dateOfBirth);
-        System.out.println("Gender: " + gender);
-        System.out.println("Total Members: " + totalMembers);
-        System.out.println("Create Date: " + createDate);
-        System.out.println("Date In: " + dateIn);
-        System.out.println("Expiration Date: " + expirationDate);
-        System.out.println("Pay Date: " + payDate);
-        System.out.println("Room Price: " + roomPrice);
-        System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
-
-        if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
-                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || dateIn.isEmpty() || expirationDate.isEmpty() ||
-                payDate.isEmpty() || daysUntilDueDateStr.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        boolean isNameEmpty = binding.tilTenKhach.getError() != null;
+        boolean isDateInEmpty = binding.tilNgayVaoO.getError() != null;
+        boolean isPhoneEmpty = binding.tilSoDienThoai.getError() != null;
+        boolean isCccdEmpty = binding.tilSoCccdCmnd.getError() != null;
+        boolean isDateOfBirthEmpty = binding.tilNgaySinh.getError() != null;
+        boolean isCreateDateEmpty = binding.tilNgayTaoHopDong.getError() != null;
+        boolean isExpirationDateEmpty = binding.tilNgayHetHanHopDong.getError() != null;
+        boolean isPayDateEmpty = binding.tilNgayTraTienPhong.getError() != null;
+        boolean isRoomPriceEmpty = binding.tilGiaPhong.getError() != null;
+        boolean isDaysUntilDueDateEmpty = daysUntilDueDateStr.isEmpty();
+        boolean isGenderEmpty = gender.isEmpty();
+        boolean isTotalMembersEmpty = totalMembers.isEmpty();
+        boolean isCccdFrontEmpty = encodedCCCDFrontImage == null;
+        boolean isCccdBackEmpty = encodedCCCDBackImage == null;
 
         int daysUntilDueDate;
         try {
             daysUntilDueDate = Integer.parseInt(daysUntilDueDateStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Invalid number format for days until due date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Ngày tới hạn không hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        guestContract.setNameGuest(nameGuest);
-        guestContract.setPhoneGuest(phoneGuest);
-        guestContract.setCccdNumber(cccdNumber);
-        guestContract.setDateOfBirth(dateOfBirth);
-        guestContract.setGender(gender);
-        guestContract.setTotalMembers(Integer.parseInt(totalMembers));
-        guestContract.setCreateDate(createDate);
-        guestContract.setDateIn(dateIn);
-        guestContract.setExpirationDate(expirationDate);
-        guestContract.setPayDate(payDate);
-        guestContract.setRoomPrice(Double.parseDouble(roomPrice));
-        guestContract.setDaysUntilDueDate(daysUntilDueDate);
-        guestContract.setCccdImageFront(encodedCCCDFrontImage);
-        guestContract.setCccdImageBack(encodedCCCDBackImage);
-        guestContract.setContractImageFront(encodedContractFrontImage);
-        guestContract.setContractImageBack(encodedContractBackImage);
-        guestContract.setFileStatus(true);
+        if (isNameEmpty || isPhoneEmpty || isCccdEmpty || isDateOfBirthEmpty || isGenderEmpty || isTotalMembersEmpty || isCreateDateEmpty || isDateInEmpty || isExpirationDateEmpty || isPayDateEmpty || isRoomPriceEmpty || isDaysUntilDueDateEmpty || isCccdFrontEmpty || isCccdBackEmpty){
+            Toast.makeText(requireContext(), "Hãy nhập đầy đủ và chính xác thông tin các trường", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            MainGuest mainGuest = new MainGuest();
+            mainGuest.setNameGuest(nameGuest);
+            mainGuest.setPhoneGuest(phoneGuest);
+            mainGuest.setCccdNumber(cccdNumber);
+            mainGuest.setDateOfBirth(dateOfBirth);
+            mainGuest.setGender(gender);
+            mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
+            mainGuest.setCreateDate(createDate);
+            mainGuest.setDateIn(dateIn);
+            mainGuest.setExpirationDate(expirationDate);
+            mainGuest.setPayDate(payDate);
+            mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
+            mainGuest.setDaysUntilDueDate(daysUntilDueDate);
+            mainGuest.setCccdImageFront(encodedCCCDFrontImage);
+            mainGuest.setCccdImageBack(encodedCCCDBackImage);
+            mainGuest.setContractImageFront(encodedContractFrontImage);
+            mainGuest.setContractImageBack(encodedContractBackImage);
+            mainGuest.setFileStatus(true);
 
-        presenter.saveContract(guestContract, roomId);
-        return true;
+            presenter.saveContract(guestContract, roomId);
+            return true;
+        }
     }
 }

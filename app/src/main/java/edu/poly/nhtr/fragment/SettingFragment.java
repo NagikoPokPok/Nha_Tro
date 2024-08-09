@@ -73,11 +73,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         }
     }
 
-    @Override
-    public Bitmap getConversionImage(String encodedImage) {
-        return null;
-    }
-
     private void setListeners() {
         binding.btnLogout.setOnClickListener(v -> {
             try {
@@ -104,11 +99,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         Intent intent = new Intent(requireContext(), MainActivity.class);
         startActivity(intent);
         requireActivity().finish();
-    }
-
-    @Override
-    public void getInfoFromGoogle() {
-        settingsPresenter.getInfoFromGoogle();
     }
 
     @Override

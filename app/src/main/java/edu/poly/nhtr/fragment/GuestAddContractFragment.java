@@ -137,8 +137,7 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
                                         break;
                                 }
                             }
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                        } catch (FileNotFoundException ignored) {
                         }
                     }
                 }
@@ -491,55 +490,55 @@ public class GuestAddContractFragment extends Fragment implements MainGuestListe
         String roomPrice = getStringFromEditText(edtTienPhong).replace(".", "");
         String daysUntilDueDateStr = getStringFromEditText(edtHanThanhToan);
 
-        System.out.println("Name Guest: " + nameGuest);
-        System.out.println("Phone Guest: " + phoneGuest);
-        System.out.println("CCCD Number: " + cccdNumber);
-        System.out.println("Date of Birth: " + dateOfBirth);
-        System.out.println("Gender: " + gender);
-        System.out.println("Total Members: " + totalMembers);
-        System.out.println("Create Date: " + createDate);
-        System.out.println("Date In: " + dateIn);
-        System.out.println("Expiration Date: " + expirationDate);
-        System.out.println("Pay Date: " + payDate);
-        System.out.println("Room Price: " + roomPrice);
-        System.out.println("Days Until Due Date: " + daysUntilDueDateStr);
-
-        if (nameGuest.isEmpty() || phoneGuest.isEmpty() || cccdNumber.isEmpty() || dateOfBirth.isEmpty() ||
-                gender.isEmpty() || totalMembers.isEmpty() || createDate.isEmpty() || dateIn.isEmpty() || expirationDate.isEmpty() ||
-                payDate.isEmpty() || daysUntilDueDateStr.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        boolean isNameEmpty = tilHoTen.getError() != null;
+        boolean isDateInEmpty = tilNgayVao.getError() != null;
+        boolean isPhoneEmpty = tilSoDienThoai.getError() != null;
+        boolean isCccdEmpty = tilSoCCCD.getError() != null;
+        boolean isDateOfBirthEmpty = tilNgaySinh.getError() != null;
+        boolean isCreateDateEmpty = tilNgayTao.getError() != null;
+        boolean isExpirationDateEmpty = tilNgayHetHan.getError() != null;
+        boolean isPayDateEmpty = tilNgayTraTien.getError() != null;
+        boolean isRoomPriceEmpty = tilTienPhong.getError() != null;
+        boolean isDaysUntilDueDateEmpty = daysUntilDueDateStr.isEmpty();
+        boolean isGenderEmpty = gender.isEmpty();
+        boolean isTotalMembersEmpty = totalMembers.isEmpty();
+        boolean isCccdFrontEmpty = encodedCCCDFrontImage == null;
+        boolean isCccdBackEmpty = encodedCCCDBackImage == null;
 
         int daysUntilDueDate;
         try {
             daysUntilDueDate = Integer.parseInt(daysUntilDueDateStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(requireContext(), "Invalid number format for days until due date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Ngày tới hạn không hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        MainGuest mainGuest = new MainGuest();
-        mainGuest.setNameGuest(nameGuest);
-        mainGuest.setPhoneGuest(phoneGuest);
-        mainGuest.setCccdNumber(cccdNumber);
-        mainGuest.setDateOfBirth(dateOfBirth);
-        mainGuest.setGender(gender);
-        mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
-        mainGuest.setCreateDate(createDate);
-        mainGuest.setDateIn(dateIn);
-        mainGuest.setExpirationDate(expirationDate);
-        mainGuest.setPayDate(payDate);
-        mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
-        mainGuest.setDaysUntilDueDate(daysUntilDueDate);
-        mainGuest.setCccdImageFront(encodedCCCDFrontImage);
-        mainGuest.setCccdImageBack(encodedCCCDBackImage);
-        mainGuest.setContractImageFront(encodedContractFrontImage);
-        mainGuest.setContractImageBack(encodedContractBackImage);
-        mainGuest.setFileStatus(true);
+        if (isNameEmpty || isPhoneEmpty || isCccdEmpty || isDateOfBirthEmpty || isGenderEmpty || isTotalMembersEmpty || isCreateDateEmpty || isDateInEmpty || isExpirationDateEmpty || isPayDateEmpty || isRoomPriceEmpty || isDaysUntilDueDateEmpty || isCccdFrontEmpty || isCccdBackEmpty){
+            Toast.makeText(requireContext(), "Hãy nhập đầy đủ và chính xác thông tin các trường", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            MainGuest mainGuest = new MainGuest();
+            mainGuest.setNameGuest(nameGuest);
+            mainGuest.setPhoneGuest(phoneGuest);
+            mainGuest.setCccdNumber(cccdNumber);
+            mainGuest.setDateOfBirth(dateOfBirth);
+            mainGuest.setGender(gender);
+            mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
+            mainGuest.setCreateDate(createDate);
+            mainGuest.setDateIn(dateIn);
+            mainGuest.setExpirationDate(expirationDate);
+            mainGuest.setPayDate(payDate);
+            mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
+            mainGuest.setDaysUntilDueDate(daysUntilDueDate);
+            mainGuest.setCccdImageFront(encodedCCCDFrontImage);
+            mainGuest.setCccdImageBack(encodedCCCDBackImage);
+            mainGuest.setContractImageFront(encodedContractFrontImage);
+            mainGuest.setContractImageBack(encodedContractBackImage);
+            mainGuest.setFileStatus(true);
 
-        presenter.addContractToFirestore(mainGuest);
-        return true;
+            presenter.addContractToFirestore(mainGuest);
+            return true;
+        }
     }
 
     private void openCancelSaveDialog() {
