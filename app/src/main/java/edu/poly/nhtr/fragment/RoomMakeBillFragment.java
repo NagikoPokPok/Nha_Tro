@@ -8,7 +8,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +62,6 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             bill = (RoomBill) arguments.getSerializable("bill");
             if (bill != null) {
                 roomId = bill.getRoomID();
-                showToast(roomId);
             } else {
                 showToast("Room object is null");
             }
@@ -102,10 +100,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             getParentFragmentManager().popBackStack();
         });
 
-        binding.btnMakeBill.setOnClickListener(v -> {
-
-            openConfirmMakeBillDialog();
-        });
+        binding.btnMakeBill.setOnClickListener(v -> openConfirmMakeBillDialog());
     }
 
     private void openConfirmMakeBillDialog() {
@@ -114,20 +109,12 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         Button btnConfirmMakeBill = dialog.findViewById(R.id.btn_confirm_make_bill);
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        btnConfirmMakeBill.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showButtonLoading(R.id.btn_confirm_make_bill);
-                bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
-                presenter.updateBill(bill);
-            }
+        btnConfirmMakeBill.setOnClickListener(v -> {
+            showButtonLoading(R.id.btn_confirm_make_bill);
+            bill.setPlusOrMinusMoneyList(plusOrMinusMoneyAdapter.getPlusOrMinusMoneyList());
+            presenter.updateBill(bill);
         });
     }
 
@@ -158,7 +145,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         ServiceInMakeBillAdapter serviceInMakeBillAdapter = new ServiceInMakeBillAdapter(roomServiceList, this);
         binding.serviceInBillRecyclerView.setAdapter(serviceInMakeBillAdapter);
         if (roomServiceList.isEmpty())
-            showToast("null");
+            showToast("Không có dữ liệu");
         else binding.serviceInBillRecyclerView.setVisibility(View.VISIBLE);
 
 
@@ -217,9 +204,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
             binding.txtCountMinus.setText(toStringFromInt(plusOrMinusMoneyAdapter.getMinus()));
             binding.txtCountPlus.setText(toStringFromInt(plusOrMinusMoneyAdapter.getPlus()));
-
-//            String countPlusOrMinus = "Hiện có " + plusOrMinusMoneyAdapter.getItemCount() + " khoản thêm/bớt";
-//            binding.txtCountPlusOrMinus.setText(countPlusOrMinus);
+            
         }
     }
 
@@ -251,54 +236,41 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         bill.dateCreateBill = java.sql.Date.valueOf(String.valueOf(date));
 
-        String txt_createContractDate = mainGuest.getCreateDate();
+        String txt_GuestDateIn = mainGuest.getGuestDateIn();
         String txt_expirationContractDate = mainGuest.getExpirationDate();
-        String payDay = String.valueOf(mainGuest.getDaysUntilDueDate());
+        String payDay = String.valueOf(mainGuest.getPayDate());
 
-        LocalDate createContractDate = LocalDate.parse(txt_createContractDate, formatter);
+        LocalDate guestDateIn = LocalDate.parse(txt_GuestDateIn, formatter);
         LocalDate expirationContractDate = LocalDate.parse(txt_expirationContractDate, formatter);
 
         // khởi tạo xuất hóa đơn
-        LocalDate payDate = LocalDate.of(bill.getYear(), bill.getMonth(), Integer.parseInt(payDay));;
-        if (Integer.parseInt(payDay) > createContractDate.getDayOfMonth() && ChronoUnit.DAYS.between(createContractDate, payDate) <=5)
-            payDate.plusMonths(1);
-        else if (Integer.parseInt(payDay) <= createContractDate.getDayOfMonth()){
-            if (ChronoUnit.DAYS.between(createContractDate, payDate) <=5)
-                payDate.plusMonths(2);
-            else
-                payDate.plusMonths(1);
+        LocalDate payDate = LocalDate.of(bill.getYear(), bill.getMonth(), Integer.parseInt(payDay));
+        if (Integer.parseInt(payDay) > guestDateIn.getDayOfMonth())
+            payDate = payDate.plusMonths(1);
+        else if (Integer.parseInt(payDay) <= guestDateIn.getDayOfMonth()){
+//            if (ChronoUnit.DAYS.between(guestDateIn, payDate) <=5)
+//                payDate = payDate.plusMonths(2);
+//            else
+                payDate = payDate.plusMonths(1);
         }
-//            payDate = LocalDate.of(date.getYear(), date.getMonthValue()+1, Integer.parseInt(payDay));
-//        if (Integer.parseInt(payDay) > date.getDayOfMonth())
-//            payDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), Integer.parseInt(payDay));
-//        else if (date.getMonthValue() == 12)
-//            payDate = LocalDate.of(date.getYear()+1, 1, Integer.parseInt(payDay));
-//        else
-//            payDate = LocalDate.of(date.getYear(), date.getMonthValue()+1, Integer.parseInt(payDay));
+        if (ChronoUnit.DAYS.between(guestDateIn, payDate) <= 5) payDate.plusMonths(1);
 
         // Nếu tg kết thúc hợp đồng không quá 5 ngày sau ngày thanh toán sẽ gộp bill
         if (ChronoUnit.DAYS.between(payDate, expirationContractDate) <=5)
             payDate = expirationContractDate;
 
 
-
-        Log.e("dateTest", payDate.getDayOfMonth() + "");
-        LocalDate dateEndToPay = payDate.plusDays(Integer.parseInt(payDay));
-        Log.e("dateTest", payDate.getDayOfMonth() + " , " + payDay);
-
         // Ngày bắt đầu tính
         LocalDate startDate;
-        if (ChronoUnit.DAYS.between(createContractDate, payDate) <= (createContractDate.lengthOfMonth() + 5)){
-            startDate = createContractDate;
+        if (ChronoUnit.DAYS.between(guestDateIn, payDate) <= (guestDateIn.lengthOfMonth() + 5)){
+            startDate = guestDateIn;
         }else {
             startDate = payDate.minusMonths(1);
             startDate = startDate.withDayOfMonth(Integer.parseInt(payDay));
         }
-//        if (ChronoUnit.DAYS.between(payDate, createContractDate) <= (createContractDate.lengthOfMonth() +5))
-//            startDate = createContractDate;
-//        else
-//            startDate = payDate.minusMonths(1);
 
+
+        LocalDate dateEndToPay = payDate.plusDays(mainGuest.getDaysUntilDueDate());
 
         binding.txtPayDate.setText(dateEndToPay.format(formatter));
 

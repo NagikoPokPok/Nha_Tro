@@ -36,14 +36,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import edu.poly.nhtr.Adapter.CustomListCheckBoxAdapter;
 import edu.poly.nhtr.Adapter.CustomSpinnerAdapter;
@@ -56,7 +55,6 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentServiceBinding;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.listeners.ServiceListener;
-import edu.poly.nhtr.models.Home;
 import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.presenters.ServicePresenter;
@@ -65,9 +63,7 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 
 
 public class ServiceFragment extends Fragment implements ServiceListener, SwipeRefreshLayout.OnRefreshListener {
-    private View view;
     private PreferenceManager preferenceManager;
-    private ServiceAdapter.ViewHolder viewHolder;
     private FragmentServiceBinding binding;
     private ServicePresenter presenter;
     private Dialog dialog;
@@ -83,9 +79,9 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Home home = (Home) getArguments().getSerializable("home");
-        String homeId = home.getIdHome();
-        Boolean isHomeHaveService = home.getHaveService();
+//        Home home = (Home) getArguments().getSerializable("home");
+//        String homeId = home.getIdHome();
+//        Boolean isHomeHaveService = home.getHaveService();
 
         preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
 
@@ -115,25 +111,19 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_HOMES)
                 .document(preferenceManager.getString(Constants.KEY_HOME_ID))
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            DocumentSnapshot document = task.getResult();
-                            if(document.exists()) {
-                                if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null)
-                                    preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE));
-                                else preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                            }else
-                                preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                        }
-                        else Log.e("isHaveService", "Don't access");
-
-
-                        loadServicesData();
-
-
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        DocumentSnapshot document = task.getResult();
+                        if(document.exists()) {
+                            if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null)
+                                preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE));
+                            else preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
+                        }else
+                            preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
                     }
+                    loadServicesData();
+
+
                 });
     }
 
@@ -145,12 +135,9 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         }
         else {
             FirebaseFirestore data = FirebaseFirestore.getInstance();
-            ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID), new ServiceUtils.OnServicesLoadedListener() {
-                @Override
-                public void onServicesLoaded(List<Service> listServices) {
-                    services = listServices;
-                    setRecyclerViewData();
-                }
+            ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID), listServices -> {
+                services = listServices;
+                setRecyclerViewData();
             });
         }
     }
@@ -162,19 +149,16 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
             Log.e("RecyclerView", "Services data is null, skipping setting adapters.");
             return;
         }
-        Log.e("ServicesCount", String.valueOf(services.stream().count()));
 
         // Dịch vụ đang sử dụng
         ServiceAdapter serviceUsedAdapter = new ServiceAdapter(this.requireActivity(), ServiceUtils.usedService(services), this, binding.recyclerServiceUsed);
         binding.recyclerServiceUsed.setAdapter(serviceUsedAdapter);
         binding.recyclerServiceUsed.setVisibility(View.VISIBLE);
-        Log.e("ServicesCountUsed", String.valueOf(ServiceUtils.usedService(services).stream().count()));
 
         //Dịch vụ chưa sử dụng
         ServiceAdapter serviceUnusedAdapter = new ServiceAdapter(this.requireActivity(), ServiceUtils.unusedService(services), this, binding.recyclerServiceUnused);
         binding.recyclerServiceUnused.setAdapter(serviceUnusedAdapter);
         binding.recyclerServiceUnused.setVisibility(View.VISIBLE);
-        Log.e("ServicesCountUnused", String.valueOf(ServiceUtils.unusedService(services).stream().count()));
 
         customPosition(binding.recyclerServiceUsed,3);
         customPosition(binding.recyclerServiceUnused,3);
@@ -212,12 +196,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
         });
 
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openLibraryOfServiceImage(image);
-            }
-        });
+        image.setOnClickListener(v -> openLibraryOfServiceImage(image));
     }
 
     private boolean isServiceNameValid(EditText edt_name) {
@@ -298,31 +277,22 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
 
         //Xử lí button cho dialog
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        btn_cancel.setOnClickListener(v -> dialog.cancel());
 
-        btn_apply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
-                if (isServiceDetail(layout_fee, layout_unit)) {
-                    int price = Integer.parseInt(edt_fee.getText().toString());
-                    String idHomeParent = preferenceManager.getString(Constants.KEY_HOME_ID);
-                    Service service = new Service(idHomeParent, name.toString(), encodeImage.toString(), price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), true, true);
-                    presenter.saveToFirebase(service, listRoom, checkedStates);
+        btn_apply.setOnClickListener(v -> {
+            showButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
+            if (isServiceDetail(layout_fee, layout_unit)) {
+                int price = Integer.parseInt(edt_fee.getText().toString());
+                String idHomeParent = preferenceManager.getString(Constants.KEY_HOME_ID);
+                Service service = new Service(idHomeParent, name, encodeImage, price, edt_unit.getText().toString(), spinner.getSelectedItemPosition(), edt_note.getText().toString(), true, true);
+                presenter.saveToFirebase(service, listRoom, checkedStates);
 
 //                    presenter.ApplyServiceForRoom(name, listRoom, checkedStates);
 //                    presenter.applyServiceOfRoom(service, listRoom, checkedStates);
 
-                }else{
-                    hideButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
-                }
+            }else{
+                hideButtonLoading(R.id.btn_apply_service, R.id.progress_bar_of_apply);
             }
-
         });
 
         //Xử lí hành động cho spinner
@@ -342,21 +312,15 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         });
 
         //Xử lí các hành động cho editText khi được truy cập
-        edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
-                if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
-            }
+        edt_fee.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
+            if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
         });
 
-        edt_note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                edt_note.setHint("");
-                if (!hasFocus && edt_note.getText().toString().isEmpty())
-                    edt_note.setHint("Viết những lưu ý của bạn ta đây");
-            }
+        edt_note.setOnFocusChangeListener((v, hasFocus) -> {
+            edt_note.setHint("");
+            if (!hasFocus && edt_note.getText().toString().isEmpty())
+                edt_note.setHint("Viết những lưu ý của bạn ta đây");
         });
 
 
@@ -369,7 +333,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         boolean isFeeNunber = false;
         boolean isTrue = true;
         int fee = 0;
-        if (!layoutFee.getEditText().getText().toString().isEmpty()) {
+        if (!Objects.requireNonNull(layoutFee.getEditText()).getText().toString().isEmpty()) {
             try {
                 fee = Integer.parseInt(layoutFee.getEditText().getText().toString());
                 isFeeNunber = true;
@@ -378,7 +342,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
                 isTrue = false;
             }
         }
-        if (layoutUnit.getEditText().getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(layoutUnit.getEditText()).getText().toString().isEmpty()) {
             layoutUnit.setError("Không được để trống đơn vị");
             isTrue = false;
         } else if (isFeeNunber && fee < 0) {
@@ -608,6 +572,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         edt_unit.setText(text);
     }
 
+    @SuppressLint("SetTextI18n")
     private void openConfirmDeleteDialog(Service service) {
         setupDialog(dialogConfirm, R.layout.service_dialog_confirm_delete_service, Gravity.CENTER);
 
@@ -621,15 +586,12 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
         //Set listener
         btn_cancel.setOnClickListener(v -> dialogConfirm.dismiss());
-        btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //showButtonLoading(R.id.btn_confirm_delete_service, R.id.progressBar_of_delete_service);
-                dialogConfirm.findViewById(R.id.btn_confirm_delete_service).setVisibility(View.INVISIBLE);
-                dialogConfirm.findViewById(R.id.progressBar_of_delete_service).setVisibility(View.VISIBLE);
-                presenter.deleteService(service);
+        btn_delete.setOnClickListener(v -> {
+            //showButtonLoading(R.id.btn_confirm_delete_service, R.id.progressBar_of_delete_service);
+            dialogConfirm.findViewById(R.id.btn_confirm_delete_service).setVisibility(View.INVISIBLE);
+            dialogConfirm.findViewById(R.id.progressBar_of_delete_service).setVisibility(View.VISIBLE);
+            presenter.deleteService(service);
 
-            }
         });
     }
 
@@ -637,15 +599,15 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_service, container, false);
+        View view = inflater.inflate(R.layout.fragment_service, container, false);
         // Kiểm tra xem Bundle có tồn tại hay không
-        if (getArguments() != null) {
+//        if (getArguments() != null) {
             // Nhận dữ liệu từ Bundle
-            Home home = (Home) getArguments().getSerializable("home");
+//            Home home = (Home) getArguments().getSerializable("home");
 
             // Sử dụng dữ liệu 'home' như mong muốn
             // ...
-        }
+//        }
 
         return binding.getRoot();
     }
@@ -710,16 +672,13 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         List<Boolean> checkedStatesPrevious = new ArrayList<>();
         List<Boolean> checkedStatesAfter = new ArrayList<>();
         if(service.getApply()){
-            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
-                @Override
-                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                    checkedStatesPrevious.clear();
-                    checkedStatesPrevious.addAll(checkedStates);
-                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
-                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
-                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")){
-                        setNonListenerToRecycler(recycler_applyFor);
-                    }
+            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, checkedStates -> {
+                checkedStatesPrevious.clear();
+                checkedStatesPrevious.addAll(checkedStates);
+                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
+                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+                if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")){
+                    setNonListenerToRecycler(recycler_applyFor);
                 }
             });
         }else {
@@ -878,27 +837,21 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         spinner.setSelection(service.getFee_base());
 
         if (service.getFee_base() == 3) edt_unit.setText(service.getUnit());
-        Log.e("serviceFragment", "id " + service.getIdService());
-        Log.e("serviceFragment", "fee_base " + service.getFee_base());
-        Log.e("serviceFragment", "unit " + service.getUnit());
         String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
         txt_feeBase.setText(titleOfFee);
-        edt_fee.setText("" + service.getPrice());
+        edt_fee.setText(String.valueOf(service.getPrice()));
         edt_note.setText(service.getNote());
 
         List<Boolean> checkedStatesPrevious = new ArrayList<>();
         List<Boolean> checkedStatesAfter = new ArrayList<>();
         if (service.getApply()) {
-            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
-                @Override
-                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
-                    checkedStatesPrevious.clear();
-                    checkedStatesPrevious.addAll(checkedStates);
-                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
-                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
-                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")) {
-                        setNonListenerToRecycler(recycler_applyFor);
-                    }
+            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, checkedStates -> {
+                checkedStatesPrevious.clear();
+                checkedStatesPrevious.addAll(checkedStates);
+                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
+                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+                if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")) {
+                    setNonListenerToRecycler(recycler_applyFor);
                 }
             });
         } else {
@@ -910,47 +863,35 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
         //Xử lí button cho dialog
         exit.setVisibility(View.VISIBLE);
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                recyclerView.post(() -> {
-                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-                    if (viewHolder != null) viewHolder.itemView.performClick();
-                });
-            }
+        exit.setOnClickListener(v -> dialog.dismiss());
+        btn_cancel.setOnClickListener(v -> {
+            dialog.cancel();
+            recyclerView.post(() -> {
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+                if (viewHolder != null) viewHolder.itemView.performClick();
+            });
         });
 
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
-                if (isServiceDetail(layout_fee, layout_unit)) {
-                    int price = 0;
-                    try {
-                        price = Integer.parseInt(edt_fee.getText().toString());
-                    } catch (Exception e) {
-                        Log.e("price", "Not Valid");
-                    }
-                    service.setFee_base(spinner.getSelectedItemPosition());
-                    service.setUnit(edt_unit.getText().toString());
-                    service.setPrice(price);
-                    service.setNote(edt_note.getText().toString());
-
-                    if (service.getApply())
-                        presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
-
-                }else{
-                    hideButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
+        btn_update.setOnClickListener(v -> {
+            showButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
+            if (isServiceDetail(layout_fee, layout_unit)) {
+                int price = 0;
+                try {
+                    price = Integer.parseInt(edt_fee.getText().toString());
+                } catch (Exception e) {
+                    Log.e("price", "Not Valid");
                 }
-            }
+                service.setFee_base(spinner.getSelectedItemPosition());
+                service.setUnit(edt_unit.getText().toString());
+                service.setPrice(price);
+                service.setNote(edt_note.getText().toString());
 
+                if (service.getApply())
+                    presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
+
+            }else{
+                hideButtonLoading(R.id.btn_update_service, R.id.progress_bar_of_update);
+            }
         });
 
         //Xử lí hành động cho spinner
@@ -971,21 +912,15 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         });
 
         //Xử lí các hành động cho editText khi được truy cập
-        edt_fee.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
-                if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
-            }
+        edt_fee.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && edt_fee.getText().toString().equals("0")) edt_fee.setText("");
+            if (!hasFocus && edt_fee.getText().toString().isEmpty()) edt_fee.setText("0");
         });
 
-        edt_note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                edt_note.setHint("");
-                if (!hasFocus && edt_note.getText().toString().isEmpty())
-                    edt_note.setHint("Viết những lưu ý của bạn ta đây");
-            }
+        edt_note.setOnFocusChangeListener((v, hasFocus) -> {
+            edt_note.setHint("");
+            if (!hasFocus && edt_note.getText().toString().isEmpty())
+                edt_note.setHint("Viết những lưu ý của bạn ta đây");
         });
 
 
@@ -1009,24 +944,16 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         } else { // Service is not applied
             //Ánh xạ id cho nút sử dụng và hiện nó lên
             // Set listener
-            btn_use.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showButtonLoading(R.id.btn_use_service, R.id.progress_bar_of_use);
-                    service.setApply(true);
-                    presenter.updateStatusOfApplyToFirebase(service);
-                    hideButtonLoading(R.id.btn_use_service, R.id.progress_bar_of_use);
-                    dialog.cancel();
-                    setRecyclerViewData();
-                }
+            btn_use.setOnClickListener(v -> {
+                showButtonLoading(R.id.btn_use_service, R.id.progress_bar_of_use);
+                service.setApply(true);
+                presenter.updateStatusOfApplyToFirebase(service);
+                hideButtonLoading(R.id.btn_use_service, R.id.progress_bar_of_use);
+                dialog.cancel();
+                setRecyclerViewData();
             });
 
-            btn_delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openConfirmDeleteDialog(service);
-                }
-            });
+            btn_delete.setOnClickListener(v -> openConfirmDeleteDialog(service));
         }
 
     }
@@ -1062,12 +989,9 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     @Override
     public void addServiceSuccess(Service service) {
-        ServiceUtils.getAvailableService(FirebaseFirestore.getInstance(), service.getIdHomeParent(), new ServiceUtils.OnServicesLoadedListener() {
-            @Override
-            public void onServicesLoaded(List<Service> listServices) {
-                services = listServices;
-                setRecyclerViewData();
-            }
+        ServiceUtils.getAvailableService(FirebaseFirestore.getInstance(), service.getIdHomeParent(), listServices -> {
+            services = listServices;
+            setRecyclerViewData();
         });
     }
 

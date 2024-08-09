@@ -13,6 +13,7 @@ public class MainGuest extends Guest implements Serializable {
     private int daysUntilDueDate;
     private String contractImageFront;
     private String contractImageBack;
+    private String guestDateIn;
 
 
     public MainGuest(int totalMembers, String idGuest, String nameGuest, String phoneGuest, boolean fileStatus, String dateIn,
@@ -36,7 +37,7 @@ public class MainGuest extends Guest implements Serializable {
         super();
     }
 
-    public MainGuest(String createDate, String expirationDate, String payDate, int daysUntilDueDate, int totalMembers, int roomPrice, String guestPhone) {
+    public MainGuest(String createDate, String expirationDate, String payDate, int daysUntilDueDate, int totalMembers, int roomPrice, String guestPhone, String guestDateIn) {
         this.createDate = createDate;
         this.expirationDate = expirationDate;
         this.payDate = payDate;
@@ -44,6 +45,7 @@ public class MainGuest extends Guest implements Serializable {
         this.totalMembers = totalMembers;
         this.roomPrice = roomPrice;
         this.phoneGuest = guestPhone;
+        this.guestDateIn = guestDateIn;
     }
 
     public int getTotalMembers() {
@@ -148,5 +150,13 @@ public class MainGuest extends Guest implements Serializable {
 
     public void setContractImageBack(String contractImageBack) {
         this.contractImageBack = contractImageBack;
+    }
+
+    public String getGuestDateIn() {
+        return guestDateIn;
+    }
+
+    public void setGuestDateIn(String guestDateIn) {
+        this.guestDateIn = guestDateIn;
     }
 }

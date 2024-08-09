@@ -1,7 +1,6 @@
 package edu.poly.nhtr.presenters;
 
 import android.icu.text.Collator;
-import android.util.Log;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -118,12 +117,7 @@ public class ServicePresenter {
                 .update(newServiceInfo)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        setNewRoomServiceAndApply(service, listRoom, checkedStatesPrevious, checkedStatesAfter, new OnRoomServiceUpdatedListener() {
-                            @Override
-                            public void onRoomServiceUpdated() {
-                                listener.showResultUpdateService(service, recyclerView, position);
-                            }
-                        });
+                        setNewRoomServiceAndApply(service, listRoom, checkedStatesPrevious, checkedStatesAfter, () -> listener.showResultUpdateService(service, recyclerView, position));
 
                     }
                 });
@@ -143,7 +137,6 @@ public class ServicePresenter {
                                     document.getId()
                             );
                             listRoom.add(room);
-                            Log.e("nameRoom", room.getNameRoom());
                         }
                         listRoom.sort(Comparator.comparing(Room::getNameRoom, Collator.getInstance(new Locale("vi", "VN"))));
                     }
@@ -167,24 +160,12 @@ public class ServicePresenter {
                 HashMap<String, Object> data = new HashMap<>();
                 data.put(Constants.KEY_SERVICE_ID, service.getIdService());
                 data.put(Constants.KEY_ROOM_ID, listRoom.get(i).getRoomId());
-//                FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION)
-//                        .document(listRoom.get(i).getRoomId())
-//                        .set(data, SetOptions.merge())
-//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                if (task.isSuccessful()) Log.e("ApplyServiceNewCollection", "successfully");
-//                                else Log.e("ApplyServiceNewCollection", "fail");
-//                            }
-//                        });
                 FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_ROOM_SERVICES_INFORMATION)
                         .add(data)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 callback.onRoomServiceUpdated();
-                                Log.e("ApplyServiceNewCollection", "successfully");
                             }
-                            else Log.e("ApplyServiceNewCollection", "fail");
                         });
             }
             else if (checkedStatesPrevious.get(i) && !checkedStatesAfter.get(i)){
@@ -200,12 +181,8 @@ public class ServicePresenter {
                                         .delete()
                                         .addOnCompleteListener(task1 -> {
                                             if (task1.isSuccessful()){
-                                                Log.e("ApplyServiceNewCollection", "delete Successfully");
                                                 callback.onRoomServiceUpdated();
                                             }
-
-                                            else
-                                                Log.e("ApplyServiceNewCollection", "delete fail");
                                         });
                         });
             } else callback.onRoomServiceUpdated();

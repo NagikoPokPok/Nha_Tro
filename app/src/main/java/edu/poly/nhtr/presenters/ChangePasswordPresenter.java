@@ -1,15 +1,7 @@
 package edu.poly.nhtr.presenters;
 
-import static android.content.ContentValues.TAG;
-
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -74,15 +66,12 @@ public class ChangePasswordPresenter {
                                 .addOnFailureListener(e -> {
                                     user.updatePassword(preferenceManager.getString(Constants.KEY_PASSWORD))
                                             .addOnCompleteListener(task1 -> {
-                                                if (task1.isSuccessful()) {
-                                                }
                                             });
                                     view.changePasswordError("Đổi mật khẩu thất bại");
                                 });
 
                     } else {
                         view.changePasswordError("Lỗi");
-                        Log.e("FirestoreError", "Lỗi: " + task.getException().getMessage());
                         SignInAgain();
                     }
                 });
@@ -91,13 +80,9 @@ public class ChangePasswordPresenter {
 
     private void SignInAgain() {
         activity.mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), Objects.requireNonNull(PasswordHasher.hashPassword(preferenceManager.getString(Constants.KEY_PASSWORD))))
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(activity, "Xác thực người dùng thất bại.", Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(activity, "Xác thực người dùng thất bại.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

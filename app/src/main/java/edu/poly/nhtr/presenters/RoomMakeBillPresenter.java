@@ -37,7 +37,8 @@ public class RoomMakeBillPresenter {
                                 Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_DAYS_UNTIL_DUE_DATE)),
                                 Math.toIntExact(document.getLong(Constants.KEY_ROOM_TOTAl_MEMBERS)),
                                 Math.toIntExact(document.getLong(Constants.KEY_CONTRACT_ROOM_PRICE)),
-                                document.getString(Constants.KEY_GUEST_PHONE)
+                                document.getString(Constants.KEY_GUEST_PHONE),
+                                document.getString(Constants.KEY_GUEST_DATE_IN)
                         );
 
                         callback.onGetContractFromFirebase(mainGuest);

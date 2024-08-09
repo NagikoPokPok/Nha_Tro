@@ -15,10 +15,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -42,7 +40,6 @@ import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.FragmentRoomServiceBinding;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.listeners.RoomServiceListener;
-import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.models.RoomService;
 import edu.poly.nhtr.models.Service;
 import edu.poly.nhtr.presenters.RoomServicePresenter;
@@ -50,20 +47,18 @@ import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
 public class RoomServiceFragment extends Fragment implements RoomServiceListener, SwipeRefreshLayout.OnRefreshListener {
-    private PreferenceManager preferenceManager;
     private FragmentRoomServiceBinding binding;
     private Dialog dialog, dialogConfirm;
     private RoomServicePresenter presenter;
     private List<RoomService> roomServices;
     private List<Service> services;
     private String roomId, homeId;
-    private Room room;
     private boolean isLoadingFinished = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
+        PreferenceManager preferenceManager = new PreferenceManager(requireActivity().getApplicationContext());
         roomId = preferenceManager.getString(Constants.KEY_ROOM_ID);
         homeId = preferenceManager.getString(Constants.KEY_HOME_ID);
         presenter = new RoomServicePresenter(this);
@@ -73,30 +68,21 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
         binding = FragmentRoomServiceBinding.inflate(getLayoutInflater());
 
         roomServices = new ArrayList<>();
-        presenter.getRoomServices(roomId, new RoomServicePresenter.OnGetRoomServiceListener() {
-            @Override
-            public void onGetRoomService(List<RoomService> listRoomService) {
-                roomServices.clear();
-                roomServices.addAll(listRoomService);
-                Log.e("roomService", "sl: "+roomServices.size());
-                if (roomServices.isEmpty()){
-                    setAutoRequiredService();
-                }else {
-                    presenter.getAvailableService(homeId, roomServices, new RoomServicePresenter.OnGetAvailableServiceListener() {
-                        @Override
-                        public void onGetAvailableService(List<Service> servicesList) {
-                            if (services == null) services = new ArrayList<>();
-                            services.clear();
-                            services.addAll(servicesList);
-                            setRecyclerView();
-                        }
-                    });
-                }
-
-                Log.e("roomIdFragment", roomId);
+        presenter.getRoomServices(roomId, listRoomService -> {
+            roomServices.clear();
+            roomServices.addAll(listRoomService);
+            if (roomServices.isEmpty()){
+                setAutoRequiredService();
+            }else {
+                presenter.getAvailableService(homeId, roomServices, servicesList -> {
+                    if (services == null) services = new ArrayList<>();
+                    services.clear();
+                    services.addAll(servicesList);
+                    setRecyclerView();
+                });
             }
         });
-        room = presenter.getRoom(roomId);
+//        Room room = presenter.getRoom(roomId);
 
         binding.swipeRefreshFragment.setOnRefreshListener(this);
 
@@ -107,45 +93,29 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
     }
 
     private void setAutoRequiredService() {
-            presenter.setNewRoomServiceAuto(homeId, roomId, new RoomServicePresenter.OnRoomServiceAutoSetListener() {
-                @Override
-                public void onRoomServiceAutoSet() {
-                    presenter.getRoomServices(roomId, new RoomServicePresenter.OnGetRoomServiceListener() {
-                        @Override
-                        public void onGetRoomService(List<RoomService> listRoomService) {
-                            roomServices.clear();
-                            roomServices.addAll(listRoomService);
-                            presenter.getAvailableService(homeId, roomServices, new RoomServicePresenter.OnGetAvailableServiceListener() {
-                                @Override
-                                public void onGetAvailableService(List<Service> listServices) {
-                                    if(services == null) services = new ArrayList<>();
-                                    services.clear();
-                                    services.addAll(listServices);
-                                    setRecyclerView();
-                                }
-                            });
+            presenter.setNewRoomServiceAuto(homeId, roomId, () -> presenter.getRoomServices(roomId, listRoomService -> {
+                roomServices.clear();
+                roomServices.addAll(listRoomService);
+                presenter.getAvailableService(homeId, roomServices, listServices -> {
+                    if(services == null) services = new ArrayList<>();
+                    services.clear();
+                    services.addAll(listServices);
+                    setRecyclerView();
+                });
 
-                        }
-                    });
-                }
-            });
+            }));
 
     }
 
     private void setRecyclerView() {
         //Log.e("serviceList", "1");
         List<Service> serviceList = new ArrayList<>();
-        presenter.getServiceOfRoom(roomServices, new RoomServicePresenter.OnGetServiceOfRoomListener() {
+        presenter.getServiceOfRoom(roomServices, services -> {
+            serviceList.clear(); // Xóa các phần tử cũ (nếu có)
+            serviceList.addAll(services); // Thêm các phần tử mới
+            buildRecyclerView(serviceList); // Gọi phương thức buildRecyclerView với danh sách đã được cập nhật
 
-            @Override
-            public void OnGetServiceOfRoom(List<Service> services) {
-                serviceList.clear(); // Xóa các phần tử cũ (nếu có)
-                serviceList.addAll(services); // Thêm các phần tử mới
-                buildRecyclerView(serviceList); // Gọi phương thức buildRecyclerView với danh sách đã được cập nhật
-                Log.e("serviceList", serviceList.size()+"s");
-
-                hideLoading();
-            }
+            hideLoading();
         });
     }
 
@@ -173,9 +143,7 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
         recyclerViewService.setAdapter(adapter);
 
         //Set listener
-        btn_add.setOnClickListener(v -> {
-            presenter.updateDataBeforeAdd(adapter, roomServices, services);
-        });
+        btn_add.setOnClickListener(v -> presenter.updateDataBeforeAdd(adapter, roomServices, services));
         btn_cancel.setOnClickListener(v -> adapter.cancelChooseListener());
         exit.setOnClickListener(v -> {
             dialog.cancel();
@@ -231,12 +199,12 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
 
         img_service.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
         txt_name.setText(service.getName().toLowerCase());
-        txt_price.setText(service.getPrice()+"");
+        txt_price.setText(String.valueOf(service.getPrice()));
 
         String temp = "Số lượng " + service.getUnit().toLowerCase();
         String txt_quantity = roomService.getQuantity() + "";
-        Log.e("quantity", txt_quantity + "  " + roomService.getQuantity());
         edt_quantity.setText(txt_quantity);
+
         if(service.getFee_base() == 0){
             edt_quantity.setVisibility(View.GONE);
             txt_unit.setVisibility(View.GONE);
@@ -260,11 +228,8 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
             btn_delete.setOnClickListener(v -> openDialogConfirmDelete(service));
 
         if(service.getFee_base() == 3) {
-            edt_quantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
+            edt_quantity.setOnFocusChangeListener((v, hasFocus) -> {
 
-                }
             });
 
             btn_update.setOnClickListener(v -> {
@@ -286,14 +251,11 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
 
         exit.setOnClickListener(v -> dialog.cancel());
 
-        edt_quantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+        edt_quantity.setOnFocusChangeListener((v, hasFocus) -> {
 
-                    if(hasFocus && edt_quantity.getText().toString().equals("0")) edt_quantity.setText("");
-                    if(!hasFocus && edt_quantity.getText().toString().isEmpty()) edt_quantity.setText("0");
-                
-            }
+                if(hasFocus && edt_quantity.getText().toString().equals("0")) edt_quantity.setText("");
+                if(!hasFocus && edt_quantity.getText().toString().isEmpty()) edt_quantity.setText("0");
+
         });
 
     }
@@ -320,9 +282,7 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
 
         //Set listener
         btn_cancel.setOnClickListener(v -> dialogConfirm.dismiss());
-        btn_delete.setOnClickListener(v -> {
-            presenter.deleteService(service, roomId);
-        });
+        btn_delete.setOnClickListener(v -> presenter.deleteService(service, roomId));
     }
 
     @Override
@@ -400,27 +360,18 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
     public void onRefresh() {
         isLoadingFinished = false;
 
-        presenter.getRoomServices(roomId, new RoomServicePresenter.OnGetRoomServiceListener() {
-            @Override
-            public void onGetRoomService(List<RoomService> listRoomService) {
-                roomServices.clear();
-                roomServices.addAll(listRoomService);
-                Log.e("roomService", "sl: "+roomServices.size());
-                if (roomServices.isEmpty()){
-                    setAutoRequiredService();
-                }else {
-                    presenter.getAvailableService(homeId, roomServices, new RoomServicePresenter.OnGetAvailableServiceListener() {
-                        @Override
-                        public void onGetAvailableService(List<Service> servicesList) {
-                            if (services == null) services = new ArrayList<>();
-                            services.clear();
-                            services.addAll(servicesList);
-                            setRecyclerView();
-                        }
-                    });
-                }
-
-                Log.e("roomIdFragment", roomId);
+        presenter.getRoomServices(roomId, listRoomService -> {
+            roomServices.clear();
+            roomServices.addAll(listRoomService);
+            if (roomServices.isEmpty()){
+                setAutoRequiredService();
+            }else {
+                presenter.getAvailableService(homeId, roomServices, servicesList -> {
+                    if (services == null) services = new ArrayList<>();
+                    services.clear();
+                    services.addAll(servicesList);
+                    setRecyclerView();
+                });
             }
         });
 
