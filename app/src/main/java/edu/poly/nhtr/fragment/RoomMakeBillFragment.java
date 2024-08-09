@@ -280,8 +280,10 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         if (ChronoUnit.DAYS.between(payDate, expirationContractDate) <=5)
             payDate = expirationContractDate;
 
+
+
         Log.e("dateTest", payDate.getDayOfMonth() + "");
-        payDate = payDate.plusDays(Integer.parseInt(payDay));
+        LocalDate dateEndToPay = payDate.plusDays(Integer.parseInt(payDay));
         Log.e("dateTest", payDate.getDayOfMonth() + " , " + payDay);
 
         // Ngày bắt đầu tính
@@ -298,7 +300,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 //            startDate = payDate.minusMonths(1);
 
 
-        binding.txtPayDate.setText(payDate.format(formatter));
+        binding.txtPayDate.setText(dateEndToPay.format(formatter));
 
         binding.txtDateStart.setText(startDate.format(formatter));
         binding.txtDateEnd.setText(payDate.format(formatter));
