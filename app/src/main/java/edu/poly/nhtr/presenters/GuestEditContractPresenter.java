@@ -621,7 +621,7 @@ public class GuestEditContractPresenter {
     }
 
     // Sự kiện cho trường số điện thoại
-    public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp) {
+    public void setUpPhoneNumberField(TextInputEditText textInputEditText, TextInputLayout textInputLayout, CountryCodePicker ccp, String guestId) {
         if (textInputEditText == null || textInputLayout == null || ccp == null) {
             return;
         }
@@ -643,13 +643,13 @@ public class GuestEditContractPresenter {
 
             @Override
             public void afterTextChanged(Editable s) {
-                handlePhoneNumberChanged(s.toString().trim(), textInputLayout, ccp);
+                handlePhoneNumberChanged(s.toString().trim(), textInputLayout, ccp, guestId);
             }
         });
     }
 
     // Xử lý sự kiện khi số điện thoại thay đổi
-    public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp) {
+    public void handlePhoneNumberChanged(String phoneNumber, TextInputLayout textInputLayout, CountryCodePicker ccp, String guestId) {
         if (textInputLayout == null) {
             return;
         }
@@ -663,11 +663,11 @@ public class GuestEditContractPresenter {
         if (!ccp.isValidFullNumber()) {
             textInputLayout.setError("Số điện thoại không hợp lệ");
         } else {
-            checkDuplicatePhoneNumber(phoneNumber, textInputLayout);
+            checkDuplicatePhoneNumber(phoneNumber, textInputLayout, guestId);
         }
     }
 
-    private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout) {
+    private void checkDuplicatePhoneNumber(String phone, TextInputLayout textInputLayout, String guestId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection(Constants.KEY_COLLECTION_GUESTS)
@@ -676,7 +676,15 @@ public class GuestEditContractPresenter {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty()) {
+                        boolean isDuplicate = false;
+                        for (QueryDocumentSnapshot document : task.getResult() ) {
+                            if (!document.getId().equals(guestId)) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+
+                        if (isDuplicate) {
                             textInputLayout.setError("Số điện thoại đã tồn tại trong nhà trọ này");
                         } else {
                             textInputLayout.setError(null);
