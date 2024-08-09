@@ -214,7 +214,6 @@ public class RoomContractFragment extends Fragment implements RoomContractInterf
 
     public void cancelRepetitiveAlarm()
     {
-        showToast("Delete contract => Cancel alarm");
         int requestCode1 = Integer.parseInt(preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId()+"code1"));
         alarmService.cancelRepetitiveAlarm(requestCode1);
 

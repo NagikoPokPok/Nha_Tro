@@ -183,17 +183,36 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
             binding.edtNgayTraTienPhong.setText(mainGuest.getPayDate());
             binding.edtHanThanhToan.setText(String.valueOf(mainGuest.getDaysUntilDueDate()));
 
-            if (mainGuest.getCccdImageFront() != null) {
-                binding.imgAddCccdFront.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageFront()));
+            // Set CCCD Front Image
+            if (mainGuest.getCccdImageFront() != null && !mainGuest.getCccdImageFront().isEmpty()) {
+                binding.imgAddCccdFront.setVisibility(View.GONE);
+                binding.imgCccdFront.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageFront()));
+            } else {
+                binding.imgCccdFront.setVisibility(View.VISIBLE);
             }
-            if (mainGuest.getCccdImageBack() != null) {
-                binding.imgAddCccdBack.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageBack()));
+
+            // Set CCCD Back Image
+            if (mainGuest.getCccdImageBack() != null && !mainGuest.getCccdImageBack().isEmpty()) {
+                binding.imgAddCccdBack.setVisibility(View.GONE);
+                binding.imgCccdBack.setImageBitmap(getConversionImageForCCCD(mainGuest.getCccdImageBack()));
+            } else {
+                binding.imgCccdBack.setVisibility(View.VISIBLE);
             }
-            if (mainGuest.getContractImageFront() != null) {
-                binding.imgAddContractFront.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageFront()));
+
+            // Set Contract Front Image
+            if (mainGuest.getContractImageFront() != null && !mainGuest.getContractImageFront().isEmpty()) {
+                binding.imgAddContractFront.setVisibility(View.GONE);
+                binding.imgContractFront.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageFront()));
+            } else {
+                binding.imgContractFront.setVisibility(View.VISIBLE);
             }
-            if (mainGuest.getContractImageBack() != null) {
-                binding.imgAddContractBack.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageBack()));
+
+            // Set Contract Back Image
+            if (mainGuest.getContractImageBack() != null && !mainGuest.getContractImageBack().isEmpty()) {
+                binding.imgAddContractBack.setVisibility(View.GONE);
+                binding.imgContractBack.setImageBitmap(getConversionImageForContract(mainGuest.getContractImageBack()));
+            } else {
+                binding.imgContractBack.setVisibility(View.VISIBLE);
             }
         } else {
             showToast("MainGuest data is null");
@@ -293,7 +312,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
         int heightDp = 250;
         int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
 
-        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+        int widthPx = bitmap.getWidth() + heightPx / bitmap.getHeight();
 
         return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
     }
@@ -305,7 +324,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
         int heightDp = 300;
         int heightPx = (int) (heightDp * getResources().getDisplayMetrics().density);
 
-        int widthPx = bitmap.getWidth() * heightPx / bitmap.getHeight();
+        int widthPx = bitmap.getWidth() + heightPx / bitmap.getHeight();
 
         return Bitmap.createScaledBitmap(bitmap, widthPx, heightPx, true);
     }
@@ -313,7 +332,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
     private String encodeImage(Bitmap bitmap, int previewWidth, int previewHeight) {
         Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
@@ -377,13 +396,12 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
                 progressBar.setVisibility(View.INVISIBLE);
 
                 if (saveContractSuccessfully) {
+                    MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
+                    if (activity != null) {
+                        activity.showTabLayoutEditRoomGuestFragment();
+                    }
+                    dialog.dismiss();
                     updateAlarm(() -> {
-                        MainDetailedRoomActivity activity = (MainDetailedRoomActivity) getActivity();
-                        if (activity != null) {
-                            activity.showTabLayoutEditRoomGuestFragment();
-                        }
-
-                        dialog.dismiss();
                     });
 
                 } else {
@@ -399,90 +417,83 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
 
 
     private void updateAlarm(onUpdateAlarm listener) {
-        presenter.getDayOfMakeBill(room.getRoomId(), new GuestEditContractPresenter.OnGetDayOfMakeBillCompleteListener() {
-            @Override
-            public void onComplete(MainGuest mainGuest) {
-                Calendar calendar = Calendar.getInstance();
-                int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-                int currentMonth = calendar.get(Calendar.MONTH) + 1;
-                int currentYear = calendar.get(Calendar.YEAR);
+        presenter.getDayOfMakeBill(room.getRoomId(), mainGuest -> {
+            Calendar calendar = Calendar.getInstance();
+            int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+            int currentMonth = calendar.get(Calendar.MONTH) + 1;
+            int currentYear = calendar.get(Calendar.YEAR);
 
-                int dayOfGiveBill = Integer.parseInt(mainGuest.getPayDate());
-                String date = mainGuest.getDateIn();
+            int dayOfGiveBill = Integer.parseInt(mainGuest.getPayDate());
+            String date = mainGuest.getDateIn();
 
-                String[] dateParts = date.split("/");
-                int dayDateInOfGuest = Integer.parseInt(dateParts[0]);
-                int monthDateInOfGuest = Integer.parseInt(dateParts[1]);
-                int yearDateInOfGuest = Integer.parseInt(dateParts[2]);
+            String[] dateParts = date.split("/");
+            int dayDateInOfGuest = Integer.parseInt(dateParts[0]);
+            int monthDateInOfGuest = Integer.parseInt(dateParts[1]);
+            int yearDateInOfGuest = Integer.parseInt(dateParts[2]);
 
-                int month = currentMonth;
-                int year = currentYear;
+            int month = currentMonth;
+            int year = currentYear;
 
-                String str1 = preferenceManager.getString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1, room.getRoomId() + "code1");
-                String str2 = preferenceManager.getString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2, room.getRoomId() + "code2");
+            String str1 = preferenceManager.getString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_1, room.getRoomId() + "code1");
+            String str2 = preferenceManager.getString(Constants.KEY_NOTIFICATION_DAY_PUSH_NOTIFICATION_2, room.getRoomId() + "code2");
 
-                int previousDay1 = str1 != null ? Integer.parseInt(str1) : -1;
-                int previousDay2 = str2 != null ? Integer.parseInt(str2) : -1;
+            int previousDay1 = str1 != null ? Integer.parseInt(str1) : -1;
+            int previousDay2 = str2 != null ? Integer.parseInt(str2) : -1;
 
-                // Kiểm tra nếu ngày hóa đơn mới có hợp lệ
-                if (dayOfGiveBill < 1 || dayOfGiveBill > getLastDayOfMonth2(month, year)) {
-                    showToast("Ngày hóa đơn không hợp lệ");
-                    return;
+            // Kiểm tra nếu ngày hóa đơn mới có hợp lệ
+            if (dayOfGiveBill < 1 || dayOfGiveBill > getLastDayOfMonth2(month, year)) {
+                return;
+            }
+
+            // Kiểm tra nếu ngày hóa đơn mới xảy ra trước ngày hiện tại
+            if (currentDay > dayOfGiveBill) {
+                return;
+            }
+
+
+            // Kiểm tra nếu alarm mới là giống như alarm cũ
+            if (dayOfGiveBill == previousDay2 || dayOfGiveBill - 1 == previousDay1) {
+                return;
+            }
+
+            // Kiểm tra và cập nhật tháng và năm nếu cần thiết
+            if (currentDay >= dayOfGiveBill) {
+                month = currentMonth + 1;
+                if (month > 12) {
+                    month = 1;
+                    year++;
                 }
-
-                // Kiểm tra nếu ngày hóa đơn mới xảy ra trước ngày hiện tại
-                if (currentDay > dayOfGiveBill) {
-                    showToast("Ngày hóa đơn đã qua");
-                    return;
-                }
-
-
-                // Kiểm tra nếu alarm mới là giống như alarm cũ
-                if (dayOfGiveBill == previousDay2 || dayOfGiveBill - 1 == previousDay1) {
-                    showToast("Alarm đã được đặt");
-                    return;
-                }
-
-                // Kiểm tra và cập nhật tháng và năm nếu cần thiết
-                if (currentDay >= dayOfGiveBill) {
+            } else {
+                if (previousDay2 >= dayOfGiveBill || previousDay1 == dayOfGiveBill) {
                     month = currentMonth + 1;
                     if (month > 12) {
                         month = 1;
                         year++;
                     }
-                } else {
-                    if (previousDay2 >= dayOfGiveBill || previousDay1 == dayOfGiveBill) {
-                        month = currentMonth + 1;
-                        if (month > 12) {
-                            month = 1;
-                            year++;
-                        }
-                    }
                 }
-
-                // Đặt lại alarm cho ngày đầu tháng mới
-                if (dayOfGiveBill == 1) {
-                    month = currentMonth == 12 ? 1 : currentMonth + 1;
-                    year = currentMonth == 12 ? currentYear + 1 : currentYear;
-                    showToast("Alarm sẽ được đặt lại cho ngày đầu tháng mới");
-                }
-
-                // Sinh mã yêu cầu cho alarm
-                String requestCode1Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1");
-                int requestCode1 = requestCode1Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode1Str);
-
-                String requestCode2Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code2");
-                int requestCode2 = requestCode2Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode2Str);
-
-                // Đặt lại alarm với ngày giao hợp đồng mới
-                preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.getRoomId() + "code1");
-                setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, requestCode1);
-
-                preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.getRoomId() + "code2");
-                setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2);
-
-                listener.onComplete();
             }
+
+            // Đặt lại alarm cho ngày đầu tháng mới
+            if (dayOfGiveBill == 1) {
+                month = currentMonth == 12 ? 1 : currentMonth + 1;
+                year = currentMonth == 12 ? currentYear + 1 : currentYear;
+            }
+
+            // Sinh mã yêu cầu cho alarm
+            String requestCode1Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1");
+            int requestCode1 = requestCode1Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode1Str);
+
+            String requestCode2Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code2");
+            int requestCode2 = requestCode2Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode2Str);
+
+            // Đặt lại alarm với ngày giao hợp đồng mới
+            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode1), room.getRoomId() + "code1");
+            setAlarm(alarmService::setRepetitiveAlarm, dayOfGiveBill - 1, month, year, requestCode1);
+
+            preferenceManager.putString(Constants.KEY_NOTIFICATION_REQUEST_CODE, String.valueOf(requestCode2), room.getRoomId() + "code2");
+            setAlarm(alarmService2::setRepetitiveAlarm, dayOfGiveBill, month, year, requestCode2);
+
+            listener.onComplete();
         });
     }
 
@@ -504,7 +515,6 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
     private interface AlarmCallback {
         void onAlarmSet(long timeInMillis, int requestCode);
     }
-
 
 
     private void setAlarm(AlarmCallback callback, int day, int month, int year, int requestCode) {
@@ -591,24 +601,23 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
             Toast.makeText(requireContext(), "Hãy nhập đầy đủ và chính xác thông tin các trường", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-            MainGuest mainGuest = new MainGuest();
-            mainGuest.setNameGuest(nameGuest);
-            mainGuest.setPhoneGuest(phoneGuest);
-            mainGuest.setCccdNumber(cccdNumber);
-            mainGuest.setDateOfBirth(dateOfBirth);
-            mainGuest.setGender(gender);
-            mainGuest.setTotalMembers(Integer.parseInt(totalMembers));
-            mainGuest.setCreateDate(createDate);
-            mainGuest.setDateIn(dateIn);
-            mainGuest.setExpirationDate(expirationDate);
-            mainGuest.setPayDate(payDate);
-            mainGuest.setRoomPrice(Double.parseDouble(roomPrice));
-            mainGuest.setDaysUntilDueDate(daysUntilDueDate);
-            mainGuest.setCccdImageFront(encodedCCCDFrontImage);
-            mainGuest.setCccdImageBack(encodedCCCDBackImage);
-            mainGuest.setContractImageFront(encodedContractFrontImage);
-            mainGuest.setContractImageBack(encodedContractBackImage);
-            mainGuest.setFileStatus(true);
+            guestContract.setNameGuest(nameGuest);
+            guestContract.setPhoneGuest(phoneGuest);
+            guestContract.setCccdNumber(cccdNumber);
+            guestContract.setDateOfBirth(dateOfBirth);
+            guestContract.setGender(gender);
+            guestContract.setTotalMembers(Integer.parseInt(totalMembers));
+            guestContract.setCreateDate(createDate);
+            guestContract.setDateIn(dateIn);
+            guestContract.setExpirationDate(expirationDate);
+            guestContract.setPayDate(payDate);
+            guestContract.setRoomPrice(Double.parseDouble(roomPrice));
+            guestContract.setDaysUntilDueDate(daysUntilDueDate);
+            guestContract.setCccdImageFront(encodedCCCDFrontImage);
+            guestContract.setCccdImageBack(encodedCCCDBackImage);
+            guestContract.setContractImageFront(encodedContractFrontImage);
+            guestContract.setContractImageBack(encodedContractBackImage);
+            guestContract.setFileStatus(true);
 
             presenter.saveContract(guestContract, roomId);
             return true;

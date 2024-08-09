@@ -110,12 +110,9 @@ public class GuestEditContractPresenter {
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .document(guestContract.getGuestId())
                 .update(contract)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            saveGuest(guestContract, roomId);
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        saveGuest(guestContract, roomId);
                     }
                 });
     }
@@ -125,32 +122,26 @@ public class GuestEditContractPresenter {
         guest.put(Constants.KEY_GUEST_NAME, guestContract.getNameGuest());
         guest.put(Constants.KEY_GUEST_PHONE, guestContract.getPhoneGuest());
         guest.put(Constants.KEY_GUEST_DATE_IN, guestContract.getDateIn());
+        guest.put(Constants.KEY_GUEST_CCCD, guestContract.getCccdNumber());
+        guest.put(Constants.KEY_GUEST_CCCD_IMAGE_FRONT, guestContract.getCccdImageFront());
+        guest.put(Constants.KEY_GUEST_CCCD_IMAGE_BACK, guestContract.getCccdImageBack());
 
-        Log.e("contract", "roomId: " + roomId);
 
         FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
                 .whereEqualTo(Constants.KEY_IS_MAIN_GUEST, true)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
-                            String guestId = task.getResult().getDocuments().get(0).getId();
-                            Log.e("contract", guestId);
-                            FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
-                                    .document(guestId)
-                                    .update(guest)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){
-                                                listener.saveSuccessfully();
-                                                Log.e("contract", "successfully");
-                                            }
-                                        }
-                                    });
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
+                        String guestId = task.getResult().getDocuments().get(0).getId();
+                        FirebaseFirestore.getInstance().collection(Constants.KEY_COLLECTION_GUESTS)
+                                .document(guestId)
+                                .update(guest)
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()){
+                                        listener.saveSuccessfully();
+                                    }
+                                });
                     }
                 });
     }
