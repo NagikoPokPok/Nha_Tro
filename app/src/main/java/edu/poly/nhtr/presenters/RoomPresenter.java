@@ -153,6 +153,8 @@ public class RoomPresenter {
                         room.nameUser = mainGuest.getNameGuest();
                         room.phoneNumer = mainGuest.getPhoneGuest();
                         room.numberOfMemberLiving = String.valueOf(mainGuest.getTotalMembers());
+                    }else{
+                        room.numberOfMemberLiving = 0+"";
                     }
 
                     getStatusOFBill(room.roomId, new OnGetInfoOfBill() {
@@ -167,6 +169,8 @@ public class RoomPresenter {
                                     room.status = "Trễ hạn thanh toán";
                                 } else if (roomBill.isNotGiveBill) {
                                     room.status = "Chưa gửi hóa đơn";
+                                } else{
+                                    room.status = "";
                                 }
                             }
 

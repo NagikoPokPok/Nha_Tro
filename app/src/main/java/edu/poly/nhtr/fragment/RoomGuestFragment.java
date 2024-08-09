@@ -220,9 +220,6 @@ public class RoomGuestFragment extends Fragment implements RoomGuestInterface.Vi
                                 month = monthDateInOfGuest;
                             }
 
-                            showToast(dayOfGiveBill + "  " + month + " " + year);
-                            //showToast(String.valueOf(mainGuest.getDaysUntilDueDate()));
-
                             // Sinh mã yêu cầu cho alarm
                             String requestCode1Str = preferenceManager.getString(Constants.KEY_NOTIFICATION_REQUEST_CODE, room.getRoomId() + "code1");
                             int requestCode1 = requestCode1Str == null ? generateRandomRequestCode() : Integer.parseInt(requestCode1Str);

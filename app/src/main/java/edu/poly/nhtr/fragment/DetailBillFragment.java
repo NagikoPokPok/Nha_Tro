@@ -28,8 +28,10 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import edu.poly.nhtr.Adapter.PlusOrMinusMoneyInDetailBillAdapter;
 import edu.poly.nhtr.Adapter.ServiceInDetailBillAdapter;
@@ -51,6 +53,8 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
     private RoomBill bill;
     private DetailBillPresenter detailBillPresenter;
     private Dialog dialog;
+    List<PlusOrMinusMoney> plusMoneyList = new ArrayList<>();
+    List<PlusOrMinusMoney> minusMoneyList = new ArrayList<>();
 
 
     @Override
@@ -148,8 +152,6 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
         } else {
             binding.layoutMoneyPlusOrMinus.setVisibility(View.VISIBLE);
             binding.view1.setVisibility(View.VISIBLE);
-            List<PlusOrMinusMoney> plusMoneyList = new ArrayList<>();
-            List<PlusOrMinusMoney> minusMoneyList = new ArrayList<>();
             for (PlusOrMinusMoney item : bill.getPlusOrMinusMoneyList()) {
                 if (item.getPlus()) plusMoneyList.add(item);
                 else minusMoneyList.add(item);
@@ -336,6 +338,28 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                 String totalServiceCost = binding.txtTotalMoneyOfService.getText().toString();
                 String totalBill = binding.txtTotalMoneyOfBill.getText().toString();
 
+                // Initialize messages for plus and minus money
+                StringBuilder plusMoneyMessage = new StringBuilder();
+                StringBuilder minusMoneyMessage = new StringBuilder();
+
+                // Iterate through the plus money list and build the message
+                for (PlusOrMinusMoney plusMoney : plusMoneyList) {
+                    plusMoneyMessage.append("+ ")
+                            .append(plusMoney.getMoney())
+                            .append(" đ: ")
+                            .append(plusMoney.getReason())
+                            .append("\n");
+                }
+
+                // Iterate through the minus money list and build the message
+                for (PlusOrMinusMoney minusMoney : minusMoneyList) {
+                    minusMoneyMessage.append("- ")
+                            .append(minusMoney.getMoney())
+                            .append(" đ: ")
+                            .append(minusMoney.getReason())
+                            .append("\n");
+                }
+
                 String message;
                 if (bill.isDelayPayBill) {
                     message = "CẢNH BÁO: Bạn đã trễ thanh toán hoá đơn cho tháng " + monthYear + ". Vui lòng thanh toán hoá đơn!"
@@ -343,12 +367,16 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                             + "\nTiền phòng: " + roomPrice
                             + "\nSố ngày ở: " + numberOfDays
                             + "\nTổng tiền dịch vụ: " + totalServiceCost
+                            + "\nCác khoản cộng thêm:\n" + plusMoneyMessage.toString()
+                            + "\nCác khoản trừ:\n" + minusMoneyMessage.toString()
                             + "\nTổng tiền: " + totalBill;
                 } else {
                     message = "Thông tin hóa đơn tháng " + monthYear
                             + "\nTiền phòng: " + roomPrice
                             + "\nSố ngày ở: " + numberOfDays
                             + "\nTổng tiền dịch vụ: " + totalServiceCost
+                            + "\nCác khoản cộng thêm:\n" + plusMoneyMessage.toString()
+                            + "\nCác khoản trừ:\n" + minusMoneyMessage.toString()
                             + "\nTổng tiền: " + totalBill;
                 }
 
@@ -361,6 +389,7 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
             }
         });
     }
+
 
 
     private void setupDialog(int layoutId) {

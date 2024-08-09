@@ -851,6 +851,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
 
 
     private void openSortRoomDialog() {
+
         if (binding.edtSearchRoom.isFocused()) {
             binding.edtSearchRoom.clearFocus();
             binding.edtSearchRoom.setText("");
@@ -960,7 +961,8 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         preferenceManager.removePreference("cbxRoom4");
     }
 
-    private void openFilterRoomDialog(List<Room> currentListRooms) {
+    private void openFilterRoomDialog() {
+
         if (binding.edtSearchRoom.isFocused()) {
             binding.edtSearchRoom.clearFocus();
             binding.edtSearchRoom.setText("");
@@ -988,7 +990,6 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxRoom2"));
         cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxRoom3"));
         cbxByRoom4.setChecked(preferenceManager.getBoolean("cbxRoom4"));
-        showToast(preferenceManager.getBoolean("cbxRoom4") + "");
 
         // Add CheckBoxes to a list
         List<AppCompatCheckBox> checkBoxList = new ArrayList<>();
@@ -1198,19 +1199,23 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         boolean filterByRoom3 = preferenceManager.getBoolean("cbxRoom3");
         boolean filterByRoom4 = preferenceManager.getBoolean("cbxRoom4");
 
+
         List<Room> filteredNoMembers = new ArrayList<>();
         for (Room room : currentListRooms) {
-                int numberOfMembers = Integer.parseInt(room.numberOfMemberLiving);
-            if (filterByRoom1 && numberOfMembers == 0) {
-                    filteredNoMembers.add(room);
-            } else if (filterByRoom2 && room.status.equals("Đã thanh toán")) {
+            showToast(room.getNumberOfMemberLiving());
+            int numberOfMembers = Integer.parseInt(room.getNumberOfMemberLiving());
+            if (filterByRoom4 && numberOfMembers == 0) {
                 filteredNoMembers.add(room);
-            } else if (filterByRoom3 && room.status.equals("Chưa thanh toán")) {
+            } else if (filterByRoom1 && room.getStatus().equals("Đã thanh toán")) {
                 filteredNoMembers.add(room);
-            } else if (filterByRoom4 && room.status.equals("Trễ hạn thanh toán")) {
+            } else if (filterByRoom2 && room.getStatus().equals("Chưa thanh toán")) {
+                filteredNoMembers.add(room);
+            } else if (filterByRoom3 && room.getStatus().equals("Trễ hạn thanh toán")) {
                 filteredNoMembers.add(room);
             }
         }
+
+
         roomPresenter.filterRoom(filteredNoMembers);
     }
 
@@ -1254,7 +1259,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     private void clickFilterRoom() {
         changeBackgroundOfFrameButton(binding.frameRoundFilterRoom, binding.imgFilterRoom);
         removeBackgroundOfFrameButton(binding.frameRoundSortHome, binding.imgSortRoom);
-        openFilterRoomDialog(currentListRooms);
+        openFilterRoomDialog();
     }
 
     private void changeBackgroundOfFrameButton(RoundedImageView roundedImageView, ImageButton imageButton) {
