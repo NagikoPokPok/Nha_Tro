@@ -22,7 +22,7 @@
         android:textSize="20sp" />
 
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         style="@style/TEXT_LIGHT_2"
         android:id="@+id/cbx_paid"
         android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
         android:textSize="17sp"
         android:theme="@style/RadioButtonStyle" />
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         style="@style/TEXT_LIGHT_2"
         android:id="@+id/cbx_waiting_for_paid"
         android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
         android:textSize="17sp"
         android:theme="@style/RadioButtonStyle" />
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         style="@style/TEXT_LIGHT_2"
         android:id="@+id/cbx_overdue_paid"
         android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
         android:theme="@style/RadioButtonStyle" />
 
 
-    <CheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/cbx_no_people_rent"
         style="@style/TEXT_LIGHT_2"
         android:layout_width="wrap_content"
