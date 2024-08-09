@@ -334,7 +334,7 @@ public class GuestEditContractFragment extends Fragment implements GuestEditCont
     }
 
     public void checkPhoneNumber() {
-        presenter.setUpPhoneNumberField(binding.edtSoDienThoai, binding.tilSoDienThoai, countryCodePicker);
+        presenter.setUpPhoneNumberField(binding.edtSoDienThoai, binding.tilSoDienThoai, countryCodePicker, guestContract.getGuestId());
     }
 
     public void checkCCCDNumber() {

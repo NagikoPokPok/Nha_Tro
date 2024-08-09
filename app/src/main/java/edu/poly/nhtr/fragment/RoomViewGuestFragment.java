@@ -448,7 +448,7 @@ public class RoomViewGuestFragment extends Fragment implements RoomGuestViewInte
 
     @Override
     public void showGuestDetails(Guest guest) {
-        if (!isAdded()) return;  // Check if fragment is still attached
+        if (!isAdded()) return;
 
         edtTenKhach.setText(guest.getNameGuest());
         edtNgayVao.setText(guest.getDateIn());
