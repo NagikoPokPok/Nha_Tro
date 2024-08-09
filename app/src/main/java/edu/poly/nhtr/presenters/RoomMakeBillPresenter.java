@@ -127,7 +127,7 @@ public class RoomMakeBillPresenter {
                                 quantity = newIndex-oldIndex;
                                 if (quantity == 0) quantity = 404;
                                 roomService.setQuantity(quantity);
-                                i++;
+                                if (i < task.getResult().getDocuments().size()) i++;
                             }
                         }
                         callback.onGetQuantityForServiceWithIndex();

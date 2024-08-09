@@ -257,8 +257,13 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         LocalDate payDate = LocalDate.of(bill.getYear(), bill.getMonth(), Integer.parseInt(payDay));;
         if (Integer.parseInt(payDay) > createContractDate.getDayOfMonth() && ChronoUnit.DAYS.between(payDate, createContractDate) <=5)
             payDate.plusMonths(1);
-        else
-            payDate = LocalDate.of(date.getYear(), date.getMonthValue()+1, Integer.parseInt(payDay));
+        else if (Integer.parseInt(payDay) <= createContractDate.getDayOfMonth()){
+            if (ChronoUnit.DAYS.between(payDate, createContractDate) <=5)
+                payDate.plusMonths(2);
+            else
+                payDate.plusMonths(1);
+        }
+//            payDate = LocalDate.of(date.getYear(), date.getMonthValue()+1, Integer.parseInt(payDay));
 //        if (Integer.parseInt(payDay) > date.getDayOfMonth())
 //            payDate = LocalDate.of(date.getYear(), date.getDayOfMonth(), Integer.parseInt(payDay));
 //        else if (date.getMonthValue() == 12)
