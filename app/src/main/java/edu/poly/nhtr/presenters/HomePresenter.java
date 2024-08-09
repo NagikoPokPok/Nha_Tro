@@ -209,6 +209,7 @@ public class HomePresenter {
                                 homeListener.addHomeFailed();
                             }
                         } else {
+                            homeListener.showToast("Null");
                             homeListener.addHomeFailed();
                         }
                     }

@@ -258,20 +258,29 @@ public class RoomBillPresenter {
         // Update status of isDelayedPayBill
         Date startDate = bill.getDayGiveBill();
         Date endDate = new Date();
-        if (startDate.before(endDate)) {
-            long daysBetween = calculateDaysBetween(startDate, endDate);
-            getContractByRoom(bill.roomID, new OnGetContractByRomListener() {
-                @Override
-                public void onComplete(MainGuest contract) {
-                    int daysUntilDueDate = contract.getDaysUntilDueDate();
-                    if (daysBetween > daysUntilDueDate && bill.isNotPayBill()) {
-                        updateStatusOfBillWhenDelayBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
-                            @Override
-                            public void onComplete() {
+//        if (startDate.before(endDate)) {
+//            long daysBetween = calculateDaysBetween(startDate, endDate);
+//            getContractByRoom(bill.roomID, new OnGetContractByRomListener() {
+//                @Override
+//                public void onComplete(MainGuest contract) {
+//                    int daysUntilDueDate = contract.getDaysUntilDueDate();
+//                    if (daysBetween > daysUntilDueDate && bill.isNotPayBill()) {
+//                        updateStatusOfBillWhenDelayBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
+//                            @Override
+//                            public void onComplete() {
+//
+//                            }
+//                        });
+//                    }
+//                }
+//            });
+//        }
 
-                            }
-                        });
-                    }
+        if(endDate.before(bill.datePayBill)&& bill.isNotPayBill() ){
+            updateStatusOfBillWhenDelayBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
+                @Override
+                public void onComplete() {
+
                 }
             });
         }

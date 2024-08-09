@@ -167,20 +167,20 @@ public class NotificationFragment extends Fragment implements NotificationListen
         notificationPresenter.getListHomes(new NotificationPresenter.OnGetHomeListCompleteListener() {
             @Override
             public void onComplete(List<Home> homeList) {
-                setHomeList(homeList);
-                notificationPresenter.getNotification(new NotificationPresenter.OnSetNotificationListCompleteListener() {
-                    @Override
-                    public void onComplete() {
+                    setHomeList(homeList);
+                    notificationPresenter.getNotification(new NotificationPresenter.OnSetNotificationListCompleteListener() {
+                        @Override
+                        public void onComplete() {
 
-                        // Gửi broadcast để cập nhật badge
-                        Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
-                        requireActivity().sendBroadcast(intent);
+                            // Gửi broadcast để cập nhật badge
+                            Intent intent = new Intent("edu.poly.nhtr.ACTION_UPDATE_BADGE");
+                            requireActivity().sendBroadcast(intent);
 
-                        setupDropDownMenu(homeList);
-                        setupRecyclerView();
-                        setupDeleteNotifications();
-                    }
-                }, homeList);
+                            setupDropDownMenu(homeList);
+                            setupRecyclerView();
+                            setupDeleteNotifications();
+                        }
+                    }, homeList);
             }
         });
 

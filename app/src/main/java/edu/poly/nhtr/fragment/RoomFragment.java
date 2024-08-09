@@ -464,6 +464,8 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
 
     @Override
     public void showLoading() {
+        binding.imgAddHome.setVisibility(View.GONE);
+        binding.txtNotification.setVisibility(View.GONE);
         binding.roomsRecyclerView.setVisibility(View.GONE);
         binding.progressBar.setVisibility(View.VISIBLE);
     }
@@ -524,7 +526,7 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     public void addRoomFailed() {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddHome.setVisibility(View.VISIBLE);
-        binding.roomsRecyclerView.setVisibility(View.INVISIBLE);
+        binding.roomsRecyclerView.setVisibility(View.GONE);
         binding.frmMenuTools.setVisibility(View.VISIBLE);
     }
 

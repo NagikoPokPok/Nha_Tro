@@ -132,12 +132,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
         // Load home information
         homePresenter.getHomes("init");
 
-        homePresenter.getListHomes(new HomePresenter.OnGetHomesCompleteListener() {
-            @Override
-            public void onComplete(List<Home> homeList) {
-                currentListHomes = homeList;
-            }
-        });
 
         // Refresh layout
         binding.swipeRefreshFragment.setOnRefreshListener(this);
@@ -1430,6 +1424,9 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
     @Override
     public void showLoading() {
+        binding.imgAddHome.setVisibility(View.GONE);
+        binding.txtNotification.setVisibility(View.GONE);
+        binding.layoutNoData.setVisibility(View.GONE);
         binding.homesRecyclerView.setVisibility(View.INVISIBLE);
         binding.progressBar.setVisibility(View.VISIBLE);
     }
@@ -1491,8 +1488,9 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     public void addHomeFailed() {
         binding.txtNotification.setVisibility(View.VISIBLE);
         binding.imgAddHome.setVisibility(View.VISIBLE);
-        binding.homesRecyclerView.setVisibility(View.INVISIBLE);
-        binding.frmMenuTools.setVisibility(View.INVISIBLE);
+        binding.homesRecyclerView.setVisibility(View.GONE);
+        binding.frmMenuTools.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override

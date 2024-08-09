@@ -73,6 +73,8 @@ public class NotificationPresenter {
                                     notification.isRead = document.getBoolean(Constants.KEY_NOTIFICATION_IS_READ);
                                     notificationList.add(notification);
                                 }
+                            }else{
+                                notificationListener.setNotificationList(notificationList);
                             }
                         } else {
                             // Xử lý khi không thành công
@@ -107,6 +109,7 @@ public class NotificationPresenter {
     public void getListHomes(OnGetHomeListCompleteListener listener) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String userId = notificationListener.getInfoUserFromGoogleAccount();
+        List<Home> homes = new ArrayList<>();
 
 
         database.collection(Constants.KEY_COLLECTION_HOMES)
@@ -115,7 +118,6 @@ public class NotificationPresenter {
                 .addOnCompleteListener(task -> {
                     if (notificationListener.isAdded2()) {
                         if (task.isSuccessful() && task.getResult() != null) {
-                            List<Home> homes = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Home home = new Home();
                                 home.nameHome = document.getString(Constants.KEY_NAME_HOME);
@@ -129,7 +131,7 @@ public class NotificationPresenter {
                             listener.onComplete(homes);
 
                         } else {
-
+                            listener.onComplete(homes);
                         }
                     }
                 });

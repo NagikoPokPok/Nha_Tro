@@ -98,7 +98,7 @@ public class RoomPresenter {
                 .add(roomInfo)
                 .addOnSuccessListener(documentReference -> {
                     roomListener.putRoomInfoInPreferences(room.getNameRoom(), room.getPrice(), room.getDescribe(), documentReference);
-                    roomListener.showToast("Thêm nhà trọ thành công");
+                    roomListener.showToast("Thêm phòng trọ thành công");
                     getRooms("add");
                     roomListener.dialogClose();
                     roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
