@@ -368,18 +368,16 @@ public class DetailBillFragment extends Fragment implements DetailBillListener {
                             + "\nTiền phòng: " + roomPrice
                             + "\nSố ngày ở: " + numberOfDays
                             + "\nTổng tiền dịch vụ: " + totalServiceCost
-                            + "\nCác khoản cộng thêm:\n" + plusMoneyMessage.toString()
-                            + "\nCác khoản trừ:\n" + minusMoneyMessage.toString()
-                            + "\n Lý do cộng/trừ:" +status.toString()
+                            + "\nCác khoản cộng thêm:\n" + plusMoneyMessage
+                            + "\nCác khoản trừ:\n" + minusMoneyMessage
                             + "\nTổng tiền: " + totalBill;
                 } else {
                     message = "Thông tin hóa đơn tháng " + monthYear
                             + "\nTiền phòng: " + roomPrice
                             + "\nSố ngày ở: " + numberOfDays
                             + "\nTổng tiền dịch vụ: " + totalServiceCost
-                            + "\nCác khoản cộng thêm:\n" + plusMoneyMessage.toString()
-                            + "\nCác khoản trừ:\n" + minusMoneyMessage.toString()
-                            + "\n Lý do cộng/trừ:" +status.toString()
+                            + "\nCác khoản cộng thêm:\n" + plusMoneyMessage
+                            + "\nCác khoản trừ:\n" + minusMoneyMessage
                             + "\nTổng tiền: " + totalBill;
                 }
 

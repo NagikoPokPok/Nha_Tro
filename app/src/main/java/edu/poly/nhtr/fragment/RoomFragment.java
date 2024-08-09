@@ -506,6 +506,8 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         // khi setAdapter mình phải set lại là VISIBLE
         binding.txtNotification.setVisibility(View.GONE);
         binding.imgAddHome.setVisibility(View.GONE);
+        binding.layoutNoRoom.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.GONE);
         binding.roomsRecyclerView.setVisibility(View.VISIBLE);
         binding.frmMenuTools.setVisibility(View.VISIBLE);
         Log.d("RoomFragment", "Adapter set successfully");
@@ -1004,7 +1006,6 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
         cbxByRoom2.setChecked(preferenceManager.getBoolean("cbxRoom2"));
         cbxByRoom3.setChecked(preferenceManager.getBoolean("cbxRoom3"));
         cbxByRoom4.setChecked(preferenceManager.getBoolean("cbxRoom4"));
-        showToast(preferenceManager.getBoolean("cbxRoom4") + "");
 
         // Add CheckBoxes to a list
         List<AppCompatCheckBox> checkBoxList = new ArrayList<>();

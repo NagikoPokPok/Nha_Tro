@@ -71,7 +71,6 @@ public class RoomBillPresenter {
     }
 
 
-
     public void getBillByMonthYear(Room room, int month, int year, OnGetBillByMonthYearCompleteListener listener) {
         roomBillListener.showLoading();
         queryBillsByMonthYear(room, month, year, listener::onComplete);
@@ -133,8 +132,6 @@ public class RoomBillPresenter {
     }
 
 
-
-
     private void handleQueryResult(Task<QuerySnapshot> task, Room room, OnGetBillCompleteListener listener) {
         List<RoomBill> billList = new ArrayList<>();
         if (task.isSuccessful()) {
@@ -178,7 +175,7 @@ public class RoomBillPresenter {
                         Timber.e(updateTask.getException(), "Error updating bills for roomID: %s", room.getRoomId());
                     }
                 });
-            }else{
+            } else {
                 listener.onComplete(billList);
             }
         } else {
@@ -253,7 +250,7 @@ public class RoomBillPresenter {
             bill.totalMoneyMinus = totalMoneyMinus != null ? totalMoneyMinus : 0L;
 //            bill.setTotalMoneyPlus(document.getLong(Constants.KEY_TOTAL_MONEY_PLUS));
 //            bill.setTotalMoneyMinus(document.getLong(Constants.KEY_TOTAL_MONEY_MINUS));
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("RoomBillPresenter", "Null data");
         }
 
@@ -261,13 +258,13 @@ public class RoomBillPresenter {
         // Update status of isDelayedPayBill
         Date startDate = bill.getDayGiveBill();
         Date endDate = new Date();
-        if (startDate.before(endDate)){
+        if (startDate.before(endDate)) {
             long daysBetween = calculateDaysBetween(startDate, endDate);
             getContractByRoom(bill.roomID, new OnGetContractByRomListener() {
                 @Override
                 public void onComplete(MainGuest contract) {
                     int daysUntilDueDate = contract.getDaysUntilDueDate();
-                    if(daysBetween > daysUntilDueDate && bill.isNotPayBill()){
+                    if (daysBetween > daysUntilDueDate && bill.isNotPayBill()) {
                         updateStatusOfBillWhenDelayBill(bill, new DetailBillPresenter.OnUpdateStatusOfBill() {
                             @Override
                             public void onComplete() {
@@ -295,7 +292,7 @@ public class RoomBillPresenter {
                 .document(bill.billID)
                 .update(data)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         listener.onComplete();
                     }
                 });
@@ -319,20 +316,18 @@ public class RoomBillPresenter {
 
     public void deleteBill(RoomBill bill, OnDeleteBillCompleteListener listener) {
         roomBillListener.showButtonLoading(R.id.btn_confirm_delete_bill);
+        db.collection(Constants.KEY_COLLECTION_BILL)
+                .document(bill.billID)
+                .delete()
+                .addOnSuccessListener(aVoid ->
+                {
+                    roomBillListener.hideButtonLoading(R.id.btn_confirm_delete_bill);
+                    roomBillListener.closeDialog();
+                    listener.onComplete();
 
-        if (bill.isPayedBill()) {
-            db.collection(Constants.KEY_COLLECTION_BILL)
-                    .document(bill.billID)
-                    .delete()
-                    .addOnSuccessListener(aVoid ->
-                    {
-                        roomBillListener.hideButtonLoading(R.id.btn_confirm_delete_bill);
-                        roomBillListener.closeDialog();
-                        listener.onComplete();
+                })
+                .addOnFailureListener(e -> Timber.e(e, "Error deleting bill with ID: %s", bill.billID));
 
-                    })
-                    .addOnFailureListener(e -> Timber.e(e, "Error deleting bill with ID: %s", bill.billID));
-        }
     }
 
     public interface OnDeleteBillCompleteListener {
