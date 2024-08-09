@@ -274,7 +274,7 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
 
         //Ánh xạ View
         TextView edt_content_confirm = dialogConfirm.findViewById(R.id.txt_content_confirm);
-        Button btn_delete = dialogConfirm.findViewById(R.id.btn_delete_service);
+        Button btn_delete = dialogConfirm.findViewById(R.id.btn_confirm_delete_service);
         Button btn_cancel = dialogConfirm.findViewById(R.id.btn_cancel);
 
         //Set data
@@ -331,7 +331,7 @@ public class RoomServiceFragment extends Fragment implements RoomServiceListener
 
     @Override
     public void onChooseServiceClicked(Service service, int position) {
-        ShowToast("Hello");
+
     }
 
     @Override
