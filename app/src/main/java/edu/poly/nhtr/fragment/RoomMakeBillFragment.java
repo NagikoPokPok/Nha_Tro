@@ -166,6 +166,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         // set adapter for plus or minus money
         List<PlusOrMinusMoney> plusOrMinusMoneyList = new ArrayList<>();
+        if (!bill.getPlusOrMinusMoneyList().isEmpty()) plusOrMinusMoneyList = bill.getPlusOrMinusMoneyList();
         plusOrMinusMoneyAdapter = new PlusOrMinusMoneyAdapter(plusOrMinusMoneyList, this, () -> {
             // Set total money plus or minus
             setTotalMoney(totalMoney);
