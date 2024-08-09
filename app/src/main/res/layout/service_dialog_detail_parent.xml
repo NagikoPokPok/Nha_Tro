@@ -24,6 +24,15 @@
             android:text="Áp dụng"
             android:visibility="gone"/>
         <ImageView
+            android:id="@+id/img_delete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_delete"
+            android:layout_marginTop="9dp"
+            android:layout_marginStart="9dp"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+        <ImageView
             android:id="@+id/img_exit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,14 +41,15 @@
             android:layout_marginTop="6dp"
             android:layout_marginEnd="6dp"
             android:visibility="gone"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            tools:ignore="ContentDescription" />
     </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="9dp"
             android:orientation="vertical">
 
@@ -59,17 +69,18 @@
                 android:text="Điện"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/inter_medium"
-                android:textSize="18dp"/>
+                android:textSize="18sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                tools:ignore="UseCompoundDrawables">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:text="Thu phí dụa trên"
                     android:fontFamily="@font/inter_medium"
                     />
@@ -77,8 +88,9 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:paddingLeft="5dp"
-                    android:src="@drawable/icon_asterisk"/>
+                    android:paddingStart="5dp"
+                    android:src="@drawable/icon_asterisk"
+                    tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
 
             </LinearLayout>
 
@@ -108,7 +120,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:text="Đơn vị tính"
                     android:fontFamily="@font/inter_medium"
                     />
@@ -116,8 +128,9 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:paddingLeft="5dp"
-                    android:src="@drawable/icon_asterisk"/>
+                    android:paddingStart="5dp"
+                    android:src="@drawable/icon_asterisk"
+                    tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
 
             </LinearLayout>
 
@@ -159,7 +172,7 @@
                     android:id="@+id/txt_fee_base"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
+                    android:textSize="18sp"
                     android:text="Mức phí theo phòng"
                     android:fontFamily="@font/inter_medium"
                     />
@@ -167,8 +180,9 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:paddingLeft="5dp"
-                    android:src="@drawable/icon_asterisk"/>
+                    android:paddingStart="5dp"
+                    android:src="@drawable/icon_asterisk"
+                    tools:ignore="ContentDescription,RtlHardcoded,RtlSymmetry" />
 
             </LinearLayout>
 
@@ -202,7 +216,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:text="Ghi chú"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/inter_medium"
@@ -233,12 +247,11 @@
                 android:id="@+id/txt_title_apply_for"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:text="Áp dụng cho"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/inter_medium"
                 />
-
             <edu.poly.nhtr.Class.CustomRecyclerView
                 android:id="@+id/recycler_apllyFor"
                 android:layout_width="match_parent"
@@ -248,12 +261,7 @@
                 android:overScrollMode="never"
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="3"
-                android:scrollbars="none"
-                android:layout_marginBottom="15dp"
-                />
-
-
+                app:spanCount="3"/>
             <!--        <LinearLayout-->
             <!--            android:layout_width="match_parent"-->
             <!--            android:layout_height="wrap_content"-->

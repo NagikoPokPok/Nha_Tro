@@ -1,5 +1,6 @@
 package edu.poly.nhtr.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -77,6 +78,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     private boolean isLoadingFinished = false;
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,16 +118,16 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if(task.isSuccessful()){
                             DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                if (document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE) != null)
+                            if(document.exists()) {
+                                if(document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)!=null)
                                     preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, document.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE));
-                                else
-                                    preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                            } else
+                                else preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
+                            }else
                                 preferenceManager.putBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE, false);
-                        } else Log.e("isHaveService", "Don't access");
+                        }
+                        else Log.e("isHaveService", "Don't access");
 
 
                         loadServicesData();
@@ -137,11 +139,11 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     private void loadServicesData() {
         //Load data of service
-        if (!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) {
+        if(!preferenceManager.getBoolean(Constants.KEY_HOME_IS_HAVE_SERVICE)) {
             services = ServiceUtils.addAvailableService(preferenceManager.getString(Constants.KEY_HOME_ID), getContext());
-            Log.e("ServiceInService", services.size() + "");
             setRecyclerViewData();
-        } else {
+        }
+        else {
             FirebaseFirestore data = FirebaseFirestore.getInstance();
             ServiceUtils.getAvailableService(data, preferenceManager.getString(Constants.KEY_HOME_ID), new ServiceUtils.OnServicesLoadedListener() {
                 @Override
@@ -174,8 +176,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         binding.recyclerServiceUnused.setVisibility(View.VISIBLE);
         Log.e("ServicesCountUnused", String.valueOf(ServiceUtils.unusedService(services).stream().count()));
 
-        customPosition(binding.recyclerServiceUsed, 3);
-        customPosition(binding.recyclerServiceUnused, 3);
+        customPosition(binding.recyclerServiceUsed,3);
+        customPosition(binding.recyclerServiceUnused,3);
 
         hideLoading();
 
@@ -195,11 +197,13 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         Button btn_continue = dialog.findViewById(R.id.btn_continue_addNewService);
 
 
+
+
         //Xử xí button cho dialog
         btn_cancel.setOnClickListener(v -> dialog.cancel());
 
         btn_continue.setOnClickListener(v -> {
-            if (isServiceNameValid(edt_name)) {
+            if(isServiceNameValid(edt_name)){
                 dialog.cancel();
                 //Xử lí ảnh
                 String encodeImage = ServiceUtils.encodedImage(((BitmapDrawable) image.getDrawable()).getBitmap());
@@ -218,10 +222,11 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 
     private boolean isServiceNameValid(EditText edt_name) {
 
-        if (edt_name.getText().toString().isEmpty()) {
+        if(edt_name.getText().toString().isEmpty()){
             edt_name.setError("Bạn phải điền tên dịch vụ");
             return false;
-        } else if (isNameExist(edt_name.getText().toString())) {
+        }
+        else if(isNameExist(edt_name.getText().toString())){
             edt_name.setError("Tên dịch vụ này đã tồn tại");
             return false;
         }
@@ -229,8 +234,8 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private boolean isNameExist(String nameService) {
-        for (Service service : services) {
-            if (service.getName().equals(nameService)) return true;
+        for(Service service : services){
+            if(service.getName().equals(nameService)) return true;
         }
         return false;
     }
@@ -250,7 +255,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     private void openApplyServiceDialog(String name, String encodeImage) {
-        setupDialog(dialog, R.layout.main_service, Gravity.CENTER);
+        setupDialog(dialog, R.layout.service_dialog_apply_service, Gravity.CENTER);
 
         //Ánh xạ view
         ImageView image = dialog.findViewById(R.id.img_service);
@@ -355,6 +360,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
         });
 
 
+
     }
 
     private boolean isServiceDetail(TextInputLayout layoutFee, TextInputLayout layoutUnit) {
@@ -399,8 +405,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
 //    private void openUpdateServiceDialog(Service service, RecyclerView recyclerView, int position) {
-//        setupDialog(dialog, R.layout.try_main, Gravity.CENTER);
-//
+//        setupDialog(dialog, R.layout.service_dialog_update_service, Gravity.CENTER);
 //
 //        //Ánh xạ view
 //        ImageView exit = dialog.findViewById(R.id.img_exit);
@@ -505,9 +510,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 //                    if (service.getApply())
 //                        presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
 //
-//                }
 //            }
-//
 //        });
 //
 //        //Xử lí hành động cho spinner
@@ -519,6 +522,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 //                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
 //                txt_feeBase.setText(titleOfFee);
 //            }
+//
 //
 //
 //            @Override
@@ -546,6 +550,7 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
 //        });
 //    }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setNonListenerToRecycler(CustomRecyclerView recyclerApplyFor) {
         recyclerApplyFor.setClickable(false);
         // Vô hiệu hóa sự kiện touch trên RecyclerView
@@ -646,8 +651,163 @@ public class ServiceFragment extends Fragment implements ServiceListener, SwipeR
     }
 
     @Override
-    public void onServiceClicked(Service service) {
+    public void onServiceClicked(Service service, RecyclerView recyclerView, int position) {
+        if(service.getApply()) setupDialog(dialog, R.layout.service_dialog_option_service_used, Gravity.CENTER);
+        else setupDialog(dialog, R.layout.service_dialog_option_service_unused, Gravity.CENTER);
 
+
+        //Ánh xạ id
+        ImageView img_delete = dialog.findViewById(R.id.img_delete);
+        ImageView exit = dialog.findViewById(R.id.img_exit);
+        ImageView image = dialog.findViewById(R.id.img_service);
+        TextView txt_name = dialog.findViewById(R.id.txt_serviceName);
+        Spinner spinner = dialog.findViewById(R.id.spinner_feeBased);
+        EditText edt_unit = dialog.findViewById(R.id.edt_unit);
+        TextView txt_feeBase = dialog.findViewById(R.id.txt_fee_base);
+        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
+        EditText edt_note = dialog.findViewById(R.id.edt_note);
+        View line = dialog.findViewById(R.id.view4);
+        TextView txt_title_apply_for = dialog.findViewById(R.id.txt_title_apply_for);
+        CustomRecyclerView recycler_applyFor = dialog.findViewById(R.id.recycler_apllyFor);
+        Button btn_delete = dialog.findViewById(R.id.btn_apply_service);
+        Button btn_update = dialog.findViewById(R.id.btn_update_service);
+        TextInputLayout layout_unit = dialog.findViewById(R.id.layout_unit);
+        TextInputLayout layout_fee = dialog.findViewById(R.id.layout_fee);
+
+        // Set data for dialog
+        //Đổ dữ liệu cho dialog
+        txt_name.setText(service.getName());
+        image.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
+
+        //Spinner
+        String[] items = {"Dựa trên lũy tiến theo chỉ số", "Dựa trên từng phòng", "Dựa trên số người", "Dựa trên số lượng khác"};
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(requireActivity().getApplicationContext(), items, service.isElectricOrWater());
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setDropDownVerticalOffset(Gravity.BOTTOM);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(service.getFee_base());
+//        spinner.setEnabled(false);
+
+        edt_unit.setText(service.getUnit());
+
+        String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+        txt_feeBase.setText(titleOfFee);
+
+
+        edt_fee.setText(String.valueOf(service.getPrice()));
+//        edt_fee.setInputType(InputType.TYPE_NULL);
+//        edt_fee.setFocusable(false);
+//        edt_fee.setCursorVisible(false);
+
+        edt_note.setText(service.getNote());
+        edt_note.setHint("");
+//        edt_note.setInputType(InputType.TYPE_NULL);
+//        edt_note.setFocusable(false);
+//        edt_note.setCursorVisible(false);
+
+        //List room and isApply
+        List<Boolean> checkedStatesPrevious = new ArrayList<>();
+        List<Boolean> checkedStatesAfter = new ArrayList<>();
+        if(service.getApply()){
+            presenter.setCheckedStates(checkedStatesAfter, listRoom, service, new ServicePresenter.OnCheckedStatesLoadedListener() {
+                @Override
+                public void onCheckedStatesLoaded(List<Boolean> checkedStates) {
+                    checkedStatesPrevious.clear();
+                    checkedStatesPrevious.addAll(checkedStates);
+                    CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStatesAfter);
+                    setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+                    if (service.getName().equalsIgnoreCase("điện") || service.getName().equalsIgnoreCase("nước")){
+                        setNonListenerToRecycler(recycler_applyFor);
+                    }
+                }
+            });
+        }else {
+            line.setVisibility(View.GONE);
+            txt_title_apply_for.setVisibility(View.GONE);
+        }
+
+
+        //Set listener for button apply
+        if(service.getApply()){
+            List<Boolean> checkedStates = new ArrayList<>();
+            presenter.setCheckedStates(checkedStates, listRoom, service, checkedStates1 -> {
+                CustomListCheckBoxAdapter checkBoxAdapter = new CustomListCheckBoxAdapter(requireActivity().getApplicationContext(), listRoom, checkedStates1);
+//                checkBoxAdapter.setIsClickable(false);
+                setRecyclerViewApplySpeedy(recycler_applyFor, checkBoxAdapter);
+//                setNonListenerToRecycler(recycler_applyFor);
+            });
+        }else {
+            line.setVisibility(View.GONE);
+            txt_title_apply_for.setVisibility(View.GONE);
+        }
+
+        //Xử lí button cho dialog
+        exit.setVisibility(View.VISIBLE);
+        img_delete.setVisibility(View.VISIBLE);
+        //Nút bỏ sử dụng
+        if(service.getApply()){
+            if(service.isElectricOrWater()){
+                btn_delete.setEnabled(false);
+                btn_delete.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1B1B1")));
+            }
+            else {
+                btn_delete.setOnClickListener(v -> {
+                    service.setApply(false);
+                    presenter.updateStatusOfApplyToFirebase(service);
+                    dialog.cancel();
+                    setRecyclerViewData();
+                });
+            }
+
+
+        }else{
+            btn_delete.setOnClickListener(v -> {
+                service.setApply(true);
+                presenter.updateStatusOfApplyToFirebase(service);
+                dialog.cancel();
+                setRecyclerViewData();
+            });
+        }
+        exit.setOnClickListener(v -> dialog.cancel());
+
+        img_delete.setOnClickListener(v -> openConfirmDeleteDialog(service));
+
+        btn_update.setOnClickListener(v -> {
+            dialog.dismiss();
+            if(isServiceDetail(layout_fee, layout_unit)){
+                int price = 0;
+                try {
+                    price = Integer.parseInt(edt_fee.getText().toString());
+                }catch (Exception e){
+                    Log.e("price","Not Valid");
+                }
+                service.setFee_base(spinner.getSelectedItemPosition());
+                service.setUnit(edt_unit.getText().toString());
+                service.setPrice(price);
+                service.setNote(edt_note.getText().toString());
+
+                if (service.getApply()) presenter.updateService(service, recyclerView, position, listRoom, checkedStatesPrevious, checkedStatesAfter);
+
+            }
+        });
+
+        //Xử lí spinner
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedPosition(position);
+                setFeedbackForUnit(edt_unit, position);
+                String titleOfFee = "Mức phí theo " + edt_unit.getText().toString().toLowerCase();
+                txt_feeBase.setText(titleOfFee);
+            }
+
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
     }
 
     @Override

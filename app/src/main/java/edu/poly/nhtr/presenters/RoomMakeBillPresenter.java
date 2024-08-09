@@ -62,7 +62,7 @@ public class RoomMakeBillPresenter {
                                 roomService.setQuantity(Math.toIntExact(document.getLong(Constants.KEY_ROOM_SERVICE_QUANTITY)));
                             }catch (Exception e){
                                 listener.showToast("Hãy cập nhật đầy đủ thông tin cho dịch vụ phòng");
-                                roomService.setQuantity(404);
+                                roomService.setQuantity(0);
                             }
                             setObjectServiceForListRoom(roomService, roomService1 -> {
                                 roomServices.add(roomService1);
@@ -112,8 +112,9 @@ public class RoomMakeBillPresenter {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()){
-                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        int i = 0;
                         for (RoomService roomService : roomServices){
+                            DocumentSnapshot document = task.getResult().getDocuments().get(i);
                             if (roomService.getService().getFee_base() == 0 ){
                                 int quantity , oldIndex =0, newIndex =0;
                                 if (roomService.getServiceName().equalsIgnoreCase("điện")){
@@ -124,8 +125,9 @@ public class RoomMakeBillPresenter {
                                     newIndex = Integer.parseInt(document.getString(Constants.KEY_WATER_INDEX_NEW));
                                 }
                                 quantity = newIndex-oldIndex;
-//                                if (quantity == 0) quantity = 404;
+                                if (quantity == 0) quantity = 404;
                                 roomService.setQuantity(quantity);
+                                i++;
                             }
                         }
                         callback.onGetQuantityForServiceWithIndex();

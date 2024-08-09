@@ -2,7 +2,6 @@ package edu.poly.nhtr.Adapter;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.poly.nhtr.Class.ServiceUtils;
-import edu.poly.nhtr.R;
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.listeners.RoomServiceListener;
 import edu.poly.nhtr.listeners.ServiceListener;
-import edu.poly.nhtr.models.Notification;
 import edu.poly.nhtr.models.Service;
 
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHolder> {
@@ -75,7 +72,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
             public void onClick(View v) {
                 int adapterPosition = holder.getAdapterPosition();
                 if (adapterPosition != RecyclerView.NO_POSITION && serviceListener != null) {
-                    serviceListener.onServiceItemCLick(services.get(adapterPosition), recyclerView, adapterPosition);
+//                    serviceListener.onServiceItemCLick(services.get(adapterPosition), recyclerView, adapterPosition);
+                    serviceListener.onServiceClicked(services.get(adapterPosition), recyclerView, adapterPosition);
                 } else if (adapterPosition != RecyclerView.NO_POSITION && roomServiceListener != null) {
 
                     RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -127,16 +125,16 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
             if (service!=null){
                 binding.nameService.setText(service.getName());
                 binding.imageService.setImageBitmap(ServiceUtils.getConversionImage(service.getCodeImage()));
-                binding.feeService.setText(service.getPrice()+"");
+                binding.feeService.setText(String.valueOf(service.getPrice()));
             }
 
             //Thiết lập hành động nhấn vào
-            if (serviceListener != null){
-                binding.getRoot().setOnClickListener(v -> serviceListener.onServiceClicked(service));
-                binding.cardViewService.setOnClickListener(v -> serviceListener.openPopup(v, service, binding));
-            }else if (roomServiceListener != null){
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            }
+//            if (serviceListener != null){
+//                binding.getRoot().setOnClickListener(v -> serviceListener.onServiceClicked(service, recyclerView, adapterPosition));
+//                binding.cardViewService.setOnClickListener(v -> serviceListener.openPopup(v, service, binding));
+//            }else if (roomServiceListener != null){
+//                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+//            }
         }
 
         public void onChooseListener(Service service){

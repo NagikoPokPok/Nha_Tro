@@ -6,13 +6,11 @@ import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 import edu.poly.nhtr.databinding.ItemServiceBinding;
 import edu.poly.nhtr.models.Service;
 
 public interface ServiceListener {
-    void onServiceClicked(Service service);
+    void onServiceClicked(Service service, RecyclerView recyclerView, int adapterPosition);
     void openPopup(View view, Service service, ItemServiceBinding binding);
     void onServiceItemCLick(Service service, RecyclerView recyclerView, int position);
     void onImageItemClick(ImageView imageView, Bitmap bitmap);

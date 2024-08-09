@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -247,7 +248,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 
         String txt_createContractDate = mainGuest.getCreateDate();
         String txt_expirationContractDate = mainGuest.getExpirationDate();
-        String payDay = mainGuest.getPayDate();
+        String payDay = String.valueOf(mainGuest.getDaysUntilDueDate());
 
         LocalDate createContractDate = LocalDate.parse(txt_createContractDate, formatter);
         LocalDate expirationContractDate = LocalDate.parse(txt_expirationContractDate, formatter);
@@ -264,8 +265,10 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         // Nếu tg kết thúc hợp đồng không quá 5 ngày sau ngày thanh toán sẽ gộp bill
         if (ChronoUnit.DAYS.between(payDate, expirationContractDate) <=5)
             payDate = expirationContractDate;
-        payDate.plusDays(Integer.parseInt(payDay));
 
+        Log.e("dateTest", payDate.getDayOfMonth() + "");
+        payDate = payDate.plusDays(Integer.parseInt(payDay));
+        Log.e("dateTest", payDate.getDayOfMonth() + " , " + payDay);
 
         // Ngày bắt đầu tính
         LocalDate startDate;

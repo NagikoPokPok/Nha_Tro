@@ -14,12 +14,19 @@ import edu.poly.nhtr.R;
 public class CustomSpinnerAdapter extends BaseAdapter {
     private final Context context;
     private final String[] items;
+    private final Boolean isChooseIndex;
     private int selectedPosition = 1;
     private int dropDownResource;
 
     public CustomSpinnerAdapter(Context context, String[] items) {
         this.context = context;
         this.items = items;
+        this.isChooseIndex = false;
+    }
+    public CustomSpinnerAdapter(Context context, String[] items, Boolean isChooseIndex) {
+        this.context = context;
+        this.items = items;
+        this.isChooseIndex = isChooseIndex;
     }
 
     @Override
@@ -46,22 +53,25 @@ public class CustomSpinnerAdapter extends BaseAdapter {
         TextView text = convertView.findViewById(R.id.text);
         ImageView checkmark = convertView.findViewById(R.id.checkmark_spinner);
 
-        if (position != 0){
+        if (isChooseIndex){
             text.setText(items[position]);
         }else {
-            position = selectedPosition;
-            text.setText(items[position]);
+            if (position != 0){
+                text.setText(items[position]);
+            }else {
+                position = selectedPosition;
+                text.setText(items[position]);
+            }
         }
 
         return convertView;
     }
 
     public void setSelectedPosition(int position) {
-        if (position != 0){
+        if (position != 0 || (position == 0 && isChooseIndex)){
             selectedPosition = position;
             notifyDataSetChanged();
         }
-
 
     }
 
@@ -83,7 +93,7 @@ public class CustomSpinnerAdapter extends BaseAdapter {
             checkmark.setColorFilter(context.getResources().getColor(android.R.color.darker_gray));
         }
 
-        if (position == 0){
+        if (position == 0 && !isChooseIndex){
             text.setTextColor(Color.GRAY);
         }
 
@@ -96,6 +106,7 @@ public class CustomSpinnerAdapter extends BaseAdapter {
 
     @Override
     public boolean isEnabled(int position) {
+        if (isChooseIndex) return true;
         return position != 0;
     }
 }
