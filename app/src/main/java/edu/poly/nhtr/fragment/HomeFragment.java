@@ -1,7 +1,13 @@
 package edu.poly.nhtr.fragment;
 
+import static android.content.ContentValues.TAG;
+
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -70,10 +76,12 @@ import java.util.Set;
 import edu.poly.nhtr.Activity.MainRoomActivity;
 import edu.poly.nhtr.Adapter.HomeAdapter;
 import edu.poly.nhtr.R;
+import edu.poly.nhtr.alarmManager.AlarmService;
 import edu.poly.nhtr.databinding.FragmentHomeBinding;
 import edu.poly.nhtr.databinding.ItemContainerHomesBinding;
 import edu.poly.nhtr.listeners.HomeListener;
 import edu.poly.nhtr.models.Home;
+import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.presenters.HomePresenter;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
@@ -175,6 +183,57 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
 
         //mainLogic();
 
+        restoreAlarms();
+
+    }
+
+    private void restoreAlarms() {
+        Set<String> alarms = preferenceManager.getSet(Constants.KEY_NOTIFICATION_SET);
+        if (alarms == null || alarms.isEmpty()) {
+            showToast("No alarms");
+            return;
+        }
+
+        for (String alarm : alarms) {
+            try {
+                String[] parts = alarm.split(",");
+                if (parts.length < 9) {
+                    showToast("Invalid alarm format: " + alarm);
+                    continue;
+                }
+                long timeInMillis = Long.parseLong(parts[0]);
+                int requestCode = Integer.parseInt(parts[1]);
+                String homeID = parts[2];
+                String homeName = parts[3];
+                String roomID = parts[4];
+                String roomName = parts[5];
+                String header = parts[6];
+                String body = parts[7];
+                String userID = parts[8];
+
+                // Kiểm tra trạng thái hủy của alarm
+                SharedPreferences prefs = requireContext().getSharedPreferences("AlarmsPrefs", Context.MODE_PRIVATE);
+                boolean isCancelled = prefs.getBoolean("alarm_cancelled_" + requestCode, false);
+                if (isCancelled) {
+                    showToast("Alarm with requestCode " + requestCode + " has been cancelled.");
+                    continue;
+                }
+
+                Home home = preferenceManager.getHome(Constants.KEY_COLLECTION_HOMES, userID);
+                Room room = preferenceManager.getRoom(Constants.KEY_COLLECTION_ROOMS, homeID);
+
+                if (home == null) {
+                    showToast( "Home not found for ID: " + homeID);
+                    continue;
+                }
+
+                AlarmService alarmService = new AlarmService(requireContext(), home, room, header, body);
+                alarmService.setAlarmsAfterBoot(timeInMillis, requestCode, home, room, header, body);
+
+            } catch (NumberFormatException e) {
+                showToast("Error parsing alarm data: " + alarm);
+            }
+        }
     }
 
     private void setupLayoutDeleteHomes() {
