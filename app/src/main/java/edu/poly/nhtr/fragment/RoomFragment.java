@@ -131,6 +131,8 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
 
         roomAdapter = new RoomAdapter(requireContext(), getCurrentListRooms(), this, roomPresenter, this);
 
+        removeStatusOfCheckBoxFilterRoom();
+
 
         // Xử lý Dialog Thêm phòng trọ
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -773,7 +775,6 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
     @Override
     public void getListRooms(List<Room> listRoom) {
         setCurrentListRooms(listRoom);
-        showToast(listRoom.get(0).getNumberOfMemberLiving());
     }
 
     @Override
@@ -905,19 +906,19 @@ public class RoomFragment extends Fragment implements RoomListener, SwipeRefresh
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_number_people_living_asc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterRoom.setText(selectedText);
-                    roomPresenter.sortRooms("number_of_people_living_asc");
+                    roomPresenter.sortRooms("number_of_people_living_asc", currentListRooms);
 
                 } else if (selectedId == R.id.radio_btn_price_asc) {
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_price_asc);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterRoom.setText(selectedText);
-                    roomPresenter.sortRooms("price_asc");
+                    roomPresenter.sortRooms("price_asc", currentListRooms);
 
                 } else if (selectedId == R.id.radio_btn_name_room) {
                     RadioButton selectedRadioButton = dialog.findViewById(R.id.radio_btn_name_room);
                     String selectedText = selectedRadioButton.getText().toString();
                     binding.txtTypeOfSortFilterRoom.setText(selectedText);
-                    roomPresenter.sortRooms("name_room");
+                    roomPresenter.sortRooms("name_room", currentListRooms);
 
                 } else {
                     showToast("No option selected");

@@ -36,9 +36,11 @@ public class RoomPresenter {
 
     private final RoomListener roomListener;
     private int count;
+
     public RoomPresenter(RoomListener roomListener) {
         this.roomListener = roomListener;
     }
+
     public int getCount() {
         return count;
     }
@@ -46,6 +48,7 @@ public class RoomPresenter {
     public void setCount(int count) {
         this.count = count;
     }
+
     public int getPosition() {
         return position;
     }
@@ -59,6 +62,7 @@ public class RoomPresenter {
             checkDuplicateData(room, () -> addRoomToFirestore(room));
         }
     }
+
     private void checkDuplicateData(Room room, Runnable onSuccess) {
         roomListener.showLoadingOfFunctions(R.id.btn_update_room);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -67,8 +71,7 @@ public class RoomPresenter {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String nameRoomFromFirestore = document.getString(Constants.KEY_NAME_ROOM);
                     String homeIdFromFirestore = document.getString(Constants.KEY_HOME_ID);
-                    if(isDuplicate(nameRoomFromFirestore, room.getNameRoom(), homeIdFromFirestore, room) )
-                    {
+                    if (isDuplicate(nameRoomFromFirestore, room.getNameRoom(), homeIdFromFirestore, room)) {
                         roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                         roomListener.showErrorMessage("Tên phòng đã tồn tại", R.id.layout_name_room);
                         return;
@@ -105,6 +108,7 @@ public class RoomPresenter {
                     roomListener.hideLoadingOfFunctions(R.id.btn_update_room);
                 });
     }
+
     public void getRooms(String action) {
         roomListener.showLoading();
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -147,7 +151,7 @@ public class RoomPresenter {
                     if (mainGuest != null) {
                         room.nameUser = mainGuest.getNameGuest();
                         room.phoneNumer = mainGuest.getPhoneGuest();
-                        room.numberOfMemberLiving=String.valueOf(mainGuest.getTotalMembers());
+                        room.numberOfMemberLiving = String.valueOf(mainGuest.getTotalMembers());
                     }
 
                     getStatusOFBill(room.roomId, new OnGetInfoOfBill() {
@@ -160,8 +164,8 @@ public class RoomPresenter {
                                     room.status = "Đã thanh toán";
                                 } else if (roomBill.isDelayPayBill) {
                                     room.status = "Trễ hạn thanh toán";
-                                } else if (roomBill.isNotGiveBill){
-                                    room.status="Chưa gửi hóa đơn";
+                                } else if (roomBill.isNotGiveBill) {
+                                    room.status = "Chưa gửi hóa đơn";
                                 }
                             }
 
@@ -198,7 +202,7 @@ public class RoomPresenter {
                                 bill.isPayedBill = document.getBoolean(Constants.KEY_IS_PAYED_BILL);
                                 bill.isDelayPayBill = document.getBoolean(Constants.KEY_IS_DELAY_PAY_BILL);
                                 bill.isNotPayBill = document.getBoolean(Constants.KEY_IS_NOT_PAY_BILL);
-                                bill.isNotGiveBill=document.getBoolean(Constants.KEY_IS_NOT_GIVE_BILL);
+                                bill.isNotGiveBill = document.getBoolean(Constants.KEY_IS_NOT_GIVE_BILL);
                                 bill.year = Math.toIntExact(document.getLong(Constants.KEY_YEAR));
                                 bill.month = Math.toIntExact(document.getLong(Constants.KEY_MONTH));
                                 billList.add(bill);
@@ -255,14 +259,11 @@ public class RoomPresenter {
     }
 
 
-
-
     private Boolean isDuplicate(String fieldFromFirestore, String fieldFromRoom, String homeIdFromFirestore, Room room) {
         return fieldFromFirestore != null && fieldFromFirestore.equalsIgnoreCase(fieldFromRoom) && homeIdFromFirestore.equals(roomListener.getInfoHomeFromGoogleAccount());
     }
 
-    public void searchRoom(String nameRoom)
-    {
+    public void searchRoom(String nameRoom) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(Constants.KEY_COLLECTION_ROOMS)
@@ -298,6 +299,7 @@ public class RoomPresenter {
                     }
                 });
     }
+
     public void deleteRoom(Room room) {
         roomListener.showLoadingOfFunctions(R.id.btn_delete_room);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -359,12 +361,13 @@ public class RoomPresenter {
                     }
                 });
     }
-    void check(String newNameRoom, String newPrice, String newDescribe){
-        if(newNameRoom.equals(Constants.KEY_NAME_ROOM) && newPrice.equals(Constants.KEY_PRICE) && newDescribe.equals(Constants.KEY_DESCRIBE))
-        {
+
+    void check(String newNameRoom, String newPrice, String newDescribe) {
+        if (newNameRoom.equals(Constants.KEY_NAME_ROOM) && newPrice.equals(Constants.KEY_PRICE) && newDescribe.equals(Constants.KEY_DESCRIBE)) {
             //
         }
     }
+
     public void updateRoom(String newNameRoom, String newPrice, String newDescribe, Room room) {
         roomListener.showLoadingOfFunctions(R.id.btn_update_room);
         if (newNameRoom.isEmpty()) {
@@ -377,6 +380,7 @@ public class RoomPresenter {
             checkDuplicateDataForUpdate(newNameRoom, newPrice, newDescribe, room);
         }
     }
+
     private void checkDuplicateDataForUpdate(String newNameRoom, String newPrice, String newDescribe, Room room) {
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -404,6 +408,7 @@ public class RoomPresenter {
                     }
                 });
     }
+
     public void updateSuccess(String newNameRoom, String newPrice, String newDescribe, Room room) {
         roomListener.showLoadingOfFunctions(R.id.btn_confirm_update_room);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -471,51 +476,28 @@ public class RoomPresenter {
                     }
                 });
     }
-    public void sortRooms(String typeOfSort) {
+
+    public void sortRooms(String typeOfSort, List<Room> roomList) {
         roomListener.showLoadingOfFunctions(R.id.btn_confirm_apply);
-        //homeListener.showLoading();
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        String homeId = roomListener.getInfoHomeFromGoogleAccount();
 
-        database.collection(Constants.KEY_COLLECTION_ROOMS)
-                .whereEqualTo(Constants.KEY_HOME_ID, homeId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (roomListener.isAdded2()) {
-                        roomListener.hideLoading();
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            List<Room> rooms = new ArrayList<>();
+        List<Room> rooms = roomList;
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Room room = new Room();
-                                room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
-                                room.nameUser = document.getString(Constants.KEY_NAME);
-                                room.price = document.getString(Constants.KEY_PRICE);
-                                room.status=document.getString(Constants.KEY_STATUS_PAID);
-                                room.phoneNumer= document.getString(Constants.KEY_PHONE_NUMBER);
-                                room.describe = document.getString(Constants.KEY_DESCRIBE);
-                                room.numberOfMemberLiving = document.getString(Constants.KEY_NUMBER_OF_PEOPLE_LIVING);
-                                room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
-                                room.roomId = document.getId();
-                                rooms.add(room);
-                            }
-                            // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
-                            if (typeOfSort.equals("price_asc")) {
-                                rooms = sortRoomByPriceAscending(rooms);
-                            } else if (typeOfSort.equals("number_of_people_living_asc")) {
-                                rooms = sortRoomByNumberOfMemberLivingAscending(rooms);
-                            } else if (typeOfSort.equals("name_room")) {
-                                rooms = sortByName(rooms);
-                            }
-                            roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
-                            roomListener.dialogClose();
-                            roomListener.addRoom(rooms, "sort");
-                        } else {
-                            roomListener.addRoomFailed();
-                        }
-                    }
-                });
+
+        // Sắp xếp danh sách các nhà trọ dựa trên số lượng phòng
+        if (typeOfSort.equals("price_asc")) {
+            rooms = sortRoomByPriceAscending(rooms);
+            roomListener.showToast(rooms.get(0).getNumberOfMemberLiving());
+        } else if (typeOfSort.equals("number_of_people_living_asc")) {
+            rooms = sortRoomByNumberOfMemberLivingAscending(rooms);
+        } else if (typeOfSort.equals("name_room")) {
+            rooms = sortByName(rooms);
+        }
+        roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
+        roomListener.dialogClose();
+        roomListener.addRoom(rooms, "sort");
+
     }
+
     private List<Room> sortRoomByPriceAscending(List<Room> rooms) {
         rooms.sort((o1, o2) -> {
             String price1 = o1.price.replace(".", "");
@@ -542,21 +524,23 @@ public class RoomPresenter {
         rooms.sort(new Comparator<Room>() {
             @Override
             public int compare(Room o1, Room o2) {
-                return Integer.compare(Integer.parseInt(o1.numberOfMemberLiving),Integer.parseInt(o2.numberOfMemberLiving));
+                return Integer.compare(Integer.parseInt(o1.numberOfMemberLiving), Integer.parseInt(o2.numberOfMemberLiving));
             }
         });
         return rooms;
     }
+
     private List<Room> sortByName(List<Room> rooms) {
         rooms.sort(new Comparator<Room>() {
             @Override
             public int compare(Room o1, Room o2) {
                 int a = o1.getNameRoom().compareToIgnoreCase(o2.getNameRoom());
-                return a ;
+                return a;
             }
         });
         return rooms;
     }
+
     public void getListRooms(OnCompleteListener<Void> onCompleteListener) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String homeId = roomListener.getInfoHomeFromGoogleAccount();
@@ -572,8 +556,8 @@ public class RoomPresenter {
                                 room.nameRoom = document.getString(Constants.KEY_NAME_ROOM);
                                 room.nameUser = document.getString(Constants.KEY_NAME);
                                 room.price = document.getString(Constants.KEY_PRICE);
-                                room.status=document.getString(Constants.KEY_STATUS_PAID);
-                                room.phoneNumer= document.getString(Constants.KEY_PHONE_NUMBER);
+                                room.status = document.getString(Constants.KEY_STATUS_PAID);
+                                room.phoneNumer = document.getString(Constants.KEY_PHONE_NUMBER);
                                 room.describe = document.getString(Constants.KEY_DESCRIBE);
                                 room.numberOfMemberLiving = document.getString(Constants.KEY_NUMBER_OF_PEOPLE_LIVING);
                                 room.dateObject = document.getDate(Constants.KEY_TIMESTAMP);
@@ -592,39 +576,41 @@ public class RoomPresenter {
 
 
     }
+
     public void deleteListRooms(List<Room> roomsToDelete) {
-        if(roomsToDelete.isEmpty()){
+        if (roomsToDelete.isEmpty()) {
             roomListener.showToast("123456");
-        }
-        else{
+        } else {
             roomListener.showToast("qwerty");
-        roomListener.showLoadingOfFunctions(R.id.btn_delete_room);
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
+            roomListener.showLoadingOfFunctions(R.id.btn_delete_room);
+            FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        // Bắt đầu một batch mới
-        WriteBatch batch = database.batch();
+            // Bắt đầu một batch mới
+            WriteBatch batch = database.batch();
 
-        // Duyệt qua danh sách các home cần xóa và thêm thao tác xóa vào batch
-        for (Room room : roomsToDelete) {
-            DocumentReference roomRef = database.collection(Constants.KEY_COLLECTION_ROOMS).document(room.getRoomId());
-            batch.delete(roomRef); // Thêm thao tác xóa vào batch
+            // Duyệt qua danh sách các home cần xóa và thêm thao tác xóa vào batch
+            for (Room room : roomsToDelete) {
+                DocumentReference roomRef = database.collection(Constants.KEY_COLLECTION_ROOMS).document(room.getRoomId());
+                batch.delete(roomRef); // Thêm thao tác xóa vào batch
+            }
+
+            // Commit batch
+            batch.commit()
+                    .addOnSuccessListener(aVoid -> {
+
+                        //homeListener.showToast("Xóa thành công " + homesToDelete.size() + " homes.");
+                        getRooms("init");
+                        roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                        //roomListener.dialogAndModeClose(mode);
+                        roomListener.openDialogSuccess(R.layout.layout_dialog_delete_room_success);
+                    })
+                    .addOnFailureListener(e -> {
+                        roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
+                        roomListener.showToast("Xóa phòng thất bại: " + e.getMessage());
+                    });
         }
+    }
 
-        // Commit batch
-        batch.commit()
-                .addOnSuccessListener(aVoid -> {
-
-                    //homeListener.showToast("Xóa thành công " + homesToDelete.size() + " homes.");
-                    getRooms("init");
-                    roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
-                    //roomListener.dialogAndModeClose(mode);
-                    roomListener.openDialogSuccess(R.layout.layout_dialog_delete_room_success);
-                })
-                .addOnFailureListener(e -> {
-                    roomListener.hideLoadingOfFunctions(R.id.btn_delete_room);
-                    roomListener.showToast("Xóa phòng thất bại: " + e.getMessage());
-                });
-    }}
     public void filterRoom(List<Room> rooms) {
         if (rooms.isEmpty()) {
             roomListener.hideLoadingOfFunctions(R.id.btn_confirm_apply);
