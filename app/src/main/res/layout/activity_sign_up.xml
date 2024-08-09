@@ -91,7 +91,6 @@
         app:counterEnabled="true"
         app:counterMaxLength="32"
         app:endIconMode="password_toggle"
-        app:endIconCheckable="false"
         app:errorEnabled="true"
         app:helperText="Nhập mật khẩu mạnh"
         app:helperTextEnabled="true"
@@ -123,7 +122,6 @@
         app:counterEnabled="true"
         app:counterMaxLength="32"
         app:endIconMode="password_toggle"
-        app:endIconCheckable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutPassword"
@@ -144,6 +142,8 @@
             android:inputType="textPassword"
             android:imeOptions="actionDone"/>
     </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <FrameLayout
         android:id="@+id/frm_sign_up"

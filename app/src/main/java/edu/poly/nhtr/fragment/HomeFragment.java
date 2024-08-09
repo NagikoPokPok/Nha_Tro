@@ -184,7 +184,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
     private void restoreAlarms() {
         Set<String> alarms = preferenceManager.getSet(Constants.KEY_NOTIFICATION_SET);
         if (alarms == null || alarms.isEmpty()) {
-            showToast("No alarms");
             return;
         }
 
@@ -192,7 +191,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
             try {
                 String[] parts = alarm.split(",");
                 if (parts.length < 9) {
-                    showToast("Invalid alarm format: " + alarm);
                     continue;
                 }
                 long timeInMillis = Long.parseLong(parts[0]);
@@ -216,7 +214,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 Room room = preferenceManager.getRoom(Constants.KEY_COLLECTION_ROOMS, homeID);
 
                 if (home == null) {
-                    showToast( "Home not found for ID: " + homeID);
                     continue;
                 }
 
@@ -224,7 +221,6 @@ public class HomeFragment extends Fragment implements HomeListener, SwipeRefresh
                 alarmService.setAlarmsAfterBoot(timeInMillis, requestCode, home, room, header, body);
 
             } catch (NumberFormatException e) {
-                showToast("Error parsing alarm data: " + alarm);
             }
         }
     }
