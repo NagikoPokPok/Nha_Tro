@@ -37,23 +37,21 @@ import edu.poly.nhtr.utilities.PreferenceManager;
 public class SignInPresenter {
     private static final String TAG = "SignInActivity";
     private final int RC_SIGN_IN = 20;
-    private final SignInActivity signInActivity;
     private final PreferenceManager preferenceManager;
     private final SignInInterface view;
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
 
     public SignInPresenter(SignInInterface view, SignInActivity signInActivity) {
-        this.signInActivity = signInActivity;
         this.view = view;
         this.preferenceManager = signInActivity.preferenceManager;
     }
 
-    public void signIn(User user) {
-        if (isValidSignInDetails(user.getEmail(), user.getPassword())) {
-            check(user);
-        }
-    }
+//    public void signIn(User user) {
+//        if (isValidSignInDetails(user.getEmail(), user.getPassword())) {
+//            check(user);
+//        }
+//    }
 
     public void reload() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -73,66 +71,56 @@ public class SignInPresenter {
         }
     }
 
-    void check(User user) {
-        view.loading(true);
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.KEY_COLLECTION_USERS)
-                .whereEqualTo(Constants.KEY_EMAIL, user.getEmail())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
-                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-
-                        String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
-
-                        // Harness the power of hashing to secure your passwords
-                        String enteredPassword = user.getPassword();
-                        String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
-                        if (storedHashedPassword.equals(hashedPassword)) {
-//                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-//                            preferenceManager.putString(Constants.KEY_USER_ID,documentSnapshot.getId());
-//                            preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME));
-//                            preferenceManager.putString(Constants.KEY_PASSWORD, documentSnapshot.getString(Constants.KEY_PASSWORD));
-//                            preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE));
-//                            preferenceManager.putString(Constants.KEY_EMAIL, documentSnapshot.getString(Constants.KEY_EMAIL));
-//                            preferenceManager.putString(Constants.KEY_PHONE_NUMBER, documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
-
-//                            view.putPreference(true, documentSnapshot.getId(), documentSnapshot.getString(Constants.KEY_NAME), documentSnapshot.getString(Constants.KEY_PASSWORD), documentSnapshot.getString(Constants.KEY_IMAGE)
-//                            , documentSnapshot.getString(Constants.KEY_EMAIL), documentSnapshot.getString(Constants.KEY_PHONE_NUMBER));
-
-                            try {
-                                preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
-                            } catch (Exception ex) {
-                            }
-                            view.entryMain();
-
-                            mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
-                                    .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                // Sign in success, update UI with the signed-in user's information
-                                                Log.d(TAG, "signInWithEmail:success");
-                                                FirebaseUser user = mAuth.getCurrentUser();
-
-                                            } else {
-                                                // If sign in fails, display a message to the user.
-                                                Log.w(TAG, "signInWithEmail:failure", task.getException());
-
-                                            }
-                                        }
-                                    });
-                        } else {
-                            // The gates remain shut, authentication denied
-                            view.loading(false);
-                            view.showToast("Sai tài khoản hoặc mật khẩu");
-                        }
-                    } else {
-                        view.loading(false);
-                        view.showToast("Sai tài khoản hoặc mật khẩu");
-                    }
-                });
-    }
+//    void check(User user) {
+//        view.loading(true);
+//        FirebaseFirestore database = FirebaseFirestore.getInstance();
+//        database.collection(Constants.KEY_COLLECTION_USERS)
+//                .whereEqualTo(Constants.KEY_EMAIL, user.getEmail())
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+//                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
+//
+//                        String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
+//
+//                        // Harness the power of hashing to secure your passwords
+//                        String enteredPassword = user.getPassword();
+//                        String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
+//                        if (storedHashedPassword.equals(hashedPassword)) {
+//
+//                            try {
+//                                preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
+//                            } catch (Exception ex) {
+//                            }
+//                            view.entryMain();
+//
+//                            mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
+//                                    .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                                            if (task.isSuccessful()) {
+//                                                // Sign in success, update UI with the signed-in user's information
+//                                                Log.d(TAG, "signInWithEmail:success");
+//                                                FirebaseUser user = mAuth.getCurrentUser();
+//
+//                                            } else {
+//                                                // If sign in fails, display a message to the user.
+//                                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+//
+//                                            }
+//                                        }
+//                                    });
+//                        } else {
+//                            // The gates remain shut, authentication denied
+//                            view.loading(false);
+//                            view.showToast("Sai tài khoản hoặc mật khẩu");
+//                        }
+//                    } else {
+//                        view.loading(false);
+//                        view.showToast("Sai tài khoản hoặc mật khẩu");
+//                    }
+//                });
+//    }
 
     private Boolean isValidSignInDetails(String email, String password) {
         if (TextUtils.isEmpty(email)) {

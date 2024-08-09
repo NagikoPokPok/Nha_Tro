@@ -8,17 +8,16 @@
     android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="10dp"
-    android:backgroundTint="@color/white"
     app:cardCornerRadius="15dp"
-    app:strokeColor="@color/black"
+    style="@style/SCREEN_CARD_WHITE_2"
+    app:strokeColor="@color/stroke_color"
     app:strokeWidth="0.75dp">
 
     <TextView
         android:id="@+id/txt_ordinal_number"
-        style="@style/TEXT_BOLD_3"
+        style="@style/background_ordinal_number_home"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:background="@drawable/sonhatro"
         android:gravity="center"
         android:text="@string/stt"
         android:textSize="20sp" />
@@ -46,9 +45,9 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/hoang_minh_thao"
-                android:textColor="@color/colorTextBlack"
+                style="@style/TEXT_BOLD_2"
                 android:textSize="18sp"
-                android:fontFamily="@font/inter_bold" />
+                 />
 
             <FrameLayout
                 android:id="@+id/frm_Image"
@@ -62,7 +61,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/background_image"
-                    android:backgroundTint="@color/white"
+                    style="@style/SCREEN_CARD_WHITE_2"
                     android:scaleType="fitXY"
                     app:riv_oval="true" />
 
@@ -71,7 +70,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_menu" />
+                    style="@style/menu" />
 
             </FrameLayout>
 
@@ -126,7 +125,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="10dp"
-                android:src="@drawable/icon_address_pin" />
+                style="@style/imageViewLocation" />
 
             <TextView
                 android:id="@+id/txt_home_address"
@@ -135,8 +134,8 @@
                 android:layout_marginStart="5dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                style="@style/TEXT_LIGHT_2"
                 android:text="123123"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
 

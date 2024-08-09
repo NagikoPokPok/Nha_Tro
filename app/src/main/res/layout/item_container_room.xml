@@ -7,20 +7,18 @@
     android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="10dp"
-    android:backgroundTint="@color/white"
+    style="@style/SCREEN_CARD_WHITE_2"
     app:cardCornerRadius="15dp"
-    app:strokeColor="@color/black"
+    app:strokeColor="@color/stroke_color"
     app:strokeWidth="0.75dp">
 
     <TextView
         android:id="@+id/txt_ordinal_number"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:background="@drawable/sonhatro"
-        android:fontFamily="@font/inter_bold"
+        style="@style/background_ordinal_number_home"
         android:gravity="center"
         android:text="1"
-        android:textColor="@color/white"
         android:textSize="20dp" />
 
     <LinearLayout
@@ -38,15 +36,14 @@
                 android:id="@+id/txt_name_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/TEXT_BOLD_2"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="60dp"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_bold"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="P103"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="18sp" />
 
             <FrameLayout
@@ -61,8 +58,7 @@
                     android:id="@+id/img_circle_menu"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/background_image"
-                    android:backgroundTint="@color/white"
+                    style="@style/SCREEN_CARD_WHITE_2"
                     android:scaleType="fitXY"
                     app:riv_oval="true" />
 
@@ -71,7 +67,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_menu" />
+                    style="@style/menu" />
 
             </FrameLayout>
 
@@ -126,11 +122,10 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:layout_weight="1"
+                style="@style/TEXT_LIGHT_2"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
                 android:maxLines="1"
                 android:text="Họ tên :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -138,9 +133,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_medium"
+                style="@style/TEXT_MED_2"
                 android:text="Ho Quang Hieu"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -160,10 +154,9 @@
                 android:layout_gravity="start"
                 android:layout_weight="2"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:maxLines="1"
                 android:text="Số điện thoại :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -171,9 +164,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:text="0918300555"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -193,10 +185,9 @@
                 android:layout_gravity="start"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:maxLines="1"
                 android:text="Trạng thái :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -204,9 +195,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_medium"
+                style="@style/TEXT_MED_2"
                 android:text="Đã thanh toán"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -226,10 +216,9 @@
                 android:layout_gravity="start"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:maxLines="1"
                 android:text="Số người đang ở :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -237,9 +226,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:text="2"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -259,10 +247,9 @@
                 android:layout_gravity="start"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:maxLines="1"
                 android:text="Giá thuê :"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
             <TextView
@@ -270,9 +257,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/inter_light"
+                style="@style/TEXT_LIGHT_2"
                 android:text="1.500.000"
-                android:textColor="@color/colorTextBlack"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -296,10 +282,9 @@
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:layout_weight="3"
-            android:fontFamily="@font/inter_medium"
+            style="@style/TEXT_MED_2"
             android:maxLines="3"
             android:text="View Biển"
-            android:textColor="@color/colorTextBlack"
             android:textSize="15sp" />
 
 
@@ -308,8 +293,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:background="@drawable/background_button"
-            android:fontFamily="@font/inter_bold"
+            style="@style/background_ordinal_number_home"
             android:text="+  Tạo hợp đồng"
             android:textSize="15sp"
             app:backgroundTint="@null"

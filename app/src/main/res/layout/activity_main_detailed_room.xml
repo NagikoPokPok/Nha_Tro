@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/nameRoom"
-            style="@style/TEXT_BOLD_3"
+            style="@style/TEXT_BOLD_3_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
@@ -75,19 +75,14 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/tab_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/frm_top_main"
-        app:tabBackground="@drawable/tab_background_selector"
         app:tabIndicatorHeight="0dp"
         app:tabMode="fixed"
         android:visibility="visible"
         app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/white"
-
         style="@style/CustomTabLayout"
-        app:tabTextColor="@color/colorGray"
         android:layout_marginTop="7dp"
         >
 
@@ -118,7 +113,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
-        android:background="@color/white"
+        style="@style/SCREEN_WHITE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
