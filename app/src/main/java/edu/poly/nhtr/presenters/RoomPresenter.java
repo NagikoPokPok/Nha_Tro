@@ -117,7 +117,7 @@ public class RoomPresenter {
                 .get()
                 .addOnCompleteListener(task -> {
 
-                    if (task.isSuccessful() && task.getResult() != null) {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
                         List<Room> rooms = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Room room = new Room();
