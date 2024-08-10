@@ -44,7 +44,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
     private SettingsPresenter settingsPresenter;
     SwitchCompat switchMode;
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -139,7 +138,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
                         }, 1000);
                     })
                     .addOnFailureListener(e -> {
-                        showToast("Unable to sign out");
                         loading(false);
                     });
 
@@ -170,8 +168,6 @@ public class SettingFragment extends Fragment implements SettingsInterface {
         requireActivity().finish();
         loading(false);
     }
-
-
 
     @Override
     public void switchModeTheme() {

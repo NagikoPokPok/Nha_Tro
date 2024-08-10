@@ -14,11 +14,10 @@ import java.util.List;
 public class RoomContractPresenter implements RoomContractInterface.Presenter {
 
     private final RoomContractInterface.View view;
-    private final FirebaseFirestore db;
 
     public RoomContractPresenter(RoomContractInterface.View view) {
         this.view = view;
-        this.db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -26,7 +25,6 @@ public class RoomContractPresenter implements RoomContractInterface.Presenter {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         String roomId = view.getInfoRoomFromGoogleAccount();
 
-        // Fetch contracts related to the room
         database.collection(Constants.KEY_COLLECTION_CONTRACTS)
                 .whereEqualTo(Constants.KEY_ROOM_ID, roomId)
                 .get()
@@ -34,7 +32,6 @@ public class RoomContractPresenter implements RoomContractInterface.Presenter {
                     if (task.isSuccessful() && task.getResult() != null) {
                         List<DocumentSnapshot> contractSnapshots = task.getResult().getDocuments();
 
-                        // Delete each contract document
                         for (DocumentSnapshot contractDoc : contractSnapshots) {
                             String contractId = contractDoc.getId();
 
@@ -42,7 +39,6 @@ public class RoomContractPresenter implements RoomContractInterface.Presenter {
                                     .document(contractId)
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
-                                        // After deleting contracts, proceed to delete guests
                                         deleteGuests(roomId);
                                     })
                                     .addOnFailureListener(e -> {
@@ -65,7 +61,15 @@ public class RoomContractPresenter implements RoomContractInterface.Presenter {
                     if (task.isSuccessful() && task.getResult() != null) {
                         List<DocumentSnapshot> guestSnapshots = task.getResult().getDocuments();
 
-                        // Delete each guest document
+                        if (guestSnapshots.isEmpty()) {
+                            view.hideLoadingButton(R.id.btn_confirm_delete_contract);
+                            view.closeDialog();
+                            return;
+                        }
+
+                        int totalGuests = guestSnapshots.size();
+                        int[] deleteCount = {0};
+
                         for (DocumentSnapshot guestDoc : guestSnapshots) {
                             String guestId = guestDoc.getId();
 
@@ -73,23 +77,23 @@ public class RoomContractPresenter implements RoomContractInterface.Presenter {
                                     .document(guestId)
                                     .delete()
                                     .addOnSuccessListener(aVoid -> {
-                                        view.hideLoadingButton(R.id.btn_confirm_delete_contract);
-                                        view.closeDialog();
+                                        deleteCount[0]++;
+                                        if (deleteCount[0] == totalGuests) {
+                                            view.hideLoadingButton(R.id.btn_confirm_delete_contract);
+                                            view.showToast("Hợp đồng đã được xóa thành công");
+                                            view.closeDialog();
+                                        }
                                     })
                                     .addOnFailureListener(e -> {
-                                        view.showToast("Xoá khách thất bại: " + e.getMessage());
                                     });
                         }
-                    } else {
-                        view.showToast("Lỗi khi lấy khách: " + task.getException());
                     }
                 });
     }
 
+
     @Override
     public void printContract(Room room) {
-        // Implement print contract functionality
-        // For example, generate a PDF and trigger a print job
         view.onContractPrinted();
     }
 }

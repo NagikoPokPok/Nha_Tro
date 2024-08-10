@@ -161,10 +161,6 @@ public class SignInActivity extends AppCompatActivity implements SignInInterface
                                 .addOnCompleteListener(this, task1 -> {
                                     if (task1.isSuccessful()) {
                                         FirebaseUser user = mAuth.getCurrentUser();
-
-                                    } else {
-                                        Toast.makeText(SignInActivity.this, "Xác thực người dùng thất bại.", Toast.LENGTH_SHORT).show();
-
                                     }
                                 });
                     } else {

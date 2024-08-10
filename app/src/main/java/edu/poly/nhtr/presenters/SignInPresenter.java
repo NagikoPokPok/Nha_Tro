@@ -47,12 +47,6 @@ public class SignInPresenter {
         this.preferenceManager = signInActivity.preferenceManager;
     }
 
-//    public void signIn(User user) {
-//        if (isValidSignInDetails(user.getEmail(), user.getPassword())) {
-//            check(user);
-//        }
-//    }
-
     public void reload() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -71,71 +65,6 @@ public class SignInPresenter {
         }
     }
 
-//    void check(User user) {
-//        view.loading(true);
-//        FirebaseFirestore database = FirebaseFirestore.getInstance();
-//        database.collection(Constants.KEY_COLLECTION_USERS)
-//                .whereEqualTo(Constants.KEY_EMAIL, user.getEmail())
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
-//                        DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-//
-//                        String storedHashedPassword = documentSnapshot.getString(Constants.KEY_PASSWORD);
-//
-//                        // Harness the power of hashing to secure your passwords
-//                        String enteredPassword = user.getPassword();
-//                        String hashedPassword = PasswordHasher.hashPassword(enteredPassword);
-//                        if (storedHashedPassword.equals(hashedPassword)) {
-//
-//                            try {
-//                                preferenceManager.putString(Constants.KEY_ADDRESS, documentSnapshot.getString(Constants.KEY_ADDRESS));
-//                            } catch (Exception ex) {
-//                            }
-//                            view.entryMain();
-//
-//                            mAuth.signInWithEmailAndPassword(preferenceManager.getString(Constants.KEY_EMAIL), preferenceManager.getString(Constants.KEY_PASSWORD))
-//                                    .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<AuthResult> task) {
-//                                            if (task.isSuccessful()) {
-//                                                // Sign in success, update UI with the signed-in user's information
-//                                                Log.d(TAG, "signInWithEmail:success");
-//                                                FirebaseUser user = mAuth.getCurrentUser();
-//
-//                                            } else {
-//                                                // If sign in fails, display a message to the user.
-//                                                Log.w(TAG, "signInWithEmail:failure", task.getException());
-//
-//                                            }
-//                                        }
-//                                    });
-//                        } else {
-//                            // The gates remain shut, authentication denied
-//                            view.loading(false);
-//                            view.showToast("Sai tài khoản hoặc mật khẩu");
-//                        }
-//                    } else {
-//                        view.loading(false);
-//                        view.showToast("Sai tài khoản hoặc mật khẩu");
-//                    }
-//                });
-//    }
-
-    private Boolean isValidSignInDetails(String email, String password) {
-        if (TextUtils.isEmpty(email)) {
-            view.showToast("Vui lòng nhập email");
-            return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            view.showToast("Email không hợp lệ");
-            return false;
-        } else if (TextUtils.isEmpty(password)) {
-            view.showToast("Vui lòng nhập mật khẩu");
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     // Đăng nhập bằng Google
     public void googleSignIn() {
@@ -212,7 +141,5 @@ public class SignInPresenter {
                     }
                 });
     }
-
-
 
 }
