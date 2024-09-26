@@ -143,10 +143,8 @@ public class SignUpActivity extends AppCompatActivity implements SignUpInterface
 
     @Override
     public void showSuccessMessage(String email, String name, String password){
-    // Nếu email chưa có thì mới có thể SignUp()
         Intent intent = new Intent(SignUpActivity.this, VerifyOTPActivity.class);
         intent.putExtra("email",email);
-        // Mã hóa mật khẩu trước khi đưa lên Firebase
         intent.putExtra("password",password);
         intent.putExtra("name",name);
         startActivity(intent);

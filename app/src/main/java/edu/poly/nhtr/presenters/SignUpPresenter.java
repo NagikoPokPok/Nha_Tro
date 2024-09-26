@@ -30,7 +30,6 @@ import edu.poly.nhtr.utilities.Constants;
 
 public class SignUpPresenter {
 
-    private static final String TAG = "SignUpActivity";
     private final int RC_SIGN_IN = 20;
     private final SignUpInterface view;
 
