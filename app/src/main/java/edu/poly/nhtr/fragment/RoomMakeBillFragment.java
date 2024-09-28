@@ -309,7 +309,8 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         //Set into money of room
         long intoMoneyOfRoom = (long) (mainGuest.getRoomPrice()*( monthHire +dayHire/30.0));
 //                (Integer.parseInt(binding.txtMonthHire.getText().toString().split(" ")[0]) +  Integer.parseInt(binding.txtDayHire.getText().toString().split(" ")[1]) /30));
-        binding.txtIntoRoomMoney.setText(toMoneyForm(intoMoneyOfRoom));
+        if(intoMoneyOfRoom>=0) binding.txtIntoRoomMoney.setText(toMoneyForm(intoMoneyOfRoom));
+        else binding.txtIntoRoomMoney.setText("Không thể lập hóa đơn khi ngày bắt đầu tính ở sau ngày kết thúc");
     }
 
     private String toStringFromInt(int value) {
