@@ -126,7 +126,7 @@ public class RoomMakeBillPresenter {
                                     newIndex = Integer.parseInt(document.getString(Constants.KEY_WATER_INDEX_NEW));
                                 }
                                 quantity = newIndex-oldIndex;
-                                if (quantity == 0) quantity = 404;
+                                //if (quantity == 0) quantity = 404;
                                 roomService.setQuantity(quantity);
                                 if (i < task.getResult().getDocuments().size()-1) i++;
                             }

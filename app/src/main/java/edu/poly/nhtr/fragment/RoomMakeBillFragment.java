@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -155,7 +156,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         for (RoomService roomService : roomServiceList){
             totalOfService += (roomService.getService().getPrice() * roomService.getQuantity());
         }
-        binding.txtTotalServiceFee.setText(toStringFromInt(totalOfService));
+        binding.txtTotalServiceFee.setText(toMoneyForm(totalOfService));
         bill.moneyOfService = totalOfService;
         bill.moneyOfRoom = Integer.parseInt(binding.txtIntoRoomMoney.getText().toString());
 
@@ -203,8 +204,8 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             binding.txtCountPlus.setVisibility(View.VISIBLE);
             binding.txtCountMinus.setVisibility(View.VISIBLE);
 
-            binding.txtCountMinus.setText(toStringFromInt(plusOrMinusMoneyAdapter.getMinus()));
-            binding.txtCountPlus.setText(toStringFromInt(plusOrMinusMoneyAdapter.getPlus()));
+            binding.txtCountMinus.setText(toMoneyForm(plusOrMinusMoneyAdapter.getMinus()));
+            binding.txtCountPlus.setText(toMoneyForm(plusOrMinusMoneyAdapter.getPlus()));
             
         }
     }
@@ -217,7 +218,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
             bill.setTotalMoneyPlus(plusOrMinusMoneyAdapter.getTotalMoneyPlus());
             bill.setTotalMoneyMinus(plusOrMinusMoneyAdapter.getTotalMoneyMinus());
         }
-        binding.txtTotalMoney.setText(toStringFromLong(total));
+        binding.txtTotalMoney.setText(toMoneyForm(total));
         bill.totalOfMoney = total;
     }
 
@@ -306,10 +307,9 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         binding.txtRoomPrice.setText(priceOfRoom);
 
         //Set into money of room
-        int intoMoneyOfRoom = (int) (mainGuest.getRoomPrice()*( monthHire +dayHire/30.0));
+        long intoMoneyOfRoom = (long) (mainGuest.getRoomPrice()*( monthHire +dayHire/30.0));
 //                (Integer.parseInt(binding.txtMonthHire.getText().toString().split(" ")[0]) +  Integer.parseInt(binding.txtDayHire.getText().toString().split(" ")[1]) /30));
-        String intoMoneyRoom = intoMoneyOfRoom+"";
-        binding.txtIntoRoomMoney.setText(intoMoneyRoom);
+        binding.txtIntoRoomMoney.setText(toMoneyForm(intoMoneyOfRoom));
     }
 
     private String toStringFromInt(int value) {
@@ -317,6 +317,10 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
     }
     private String toStringFromLong(long value){
         return value + "";
+    }
+    private String toMoneyForm(long value){
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+        return numberFormat.format(value) ;
     }
 
     @Override
