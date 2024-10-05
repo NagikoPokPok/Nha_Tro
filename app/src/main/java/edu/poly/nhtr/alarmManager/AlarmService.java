@@ -2,13 +2,16 @@ package edu.poly.nhtr.alarmManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -20,7 +23,7 @@ import edu.poly.nhtr.models.Room;
 import edu.poly.nhtr.utilities.Constants;
 import edu.poly.nhtr.utilities.PreferenceManager;
 
-public class AlarmService {
+public class AlarmService extends Service {
     private final Context context;
     private final AlarmManager alarmManager;
     private final Home home;
@@ -28,6 +31,30 @@ public class AlarmService {
     private final String body;
     private final Room room;
     private PreferenceManager preferenceManager;
+
+    public AlarmService(Context context, AlarmManager alarmManager, Home home, String header, String body, Room room){
+        this.context = context;
+        this.alarmManager = alarmManager;
+        this.home = home;
+        this.header = header;
+        this.body = body;
+        this.room = room;
+    }
+
+    public AlarmService(){
+        this.context = null;
+        this.alarmManager = null;
+        this.home = null;
+        this.header = null;
+        this.body = null;
+        this.room = null;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
     public AlarmService(Context context, Home home, Room room, String header, String body) {
         this.context = context;
