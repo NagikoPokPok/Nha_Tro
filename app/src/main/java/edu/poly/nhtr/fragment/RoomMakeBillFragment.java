@@ -158,7 +158,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
         }
         binding.txtTotalServiceFee.setText(toMoneyForm(totalOfService));
         bill.moneyOfService = totalOfService;
-        bill.moneyOfRoom = Integer.parseInt(binding.txtIntoRoomMoney.getText().toString());
+//        bill.moneyOfRoom = Integer.parseInt(binding.txtIntoRoomMoney.getText().toString());
 
 
         // Set total money of bill
@@ -311,6 +311,7 @@ public class RoomMakeBillFragment extends Fragment implements RoomMakeBillListen
 //                (Integer.parseInt(binding.txtMonthHire.getText().toString().split(" ")[0]) +  Integer.parseInt(binding.txtDayHire.getText().toString().split(" ")[1]) /30));
         if(intoMoneyOfRoom>=0) binding.txtIntoRoomMoney.setText(toMoneyForm(intoMoneyOfRoom));
         else binding.txtIntoRoomMoney.setText("Không thể lập hóa đơn khi ngày bắt đầu tính ở sau ngày kết thúc");
+        bill.moneyOfRoom = intoMoneyOfRoom;
     }
 
     private String toStringFromInt(int value) {
